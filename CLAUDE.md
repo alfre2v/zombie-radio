@@ -19,3 +19,7 @@ follow its cold-start order: `docs/TODO.md` → the active arc's spec →
   explicit review. A harness permission prompt is not review.
 - **The repo is the memory of record**: facts that matter across
   sessions belong in `docs/`, never only in agent memory.
+- **Git workflow**: work happens on branches (usually feature
+  branches) with PRs; every PR is reviewed, approved, and merged by
+  the owner. Direct commits to main were allowed only for the initial
+  repo-structure setup (2026-09-12).
