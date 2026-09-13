@@ -37,6 +37,20 @@ is a sub-step here, never a PR number · cite discussions as
   (CLAUDE.md included). PR reviewed, approved, and merged by the
   owner.
 
+## Task definition status
+
+*How well-defined each sub-step is; updated as discussions fill the
+gaps. The agent keeps pushing on "missing" cells.*
+
+| Task | Definition | What's still missing |
+|---|---|---|
+| Task 1 — Vision & interaction model | **defined — ready for spec write-up** | All majors settled (QA log Entries 2–4; brainstorm §1–2, §4): radio-show fiction, laptop-client + cloud-GPU-server demo for Oct 8 (booth = future vision), push-to-talk MVP interaction, live-first dialogue ("theatrical live improvisation with LLMs", hybrid trajectory-scaffolds post-MVP). Residual smalls: session/loop length target · client form (browser page vs native) |
+| Task 2 — Architecture & tech survey | **partial, direction set** | Main plan inverted (QA log, Entry 2): adapt TalkWithMe + tts-serve; owner effort on deployment + new TTS engines for tts-serve; LiveKit/Pipecat demoted to comparison note. Demo confirmed on a cloud GPU instance (QA log, Entry 4) → provider survey now on the critical path. Missing: LLM & STT choices · latency/VRAM budget · cloud-GPU provider survey (Docker+GPU passthrough) · F5-TTS vs newer engines. Ansible-deployment project: deferred by ruling (private repo; surgical extraction at deployment time — QA log, Entry 3) |
+| Task 3 — Experiments | **vague by design** | Fires only if Task 2 leaves measurable questions; candidates so far: TTS engine quality/latency, provider GPU-in-Docker check |
+| Task 4 — Draft spec | shape known | Blocked on Tasks 1–2 content |
+| Task 5 — Spec review, ADR freeze | defined | — |
+| Task 6 — Close ritual in PR | defined | — |
+
 ## Completed
 
 *(none yet)*
