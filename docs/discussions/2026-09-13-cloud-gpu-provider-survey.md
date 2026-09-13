@@ -143,6 +143,57 @@ government-ID verification for GPU quota. Whoever we pick:
 - **Vast.ai** — historically container-mode (same limitation), but
   now offers **true KVM VM rentals**: root SSH, "run Docker inside
   the instance" advertised ([VM docs](https://docs.vast.ai/documentation/instances/templates/virtual-machines)).
+
+  **Owner-verified while registering (2026-09-13):** the
+  container-default reality is confirmed and worse than it
+  sounds in the UI — what the marketplace rents is almost always
+  a Docker container, and **creating a VM through the plain UI
+  is effectively impossible**: there is no obvious "give me a
+  VM" control. The page that matters (save-worthy, owner's
+  words): <https://docs.vast.ai/guides/instances/virtual-machines>
+  — it explains what their VMs can do over their Docker
+  instances AND carries the only practical entry point: template
+  links that auto-filter for VM-capable machines and launch a VM
+  on rent (tracking parameters stripped):
+  - Ubuntu 22.04 VM:
+    <https://cloud.vast.ai/?ref_id=62897&creator_id=62897&name=Ubuntu%2022.04%20VM>
+  - Ubuntu Desktop (VM):
+    <https://cloud.vast.ai/?ref_id=62897&creator_id=62897&name=Ubuntu%20Desktop%20(VM)>
+
+  For our automation this UI pain matters less than it seems:
+  the CLI/API can filter offers with `vms_enabled=true` and
+  launch from the KVM templates directly, which is the path the
+  Ansible provisioning would use anyway — but for manual
+  spike-day work, use the template links above, never the
+  default rental flow.
+
+  **Owner-verified VM-mode pricing snapshot (2026-09-13,
+  screenshot from the Ubuntu 22.04 VM template listing;
+  filters: disk ≥130 GB, ≥2 open ports, ≤$0.783/hr;
+  marketplace-dynamic — will drift):**
+
+  | Offer | VRAM | $/hr (VM mode) | Host location | CPU / RAM share | Reliability | Max duration |
+  |---|---|---|---|---|---|---|
+  | **1× RTX PRO 4000** (verified) | **24 GB** | **$0.330** | Switzerland | 24/24 cores · 32/32 GB | 97.6% | 24 days |
+  | 1× RTX 4000 Ada (context: only 20 GB) | 20 GB | $0.237 | Hungary | 6/24 cores · 32/129 GB | 99.82% | ~52 days |
+  | **1× RTX 3090** (verified, datacenter) | **24 GB** | **$0.645** | Czechia | 12/96 cores · 32/258 GB | 99.37% | 17 days |
+
+  **The finding that matters (owner's discovery): VM-mode
+  prices are MUCH higher than container-mode prices.** The
+  survey's earlier "~$0.13/hr RTX 3090" figure was
+  container-mode pricing; VM-capable hosts are a smaller,
+  pricier subset — the same 3090 costs ~$0.645/hr as a VM,
+  ~5× the container rate. Consequences for the verdict math:
+  (a) Vast's "dev workhorse: nearly free compute" role is
+  **weakened** — at $0.645/hr a Vast VM 3090 is *more*
+  expensive than Hyperstack's 48 GB A6000 at $0.50/hr, for
+  half the VRAM; (b) the budget option on Vast VM-mode is the
+  **RTX PRO 4000 24 GB at ~$0.33/hr**; (c) sub-$1 VM offers
+  with ≥24 GB were exactly two in this snapshot — thin
+  inventory, consistent with "smaller subset of hosts support
+  VMs". Net: Hyperstack's primacy strengthens; Vast remains
+  useful as the fallback marketplace and for the odd cheap
+  RTX PRO 4000, not as the default cheap-burn tier.
   Cheapest compute anywhere: 3090 ~$0.13/hr on-demand (~$0.03
   spot), 4090 ~$0.31. Per-second billing, CLI/API. Quirks: shared
   IP with **random external port mappings** (declared at create
@@ -325,11 +376,16 @@ fresh-account 3-week hobby project.
    OS image, official tooling, EU jurisdiction. ~€120 for the
    project; the L4 is the least powerful GPU on the shortlist —
    fine unless the VRAM experiment says otherwise.
-3. **Vast.ai (VM mode)** — *budget/dev pick.* ~$0.13/hr 3090s
-   make it nearly free to burn hours during development; VM mode
-   + destroy-nightly fits idempotent Ansible naturally. Random
-   external ports and marketplace host variance make it a dev
-   workhorse more than a demo-day host.
+3. **Vast.ai (VM mode)** — *budget/dev pick, DEMOTED 2026-09-13
+   by owner field data (see the VM-mode pricing snapshot in
+   S2):* the ~$0.13/hr 3090 figure was container-mode pricing;
+   VM-mode 3090s run ~$0.645/hr — pricier than Hyperstack's
+   48 GB A6000 — and sub-$1 24 GB VM offers are thin (best
+   found: RTX PRO 4000 24 GB at ~$0.33/hr). Vast stays on the
+   list as the fallback marketplace, not the cheap-burn tier.
+   VM mode + destroy-nightly still fits idempotent Ansible
+   naturally; random external ports and host variance still
+   make it a dev machine, not a demo-day host.
 4. **Massed Compute** — *conditional wildcard (added
    2026-09-13).* Enters the shortlist ONLY if the owner's 50%
    code verifies: burn one hour on a $0.35 A30 checking (a) the
