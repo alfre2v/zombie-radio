@@ -138,8 +138,17 @@ TODO Task 3a.
   character voices via reference-audio cloning at acceptable
   latency. **[UNKNOWN — winners TBD by experiment.]** Soft goal:
   add F5-TTS and Breeze TTS 2 to tts-serve (follow-ups.md).
-- **VRAM budget** — LLM + 2 TTS engines + Whisper on one 24–48 GB
-  card: **[UNKNOWN — measured, not guessed; §7.2].**
+- **VRAM budget** — LLM + 2 TTS engines + Whisper on one card:
+  **[UNKNOWN — measured, not guessed; §7.2].** The **target is
+  24 GB** (hard requirement: the stack must fit a 24 GB card —
+  the owner's RTX 3090 class). **Aspirational, explicitly NOT a
+  hard target (owner ruling 2026-09-13): fit in 16 GB.**
+  Unconfirmed that it's reachable; treated as a nice-to-have
+  the §7.2 experiment should report on, not design for. Why it
+  would matter if achieved: it widens who can self-host (16 GB
+  consumer cards are far more common than 24 GB ones — the
+  local-AI-first soul) and unlocks the cheapest cloud tiers
+  (e.g. Hyperstack's A4000 at $0.15/hr).
 
 ## §5. Dialogue & show engine
 

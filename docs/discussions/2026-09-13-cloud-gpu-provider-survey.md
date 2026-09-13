@@ -194,7 +194,7 @@ government-ID verification for GPU quota. Whoever we pick:
   | NVIDIA A100 | 80 | 28 | 120 | $1.35 |
   | NVIDIA L40 | 48 | 28 | 120 | $1.00 |
   | **NVIDIA A6000** | **48** | **28** | **58** | **$0.50** ← our pick |
-  | NVIDIA A4000 | 16 | 6 | 24 | $0.15 (fails our 24 GB floor) |
+  | NVIDIA A4000 | 16 | 6 | 24 | $0.15 (below the 24 GB target; becomes interesting only if the aspirational 16 GB goal — [spec §4] — is ever proven) |
 
   Reading for our purposes: the **A6000 at $0.50/hr** remains
   the value pick (48 GB VRAM, 28 pCPUs; its 58 GB RAM is the
@@ -202,6 +202,15 @@ government-ID verification for GPU quota. Whoever we pick:
   L40 at $1.00/hr offers the same VRAM with more system RAM as
   the stock-out fallback; everything A100-and-up is overkill
   for this project.
+
+  **Stock-out reports upgraded to owner-confirmed
+  (2026-09-13):** while creating the account, the owner watched
+  A6000 availability fluctuate in and out of stock several
+  times on the pricing page alone. Practical consequences: the
+  L40 fallback is not theoretical; grab-and-hold applies on
+  demo week (the demo-day protocol's provision-the-evening-
+  before rule earns its keep); and the two-provider
+  smoke-test hedge stays mandatory.
 - **Verda** (ex-DataCrunch, rebranded Nov 2025; Finnish, $180M+
   raised, SOC 2) — VMs with **root** SSH; A6000 48 GB
   $0.592/hr on-demand / **$0.296 spot**; Docker-preinstalled

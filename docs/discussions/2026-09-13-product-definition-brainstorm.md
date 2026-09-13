@@ -541,9 +541,14 @@ and candidate experiments (Task 3):
    experiment picks the one or two engines the MVP actually
    deploys (TTS goal, §3). tts-serve's real-time-factor metrics
    help here.
-5. **VRAM/latency budget** on a 24 GB card: LLM + 4 TTS voices +
-   STT resident together — measure, don't guess. Candidate
-   experiment.
+5. **VRAM/latency budget**: LLM + TTS + STT resident together —
+   measure, don't guess. Candidate experiment. **Target: fits a
+   24 GB card** (the owner's 3090 class). **Aspirational
+   nice-to-have, ruled 2026-09-13, unconfirmed reachable: fits
+   16 GB** — would widen self-hosting to common consumer cards
+   and unlock the cheapest cloud tiers; the experiment should
+   report the actual footprint so this goal gets a
+   reality-graded verdict, but nothing is designed around it.
 6. **Session/loop shape**: target episode length, dead-air texture
    (§7), what a whole-evening run looks like post-MVP.
 7. **Client form**: browser page vs. simple native/CLI client for
