@@ -19,14 +19,64 @@ is a sub-step here, never a PR number · cite discussions as
   play-through's shape, and what is OUT of scope for a 3-week build.
   Output: `discussions/2026-09-12-vision-and-interaction-model.md`
   (or dated when it happens).
-- [ ] **Task 2 — Architecture & foundational tech survey.** Local
-  vs cloud stance (the 2024 version was all-local, ≥12GB VRAM);
-  LiveKit vs Pipecat vs alternatives; candidate LLM/TTS/STT choices.
-  Output: a survey discussion; load-bearing choices graduate to ADRs.
-- [ ] **Task 3 — Experiments (conditional).** Only if Task 2 leaves
-  a question that needs measurement (e.g. TTS latency/quality,
-  Pipecat pipeline viability). Each gets a timeboxed
-  `experiments/YYYY-MM-DD-*/` folder per the conventions.
+- [ ] **Task 2 — Architecture & foundational tech survey.**
+  IN PROGRESS (2026-09-13). Audio-framework landscape survey
+  (LiveKit vs Pipecat vs Dograh) DRAFTED →
+  `discussions/2026-09-13-audio-framework-survey.md`, pending
+  owner review. Verdict: Pipecat if forced to pick; TalkWithMe
+  MVP decision reaffirmed; smart-turn model + SmallWebRTC pattern
+  flagged as framework-independent borrowings. Still ahead:
+  cloud-GPU provider survey (critical path) · LLM/STT choices ·
+  latency/VRAM budget. Load-bearing choices graduate to ADRs.
+- [ ] **Task 3 — Experiments (conditional).** Fires when a survey
+  leaves a question needing measurement. Each gets a timeboxed
+  `experiments/YYYY-MM-DD-*/` folder per conventions (runlog
+  README + findings.md with pre-registered verdict criteria).
+
+  - [ ] **Task 3a — TalkWithMe WAN-decoupling spike.** PRIORITY:
+    first in the experiment queue; run as soon as the cloud
+    provider survey lands (or sooner using a stand-in remote box).
+    Born from the foundation debate ([discussion 2026-09-13]
+    brainstorm §9): the single biggest untested assumption under
+    the MVP plan is that TalkWithMe — a localhost-born app — can
+    be split into a remote backend + laptop browser client over
+    real internet.
+    - **Question:** how deep do TalkWithMe's localhost assumptions
+      go? Can the computational backend live on a remote machine
+      with the client on a laptop across a WAN?
+    - **Setup:** clone TalkWithMe (v7.0); deploy its backend on a
+      remote Linux box — the surveyed cloud GPU instance if
+      available by then, otherwise the owner's Linux PC reached
+      over a non-LAN path (e.g. tailscale/port-forward, so real
+      internet characteristics apply); llama.cpp server with a
+      small model; ONE tts-serve engine wired through TalkWithMe's
+      existing TTS support or a minimal adapter; client in a
+      browser on the Mac laptop.
+    - **Measures:** (a) does audio delivery survive WAN
+      (buffering behavior, drops, stalls)? (b) is a 4-persona
+      group session with distinct voices drivable end-to-end?
+      (c) time-to-first-audio per dialog line (rough numbers,
+      recorded); (d) effort estimate for a proper tts-serve
+      adapter; (e) architectural red flags (blocking calls,
+      hardcoded localhost, tight client-server coupling).
+    - **Timebox: 2 days.** Abort at end of day 2 regardless of
+      state; a partial observation recorded honestly beats an
+      overrun.
+    - **Verdict criteria (pre-registered, per protocol — final
+      wording frozen in findings.md BEFORE running):** PASS =
+      4-persona audio session over WAN, time-to-first-audio
+      ≤ ~5 s/line, no structural blocker → MVP proceeds on
+      TalkWithMe. PARTIAL = works with enumerable fixable issues
+      → proceed, issues become sub-steps. FAIL = structural
+      localhost coupling (audio path unusable over WAN, pervasive
+      blocking design, unownable code) → **flip trigger fires:
+      MVP moves to Pipecat** (survey already done, brainstorm §9
+      records the fallback rationale).
+    - **Predictions to register before starting** (owner + agent
+      each, per experiment protocol).
+    - **Output:** `experiments/2026-09-XX-talkwithme-wan-spike/`
+      with self-contained runlog README.md (every command + its
+      output) and findings.md (interpretation only).
 - [ ] **Task 4 — Draft `specs/product-definition.md`.** Synthesize
   Tasks 1–3 into the record of intent: MVP definition, architecture
   direction, follow-on arc candidates for the roadmap build order.
