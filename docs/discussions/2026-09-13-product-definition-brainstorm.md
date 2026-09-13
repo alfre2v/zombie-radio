@@ -377,6 +377,37 @@ sound-effects (§6) or dead-air texture (§7) ship; low technical
 risk — the work is choosing where mixing lives (server vs.
 client), not how.**
 
+### C9. Audio compression for the voice stream *(output-side)*
+
+Not a hard technical challenge, but a mandatory pipeline stage that
+was off the radar until 2026-09-13: the server-to-client voice
+stream should never travel as raw audio. Raw PCM at 24 kHz /
+16-bit mono (typical TTS output) is ~384 kbps *per stream*; over
+uncertain venue internet (§4's demo-day risk) that is the truly
+wasteful design. The tool of choice is **Opus**: a *lossy*, open,
+royalty-free codec (RFC 6716) — not to be confused with FLAC, the
+well-known open *lossless* codec, which only shrinks audio ~50%
+and is the wrong tool for streaming speech. Opus was designed for
+low-latency interactive voice (it is *the* codec inside WebRTC,
+Discord, Zoom): speech is excellent at **24–32 kbps** mono
+(~12–16× smaller than raw), and even music-grade quality sits at
+64–128 kbps. Frame sizes go down to 2.5–60 ms, so it adds
+essentially no latency to a streaming pipeline.
+
+The envisioned pipeline: each TTS engine produces WAV/PCM
+server-side (tts-serve returns base64 WAV); the server encodes on
+the fly to Opus — via ffmpeg or a Python binding — as part of the
+same sentence-chunked streaming that TalkWithMe already does for
+fast first audio; chunks travel over the WebSocket (framed in an
+Ogg/WebM container) or plain HTTP streaming. Encoding cost is a
+rounding error next to the TTS inference that produced the audio.
+On the client, **decoding is free**: browsers natively decode Opus
+(`<audio>` elements, `decodeAudioData`, Media Source Extensions) —
+hardware-supported, nothing for us to write. **Status: must-have
+for the v1 voice stream; low risk; the only real decision is the
+container/transport framing, which falls out of the client
+architecture choice (§8).**
+
 ## 6. Beyond recognition: sound-effects generation (feature target)
 
 There are open models specialized in generating *sound effects*
