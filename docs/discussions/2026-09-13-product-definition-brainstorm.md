@@ -763,3 +763,83 @@ be the next thing we scope.
 ("we really do not have the time for Pipecat"), ordered this
 debate persisted here, the spike documented as a Task 3 sub-task
 in TODO.md, and ADR-0001 drafted.]*
+
+## 10. Security Posture Checklist (2026-09-13)
+
+*The distilled deliverable of the security discussion — the
+owner opened the list with two items ("once the server is
+deployed to a cloud instance… two things become important"),
+the agent added four, and two rounds of pushback reshaped it
+into what follows. Normative subsection-level detail lives in
+[spec §10]; this section carries the integrated list plus the
+nuances, reframings, and illuminations that produced it.*
+
+**Architecture precondition (settled by owner pushback — the
+load-bearing reframing of the whole discussion):** the webapp is
+**never hosted on the cloud machine** — the owner's reason:
+that topology would make our deployment incompatible with local
+models / local-first. The client (modified TalkWithMe: director
++ web UI) lives with the operator on the laptop, served from
+`http://localhost`; the GPU box — cloud instance or home box,
+interchangeably — is a pure model-inference server. Every
+security item below assumes this shape. (This pushback also
+corrected [spec §3.1] and shrank the decoupling unknown in
+[spec §3.3]: TalkWithMe already reaches model services by URL,
+so the split may be configuration, not surgery.)
+
+**Threat model (frames every item):** internet-wide scanners,
+GPU-compute freeloaders, secret leakage through this public
+repo, demo hecklers. Not targeted attackers. Boring hygiene,
+nothing heroic.
+
+### The checklist
+
+1. **Authentication (app-logic side)** *(owner's item)* —
+   assume the localhost-born base projects provide none (verify
+   in the spike). Model services bound to loopback, never on
+   the public IP; one shared token on the operator channel.
+   **Single-operator ruling** (owner): one user — the person
+   running the show — so token auth is the WHOLE story; no rate
+   limiting, no multi-user handling, no audit logs.
+2. **Firewall (infrastructure side)** *(owner's item)* —
+   default-deny at two layers (provider security groups + ufw,
+   both Ansible-set); SSH key-only from first boot; public
+   surface = :22 plus at most one app port (zero if the tunnel
+   in item 3 is confirmed). **Docker-bypasses-ufw trap**
+   (owner-flagged from homelab experience): Docker programs
+   iptables directly, so published ports ignore ufw; interim
+   default = loopback-bound publishing; the owner's working fix
+   from a private project gets imported surgically.
+3. **Transport protection of the laptop↔server channel**
+   *(agent's item, corrected by owner pushback)* — NOT "TLS for
+   the webapp": `http://localhost` is a secure context by spec
+   carve-out, so the PTT mic needs no DNS/cert/TLS (the
+   illumination that killed the agent's "TLS is mandatory"
+   claim — full explanation preserved in QA log Entry 7). The
+   real concern is token + audio crossing the internet in the
+   clear. Recommended: **SSH tunnel (`ssh -L`)** — encryption,
+   authentication (the SSH key), and attack-surface reduction
+   (only :22 public) in one move; zero certs, zero DNS,
+   provider-agnostic, identical against the home box. Token
+   kept as belt-and-suspenders. **Pending owner confirmation.**
+4. **Secrets hygiene** *(agent's item; already the owner's
+   standard practice)* — public repo: provider keys, tokens,
+   inventory addresses in ansible-vault or untracked env files;
+   the Ansible layout makes the safe path the default path.
+5. **Abuse & cost control** *(agent's item, right-sized by
+   owner)* — an exposed LLM/TTS endpoint is a free-compute
+   honeypot and GPU-bill amplifier; items 1+3 close it, and per
+   the single-operator ruling that is sufficient — throttling
+   and audit logging explicitly OUT. Heckler prompt injection
+   reclassified as *show-robustness*, not security: characters
+   absorb weirdness in-fiction; post-MVP.
+6. **Audience data — light PII** *(agent's item, confirmed
+   verbatim by owner)* — names + voice snippets from strangers
+   at a public event: ephemeral processing, recordings deleted
+   after transcription, nothing persists beyond the session,
+   nothing leaves the box.
+
+**Trigger to revisit:** any staging that serves the client page
+itself from a remote host to a public audience (re-triggers the
+secure-context/TLS question — see [spec §10.3] option 4), or a
+multi-user client.

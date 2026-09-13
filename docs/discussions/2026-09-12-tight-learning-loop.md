@@ -93,4 +93,20 @@ method to be "fully defined"; it is defined by iteration.
 
 ## Addenda
 
-*(none yet)*
+### 2026-09-13 — Persisting a discussion means integrating it, not chronicling it
+
+Pattern revealed in practice (during the security-posture rounds
+of the Product definition arc): when the owner asks to persist a
+discussion into the docs, the deliverable is the **integrated
+outcome of the whole exchange** — the updated list, the settled
+decisions, the nuances and reframings that survived — not a
+chronicle of the newest round layered on top of earlier ones.
+The agent's failure mode to guard against: recency bias in
+persistence, writing round-by-round records that over-weight the
+last interaction and bury the earlier turns that shaped it.
+
+Rule of thumb: chronology belongs in the QA log (that is its
+job); every other document gets the synthesis. When the owner
+starts a list mid-discussion, that list is probably the
+deliverable — finish composing it across the whole exchange
+before persisting anything.

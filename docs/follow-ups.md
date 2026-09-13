@@ -44,3 +44,22 @@ reader's memory):
   expose via the standard `/synthesize` + `/capabilities` API;
   F5-TTS first (known quantity), Breeze TTS 2 second (newer,
   unproven locally). Consider upstreaming as PRs to scorbo2.
+
+## MassedCompute 50% code verification — parked
+
+- **The gap:** MassedCompute sits on the provider shortlist only
+  as a *conditional wildcard* ([discussion 2026-09-13] provider
+  survey S4): with the owner's 50% affiliate code verified, its
+  A6000 48 GB at ~$0.275/hr would be the survey's best
+  VRAM-per-dollar. Unverified: the code's GPU-type coverage,
+  Docker-with-GPU under their vGPU setup, and open ports.
+- **Where flagged:** provider survey S2/S4; parked by owner
+  ruling 2026-09-13 ("do not want to waste time on it — not in
+  our top 2").
+- **Trigger:** occasional reminder to the owner **after each
+  experiment PR merges** (owner-requested cadence); acts only if
+  the owner then feels like burning an hour on it, or if both
+  top-2 providers (Hyperstack, Scaleway) disappoint.
+- **Fix shape:** one-hour smoke test on a $0.35/hr A30 — check
+  code coverage at deploy, `docker run --gpus all`, and port
+  reachability; if all pass, promote to dev-workhorse candidate.

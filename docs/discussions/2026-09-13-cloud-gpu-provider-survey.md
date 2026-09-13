@@ -327,3 +327,12 @@ with Scaleway as EU alternate). The hedge stands unchanged.
 **Graduation path:** provider choice + demo-day protocol become
 an ADR + a runbook (`runbooks/deploy-gpu-instance.md`) once the
 smoke test passes; this survey remains as provenance.
+
+---
+
+*Addendum 2026-09-13: the owner parked the Massed Compute
+wildcard without verification ("not in our top 2, don't waste
+time") — tracked in `follow-ups.md` with an
+after-each-experiment-PR reminder trigger. The shortlist is
+effectively Hyperstack (primary), Scaleway (EU alternate),
+Vast.ai (dev workhorse).*

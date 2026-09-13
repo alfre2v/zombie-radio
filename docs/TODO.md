@@ -84,7 +84,17 @@ is a sub-step here, never a PR number · cite discussions as
       (c) time-to-first-audio per dialog line (rough numbers,
       recorded); (d) effort estimate for a proper tts-serve
       adapter; (e) architectural red flags (blocking calls,
-      hardcoded localhost, tight client-server coupling).
+      hardcoded localhost, tight client-server coupling);
+      (f) security observations for [spec §10.1]: does anything
+      in the stack provide auth? which ports must be public?
+    - **Setup note (corrected per [spec §10.3] and the §3.1
+      topology):** modified TalkWithMe runs ON the laptop (page
+      at `http://localhost` = secure context, mic works, no TLS
+      needed); the remote box hosts only model services. Test
+      the laptop↔server channel BOTH ways if cheap: plain
+      `ws://`+token, and through an `ssh -L` tunnel (the §10.3
+      recommended transport) — the tunnel variant is the one the
+      MVP will likely ship.
     - **Timebox: 2 days.** Abort at end of day 2 regardless of
       state; a partial observation recorded honestly beats an
       overrun.
@@ -103,9 +113,12 @@ is a sub-step here, never a PR number · cite discussions as
     - **Output:** `experiments/2026-09-XX-talkwithme-wan-spike/`
       with self-contained runlog README.md (every command + its
       output) and findings.md (interpretation only).
-- [ ] **Task 4 — Draft `specs/product-definition.md`.** Synthesize
-  Tasks 1–3 into the record of intent: MVP definition, architecture
-  direction, follow-on arc candidates for the roadmap build order.
+- [ ] **Task 4 — Draft `specs/product-definition.md`.**
+  IN PROGRESS: preliminary draft written 2026-09-13 (§1–§9,
+  unknowns explicitly marked **[UNKNOWN — gate]**; effort-center
+  question §8 recorded as believed-not-measured). Remaining:
+  iterate with owner · fold in spike + experiment results ·
+  derive follow-on arc candidates for the roadmap build order.
 - [ ] **Task 5 — Owner review of the spec; ADRs frozen.** Truth
   audit on any draft ADRs, then mark accepted.
 - [ ] **Task 6 — Close ritual in the PR.** Roadmap Features Shipped

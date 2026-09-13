@@ -340,3 +340,95 @@ Each stage kills one failure mode.
   not mean "swappable show".
 - **TODO Task 2 restructured** into checkbox sub-lists at the
   owner's request (formatting, plus keeps LLM/STT in view).
+
+---
+
+## Entry 7 — 2026-09-13: security round; topology corrected; TLS claim retracted
+
+- **Topology clarified by the owner (load-bearing correction to
+  spec §3.1):** the modified TalkWithMe app (ensemble director +
+  locally served web UI) runs ON the demo laptop; the remote GPU
+  box hosts only model services (llama.cpp, tts-serve,
+  whisper-fastapi). The agent had assumed director-on-server.
+  Consequence: decoupling may be largely configuration
+  (TalkWithMe reaches model services by URL already); spike §7.1
+  reframed accordingly.
+- **TLS claim corrected**: `getUserMedia` does require a secure
+  context, but `http://localhost` IS one by spec carve-out — so
+  with the client served locally, no DNS/cert/TLS is needed for
+  the mic. Owner rejected getting a domain. Recommended
+  transport for the laptop↔server channel: **SSH tunnel**
+  (`ssh -L`) — encrypts everything, box exposes only port 22,
+  zero certs; owner confirmation pending (spec §10.3).
+- **Security posture right-sized by owner rulings**: model
+  endpoints on loopback only; single-operator system — token
+  auth is sufficient, no throttling or audit logs (§10.5);
+  ansible-vault is the owner's standard practice (§10.4);
+  audience data posture confirmed: ephemeral, recordings deleted
+  after transcription, nothing leaves the box (§10.6).
+- **Docker-vs-ufw complication pre-flagged by owner**: Docker
+  bypasses ufw via iptables; owner has a working fix in a
+  private project to reuse surgically; interim default = bind
+  container ports to 127.0.0.1 (§10.2).
+
+### Preserved (lightly condensed): the `getUserMedia` / secure-context explanation (agent, 2026-09-13)
+
+*Kept at the owner's request. The owner's triggering question:
+"So how can TalkWithMe work when the server is on 127.0.0.1?
+You cannot get an LE certificate for an internal interface — do
+they use a self-signed cert? … Walk me through this statement
+'Browsers require a secure context for getUserMedia'."*
+
+**What the rule actually is.** `getUserMedia` (the browser API
+that opens the mic/camera) is only available in a **secure
+context**. But "secure context" is not a synonym for "has a TLS
+certificate" — it means the browser considers the *origin*
+trustworthy. Three origins qualify: (1) `https://` pages with a
+valid cert, (2) `http://localhost`, `http://127.0.0.1`, `[::1]`,
+and `*.localhost` — explicitly carved out as "potentially
+trustworthy" by the spec, and (3) `file://`. That carve-out is
+the answer: TalkWithMe on `127.0.0.1` works with zero certs
+because localhost *is* a secure context by definition. No
+self-signed cert, no trick — the spec simply exempts it.
+
+**Why the rule exists.** The mic is a surveillance-grade
+capability, and the threat is a man-in-the-middle: on a
+plain-HTTP page from a *remote* host, anyone on the network path
+(say, venue Wi-Fi) can inject JavaScript into the page — and
+injected JS inherits the page's permissions, mic included.
+Worse, permission grants are remembered *per origin*, and an
+insecure origin's identity can't be trusted — the network can
+impersonate it. So around 2015 (Chrome 47) browsers restricted
+mic/camera to origins where two guarantees hold: *integrity*
+(nobody altered the page in flight) and *authenticated identity*
+(the origin is who it says). Localhost gets a pass because
+traffic to your own machine never crosses a network — there is
+no man in the middle to defend against.
+
+**Where the agent went wrong.** The agent assumed the web client
+would be *served by the remote GPU box* — in that topology the
+page's origin is `http://<remote-ip>`, which is NOT a secure
+context, mic dead, and the "TLS is a functional requirement"
+claim holds. But the owner's plan — modified TalkWithMe running
+**on the laptop**, page served from `http://localhost`, reaching
+out to the remote box for model inference — is a secure context,
+and the mic works with no DNS, no LE cert, nothing. One nuance
+for completeness: an `http://localhost` page calling
+`ws://remote-ip` is also *not* blocked as mixed content (that
+blocking only applies to `https` pages loading `http`
+subresources). So the owner's topology is fully self-consistent;
+the original §10.3 was solving a problem this architecture
+doesn't have.
+
+**The residual issue, and a nicer fix than certs.** With plain
+`ws://` to the remote IP, the auth token and all audio cross the
+internet unencrypted — sniffable on hostile Wi-Fi. Given the
+threat model that may be acceptable, but there's a
+homelab-classic solution that's *better* than TLS here: an
+**SSH tunnel** (`ssh -L`). The laptop talks to `localhost:PORT`,
+which is the tunnel's mouth; everything rides encrypted inside
+SSH; and — the beautiful part — the GPU box's firewall can then
+expose **only port 22 to the entire internet**, with the model
+APIs bound to loopback. Encryption, authentication, and
+attack-surface reduction in one move, zero certs, zero DNS,
+pure Ansible. Recommended transport; owner confirmation pending.
