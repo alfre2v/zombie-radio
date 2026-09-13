@@ -20,20 +20,40 @@ is a sub-step here, never a PR number · cite discussions as
   Output: `discussions/2026-09-12-vision-and-interaction-model.md`
   (or dated when it happens).
 - [ ] **Task 2 — Architecture & foundational tech survey.**
-  IN PROGRESS (2026-09-13). Audio-framework landscape survey
-  (LiveKit vs Pipecat vs Dograh) DRAFTED →
-  `discussions/2026-09-13-audio-framework-survey.md`, pending
-  owner review. Verdict: Pipecat if forced to pick; TalkWithMe
-  MVP decision reaffirmed; smart-turn model + SmallWebRTC pattern
-  flagged as framework-independent borrowings. Cloud-GPU provider
-  survey DRAFTED →
-  `discussions/2026-09-13-cloud-gpu-provider-survey.md` (11
-  providers + big-cloud baseline; acceptance criteria S0 agreed
-  with owner; shortlist: Hyperstack primary, Scaleway EU
-  alternate, Vast.ai dev workhorse; provider-agnostic-Ansible
-  hedge + demo-day protocol; pending owner review). Still ahead:
-  LLM/STT choices · latency/VRAM budget. Load-bearing choices
-  graduate to ADRs.
+  IN PROGRESS (2026-09-13). Load-bearing choices graduate to ADRs.
+  - [x] **Audio framework survey** (LiveKit / Pipecat / Dograh) →
+    `discussions/2026-09-13-audio-framework-survey.md` (edac920).
+    Verdict: Pipecat if forced to pick; TalkWithMe MVP decision
+    reaffirmed; smart-turn model + SmallWebRTC pattern flagged as
+    framework-independent borrowings.
+  - [x] **Foundation debate + ADR-0001 drafted** (edac920) —
+    freeze gated on the Task 3a spike verdict.
+  - [x] **Cloud GPU provider survey** (13 providers) →
+    `discussions/2026-09-13-cloud-gpu-provider-survey.md`
+    (af6b94b). S0 criteria agreed with owner; shortlist:
+    Hyperstack primary, Scaleway EU alternate, Vast.ai dev
+    workhorse, Massed Compute conditional on 50%-code
+    verification; provider-agnostic-Ansible hedge + demo-day
+    protocol.
+  - [x] **TTS goal settled** (QA log Entry 5; brainstorm §3):
+    tts-serve = interface; MVP deploys the TWO engines that win
+    the comparison experiment; F5-TTS + Breeze TTS 2 additions =
+    soft goal in follow-ups.md.
+  - [x] **STT decision** (QA log Entry 6; brainstorm §3): Whisper
+    via whisper-fastapi (TalkWithMe-native); model SIZE left
+    deliberately open — checkpoints are interchangeable, the
+    VRAM experiment sets the knob.
+  - [x] **Deployment doctrine amendment** (QA log Entry 6;
+    brainstorm §4): Docker preferred, NOT mandatory — per-engine
+    bare-metal-via-Ansible is a sanctioned fallback, with
+    per-engine isolation required either way.
+  - [ ] **LLM choice** — preliminary narrowing recorded
+    (brainstorm §3: small Gemma 4 / Qwen 3.5 / Nemotron-if-fits /
+    LFM2-class; all behind llama.cpp's OpenAI-compatible API so
+    swapping stays cheap). Final pick deferred; a WORKING DEFAULT
+    must be chosen before prompt-engineering starts.
+  - [ ] **Latency/VRAM budget** — measure, don't guess; runs as
+    a Task 3 experiment together with the TTS engine comparison.
 - [ ] **Task 3 — Experiments (conditional).** Fires when a survey
   leaves a question needing measurement. Each gets a timeboxed
   `experiments/YYYY-MM-DD-*/` folder per conventions (runlog

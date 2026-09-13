@@ -283,3 +283,60 @@ So the pipeline shape that falls out:
 `mic → neural VAD (aggressive) → buffer speech segments → Whisper →
 confidence filter → semantic endpoint check → actors respond`.
 Each stage kills one failure mode.
+
+---
+
+## Entry 5 — 2026-09-13: TTS goal agreed; follow-ups.md activated
+
+- **TTS goal** (owner proposal + agent refinement, recorded in
+  brainstorm §3): tts-serve is the interface — all six wrapped
+  engines reachable by construction; the MVP *deploys* only the
+  one or two engines that win the §8.4 comparison experiment
+  (deciding criterion: 4 distinct stable character voices via
+  cloning). Agent's refinement distinguished API-level support
+  (free, comes with tts-serve) from deployment-level support
+  (per-engine Docker/VRAM work) — "support all engines" is a
+  compatibility property, not a deployment goal.
+- **Soft goal**: add F5-TTS and **Breeze TTS 2** (verified real
+  2026-09-13: 3B real-time model, code Apache-2.0, weights
+  non-commercial — acceptable here) to tts-serve; registered as
+  the **first entry in `follow-ups.md`**, activating that file.
+- **Terminology flag** (agent): this settles the *TTS* axis;
+  the ledger item "LLM/STT choices" — dialogue LLM (model,
+  quantization, llama.cpp serving) and STT pick (Whisper size or
+  newer open ASR) — remains open.
+
+---
+
+## Entry 6 — 2026-09-13: pushbacks assimilated; Docker-optional ruling; STT decided; LLM narrowed
+
+- **Both agent pushbacks accepted in full**: (1) MVP prepares
+  deployment for exactly TWO TTS engines, chosen by experiment
+  (brainstorm §3 updated); (2) the TTS/LLM/STT category slip
+  acknowledged — LLM & STT handled below.
+- **Deployment ruling: Docker preferred, not mandatory**
+  (brainstorm §4). Per-engine bare-metal-via-Ansible is a
+  sanctioned fallback for quirky engines. Agent pushback,
+  accepted into the wording: the "providers may not support
+  Docker+GPU" reason is retired (provider-survey criterion S0.1
+  guarantees it; only Massed Compute's vGPU caveat remains), and
+  a bare-metal engine still requires per-engine venv/conda
+  isolation — dependency collision between TTS stacks is the
+  disease Docker cures, so escaping Docker doesn't escape
+  isolation.
+- **STT DECIDED**: Whisper via whisper-fastapi
+  (TalkWithMe-native); size is an open config knob for the VRAM
+  experiment. Owner confirmed sizes are interchangeable behind
+  the same API (correct). 2024 recollection: owner says "small",
+  old README says "tiny" — noted, harmless.
+- **LLM NARROWED, not settled** (owner's stance: no single
+  answer needed to execute; agent agrees with one caveat):
+  candidates Gemma 4 small / Qwen 3.5 / Nemotron-if-fits /
+  LFM2-class (owner wrote "LMF2" — agent reads this as Liquid
+  AI's LFM2 family; flag if wrong). Swappable behind llama.cpp's
+  OpenAI-compatible API, so deferral is cheap. Agent's caveat:
+  choose a working default before prompt-engineering starts —
+  prompts overfit to a model's voice, so "swappable API" does
+  not mean "swappable show".
+- **TODO Task 2 restructured** into checkbox sub-lists at the
+  owner's request (formatting, plus keeps LLM/STT in view).

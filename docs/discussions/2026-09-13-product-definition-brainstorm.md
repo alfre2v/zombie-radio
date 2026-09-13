@@ -134,6 +134,40 @@ pages on 2026-09-12:
   contribution (aspirational; depends on whether F5-TTS still holds
   up against the newer engines, an open question in §8).
 
+  **TTS goal (agreed 2026-09-13):** tts-serve is the interface —
+  all six wrapped engines are reachable by construction; the MVP
+  *prepares deployment for the TWO engines* that win the §8.4
+  comparison experiment (the deciding criterion: four distinct,
+  stable character voices via reference-audio cloning, at
+  acceptable latency); the rest stay available but undeployed.
+  Soft goal, time permitting: add F5-TTS and Breeze TTS 2 to
+  tts-serve (tracked in `follow-ups.md`, its first entry —
+  Breeze TTS 2: code Apache-2.0, weights non-commercial, fine
+  for this project).
+
+  **STT decision (2026-09-13):** Whisper, served via
+  whisper-fastapi — TalkWithMe-native, so this is nearly free.
+  The model **size is deliberately left open**: Whisper
+  checkpoints (tiny → large-v3, plus distil/turbo variants) are
+  interchangeable behind the same API, so size is a config knob
+  the VRAM-budget experiment (§8.5) will set. The 2024 version
+  ran a small checkpoint with little noticed degradation
+  (owner-recalled; the old repo README said "tiny" — recollection
+  discrepancy noted, harmless either way since the knob is free
+  to turn).
+
+  **LLM narrowing (2026-09-13 — a shortlist, deliberately not a
+  final pick):** owner's candidates: a small **Gemma 4**,
+  **Qwen 3.5**, **Nemotron** (if it fits VRAM), or an
+  **LFM2-class** model if we need extremely small.
+  Requirements any candidate must meet: servable by llama.cpp
+  behind an OpenAI-compatible endpoint (keeps swapping a config
+  change), instruction-following good enough for 4-persona
+  improv, and fits the VRAM budget alongside 2×TTS + Whisper.
+  Final pick deferred — but a **working default** gets chosen
+  before prompt-engineering starts, because prompts overfit to a
+  model's voice (agent's caveat, accepted rationale pending).
+
 Known cost of this choice, accepted with eyes open: both are
 **bus-factor-one** projects (one author), and tts-serve is very
 young. Trigger to revisit the foundation: TalkWithMe's architecture
@@ -158,9 +192,23 @@ deliberately avoids having.
 ## 4. Deployment & operations doctrine
 
 - **Linux-only** server targets — no Windows or other non-Unix OS.
-- Model services (TTS engines, LLM server, STT) are **Dockerized**
-  for portable deployment; **Ansible** drives deployment
-  reproducibly and idempotently.
+- Model services (TTS engines, LLM server, STT) are **Dockerized
+  by default — but Docker is a preference, not a marriage**
+  (owner ruling, 2026-09-13). Sanctioned fallback, decided
+  per-engine: bare-metal installation driven entirely by
+  **Ansible** (which drives all deployment reproducibly and
+  idempotently regardless). Reasons a given engine may go
+  bare-metal: the engine is too quirky to containerize
+  economically. (The owner's second reason — providers without
+  Docker+GPU support — is largely retired: provider-survey
+  acceptance criterion S0.1 guarantees any provider we pick
+  supports own-Docker-with-GPU; only the Massed Compute vGPU
+  caveat keeps a sliver of it alive.) **Isolation requirement
+  stands either way:** a bare-metal engine gets its own
+  venv/conda environment — multiple TTS engines share one box,
+  and colliding CUDA/PyTorch dependency stacks are precisely the
+  disease containers cure, so an engine that escapes Docker does
+  not escape isolation.
 - The same automation must deploy to a **local strong-GPU Linux
   box** (the owner's 3090 machine) and to a **cloud GPU instance**
   interchangeably — this symmetry IS the "cloud-capable" half of
@@ -479,15 +527,20 @@ and candidate experiments (Task 3):
 
 1. **Cloud GPU provider survey** (critical path, §4): GPU-in-Docker
    support, SSH-able VMs vs. container abstractions, pricing.
-2. **LLM choice** for dialogue: which small local model, at what
-   quantization, served how (llama.cpp per TalkWithMe's default?).
-3. **STT choice**: which Whisper size/variant (2024 used tiny), or
-   a newer open ASR model; plus the C1 confidence-filter design.
-4. **F5-TTS vs. the newer engines** wrapped by tts-serve
-   (Chatterbox, OmniVoice, Qwen3-TTS, dots.tts, Index-TTS):
-   quality, latency, voice-cloning fidelity for 4 distinct
-   characters. Candidate first experiment — tts-serve's
-   real-time-factor metrics help here.
+2. **LLM choice** for dialogue: NARROWED 2026-09-13 (see §3's
+   LLM shortlist) — remaining: pick the working default early,
+   quantization level, final pick by demo week.
+3. **STT choice**: DECIDED 2026-09-13 (see §3) — Whisper via
+   whisper-fastapi; remaining: the size knob (set by the §8.5
+   VRAM experiment) and the C1 confidence-filter design.
+4. **TTS engine comparison** across tts-serve's six engines
+   (Chatterbox, OmniVoice, Qwen3-TTS, dots.tts, Index-TTS —
+   plus F5-TTS and Breeze TTS 2 if/when added, see
+   `follow-ups.md`): quality, latency, and above all
+   **voice-cloning fidelity for 4 distinct characters** — this
+   experiment picks the one or two engines the MVP actually
+   deploys (TTS goal, §3). tts-serve's real-time-factor metrics
+   help here.
 5. **VRAM/latency budget** on a 24 GB card: LLM + 4 TTS voices +
    STT resident together — measure, don't guess. Candidate
    experiment.
