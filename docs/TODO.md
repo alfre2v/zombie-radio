@@ -25,9 +25,15 @@ is a sub-step here, never a PR number · cite discussions as
   `discussions/2026-09-13-audio-framework-survey.md`, pending
   owner review. Verdict: Pipecat if forced to pick; TalkWithMe
   MVP decision reaffirmed; smart-turn model + SmallWebRTC pattern
-  flagged as framework-independent borrowings. Still ahead:
-  cloud-GPU provider survey (critical path) · LLM/STT choices ·
-  latency/VRAM budget. Load-bearing choices graduate to ADRs.
+  flagged as framework-independent borrowings. Cloud-GPU provider
+  survey DRAFTED →
+  `discussions/2026-09-13-cloud-gpu-provider-survey.md` (11
+  providers + big-cloud baseline; acceptance criteria S0 agreed
+  with owner; shortlist: Hyperstack primary, Scaleway EU
+  alternate, Vast.ai dev workhorse; provider-agnostic-Ansible
+  hedge + demo-day protocol; pending owner review). Still ahead:
+  LLM/STT choices · latency/VRAM budget. Load-bearing choices
+  graduate to ADRs.
 - [ ] **Task 3 — Experiments (conditional).** Fires when a survey
   leaves a question needing measurement. Each gets a timeboxed
   `experiments/YYYY-MM-DD-*/` folder per conventions (runlog
