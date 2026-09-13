@@ -821,7 +821,11 @@ nothing heroic.
    authentication (the SSH key), and attack-surface reduction
    (only :22 public) in one move; zero certs, zero DNS,
    provider-agnostic, identical against the home box. Token
-   kept as belt-and-suspenders. **Pending owner confirmation.**
+   kept as belt-and-suspenders. **CONFIRMED by owner
+   2026-09-13** — rationale: dramatic infra simplification;
+   with zero public app ports the item-2 Docker/ufw trap is
+   obviated outright (no need to import the private-project
+   ufw-docker solution).
 4. **Secrets hygiene** *(agent's item; already the owner's
    standard practice)* — public repo: provider keys, tokens,
    inventory addresses in ansible-vault or untracked env files;

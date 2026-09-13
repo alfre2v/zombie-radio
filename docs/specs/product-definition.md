@@ -238,8 +238,8 @@ model-inference server.
    services + one token; single-operator, so nothing more.
 2. Firewall, infra side (§10.2): two-layer default-deny;
    key-only SSH; Docker-bypasses-ufw handled.
-3. Transport of the laptop↔server channel (§10.3): SSH tunnel
-   recommended [pending owner confirmation]; no TLS/DNS needed.
+3. Transport of the laptop↔server channel (§10.3): SSH tunnel —
+   DECIDED 2026-09-13; no TLS/DNS needed; obviates ufw-docker.
 4. Secrets hygiene (§10.4): ansible-vault; public repo carries
    no secrets.
 5. Abuse & cost (§10.5): closed by 1+3; throttling/audit logs
@@ -274,11 +274,14 @@ ufw's rules), so a `-p`-published container port is reachable
 from the internet regardless of what ufw says. Standard fixes in
 the wild: rules in the DOCKER-USER chain, the ufw-docker
 script, disabling Docker's iptables management, or simply
-publishing ports bound to `127.0.0.1:port` only. The owner has
-a working solution in another (private) project to be reused
-surgically; until it lands, the safe default is loopback-bound
-publishing — which the §3.1 topology wants anyway, and which
-the SSH-tunnel transport (§10.3) makes sufficient outright.
+publishing ports bound to `127.0.0.1:port` only. With the SSH tunnel
+DECIDED (§10.3), this trap is **obviated rather than solved**:
+no app port is ever published publicly — containers publish to
+`127.0.0.1` only and the box exposes only :22 — so the owner's
+private-project ufw-docker solution does NOT need importing
+(owner ruling, 2026-09-13: carrying those rules in Ansible is
+too much infra for this project). The trap stays documented
+here in case a future staging opens a public port.
 
 ### §10.3 Transport to the remote box (corrected 2026-09-13)
 
@@ -332,7 +335,11 @@ token and all audio would otherwise travel sniffable. Options:
    client page itself from the remote host to a public audience
    (that topology re-triggers the secure-context requirement).
 
-**[UNKNOWN — owner to confirm option 1.]**
+**DECIDED (owner, 2026-09-13): option 1 — SSH tunnel.** Owner's
+rationale: it simplifies the infrastructure dramatically —
+carrying ufw-docker rules in Ansible is too much infra for this
+project. Consequence recorded in §10.2: with no public app
+ports, the Docker-vs-ufw complication is obviated, not solved.
 
 ### §10.4 Secrets hygiene
 

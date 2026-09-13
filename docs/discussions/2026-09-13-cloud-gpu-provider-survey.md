@@ -171,6 +171,37 @@ government-ID verification for GPU quota. Whoever we pick:
   does NOT). Youngest of the tier (~2023-24); reports of GPU
   stock-outs and slow support. **Doctrine verdict: good; best
   price-to-fit ratio.**
+
+  **Owner-verified on-demand pricing snapshot (2026-09-13,
+  screenshot of hyperstack.cloud/gpu-pricing taken while
+  creating the account)** — confirms the researched A6000
+  figure. Owner's observation from the console: the create-VM
+  page's GPU selection does not map cleanly to this price
+  table (flavors vs. GPU models), so verify the chosen
+  flavor's price in the console before launching.
+
+  | GPU model | VRAM (GB) | Max pCPUs/GPU | Max RAM (GB)/GPU | $/hr |
+  |---|---|---|---|---|
+  | NVIDIA B300 | 288 | 28 | 240 | $7.40 |
+  | NVIDIA B200 | 192 | 31 | 256 | $6.00 |
+  | NVIDIA H200 SXM | 141 | 22 | 225 | $3.99 |
+  | NVIDIA H100 SXM | 80 | 24 | 240 | $3.20 |
+  | NVIDIA H100 NVLink | 80 | 31 | 180 | $2.60 |
+  | NVIDIA H100 | 80 | 28 | 180 | $2.50 |
+  | NVIDIA RTX Pro 6000 SE | 96 | 31 | 180 | $1.85 |
+  | NVIDIA A100 SXM | 80 | 24 | 120 | $1.60 |
+  | NVIDIA A100 NVLink | 80 | 31 | 240 | $1.40 |
+  | NVIDIA A100 | 80 | 28 | 120 | $1.35 |
+  | NVIDIA L40 | 48 | 28 | 120 | $1.00 |
+  | **NVIDIA A6000** | **48** | **28** | **58** | **$0.50** ← our pick |
+  | NVIDIA A4000 | 16 | 6 | 24 | $0.15 (fails our 24 GB floor) |
+
+  Reading for our purposes: the **A6000 at $0.50/hr** remains
+  the value pick (48 GB VRAM, 28 pCPUs; its 58 GB RAM is the
+  thinnest spec in the lineup but ample for our stack); the
+  L40 at $1.00/hr offers the same VRAM with more system RAM as
+  the stock-out fallback; everything A100-and-up is overkill
+  for this project.
 - **Verda** (ex-DataCrunch, rebranded Nov 2025; Finnish, $180M+
   raised, SOC 2) — VMs with **root** SSH; A6000 48 GB
   $0.592/hr on-demand / **$0.296 spot**; Docker-preinstalled
