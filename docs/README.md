@@ -70,7 +70,9 @@ close. The lifecycle keeps the docs true.
 **During**: one discussion doc per major design question; an ADR per
 load-bearing decision; an experiment folder when a question needs
 measurement; every commit message cites its `[spec §]`; TODO updated
-with each commit — it is the single source of "where are we". Inside
+with each commit — it is the single source of "where are we", and
+it carries an **Owner action queue** (actions only the owner can
+take, deleted when done, so they never drown in chat scrollback). Inside
 a build plan, small decisions are decided inline in the ledger; big
 ones (surveys, tool selections) get their own dated discussion doc,
 with the ledger entry linking it.
@@ -104,6 +106,12 @@ The PR's merge IS the arc's end.
   corrections, periodically rewrite it as one coherent story instead
   of stacking INVALIDATED/UPDATE banners. Exception: ADRs and reports
   (immutable) and discussions (dated addenda).
+- **Chronology has exactly one home too**: a per-arc Q&A log (a
+  discussions sub-genre) records who said what and when; every
+  other document gets the *synthesis* — the integrated outcome of
+  a whole exchange, never a round-by-round chronicle. When a
+  discussion produces a list, the finished list is the
+  deliverable.
 - Comment/document the non-obvious WHY, never restate the what.
 
 ## Anti-patterns (paid for elsewhere; do not re-buy)
@@ -134,3 +142,7 @@ get there* → the discussion; *what did we try first* → the experiment.
 ## Update trail
 
 - **2026-09-12** — System adopted at project start (empty repo).
+- **2026-09-14** — Conventions that emerged in practice recorded:
+  the chronology-vs-synthesis principle (per-arc Q&A logs hold
+  the round-by-round record; all other docs get the integrated
+  outcome) and TODO's Owner action queue.

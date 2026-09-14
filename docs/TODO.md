@@ -20,33 +20,30 @@ current. (Added 2026-09-14 at the owner's request.)*
 1. **Generate the project SSH keypair** — now THE security
    perimeter (tunnel decision, [spec §10.3]); register the
    public key at Hyperstack + Vast.ai. Blocks the spike.
-2. **Fill your prediction slot** in the spike's `findings.md`
-   (one paragraph: expected verdict, why, least-sure measure) —
-   required before the spike's first command; the freeze commit
-   carries it.
-3. **Gather 4 reference voice samples** (a few clean seconds
+2. **Gather 4 reference voice samples** (a few clean seconds
    each) for the TTS comparison experiment; casual consent if
    the voices are friends'.
-4. **Seed the character bibles** — names, personalities, quirks,
+3. **Seed the character bibles** — names, personalities, quirks,
    voice descriptions for the four scientists; rough is fine;
    also feeds the LLM audition harness.
-5. **Bless/veto the LLM working default** when the survey's
-   recommendation lands ([discussion 2026-09-14]).
-6. **Fork strategy decision** (needed by end of spike): fork
+4. **Fork strategy decision** (needed by end of spike): fork
    TalkWithMe/tts-serve under your GitHub account vs. vendor
    copies into this repo — affects upstream contribution flow.
-7. **Radar: demo-day logistics** — venue internet reality,
+5. **Radar: demo-day logistics** — venue internet reality,
    hotspot fallback, whether a "canned episode" emergency mode
    earns MVP scope.
 
 ## Sub-steps
 
-- [ ] **Task 1 — Vision & interaction model discussion.** What the
-  audience experiences: what "interactive" means this time (voice
-  input? choices? live vs generated-ahead), the 4-actor format, one
-  play-through's shape, and what is OUT of scope for a 3-week build.
-  Output: `discussions/2026-09-12-vision-and-interaction-model.md`
-  (or dated when it happens).
+- [x] **Task 1 — Vision & interaction model discussion.** DONE
+  (2026-09-13). What the audience experiences, the 4-actor
+  format, interaction mechanic, and 3-week scope. Note: the
+  originally planned standalone output doc was never created —
+  the discussion happened iteratively and its record lives in
+  the QA log Entries 2–4 (chronology) and brainstorm §1–§2
+  (synthesis); the settled result is [spec §1]–[spec §2].
+  Residual smalls (session/loop length target, client form)
+  are tracked in the spec's unknowns, not here.
 - [ ] **Task 2 — Architecture & foundational tech survey.**
   IN PROGRESS (2026-09-13). Load-bearing choices graduate to ADRs.
   - [x] **Audio framework survey** (LiveKit / Pipecat / Dograh) →

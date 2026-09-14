@@ -23,3 +23,6 @@ follow its cold-start order: `docs/TODO.md` → the active arc's spec →
   branches) with PRs; every PR is reviewed, approved, and merged by
   the owner. Direct commits to main were allowed only for the initial
   repo-structure setup (2026-09-12).
+- **No Claude/AI attribution lines** in commit messages or PR
+  descriptions — no "Co-Authored-By: Claude", no "Generated with"
+  footers, anywhere, ever (owner rule, 2026-09-14).

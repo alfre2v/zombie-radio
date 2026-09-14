@@ -1,9 +1,9 @@
 # TalkWithMe remote-split test ("the spike") — findings
 
-**Status:** VERDICT CRITERIA DRAFTED, NOT YET FROZEN — freeze =
-the commit that also carries both filled prediction slots, made
-BEFORE any spike command runs. Interpretation only; raw evidence
-lives in `README.md` (the runlog).
+**Status:** VERDICT CRITERIA FROZEN by the commit landing this
+line (2026-09-14), before any spike command has run.
+Interpretation only; raw evidence lives in `README.md` (the
+runlog).
 
 ## Verdict criteria (pre-registered — frozen before the data exists)
 
@@ -39,8 +39,10 @@ Confidence: moderate. The measure I'm least sure about: (c) —
 time-to-first-audio may land 3–8 s with a small LLM and one TTS
 engine on an A6000, uncomfortably straddling the 5 s line.
 
-**Owner (Alfredo):** *(TO FILL before the run — one paragraph:
-expected verdict, why, and which measure you're least sure of.)*
+**Owner (Alfredo):** declined to register a prediction
+(2026-09-14, "I see no value in my prediction here") — noted so
+the slot is closed, not forgotten. The agent's prediction above
+stands alone for grading.
 
 ## Results
 

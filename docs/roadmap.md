@@ -23,10 +23,16 @@ the job of the **Product definition** arc (first in the build order).
   dialogue, F5-TTS for expressive speech, Whisper tiny for speech
   recognition); required a ≥12GB-VRAM CUDA card. *(believed — from
   the repo README, 2026-09-12)*
-- **Candidate foundational technologies** the owner wants to
-  evaluate, likely via `experiments/`:
-  - LiveKit — <https://github.com/livekit/livekit>
-  - Pipecat — <https://github.com/pipecat-ai/pipecat>
+- **Foundational technology: evaluated and decided**
+  (2026-09-13, during the Product definition arc). The MVP
+  builds on **TalkWithMe + tts-serve** ([ADR-0001], draft —
+  freeze gated on a validation spike); the originally named
+  candidates LiveKit and Pipecat were surveyed
+  ([discussion 2026-09-13] audio-framework survey) and not
+  adopted — Pipecat remains the named fallback if the spike
+  fails, and the survey marks two framework-independent
+  borrowings (smart-turn model, SmallWebRTC pattern) for
+  post-MVP.
 
 ## Features Shipped
 
@@ -35,11 +41,11 @@ arcs close)*
 
 ## Feature build order
 
-1. **Product definition** — conduct the discussions about what we
-   want to build (interaction model, architecture direction,
-   local-vs-cloud stance, scope for 3 weeks) and land
-   `specs/product-definition.md`. Likely includes a survey discussion
-   of LiveKit vs Pipecat and possibly timeboxed experiments.
+1. **Product definition** — IN PROGRESS since 2026-09-12
+   (execution state lives in TODO.md, never here): conduct the
+   discussions about what we want to build and land
+   `specs/product-definition.md`. Surveys done; preliminary spec
+   drafted; validation spike pending.
 2. *(subsequent arcs emerge from the Product definition arc)*
 
 ## Ideas / parking lot
