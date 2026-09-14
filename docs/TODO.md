@@ -11,6 +11,34 @@ reviewed and its PR merges.
 is a sub-step here, never a PR number · cite discussions as
 `[discussion YYYY-MM-DD]`, specs as `[spec §X.Y]`.
 
+## Owner action queue
+
+*Actions only the owner can take, so they never get lost in chat
+scrollback. Items get DELETED when done; the agent keeps this
+current. (Added 2026-09-14 at the owner's request.)*
+
+1. **Generate the project SSH keypair** — now THE security
+   perimeter (tunnel decision, [spec §10.3]); register the
+   public key at Hyperstack + Vast.ai. Blocks the spike.
+2. **Fill your prediction slot** in the spike's `findings.md`
+   (one paragraph: expected verdict, why, least-sure measure) —
+   required before the spike's first command; the freeze commit
+   carries it.
+3. **Gather 4 reference voice samples** (a few clean seconds
+   each) for the TTS comparison experiment; casual consent if
+   the voices are friends'.
+4. **Seed the character bibles** — names, personalities, quirks,
+   voice descriptions for the four scientists; rough is fine;
+   also feeds the LLM audition harness.
+5. **Bless/veto the LLM working default** when the survey's
+   recommendation lands ([discussion 2026-09-14]).
+6. **Fork strategy decision** (needed by end of spike): fork
+   TalkWithMe/tts-serve under your GitHub account vs. vendor
+   copies into this repo — affects upstream contribution flow.
+7. **Radar: demo-day logistics** — venue internet reality,
+   hotspot fallback, whether a "canned episode" emergency mode
+   earns MVP scope.
+
 ## Sub-steps
 
 - [ ] **Task 1 — Vision & interaction model discussion.** What the
@@ -47,11 +75,14 @@ is a sub-step here, never a PR number · cite discussions as
     brainstorm §4): Docker preferred, NOT mandatory — per-engine
     bare-metal-via-Ansible is a sanctioned fallback, with
     per-engine isolation required either way.
-  - [ ] **LLM choice** — preliminary narrowing recorded
-    (brainstorm §3: small Gemma 4 / Qwen 3.5 / Nemotron-if-fits /
-    LFM2-class; all behind llama.cpp's OpenAI-compatible API so
-    swapping stays cheap). Final pick deferred; a WORKING DEFAULT
-    must be chosen before prompt-engineering starts.
+  - [ ] **LLM choice** — survey Tracks 1–2 RUN 2026-09-14
+    ([discussion 2026-09-14] §4–§6). Deliverable reshaped by
+    owner ruling: a RANKED SHORTLIST of five, no single pick
+    without an experiment — (1) Nemotron Nano 9B v2,
+    (2) Gemma 4 12B StyleTune/heretic, (3) Rocinante-X-12B,
+    (4) Qwen3.5-9B, (5) Wayfarer-2-12B; LFM2.5-2.6B reserved
+    for utility roles + 16 GB safety valve. The Track 3
+    audition picks the working default from this list.
   - [ ] **Latency/VRAM budget** — measure, don't guess; runs as
     a Task 3 experiment together with the TTS engine comparison.
 - [ ] **Task 3 — Experiments (conditional).** Fires when a survey
@@ -59,9 +90,14 @@ is a sub-step here, never a PR number · cite discussions as
   `experiments/YYYY-MM-DD-*/` folder per conventions (runlog
   README + findings.md with pre-registered verdict criteria).
 
-  - [ ] **Task 3a — TalkWithMe WAN-decoupling spike.** PRIORITY:
-    first in the experiment queue; run as soon as the cloud
-    provider survey lands (or sooner using a stand-in remote box).
+  - [ ] **Task 3a — TalkWithMe remote-split test ("the spike").**
+    PRIORITY: first in the experiment queue. SKELETON CREATED
+    2026-09-14 →
+    `experiments/2026-09-14-talkwithme-remote-split-test/` (runlog
+    template + draft verdict criteria + agent prediction
+    registered; freeze pending owner's prediction slot — Owner
+    action queue). Box plan: Hyperstack A6000 first, Vast RTX
+    PRO 4000 VM alternate.
     Born from the foundation debate ([discussion 2026-09-13]
     brainstorm §9): the single biggest untested assumption under
     the MVP plan is that TalkWithMe — a localhost-born app — can
@@ -110,7 +146,7 @@ is a sub-step here, never a PR number · cite discussions as
       records the fallback rationale).
     - **Predictions to register before starting** (owner + agent
       each, per experiment protocol).
-    - **Output:** `experiments/2026-09-XX-talkwithme-wan-spike/`
+    - **Output:** `experiments/2026-09-14-talkwithme-remote-split-test/`
       with self-contained runlog README.md (every command + its
       output) and findings.md (interpretation only).
 - [ ] **Task 4 — Draft `specs/product-definition.md`.**

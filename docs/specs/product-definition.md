@@ -123,11 +123,14 @@ TODO Task 3a.
 ## §4. Model stack
 
 - **LLM** — served by llama.cpp behind an OpenAI-compatible
-  endpoint. Shortlist (not settled; settling not required to
-  execute): small Gemma 4 · Qwen 3.5 · Nemotron (if VRAM fits) ·
-  LFM2-class if extremely small is needed. **[UNKNOWN — working
-  default must be picked before prompt-engineering starts;
-  prompts overfit to a model's voice.]**
+  endpoint. A ranked shortlist of five candidates exists
+  ([discussion 2026-09-14] LLM survey §6: Nemotron Nano 9B v2 ·
+  Gemma 4 12B via RP variant · Rocinante-X-12B · Qwen3.5-9B ·
+  Wayfarer-2-12B; LFM2.5-2.6B reserved for utility roles).
+  **[UNKNOWN — the working default is picked by the audition
+  experiment over that list, and must exist before
+  prompt-engineering starts; prompts overfit to a model's
+  voice.]**
 - **STT** — DECIDED: Whisper via whisper-fastapi
   (TalkWithMe-native). Size is a free config knob **[UNKNOWN —
   set by the VRAM experiment §7.2]**. Whisper confidence
@@ -198,7 +201,7 @@ build work of unknown-but-real size (see §8).
 
 ## §7. Validation gates & experiments
 
-1. **§7.1 TalkWithMe WAN-decoupling spike** (TODO Task 3a; 2-day
+1. **§7.1 TalkWithMe remote-split test** ("the spike"; TODO Task 3a; 2-day
    timebox; verdict criteria pre-registered) — gates ADR-0001's
    freeze; FAIL flips the foundation to Pipecat.
 2. **§7.2 TTS engine comparison + VRAM budget** — picks the two

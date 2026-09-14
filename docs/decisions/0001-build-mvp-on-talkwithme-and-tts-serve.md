@@ -51,7 +51,7 @@ on the deployment layer (Docker + Ansible, local/cloud-GPU
 symmetric) and on adapting the ensemble into a radio broadcast.
 
 The decision is a **bet with a validation gate**: the
-TalkWithMe WAN-decoupling spike (TODO Task 3a; timeboxed 2 days,
+TalkWithMe remote-split test ("the spike", TODO Task 3a; timeboxed 2 days,
 verdict criteria pre-registered) must confirm the backend can be
 split from the localhost-born client across real internet.
 **Flip trigger:** if the spike FAILS on structural grounds
