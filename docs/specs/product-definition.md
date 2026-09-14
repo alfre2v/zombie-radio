@@ -208,6 +208,13 @@ build work of unknown-but-real size (see §8).
    deployed engines, the Whisper size, and validates the whole
    stack fits one GPU. Shape TBD when scoped (experiments
    protocol applies: timebox, runlog, pre-registered verdicts).
+3. **§7.3 The LLM audition** ([discussion 2026-09-14] LLM survey,
+   Track 3) — a prompt harness over the ranked five-model
+   shortlist (4 personas, N lines per candidate, identical
+   settings; counting loops, format breaks, refusals, character
+   bleed) that picks the LLM working default. Runs on the
+   owner's RTX 3090, no cloud needed; feeds on the character
+   bibles; experiments protocol applies.
 
 ## §8. Where the effort goes (believed, not measured)
 
