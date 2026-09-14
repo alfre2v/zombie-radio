@@ -9,6 +9,10 @@ Sub-genres, all living here:
 
 - **Decision narratives** — how we reasoned to a choice.
 - **Surveys** — candidate tools compared and adjudicated.
+- **Q&A logs** — per-arc append-only ledgers persisting the
+  questions and answers the owner will revisit (added 2026-09-12
+  in practice, recorded here 2026-09-14). Division of labor:
+  chronology lives HERE; every other doc gets the synthesis.
 - **Build plans** for big sub-steps — narrative preamble +
   fine-grained checkbox ledger + an append-only per-session journal
   as the LAST section (the journal backs the ledger's ticks).

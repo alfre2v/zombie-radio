@@ -216,3 +216,16 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# Secrets — never commit (spec §10.4: the safe path is the default path)
+.env
+.env.*
+*.pem
+*.key
+id_rsa*
+id_ed25519*
+.vault_pass*
+*vault-password*
+vault.yml
+secrets.yml
+secrets.yaml
