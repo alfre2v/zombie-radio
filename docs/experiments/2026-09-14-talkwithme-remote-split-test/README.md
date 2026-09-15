@@ -41,12 +41,17 @@ values.
 - Box OS image: Ubuntu with Docker + nvidia-container-toolkit
   1.16.1 preinstalled (Hyperstack "with Docker" image); ~82 GB
   free on root disk; user `ubuntu` (sudo + docker group).
-- Laptop: *(TBD — expected: owner's Mac)*
-- TalkWithMe version: *(TBD — expected v7.0)*
-- tts-serve engine chosen for the spike: *(TBD — any one engine;
-  quality irrelevant here, only the plumbing)*
-- LLM model file: *(TBD — any small GGUF; quality irrelevant)*
+- Laptop: owner's Mac (zsh; `say`/`afconvert`/`afplay` used from
+  the stock toolset)
+- TalkWithMe version: *(TBD — step 5; expected v7.0)*
+- tts-serve engine: **Faster Qwen3-TTS** (chosen via
+  `tts-engine-ranking.md`; default checkpoint
+  Qwen3-TTS-12Hz-1.7B-Base)
+- LLM model: **Nemotron Nano 9B v2 Q4_K_M** (bartowski GGUF)
+- STT: **whisper-fastapi** (heimoshuiyu image), model `small`
 - Network path: laptop ⇄ internet ⇄ box, via `ssh -L` tunnel
+- STILL TO RECORD (owner, from console): exact Hyperstack flavor
+  name + region for the A4000 VM (step 1 residual)
 
 ## Component inventory (agreed 2026-09-15)
 
@@ -167,14 +172,14 @@ unambiguous owner.
       (card genuine: fp16 60.5 TFLOPS; gpu-burn image was
       JIT-degraded). Residual: external :22-only port scan +
       network throughput, folded into steps 4/6 measures.
-- [~] 3. Stand up model services on the box, loopback-bound:
-      **llama.cpp UP** (Nemotron 9B v2 Q4, 6.9 GB VRAM, decode
-      47.6 tok/s, reasoning-off confirmed; revised command
-      adopted — see runlog); tts-serve engine PENDING (ranking
-      in progress); whisper-fastapi PENDING.
-- [~] 4. Tunnel OPEN (3 ports forwarded); **llama verified
-      through it** (Gate B PASS, ~0.6–0.7 s cold-connection
-      overhead); tts/whisper gates pending their services.
+- [x] 3. All three model services UP, loopback-bound (DONE
+      2026-09-15): llama.cpp/Nemotron (6.9 GB, 47.6 tok/s) ·
+      Faster Qwen3-TTS (5.0 GB, rtf 0.455) · whisper-fastapi
+      small (1.5 GB, 7.3 s audio in 1.85 s). Trio: 13.5/15.3 GiB.
+- [x] 4. Tunnel verified for ALL services (DONE 2026-09-15):
+      LLM chat, TTS synthesis (cloned voice audible on laptop),
+      STT full-circle transcription of our own TTS output.
+      Cold-connection overhead ~0.6–0.7 s, amortizable.
 - [ ] 5. Run TalkWithMe on the laptop, configured to reach its
       LLM/TTS/STT through the tunnel endpoints.
 - [ ] 6. Drive a 4-persona group session with distinct voices;
@@ -371,6 +376,29 @@ boring by design — the pins above are the load-bearing subset).
 Ansible note: PIN transformers for this engine; its own
 constraint range (`<6`) is too loose to be safe.
 
+**Box-side commands, verbatim (consolidated reproduction record
+for component 2 — added by the pre-commit replication audit,
+which found this sequence existed only in prose):**
+
+```
+sudo apt-get update && sudo apt-get install -y python3.10-venv sox
+mkdir -p ~/faster-Qwen3TTS && cd ~/faster-Qwen3TTS
+python3 -m venv .venv && source .venv/bin/activate
+pip install numpy
+pip install faster-qwen3-tts     # resolves torch==2.5.1+cu124 itself
+git clone https://github.com/scorbo2/tts-serve && cd tts-serve
+pip install ./tts-engine-common fastapi uvicorn loguru soundfile
+pip install "transformers==5.15.1" "huggingface-hub>=1.16,<2"   # the 5.17-crash fix
+FASTER_QWEN3TTS_HOST=127.0.0.1 FASTER_QWEN3TTS_PORT=8001 python impl/server_fasterQwen3TTS.py
+```
+
+(Run the server line inside tmux window `tts`. First start
+downloads the checkpoint to `~/.cache/huggingface/hub/`. To
+relaunch after a reconnect:
+`cd ~/faster-Qwen3TTS/tts-serve && source ../.venv/bin/activate`
+then the same server line. Gate probe:
+`curl -s http://127.0.0.1:8001/capabilities`.)
+
 **Gate A (capabilities) PASS.** Highlights of the schema:
 engine `faster-qwen3-tts`, **model
 `Qwen/Qwen3-TTS-12Hz-1.7B-Base`** (the default is the 1.7B, not
@@ -460,6 +488,53 @@ Memo, then `afconvert -f WAVE -d LEI16@24000 memo.m4a ref.wav`
 — the `reference_text` must be the exact spoken sentence.
 Diagnostic used when the tunnel refused: `ss -tlnp | grep -E
 ':(8080|8001|8002)'` on the box lists which services listen.)
+
+### 2026-09-15 — Component 3 (whisper-fastapi): Gates PASS; full TTS→STT round trip
+
+Server: `heimoshuiyu/whisper-fastapi` Docker image (name-matched
+to TalkWithMe's recommended "whisper-fastapi"; the binding
+contract is the OpenAI-compatible `/v1/audio/transcriptions`
+endpoint either way), faster-whisper backend, model `small`:
+
+```
+docker run --rm --network host --gpus all \
+  -v ~/.cache/huggingface:/root/.cache/huggingface \
+  docker.io/heimoshuiyu/whisper-fastapi:latest \
+  --model small --device cuda --host 127.0.0.1 --port 8002
+```
+
+(Adaptations from upstream's example: host-network + loopback
+bind instead of `-p`; dropped optional OPENAI_* gpt-refine env
+vars; dropped podman-syntax device flag.)
+
+**Gate A postmortem:** the agent's `/dev/null` probe returned
+`Internal Server Error` — a bad gate design (the agent's),
+not a sick server: zero-byte input hit an unhandled decode
+exception (confirmed in the server log). Lesson: probe with
+real minimal input, not degenerate input.
+
+**Gate B — the full-circle test — PASS:** transcribing OUR OWN
+TTS output (out.wav) from the Mac through the tunnel:
+
+```
+% time curl -s http://localhost:8002/v1/audio/transcriptions -F file=@out.wav
+... "text":" This is Lab Station 7. If anyone can hear this, the
+generators are failing, and the dead are at the east door. Over."
+... 1.845 total
+```
+
+**1.85 s wall** to upload ~340 KB and transcribe **7.28 s of
+audio** — STT is emphatically not the latency bottleneck; the
+PTT flow (record-then-upload) costs ~2 s end-to-end. Quality:
+language en at 99.5 %, near-perfect text (only "Seven"→"7"
+normalization; lowest word confidence "Lab" 0.49 — a whisper of
+challenge C6's proper-noun weakness). Response includes word
+timestamps and full language-probability table (elided here).
+
+**VRAM, full trio resident: 13 485 MiB used / 1 605 free** —
+LLM 6.9 + TTS 5.0 + Whisper-small ~1.5 on a 16 GB card, in
+budget. Headline datum for the 16 GB aspiration ([spec §4]),
+with the desktop-tax caveat noted earlier.
 
 **Not quantized — full precision**: this engine offers no
 quantized checkpoints; the size lever is the smaller model
