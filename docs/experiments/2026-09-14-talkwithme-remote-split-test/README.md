@@ -76,7 +76,9 @@ measurement belongs to step 6, not the gates.*
 - Container: yes — the one component where the container is the
   EASY path: `ghcr.io/ggml-org/llama.cpp:server-cuda` is
   prebuilt with CUDA, zero compilation. Run: mount `~/models`,
-  `--host 127.0.0.1 --port 8080`.
+  `--host 127.0.0.1 --port 8080` *(revised 2026-09-15 after
+  first contact: add `--parallel 1 -c 16384` — canonical command
+  in the runlog)*.
 - **Assumption (to verify first):** the image's newer CUDA
   runtime works on our CUDA-12.2-era driver 535 via
   minor-version compatibility (the 12.4 base image already
@@ -165,11 +167,14 @@ unambiguous owner.
       (card genuine: fp16 60.5 TFLOPS; gpu-burn image was
       JIT-degraded). Residual: external :22-only port scan +
       network throughput, folded into steps 4/6 measures.
-- [ ] 3. Stand up model services on the box, loopback-bound:
-      llama.cpp server (small model), one tts-serve engine,
-      whisper-fastapi.
-- [ ] 4. Open the `ssh -L` tunnel from the laptop; verify each
-      service answers through it (`curl` through the tunnel).
+- [~] 3. Stand up model services on the box, loopback-bound:
+      **llama.cpp UP** (Nemotron 9B v2 Q4, 6.9 GB VRAM, decode
+      47.6 tok/s, reasoning-off confirmed; revised command
+      adopted — see runlog); tts-serve engine PENDING (ranking
+      in progress); whisper-fastapi PENDING.
+- [~] 4. Tunnel OPEN (3 ports forwarded); **llama verified
+      through it** (Gate B PASS, ~0.6–0.7 s cold-connection
+      overhead); tts/whisper gates pending their services.
 - [ ] 5. Run TalkWithMe on the laptop, configured to reach its
       LLM/TTS/STT through the tunnel endpoints.
 - [ ] 6. Drive a 4-persona group session with distinct voices;
@@ -193,4 +198,113 @@ ports would need exposure without the tunnel?
 
 ## Runlog
 
-*(empty — begins with the first provisioning command)*
+*(Box provisioning + baseline: see `scouting-hyperstack-a4000.md`.)*
+
+### 2026-09-15 — Component 1 (LLM server) up; Gates A and B PASS
+
+**Start llama.cpp container (tmux window `llama`):**
+
+```
+$ docker run --name llama --rm --gpus all --network host \
+    -v "$HOME/models:/root/.cache/llama.cpp" \
+    ghcr.io/ggml-org/llama.cpp:server-cuda \
+    -hf bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M \
+    --host 127.0.0.1 --port 8080 -ngl 99 -c 8192
+...
+W srv  llama_server: CORS is set to allow all origins ('*') and no API key is set
+W load: special_eos_id is not in special_eog_ids - the tokenizer config may be incorrect
+I srv    load_model: initializing, n_slots = 4, n_ctx_slot = 8192, kv_unified = 'true'
+I srv  llama_server: model loaded
+I srv  llama_server: listening on http://127.0.0.1:8080
+```
+
+Build fingerprint: `b10975-4c9233c03`. **CUDA
+minor-version-compatibility assumption from the component
+inventory: VERIFIED** — the server-cuda image runs on driver
+535. Two warnings noted: (a) no API key + open CORS — acceptable
+on loopback-behind-tunnel for the spike; llama-server has
+`--api-key` when §10.1 belt-and-suspenders is wanted; (b) the
+`special_eos_id` tokenizer warning — believed benign metadata
+noise on this quant; watch item: runaway generations that ignore
+end-of-turn.
+
+**Gate A (on box):** `/health` → `{"status":"ok"}`. Chat
+completion round trip `real 1.309s`; server timings: prefill
+130.6 tok/s, decode **47.6 tok/s**, VRAM **6888 MiB** used /
+8202 MiB free (weights ~5.9 GB + KV@8k + buffers — matches the
+survey's KV table; ~8 GB left for TTS + Whisper on this 16 GB
+card).
+
+**FINDING — reasoning mode is ON by default**, exactly as
+flagged in the LLM survey: all 50 completion tokens landed in
+`reasoning_content`, `content` came back EMPTY. Fix to apply
+(next entry): Nemotron's reasoning toggle via system prompt
+(`/no_think`). TalkWithMe must never see empty content.
+
+**Gate B (from laptop through `ssh -L` tunnel):** same endpoint
+via `localhost:8080` → identical server-side timings (decode
+47.6 tok/s), wall time 1.919 s (zsh `time`: `1.919 total`).
+**Tunnel overhead ≈ 0.63 s on a cold connection** (1.919 −
+~1.29 s server work), which includes TCP setup through the
+tunnel; persistent HTTP connections (what TalkWithMe will hold)
+amortize most of it. First remote-split datum for measure (c).
+
+**Clarification recorded (owner asked "only 4k context?"):** no
+— `n_slots = 4` is the server's *parallel request slots*
+(default), not context; context is the 8192 we requested
+(`-c 8192`), shared across slots under `kv_unified`. The model
+itself supports 128k, and Nemotron's KV is so cheap (~0.26 GB
+@16k fp16) that raising `-c` is nearly free.
+
+**The tunnel command as actually run (laptop side, backfilled —
+audit found it missing from the log):**
+
+```
+% ssh -N -L 8080:127.0.0.1:8080 -L 8001:127.0.0.1:8001 -L 8002:127.0.0.1:8002 ubuntu@<BOX-IP>
+```
+
+### 2026-09-15 — Reasoning toggle fixed (`/no_think`); revised canonical llama command
+
+**Test through the tunnel** (Mac; zsh `time` — its `N total`
+field is the wall-clock equivalent of Linux `real`):
+
+```
+% time curl -s http://127.0.0.1:8080/v1/chat/completions -H 'Content-Type: application/json' \
+    -d '{"messages":[{"role":"system","content":"/no_think"},{"role":"user","content":"You are a radio operator in a besieged lab. One short line confirming the channel is open. Over."}],"max_tokens":50}'
+{"choices":[{"finish_reason":"stop","index":0,"message":{"role":"assistant",
+  "content":"**Response:**  \n\"Channel open. Proceed.\"\n"}}], ...
+ "usage":{"completion_tokens":13, ...},
+ "timings":{"prompt_ms":256.99,"prompt_per_second":128.4,
+            "predicted_n":13,"predicted_per_second":46.8}}
+... 1.254 total
+```
+
+**PASS**: with the `/no_think` system message, `content` carries
+real speech, `reasoning_content` is empty, `finish_reason` is
+`stop` — the survey's "reasoning OFF for the live loop" config
+note is confirmed as both necessary and sufficient. Two
+observations: (a) formatting fluff (`**Response:**` markdown
+wrapper) around the line — filed as an axis-4
+formatting-discipline datum for the LLM audition; (b) cold-curl
+tunnel overhead again ~0.7 s (server work ~0.51 s vs 1.254 s
+wall) — consistent with Gate B; persistent connections should
+amortize it.
+
+**Revised canonical llama-server command (adopted 2026-09-15;
+supersedes the step-3.1 invocation for the rest of the
+experiment):** single-stream slot + doubled context, both free
+on Nemotron's cheap KV:
+
+```
+docker run --name llama --rm --gpus all --network host \
+    -v "$HOME/models:/root/.cache/llama.cpp" \
+    ghcr.io/ggml-org/llama.cpp:server-cuda \
+    -hf bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M \
+    --host 127.0.0.1 --port 8080 -ngl 99 -c 16384 --parallel 1
+```
+
+Rationale: `--parallel 1` — TalkWithMe is a single-stream
+client, and one slot stops the 4-way sharing of context;
+`-c 16384` — headroom for the growing story-so-far at ~0.26 GB
+KV cost. Apply at the next natural container restart (no need
+to interrupt a running session for it).

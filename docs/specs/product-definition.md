@@ -183,6 +183,25 @@ build work of unknown-but-real size (see §8).
 
 - Linux-only targets; **Ansible-driven, idempotent**; identical
   local/cloud deployment (the "cloud-capable" identity half).
+- **Driver/CUDA/OS posture for new VMs (agreed 2026-09-15):**
+  provision from a **pinned image naming the newest MATURE
+  driver branch** the provider offers — currently
+  **`R570 CUDA 12.8 with Docker` on Ubuntu 24.04** (Hyperstack
+  naming) — revised deliberately, never floated to "latest,"
+  and never crossing a CUDA major version (13.x) without a
+  fleet-wide decision (minor-version compatibility does not
+  cross majors). The **fleet minimum driver** — the home GPU
+  box included, per local/cloud symmetry — is the real
+  constraint: every engine's torch/CUDA pin must run on it;
+  align the home box to the same branch era when practical.
+  Engines keep pinning their own wheels inside venvs/containers;
+  the driver's only job is to be ≥ everyone's floor. OS: latest
+  stable Ubuntu LTS (24.04) — its system Python is irrelevant
+  under the per-engine-venv rule. (Context that produced this:
+  half of tts-serve's engines failed the R535 filter — see the
+  remote-split experiment's `tts-engine-ranking.md`; the spike
+  box stays a grandfathered R535 exception that dies at
+  teardown.)
 - **Docker preferred, not mandatory** (2026-09-13 ruling):
   per-engine bare-metal fallback via Ansible for quirky engines,
   with mandatory per-engine venv/conda isolation.
