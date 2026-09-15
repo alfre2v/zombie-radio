@@ -50,4 +50,16 @@ arcs close)*
 
 ## Ideas / parking lot
 
-*(empty)*
+- **Browser-side STT (Whisper in the browser)** — parked
+  2026-09-15, surfaced during the remote-split experiment's
+  component inventory. Whisper genuinely runs client-side:
+  whisper.cpp compiled to WebAssembly, or transformers.js
+  running tiny/base checkpoints on WebGPU. If the web client
+  transcribed locally, the server would shed Whisper's VRAM and
+  the push-to-talk upload would shrink from audio to text —
+  helping both the 16 GB VRAM aspiration and flaky venue
+  networks. Costs that park it: only the small checkpoints run
+  at usable speed (accuracy hit — proper names especially, our
+  challenge C6), and browser/WebGPU behavior varies by machine.
+  Trigger to consider: post-MVP, if server VRAM gets tight or a
+  multi-listener staging makes server-side STT a bottleneck.
