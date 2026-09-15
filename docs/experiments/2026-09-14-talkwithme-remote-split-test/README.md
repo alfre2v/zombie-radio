@@ -1,9 +1,11 @@
 # TalkWithMe remote-split test ("the spike") — runlog
 
-**Created:** 2026-09-14 (skeleton) · **Run started:** *(not yet)*
-**Timebox:** 2 days from first provisioning command. Abort at end
-of day 2 regardless of state — a partial observation recorded
-honestly beats a heroic overrun.
+**Created:** 2026-09-14 (skeleton) · **Run started:** 2026-09-15
+(first provisioning; folder keeps its creation date — the
+one-day slip is noted here rather than churning a merged path).
+**Timebox:** 2 days from first provisioning command → **abort by
+end of 2026-09-17** regardless of state — a partial observation
+recorded honestly beats a heroic overrun.
 **Provenance:** TODO Task 3a · [spec §3.3], [spec §7.1],
 [spec §10.3] · [ADR-0001] (freeze gated on this spike) ·
 foundation debate (brainstorm §9).
@@ -29,9 +31,16 @@ values.
 
 ## Environment (fill at provision time)
 
-- Provider / GPU / flavor: *(TBD — plan: Hyperstack A6000;
-  alternate: Vast.ai RTX PRO 4000 VM if A6000s out of stock)*
-- Box OS image: *(TBD)*
+- Provider / GPU / flavor: **Hyperstack, 1× RTX A4000 16 GB**
+  (deviation from plan: A6000s persistently out of stock — the
+  survey's stock-volatility warning realized; A4000 accepted,
+  which incidentally tests the 16 GB aspirational tier). ECC on
+  → 15352 MiB visible. Passthrough (not vGPU). Driver
+  535.183.06 (CUDA 12.2-era). Full baseline:
+  `scouting-hyperstack-a4000.md` in this folder.
+- Box OS image: Ubuntu with Docker + nvidia-container-toolkit
+  1.16.1 preinstalled (Hyperstack "with Docker" image); ~82 GB
+  free on root disk; user `ubuntu` (sudo + docker group).
 - Laptop: *(TBD — expected: owner's Mac)*
 - TalkWithMe version: *(TBD — expected v7.0)*
 - tts-serve engine chosen for the spike: *(TBD — any one engine;
@@ -41,10 +50,14 @@ values.
 
 ## Step checklist
 
-- [ ] 1. Provision the box (on-demand, never spot) via console;
-      record flavor, price, region.
-- [ ] 2. SSH in with the project keypair; baseline the box
-      (GPU visible, driver, Docker if image ships it).
+- [x] 1. Provision the box (on-demand, never spot) via console;
+      record flavor, price, region. DONE 2026-09-15 (A4000,
+      $0.15/hr — region/flavor name to record).
+- [x] 2. SSH in; baseline the box. DONE 2026-09-15 →
+      `scouting-hyperstack-a4000.md`. Compute anomaly resolved
+      (card genuine: fp16 60.5 TFLOPS; gpu-burn image was
+      JIT-degraded). Residual: external :22-only port scan +
+      network throughput, folded into steps 4/6 measures.
 - [ ] 3. Stand up model services on the box, loopback-bound:
       llama.cpp server (small model), one tts-serve engine,
       whisper-fastapi.

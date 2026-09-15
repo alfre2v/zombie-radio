@@ -281,12 +281,19 @@ rate limiting, no multi-user handling, no auditable user logs
 
 ### §10.2 Firewall (infrastructure side)
 
-Default-deny at two layers: the provider's security groups
-(Hyperstack/Scaleway have them; Vast.ai's port-mapping model
-partially substitutes) AND ufw on the box — Ansible sets both.
-Exposed: SSH (key-only, no password auth, Ansible-enforced from
-first boot) plus at most one app port — zero app ports if the
-SSH-tunnel option (§10.3) is chosen. **Known complication,
+*(Amended 2026-09-15, owner ruling during box scouting —
+originally "default-deny at two layers, provider security groups
+AND ufw".)* The **provider security group is the enforced
+layer** (inbound :22 only); **ufw stays off** and is explicitly
+not relied upon. Rationale: the security group operates outside
+the VM, so it catches everything — including Docker-published
+ports, the very thing ufw fails to protect (the Docker iptables
+bypass), which made the ufw layer half-illusory here anyway; and
+with the SSH tunnel, :22 is the entire intended surface.
+Standing condition: after provisioning, verify from outside that
+only :22 answers. SSH is key-only, no password auth
+(Ansible-enforced from first boot). Exposed: SSH only — zero app
+ports under the decided tunnel transport (§10.3). **Known complication,
 pre-flagged by the owner: Docker bypasses ufw** — Docker
 programs iptables directly (its DOCKER chain sits ahead of
 ufw's rules), so a `-p`-published container port is reachable
