@@ -308,3 +308,177 @@ client, and one slot stops the 4-way sharing of context;
 `-c 16384` — headroom for the growing story-so-far at ~0.26 GB
 KV cost. Apply at the next natural container restart (no need
 to interrupt a running session for it).
+
+### 2026-09-15 — Component 2 (Faster Qwen3-TTS): two setup potholes on the documented path
+
+Following `impl/server_fasterQwen3TTS.md` verbatim on the fresh
+image hit two failures (both fixed; both feed measure (d) and
+the future Ansible playbook):
+
+1. **`python3 -m venv` failed** — `python3.10-venv` is not
+   preinstalled on the Hyperstack "with Docker" image, and the
+   apt cache starts empty (`apt-get update` required before any
+   install).
+2. **`pip install faster-qwen3-tts` failed at
+   metadata-generation** — its dependency `sox` (Python wrapper)
+   uses a legacy `setup.py` that imports numpy at build time
+   without declaring it (pre-PEP-518); a pristine venv therefore
+   explodes with `ModuleNotFoundError: numpy`. Additionally the
+   `sox` pip package wraps the sox CLI, so the `sox` apt package
+   is needed at runtime regardless.
+
+**Recovery as actually executed (owner; leaner than the agent's
+proposed venv-recreation — recreation proved unnecessary):**
+`apt-get update` + install `python3.10-venv` and `sox` → create
+venv (now succeeds) → `pip install numpy` → retry
+`pip install faster-qwen3-tts` → SUCCESS. Clarified in review:
+the sox *binary* is a runtime dependency of the pip `sox`
+wrapper — install order relative to pip is irrelevant; only the
+numpy-at-metadata-time failure was order-sensitive.
+**Torch check (owner): `2.5.1+cu124 | CUDA 12.4 | available:
+True`** — the engine's own dependency resolution landed exactly
+the driver-safe pair without the manual pre-pin; question
+CLOSED, launch cleared.
+
+### 2026-09-15 — Component 2 launch: transformers version skew, resolved at 5.15.1; server UP
+
+First launch crashed at model load:
+`AttributeError: 'MimiConfig' object has no attribute
+'rope_theta'` (inside `qwen_tts/_transformers_compat.py` under
+transformers **5.17.0**). Diagnosis journey, errors included per
+protocol: the agent's first fix (downgrade to transformers
+4.57.3, based on QwenLM/Qwen3-TTS#237) was **mis-scoped** — that
+issue concerns the old `qwen-tts` package; this stack uses
+**`qwen-tts-hf` 0.1.1.post1** (the transformers-5 rewrite,
+declared range `>=5.15.1,<6`), so 4.57.3 only produced resolver
+conflicts and dragged huggingface-hub down. Correct read: API
+drift WITHIN the 5.x series — the compat shim works at the
+declared floor but not at 5.17.0's changed model-init path. Fix
+that worked (fix #2 of the declared 2-fix limit):
+
+```
+pip install "transformers==5.15.1" "huggingface-hub>=1.16,<2"
+```
+
+**WORKING VERSION SET (reproduction record):** Ubuntu 22.04 /
+Python 3.10 venv · apt: `python3.10-venv`, `sox` · pip seeded
+with `numpy` before engine install · `faster-qwen3-tts==0.4.0` ·
+`qwen-tts-hf==0.1.1.post1` · **`transformers==5.15.1`** (NOT
+newer — 5.17.0 crashes) · `torch==2.5.1+cu124` /
+`torchaudio==2.5.1` · `huggingface-hub` in `>=1.16,<2`. **Full lock committed:
+`tts-freeze.md` in this folder** (owner-captured `pip freeze`;
+boring by design — the pins above are the load-bearing subset).
+Ansible note: PIN transformers for this engine; its own
+constraint range (`<6`) is too loose to be safe.
+
+**Gate A (capabilities) PASS.** Highlights of the schema:
+engine `faster-qwen3-tts`, **model
+`Qwen/Qwen3-TTS-12Hz-1.7B-Base`** (the default is the 1.7B, not
+the 0.6B the ranking assumed), cuda, 24 kHz, NOT watermarked;
+**reference audio required** (≥2 s, wav/mp3/ogg/flac, ~3 s
+"enough for high-quality cloning") **plus exact
+`reference_text`** — ICL mode, no speaker-embedding fallback,
+0.5 s silence auto-appended to the reference; languages include
+en + es; `seed` echoed in the response (nice for
+reproducibility); sampler knobs exposed (temperature, top_p,
+repetition_penalty).
+
+**VRAM after load: 11 936 MiB used / 3 154 MiB free** → the TTS
+stack took ~5.0 GB (11 936 − 6 888). **Prediction death, in
+public:** the ranking doc estimated "~2 GB" based on the 0.6B
+checkpoint; the engine's default is the 1.7B (~3.4 GB weights
+fp16/bf16 + Mimi codec + CUDA-graph buffers ≈ 5 GB). Both models
+DO currently coexist (LLM 6.9 + TTS 5.0 = 11.9 of 15.3 GiB);
+what's tight is the remaining ~3.1 GiB for Whisper + headroom.
+### 2026-09-15 — Component 2 Gate B PASS: cloned speech through the tunnel
+
+Reference voice: synthesized on the Mac with `say -v Daniel`
+(cloning a synth is valid plumbing; transcript exact by
+construction), converted via `afconvert` to 24 kHz WAV.
+Payload: 386 KB JSON (base64 reference inside). One operator
+stumble first: the synthesize curl hit `channel 6: open failed:
+connect failed: Connection refused` from the tunnel — the TTS
+server simply wasn't running (operator forgot to start it;
+relaunched inside tmux window `tts`; not a crash). Then:
+
+```
+% time curl -s http://localhost:8001/synthesize ... -d @payload.json > resp.json
+... 0% cpu 5.771 total
+```
+
+resp.json 455 KB → decoded WAV ≈ 340 KB ≈ **~7 s of audio at
+24 kHz**. **Owner's ear verdict: "surprisingly less robotic
+than I feared."**
+
+**Warm-timing series (same payload, repeated):** 5.771 → 8.531
+(outlier) → 5.612 → 4.582 → 4.628 s — steady state **~4.6 s
+wall**. Server metadata: `time_used 3.13 s`, **`rtf 0.455`**,
+seed 768 echoed, plus a `fid` field (possible server-side
+reference handle — unverified). So: ~3.1 s compute for ~6.9 s
+of audio; the ~1.5 s wall–compute gap is OUR overhead (386 KB
+reference upload through the tunnel + connection setup + 455 KB
+response download).
+
+**Interpretation (measure (c)):** RTF 0.455 clears the gapless-
+broadcast threshold (RTF < 1) with 2.2× headroom — while line N
+plays, line N+1 synthesizes faster than playback, so a
+pipelined radio never runs dry after its first line; TalkWithMe's
+sentence-chunked streaming is exactly that pipeline, making
+first-audio ≈ first-sentence synth (~1 s) + overhead. The flat
+"5 s per line" reading was an artifact of a long test line +
+whole-utterance API + WAN payload. **Architectural finding: the
+stateless API re-uploads the reference voice (386 KB) from the
+laptop every call** — a per-line WAN tax in our topology;
+mitigations: ~3 s reference (~120 KB, capabilities says
+sufficient), or server-side reference caching (investigate
+`fid`). Hardware note (estimate): the home RTX 3090's ~2.1×
+memory bandwidth should run this engine ~1.5–2× faster (rtf
+~0.25–0.3) — the A4000 is sufficient, not generous.
+
+**Mac-side commands, verbatim (reproduction record for the
+synthesis test):**
+
+```
+say -v Daniel -o ref.aiff "The laboratory maintains constant temperature, and the radio equipment remains fully operational at this hour."
+afconvert -f WAVE -d LEI16@24000 ref.aiff ref.wav
+python3 -c "
+import base64, json
+audio = base64.b64encode(open('ref.wav','rb').read()).decode()
+payload = {'text': 'This is Lab Station Seven. If anyone can hear this, the generators are failing and the dead are at the east door. Over.', 'audio_base64': audio, 'reference_text': 'The laboratory maintains constant temperature, and the radio equipment remains fully operational at this hour.', 'language': 'en'}
+json.dump(payload, open('payload.json','w'))"
+time curl -s http://localhost:8001/synthesize -H 'Content-Type: application/json' -d @payload.json > resp.json
+python3 -c "
+import json, base64
+d = json.load(open('resp.json'))
+k = [x for x in d if 'audio' in x.lower()][0]
+open('out.wav','wb').write(base64.b64decode(d[k]))
+print({x: d[x] for x in d if x != k})" && afplay out.wav
+```
+
+(For a real human reference instead of `say`: record a Voice
+Memo, then `afconvert -f WAVE -d LEI16@24000 memo.m4a ref.wav`
+— the `reference_text` must be the exact spoken sentence.
+Diagnostic used when the tunnel refused: `ss -tlnp | grep -E
+':(8080|8001|8002)'` on the box lists which services listen.)
+
+**Not quantized — full precision**: this engine offers no
+quantized checkpoints; the size lever is the smaller model
+(`FASTER_QWEN3TTS_MODEL` → the 0.6B checkpoint) if squeeze is
+needed. Valuable datum for the 16 GB-aspiration ledger
+([spec §4]). Owner context echoing 2024: this same
+LLM+TTS-exhaust-the-card squeeze is why the 2024 build ran
+whisper *tiny*. Fleet note for VRAM budgeting: the home RTX
+3090 runs a desktop, and Chrome/terminal/GNOME permanently tax
+~1 GB of its 24 GB — a headless cloud VM pays no such tax.
+
+**Deployment-notes ledger (feeds Ansible):** base packages a
+fresh box needs before any tts-serve engine: `python3.X-venv`,
+`sox`, plus `apt-get update` as step zero; venvs must be seeded
+with `pip wheel setuptools numpy` before legacy-setup.py
+engines. **Owner-raised alternative to per-engine venvs:
+per-engine miniconda/miniforge** (batteries included — numpy
+present, conda-forge ships the sox binary), which would have
+dodged both potholes; counterweights: conda+pip mixing risk, and
+the cu124 torch pin is pip-installed either way. Live question
+for the deployment arc — venv path retained for this experiment
+(the documented-path friction is itself the data).
