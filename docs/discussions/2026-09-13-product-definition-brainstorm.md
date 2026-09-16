@@ -480,7 +480,11 @@ explicit per-request emotion/style controls driven consistently
 by the director, or director-authored per-line emotional
 stage direction. **Status: recorded, unresolved; explicit test
 item for the §7.2 TTS comparison experiment (evaluate emotional
-coherence across chunks per engine).**
+coherence across chunks per engine).** First field signal
+2026-09-16 (remote-split experiment, group sessions): owner
+notices inter-chunk emotional inconsistency — weak evidence
+(placeholder `say` voices are low-emotion), but the worry now
+has one observation behind it.
 
 ## 6. Beyond recognition: sound-effects generation (feature target)
 

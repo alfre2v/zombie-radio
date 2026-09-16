@@ -968,6 +968,108 @@ Every measure-(c) number today carries ≥1 RTT (~0.2 s) of
 unavoidable network toll per request — annotate accordingly;
 a Canada-1 demo box would re-price this.
 
+### 2026-09-16 — Step 6 first contact: group chat works; speaker-label mimicry found (measure (e))
+
+`Lab` room, 4 scientists, `max_persona_replies: 4`, routing
+"LLM decides": multi-persona session WORKS (screenshot in owner
+archive: Ralph/Moira/Samantha/Daniel trading perimeter chatter,
+all in radio style with "Over."). Two findings:
+
+1. **Speaker-label mimicry.** Some personas prefix replies with
+   a bracketed name — e.g. Samantha: `[Samantha]: All access
+   points are sealed. Over.`; Daniel used his SURNAME:
+   `[Hayworth]: …`. Root cause found with receipt:
+   `app/session.py:135/159` — in group rooms, other personas'
+   turns are fed to the LLM as user-role messages prefixed
+   `[Name]: <text>`, so the model adopts the convention for its
+   own output (Daniel self-labeling from his system-prompt
+   surname proves it's learned convention, not string copying).
+   Pollutes TTS (labels get spoken). Fix attempt #1: a Global
+   System Prompt counter-instruction (the Settings-dialog lever
+   that appends to every persona prompt). If labels persist →
+   the FORK TRIGGER fires: first patch = one-line output
+   sanitizer stripping leading `[...]:` before display/TTS.
+2. **Text→audio lag in group mode is mostly structural, not a
+   fault**: all 4 text replies render fast; the audio queue is
+   serial by design (one voice at a time — radio-appropriate),
+   so the Nth speaker waits for N−1 spoken replies; each
+   synthesis also pays today's ~215 ms Norway RTT. Re-priced by
+   a closer region; unchanged by any code.
+
+### 2026-09-16 — Label fix: works only on clean history; pause problem diagnosed to short-sentence fixed costs
+
+**Speaker labels:** Global System Prompt counter-instruction
+did NOT fix the existing `Lab` room, but after a server restart
++ fresh room `lab2`, no labels so far. Mechanism: **transcript
+contamination** — the old history's `[Name]:` turns are
+in-context examples, and examples beat instructions for small
+models; one slipped label re-seeds the convention permanently.
+Consequence: the prompt lever works prospectively only; the
+one-line output sanitizer stays on the fork-trigger shortlist
+as a FIREBREAK (not day-one required while lab2 stays clean).
+
+**Inter-sentence pauses (owner's ear, sharpened):** the
+annoying lag is not queue order — it's pauses WITHIN a reply,
+worst before short sentences like "Over." Diagnosis: per-request
+fixed costs (≈215 ms RTT + ~300 KB reference re-upload + ~0.3 s
+engine floor ≈ 1 s+) dominate short sentences (~0.5 s audio) →
+**effective RTF > 1 for short sentences**, and radio style is
+MADE of short sentences. The gapless-broadcast math holds for
+long sentences only. Two responses: (1) **zero-code first:
+`streaming: false`** — radio transmissions are 1–2 sentences by
+design, so whole-utterance = one request per transmission, no
+intra-reply gaps, modest TTFA cost (~2.5 s est.); under test in
+lab2. (2) **Owner's proposal, recorded as candidate upstream
+patch**: replace per-sentence chunking with
+"pack-sentences-up-to-max-chars" — the right algorithm for
+longer monologues post-MVP (TalkWithMe tts.js chunker;
+potential upstream contribution).
+
+**C10 field note:** owner begins to notice emotional
+inconsistency between chunks (weak signal — placeholder voices
+are low-emotion to begin with) → logged to brainstorm C10.
+
+### 2026-09-16 — Streaming A/B verdict; splitter naivety; group-degeneration mystery opened
+
+**1. `streaming: false` is WORSE — agent prediction DIED.** The
+agent predicted whole-utterance mode would suit short radio
+transmissions; owner's ear: TTFA on moderate replies is "very,
+very long." Owner's read of the mechanism (plausible, matches
+the serial audio queue): pipelining does not cross speaker
+turns — a turn's synthesis doesn't overlap the previous turn's
+playback in non-streaming mode. Streaming stays ON; the real
+fix is the chunker.
+**2. The sentence splitter is naive** — specimen: Moira's
+"Dr. Byrne. 47. Microbiology. Over." became FOUR requests with
+audible gaps, including a split at the abbreviation "Dr." — the
+splitter treats every period as sentence-end. Owner's
+**max-chars accumulator** proposal is now doubly motivated: it
+amortizes per-request fixed costs AND absorbs abbreviation
+mis-splits. Standing as the designated upstream patch
+(TalkWithMe `tts.js` chunker); NOT fixed during the spike —
+this is adaptation-arc work.
+**3. Group-degeneration observed (screenshot in owner archive):**
+asked for a ≥5-sentence incident report, the four replies
+shrank progressively — Moira full report → Ralph summary
+ack → Samantha echo-ack → **Daniel's entire reply: "Over."**
+Two live hypotheses: **(a) owner's** — the anti-label Global
+System Prompt damages the model's grasp of multi-speaker
+structure (labels may be load-bearing for identity); **(b)
+agent's** — task-convergence + imitation collapse: the task was
+singular, Moira completed it, followers pattern-matched into
+shrinking acknowledgments (classic multi-agent echo). Evidence
+against (a) being the whole story: the `[Name]:` labels in
+HISTORY are still injected by `session.py` regardless — our
+instruction only bans self-labeling in output, so identity
+signal remains in context. **Discriminating A/B designed:**
+fresh room `lab3` WITHOUT the Global System Prompt, repeat the
+identical report request — degeneration persisting exonerates
+the prompt; health implicates it.
+**Scope guard (important):** none of these are architectural
+blockers per the frozen verdict criteria — audio flows, the
+session runs, the split holds. They are SHOW-QUALITY findings,
+i.e. the adaptation arc's opening backlog, not spike failures.
+
 **Deployment-notes ledger (feeds Ansible):** base packages a
 fresh box needs before any tts-serve engine: `python3.X-venv`,
 `sox`, plus `apt-get update` as step zero; venvs must be seeded
