@@ -1224,3 +1224,22 @@ verdict time):**
   ~300 KB reference upload and response download are excluded,
   so real client TTFA is somewhat higher — and still clears the
   bar with margin in streaming mode.
+
+### 2026-09-16 — Step 7 SKIPPED (rationale recorded); creative tests cut at timebox
+
+**Step 7 (plain `ws://`+token transport variant): SKIP.** The
+plan allowed testing the laptop↔box channel both ways "if cheap."
+It is no longer cheap or informative: the SSH tunnel is DECIDED
+([spec §10.3]), validated end-to-end by every gate and measure in
+this runlog, and measure (f) showed the stack provides NO
+authentication of its own — a plain-`ws://` variant would test a
+transport we have already ruled out for a stack that cannot
+survive it. Nothing the MVP will ship depends on the answer.
+
+**Creative tests (wire-cut mid-session, Spanish exchange,
+broadcast soak): CUT at the timebox.** Owner closed the
+experiment 2026-09-16 evening (inside the abort-by-2026-09-17
+timebox) with one hour of budget left; the discussion doc
+([discussion 2026-09-16], narrative health §5) carries the soak
+and the zero-code probe battery as designed future tests — they
+are not lost, they are queued where the next arc will look.

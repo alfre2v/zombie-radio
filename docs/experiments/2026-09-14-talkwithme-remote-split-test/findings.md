@@ -92,11 +92,82 @@ Mapped to the pre-registered measures, from runlog evidence only:
   be separated into local client / remote cloud GPU without any
   local modifications."
 
+### FINAL (2026-09-16 — experiment closed inside the timebox)
+
+The preliminary section above is kept as written (honest
+snapshot); this section resolves its PENDING items from runlog
+evidence:
+
+- **(a) Audio over WAN** — RESOLVED, yes: multi-persona group
+  sessions delivered cloned speech through the tunnel across
+  multiple evenings with no drops or stalls observed; the only
+  audio complaints (inter-sentence pauses on short sentences)
+  are per-request economics, not WAN transport behavior.
+- **(b) 4-persona session** — RESOLVED, yes: the `Lab`/`lab2`/
+  `lab3` group sessions ran 4 scientists with distinct cloned
+  voices end-to-end (runlog step 6 entries, screenshots in owner
+  archive).
+- **(c) Time-to-first-audio** — RESOLVED, PASS with data: the
+  harvested TTFA table (152 requests → 24 bursts,
+  `extract_tts_timings.py`) shows median est. TTFA 0.9 s and
+  **13 consecutive replies ≤ 5 s** in streaming mode, meeting
+  the ≥10-consecutive-lines clause; the only >5 s bursts were
+  the deliberately-tested (and rejected) non-streaming A/B
+  trials. Numbers carry the conservative ~215 ms NORWAY-1 RTT.
+- **(d), (e), (f)** — as in the preliminary section (zero
+  adapter; red flags all non-structural; tunnel load-bearing).
+
+Show-quality issues found (become adaptation-arc backlog per the
+PARTIAL/PASS machinery, listed with fix shapes): output sanitizer
+for `[Name]:` labels (one line, designated first fork patch) ·
+max-chars sentence accumulator in `static/tts.js` (designated
+upstream patch; fixes both splitter naivety and short-sentence
+economics) · narrative-health fragility (framework + 17-mechanism
+taxonomy + zero-code test battery in [discussion 2026-09-16]).
+
+## Prediction grading (in public, per protocol)
+
+**Agent's registered prediction: WRONG — in the happy
+direction.** Predicted PARTIAL with 2–4 small localhost-isms;
+reality: **zero** localhost-isms — the split was pure
+configuration, and the verdict is a clean PASS. The (c) worry
+(TTFA "3–8 s, uncomfortably straddling the 5 s line") was also
+wrong for streaming mode (median 0.9 s), though it would have
+been roughly right had non-streaming mode been the design —
+partial credit only in an alternate universe. Lesson recorded:
+the agent over-weighted "localhost-born app" as a risk category
+and under-weighted the evidence that FastAPI + REST + browser
+shapes are WAN-shaped by construction — its own stated reasoning
+argued for a braver prediction than it registered.
+
+**Owner:** declined to predict (slot closed 2026-09-14).
+
+## Verdict
+
+**PASS** (2026-09-16, against the frozen criteria, from runlog
+evidence):
+
+1. 4-persona session with distinct voices audible end-to-end on
+   the laptop through the SSH tunnel — MET (step 6 group
+   sessions).
+2. TTFA ≤ ~5 s/line sustained over ≥10 consecutive lines — MET
+   (TTFA table: 13 consecutive streaming bursts ≤ 5 s; median
+   0.9 s).
+3. No architectural blocker — MET (measure (e): every red flag
+   is configuration-level or upstream-improvable; zero upstream
+   modifications were needed for the split itself).
+
+**Consequence executed per the frozen machinery:** the MVP
+proceeds on TalkWithMe + tts-serve; [ADR-0001] truth-audited and
+frozen to `accepted` (same commit); the Pipecat flip trigger
+expires unfired. Show-quality issues route to the adaptation
+arc's backlog as enumerated above.
+
 ## Headline findings — five positives, five negatives
 
-*(Distilled 2026-09-16, owner-requested exercise; PRELIMINARY
-like the Results above — to be confirmed or amended at verdict
-time. Interpretation from runlog evidence only; receipts cited.)*
+*(Distilled 2026-09-16, owner-requested exercise; CONFIRMED
+unchanged at verdict time the same evening. Interpretation from
+runlog evidence only; receipts cited.)*
 
 **Five positive findings:**
 
@@ -158,7 +229,3 @@ time. Interpretation from runlog evidence only; receipts cited.)*
    demanding `/no_think` per persona prompt. All solvable, all
    in the Ansible ledger — and each one a demo-day landmine if
    undocumented.
-
-## Verdict
-
-*(empty until the run)*
