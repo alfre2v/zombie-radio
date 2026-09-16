@@ -122,8 +122,10 @@ PARTIAL/PASS machinery, listed with fix shapes): output sanitizer
 for `[Name]:` labels (one line, designated first fork patch) ·
 max-chars sentence accumulator in `static/tts.js` (designated
 upstream patch; fixes both splitter naivety and short-sentence
-economics) · narrative-health fragility (framework + 17-mechanism
-taxonomy + zero-code test battery in [discussion 2026-09-16]).
+economics) · narrative-health fragility (framework + 20-mechanism
+taxonomy + zero-code test battery in [discussion 2026-09-16]) ·
+`max_turns_for_context: 6` amnesia (pure config lever — raise it;
+taxonomy C9).
 
 ## Prediction grading (in public, per protocol)
 
@@ -163,11 +165,25 @@ frozen to `accepted` (same commit); the Pipecat flip trigger
 expires unfired. Show-quality issues route to the adaptation
 arc's backlog as enumerated above.
 
+**Post-verdict addendum (same evening, before teardown):** the
+name-memory micro-test FAILED (confabulated recall), then was
+half-exonerated by a config receipt — `max_turns_for_context: 6`
+means the fact was physically outside the model's context
+(runlog closing entries; taxonomy C9). This does not move the
+verdict: recall is not a frozen criterion, and the cause is a
+config lever, not architecture. It does sharpen two backlog
+items: raise the history window, and re-run the micro-test inside
+the LLM audition — the model remains suspect for in-context
+quality (the Betty/Anna garble), not for the amnesia. Final
+experiment cost, owner-read at teardown: **$2.97**.
+
 ## Headline findings — five positives, five negatives
 
-*(Distilled 2026-09-16, owner-requested exercise; CONFIRMED
-unchanged at verdict time the same evening. Interpretation from
-runlog evidence only; receipts cited.)*
+*(Distilled 2026-09-16, owner-requested exercise; confirmed at
+verdict time the same evening, then lightly amended at close:
+final VRAM figure in positive 3, mechanism count and the C9
+config-amnesia lever in negative 1. Interpretation from runlog
+evidence only; receipts cited.)*
 
 **Five positive findings:**
 
@@ -182,9 +198,10 @@ runlog evidence only; receipts cited.)*
    schema in the UI; the predicted integration effort (measure
    (d)) turned out to be environment potholes, not code (runlog
    deployment ledger).
-3. **The full trio fits the 16 GB card** — 13.5/15.3 GiB with
-   llama + TTS + whisper resident. The "16 GB aspirational" tier
-   is empirically real, which reprices the whole provider space
+3. **The full trio fits the 16 GB card** — 13.5/15.3 GiB loaded,
+   14.0/15.3 GiB fully warm (final reading, whisper lazy-load
+   included), ~1.3 GiB headroom. The "16 GB aspirational" tier is
+   empirically real, which reprices the whole provider space
    downward.
 4. **Latency works over a hostile baseline.** Streaming TTS is
    gapless for normal sentences (per-sentence RTF 0.46–0.64)
@@ -205,7 +222,7 @@ runlog evidence only; receipts cited.)*
    contamination, group degeneration, the stale-question round.
    Big enough to earn its own framework:
    [discussion 2026-09-16] (storytelling coherence & structure
-   adherence — two axes, 17 candidate failure mechanisms). The
+   adherence — two axes, 20 candidate failure mechanisms). The
    adaptation arc's opening backlog; NOT an architectural
    blocker per the frozen criteria.
 2. **Short-sentence economics are upside-down**: per-request

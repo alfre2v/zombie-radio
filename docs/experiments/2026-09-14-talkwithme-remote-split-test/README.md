@@ -186,7 +186,7 @@ unambiguous owner.
 
 - [x] 1. Provision the box (on-demand, never spot) via console;
       record flavor, price, region. DONE 2026-09-15 (A4000,
-      $0.15/hr — region/flavor name to record).
+      $0.15/hr; region resolved 2026-09-15: NORWAY-1).
 - [x] 2. SSH in; baseline the box. DONE 2026-09-15 →
       `scouting-hyperstack-a4000.md`. Compute anomaly resolved
       (card genuine: fp16 60.5 TFLOPS; gpu-burn image was
@@ -204,11 +204,15 @@ unambiguous owner.
       DONE 2026-09-16 — Gates 5.1–5.4 all PASS (UI, text chat,
       cloned voices w/ streaming pipeline, mic round trip);
       zero upstream modifications needed: configuration only.
-- [ ] 6. Drive a 4-persona group session with distinct voices;
-      record measures (a)–(f) below in the log.
-- [ ] 7. (If time) Also test the plain `ws://`+token path for
-      comparison, per TODO Task 3a setup note.
-- [ ] 8. Tear down the box; record final cost.
+- [x] 6. Drive a 4-persona group session with distinct voices;
+      record measures (a)–(f) below in the log. DONE 2026-09-16
+      (group sessions in `Lab`/`lab2`/`lab3`; TTFA table
+      harvested; all measures resolved — findings.md).
+- [x] 7. (If time) Also test the plain `ws://`+token path for
+      comparison, per TODO Task 3a setup note. SKIPPED 2026-09-16
+      with recorded rationale (see runlog entry).
+- [x] 8. Tear down the box; record final cost. DONE 2026-09-16
+      (owner-executed; **total experiment cost: $2.97**).
 
 ## Measures to record
 
@@ -301,7 +305,8 @@ nvidia-smi --query-gpu=memory.used,memory.free --format=csv
 ```
 
 Expect: ok / schema JSON / stt: 200 / ~13.5 GiB used with all
-three loaded.
+three loaded (whisper lazy-loads its model: ~12.3 GiB until the
+first STT request, ~14.0 GiB once everything is warm and in use).
 
 ### On the laptop (Mac)
 
@@ -1319,3 +1324,36 @@ the tunnel is closed. Destroy checklist stands: full Delete (not
 Hibernate/Stop) — this box is the grandfathered R535 exception
 and dies by decree; final cost figure to be appended here when
 read.
+
+### 2026-09-16 — CLOSING ENTRY: final cost, loose threads trued, experiment sealed
+
+**Final cost (step 8, owner-read from the Hyperstack console):
+$2.97 total** for the whole experiment — two days of A4000 at
+$0.15/hr with an overnight hibernation pause. The entire
+foundation-validating spike cost less than a coffee; datum for
+demo-week budgeting (a multi-day A6000 run will cost more, but
+the order of magnitude is established).
+
+**Loose threads trued at close:**
+
+- **Whisper lazy-load: CONFIRMED** (was "believed, to re-check"
+  in the post-restore entry): 12.3 GiB before any STT request →
+  14.0/15.3 GiB final reading with everything warm and in use.
+  Recipe R6 expectation amended accordingly.
+- **Step checklist trued:** 6 done, 7 skipped (rationale
+  above), 8 done. All steps closed.
+- **Known hedge left standing (recorded, not resolved):** the
+  TTFA table's five >5 s bursts are attributed to the
+  `streaming: false` A/B trials by timing fingerprint
+  (20:48–20:50, 21:00–21:01) — the owner has not separately
+  confirmed those wall-clock windows. The attribution is marked
+  "believed" in the measure-(c) entry and stays that way unless
+  confirmed.
+- Taxonomy count corrected in findings.md: the discussion doc
+  holds **20** mechanisms (a stale "17" predated C9 and the
+  coherence-axis pass).
+
+**The experiment is sealed.** Per `experiments/README.md`, this
+folder is now edited only to fix factual transcription errors
+(dated note). Verdict: PASS (findings.md). The box is gone; the
+recipe (R0–R13) is the box, whenever we need it again.
