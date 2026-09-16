@@ -46,7 +46,51 @@ stands alone for grading.
 
 ## Results
 
-*(empty until the run; filled only from README.md evidence)*
+### PRELIMINARY (2026-09-16 — experiment in progress; steps 6–8 outstanding; nothing here is a verdict)
+
+Mapped to the pre-registered measures, from runlog evidence only:
+
+- **(a) Audio over WAN** — partial: single-persona sessions
+  deliver cloned speech through the tunnel with no observed
+  drops/stalls; streaming mode played a 6-fragment monologue
+  gaplessly (client-side fetch-ahead pipeline, source-verified).
+  PENDING: sustained multi-persona session behavior.
+- **(b) 4-persona session** — PENDING (step 6); all four
+  personas exist with distinct cloned voices; single-persona
+  chat proven for text + voice + mic.
+- **(c) Time-to-first-audio** — partial: non-streaming
+  single-line ≈ 5 s to first sound; streaming mode makes
+  first-audio ≈ first-sentence synth; per-sentence RTF 0.46–0.64
+  (gapless threshold cleared 2×); tunnel cold-connection
+  overhead 0.6–0.7 s, amortized by persistent connections.
+  PENDING: the formal ≥10-consecutive-lines table in ensemble
+  conditions (GPU contention included).
+- **(d) tts-serve adapter effort** — answered by observation:
+  **ZERO adapter needed** — TalkWithMe auto-detected the engine
+  from `/capabilities` and rendered its parameter schema in the
+  UI. The real integration cost was environment, not code: the
+  documented potholes (apt packages, numpy-before-sox,
+  transformers==5.15.1 pin) in the runlog's deployment ledger.
+- **(e) Architectural red flags** — collected: reference audio
+  re-uploaded per sentence (stateless API; WAN tax;
+  `app/routers/tts.py:134`); sentence-chunked synthesis severs
+  prosodic continuity (→ brainstorm C10); Nemotron reasoning
+  toggle must be managed per persona prompt; model reload ≈90 s
+  windows on container restart. NONE structural — all
+  configuration-level or upstream-improvable.
+- **(f) Security observations** — every service in the stack is
+  unauthenticated (llama-server warns openly; tts-serve and
+  whisper-fastapi offer nothing); without the tunnel, ports
+  8080/8001/8002 would all need public exposure. The SSH-tunnel
+  posture ([spec §10.3]) is thereby validated as load-bearing,
+  not optional.
+- **Bonus observations**: full 3-service trio fits the 16 GB
+  card at 13.5/15.3 GiB (16 GB-aspiration datum); challenges
+  C1/C6 field-observed ("Miss Betty"→"Nisbeti") with the
+  in-fiction absorption mitigation firing unprompted; the
+  owner's headline interim reading: "TalkWithMe + tts-serve can
+  be separated into local client / remote cloud GPU without any
+  local modifications."
 
 ## Verdict
 

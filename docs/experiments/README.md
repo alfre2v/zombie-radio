@@ -12,12 +12,21 @@ beats a heroic overrun.
 
 ## Required files
 
-- **`README.md` — the runlog.** A self-contained record: every
-  command actually run, in order, with its output — readable
-  start-to-finish by a human with no other tabs open, and
-  copy-paste repeatable. Placeholders in copy-paste blocks must
-  be un-pasteable or guarded (write `<PASTE-BOX-IP-HERE>`, never
-  a plausible-looking value — a placeholder pasted verbatim once
+- **`README.md` — recipe + runlog** *(convention amended
+  2026-09-16, learned in the first real experiment: chronology
+  alone is not replayable once commands get corrected mid-run).*
+  Two distinct sections:
+  - **Reproduction recipe** — a LIVING section holding the
+    current, corrected commands in execution order; the section
+    a user follows. Amended in place whenever a command is
+    superseded.
+  - **Runlog** — the append-only record: every command actually
+    run, in order, with its output, mistakes included; corrected
+    commands get ⚠ superseded banners pointing at the recipe,
+    but history is never rewritten.
+  Both: placeholders in copy-paste blocks must be un-pasteable
+  or guarded (write `<PASTE-BOX-IP-HERE>`, never a
+  plausible-looking value — a placeholder pasted verbatim once
   cost a whole measurement run in the system this convention
   comes from). Masthead carries: the question, the timebox, and
   provenance links (TODO task, spec §, related discussions/ADRs).

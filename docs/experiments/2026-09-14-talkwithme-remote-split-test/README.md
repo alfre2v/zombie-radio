@@ -43,7 +43,10 @@ values.
   free on root disk; user `ubuntu` (sudo + docker group).
 - Laptop: owner's Mac (zsh; `say`/`afconvert`/`afplay` used from
   the stock toolset)
-- TalkWithMe version: *(TBD — step 5; expected v7.0)*
+- TalkWithMe version: **tag 7.1**, commit
+  `93df6ca522f2183a04d87065bfd05345ff4a9101`; client venv:
+  Python 3.12 via pyenv (exact patch version not captured —
+  minor gap, `python --version` output wasn't logged)
 - tts-serve engine: **Faster Qwen3-TTS** (chosen via
   `tts-engine-ranking.md`; default checkpoint
   Qwen3-TTS-12Hz-1.7B-Base)
@@ -162,7 +165,16 @@ enters LAST.**
   TalkWithMe reaches all model services by URL, so the split is
   configuration, not surgery.
 - Dependency: entering this step makes the **fork-strategy
-  decision** (Owner action queue) due.
+  decision** (Owner action queue) due. **RULED 2026-09-15:
+  defer until the first patch** — the spike clones upstream
+  read-only at a pinned SHA; if configuration alone suffices,
+  the fork question waits for the adaptation arc; if the spike
+  forces a patch, that moment decides fork-vs-vendor with data.
+  Clone location: `~/workspace/hackTNT_2026/TalkWithMe`
+  (outside this repo — upstream code, not ours). Interim
+  4-scientist cast: macOS `say` voices doubling as character
+  names (Daniel, Moira, Samantha, Ralph), agent-drafted
+  placeholder personas, owner has veto.
 
 **Assembly line, every arrow a gate:**
 (1) up → curl on box → (4) tunnel → curl from laptop → (2) up →
@@ -188,8 +200,10 @@ unambiguous owner.
       LLM chat, TTS synthesis (cloned voice audible on laptop),
       STT full-circle transcription of our own TTS output.
       Cold-connection overhead ~0.6–0.7 s, amortizable.
-- [ ] 5. Run TalkWithMe on the laptop, configured to reach its
-      LLM/TTS/STT through the tunnel endpoints.
+- [x] 5. Run TalkWithMe on the laptop against tunnel endpoints.
+      DONE 2026-09-16 — Gates 5.1–5.4 all PASS (UI, text chat,
+      cloned voices w/ streaming pipeline, mic round trip);
+      zero upstream modifications needed: configuration only.
 - [ ] 6. Drive a 4-persona group session with distinct voices;
       record measures (a)–(f) below in the log.
 - [ ] 7. (If time) Also test the plain `ws://`+token path for
@@ -209,6 +223,131 @@ ports would need exposure without the tunnel?
 
 ---
 
+## Reproduction recipe — THE section to follow
+
+*Living section (amended whenever a command is corrected): the
+CURRENT, working commands in execution order, from nothing to a
+talking lab. The Runlog below is evidence and history — what
+actually happened, warts included — and is NOT the thing to
+follow. (Convention amended 2026-09-16 at the owner's request;
+recorded in `experiments/README.md`.)*
+
+### On the box (Hyperstack VM, SSH as `ubuntu`)
+
+**R0 — provision:** Hyperstack console → VM with the standard
+image (posture: `R570 CUDA 12.8 with Docker`, Ubuntu 24.04 —
+[spec §6]; THIS run used the R535/22.04 image, an accepted
+grandfathered exception). This experiment's box: 1× RTX A4000,
+region NORWAY-1, $0.15/hr, on-demand.
+
+**R1 — base packages:**
+
+```
+sudo apt-get update && sudo apt-get install -y python3.10-venv sox tmux
+```
+
+**R2 — tmux layout:** `tmux new -s radio`; create + rename
+windows `llama`, `tts`, `whisper`, `ops` (see
+`tmux-refresher.md`).
+
+**R3 — LLM server (window `llama`)** — canonical v3; first run
+downloads ~6 GB into the mounted `~/models`, later runs load
+from disk (~90 s):
+
+```
+docker run --name llama --rm --gpus all --network host \
+    -v "$HOME/models:/models" -e LLAMA_CACHE=/models \
+    ghcr.io/ggml-org/llama.cpp:server-cuda \
+    -hf bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M \
+    --host 127.0.0.1 --port 8080 -ngl 99 -c 16384 --parallel 1
+```
+
+Verify the cache landed: `ls -lh ~/models/` shows the `.gguf`.
+
+**R4 — TTS engine (window `tts`)** — fresh-box install, all
+potholes pre-fixed (numpy before engine; transformers pinned):
+
+```
+mkdir -p ~/faster-Qwen3TTS && cd ~/faster-Qwen3TTS
+python3 -m venv .venv && source .venv/bin/activate
+pip install numpy
+pip install faster-qwen3-tts
+git clone https://github.com/scorbo2/tts-serve && cd tts-serve
+pip install ./tts-engine-common fastapi uvicorn loguru soundfile
+pip install "transformers==5.15.1" "huggingface-hub>=1.16,<2"
+FASTER_QWEN3TTS_HOST=127.0.0.1 FASTER_QWEN3TTS_PORT=8001 python impl/server_fasterQwen3TTS.py
+```
+
+(Already installed? Just:
+`cd ~/faster-Qwen3TTS/tts-serve && source ../.venv/bin/activate`
++ the launch line.)
+
+**R5 — STT server (window `whisper`):**
+
+```
+docker run --rm --network host --gpus all \
+  -v ~/.cache/huggingface:/root/.cache/huggingface \
+  docker.io/heimoshuiyu/whisper-fastapi:latest \
+  --model small --device cuda --host 127.0.0.1 --port 8002
+```
+
+**R6 — on-box gates (window `ops`):**
+
+```
+curl -s http://127.0.0.1:8080/health
+curl -s http://127.0.0.1:8001/capabilities | head -c 200; echo
+curl -s -o /dev/null -w "stt: %{http_code}\n" http://127.0.0.1:8002/docs
+nvidia-smi --query-gpu=memory.used,memory.free --format=csv
+```
+
+Expect: ok / schema JSON / stt: 200 / ~13.5 GiB used with all
+three loaded.
+
+### On the laptop (Mac)
+
+**R7 — tunnel (own terminal tab, stays open):**
+
+```
+ssh -N -L 8080:127.0.0.1:8080 -L 8001:127.0.0.1:8001 -L 8002:127.0.0.1:8002 ubuntu@<PASTE-BOX-IP-HERE>
+```
+
+**R8 — pulse check through the tunnel:**
+
+```
+curl -s http://localhost:8080/health && curl -s -o /dev/null -w "tts: %{http_code}\n" http://localhost:8001/capabilities && curl -s -o /dev/null -w "stt: %{http_code}\n" http://localhost:8002/docs
+```
+
+**R9 — TalkWithMe (first time only):**
+
+```
+cd ~/workspace/hackTNT_2026 && git clone https://github.com/scorbo2/TalkWithMe
+cd TalkWithMe && pyenv local 3.12.<CHOSEN-PATCH>
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+**R10 — personas (first time only):** run the two factory blocks
+in `placeholder-personas.md` (this folder).
+
+**R11 — launch the app:**
+
+```
+cd ~/workspace/hackTNT_2026/TalkWithMe && source .venv/bin/activate
+uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+**R12 — UI configuration** at `http://localhost:8000`: *Servers*
+dialog → LLM `http://localhost:8080` · TTS enabled,
+`http://localhost:8001` (engine auto-detects on URL entry;
+streaming per taste) · STT enabled, `http://localhost:8002`.
+Save.
+
+**R13 — smoke gates:** pick a scientist → text chat answers in
+character → voice plays → mic round-trips. You have a talking
+lab.
+
+---
+
 ## Runlog
 
 *(Box provisioning + baseline: see `scouting-hyperstack-a4000.md`.)*
@@ -216,6 +355,10 @@ ports would need exposure without the tunnel?
 ### 2026-09-15 — Component 1 (LLM server) up; Gates A and B PASS
 
 **Start llama.cpp container (tmux window `llama`):**
+*(⚠ SUPERSEDED — the `-v …/root/.cache/llama.cpp` mount is
+misrouted and silently re-downloads the model every start; use
+**canonical v3** in the 2026-09-16 pothole entry below. Kept
+as-run for the historical record.)*
 
 ```
 $ docker run --name llama --rm --gpus all --network host \
@@ -304,8 +447,9 @@ wall) — consistent with Gate B; persistent connections should
 amortize it.
 
 **Revised canonical llama-server command (adopted 2026-09-15;
-supersedes the step-3.1 invocation for the rest of the
-experiment):** single-stream slot + doubled context, both free
+v2 — ⚠ ITSELF SUPERSEDED by v3 in the 2026-09-16 pothole entry
+below: same flags, but the model-cache mount here is misrouted):**
+single-stream slot + doubled context, both free
 on Nemotron's cheap KV:
 
 ```
@@ -553,6 +697,276 @@ LLM+TTS-exhaust-the-card squeeze is why the 2024 build ran
 whisper *tiny*. Fleet note for VRAM budgeting: the home RTX
 3090 runs a desktop, and Chrome/terminal/GNOME permanently tax
 ~1 GB of its 24 GB — a headless cloud VM pays no such tax.
+
+### 2026-09-16 — Step 5 phases 1–3: TalkWithMe up, Gate 5.1 + 5.2 PASS
+
+**Phase 1 (box):** llama container restarted with the canonical
+command (`--parallel 1 -c 16384`). Operational note: the model
+reload takes ~90 s, during which the tunnel reports
+`channel N: open failed: connect failed: Connection refused` —
+expected, not a fault; wait and retry. Trio pulse-check through
+the tunnel: `{"status":"ok"} / tts: 200 / stt: 200`.
+
+**Phase 2 (Mac):** upstream pinned —
+`93df6ca522f2183a04d87065bfd05345ff4a9101, tag 7.1` (upstream
+moved past the expected 7.0; release notes not reviewed —
+accepted as-is). Python: **3.12 via pyenv** (`pyenv local`
+writes `.python-version`); rationale: the client venv is a pure
+web stack (no torch), so the owner's 2024 lesson — TTS/torch
+stacks prefer 3.10/3.11 — applies to the BOX, not here.
+Mac-side commands, verbatim:
+
+```
+cd ~/workspace/hackTNT_2026 && git clone https://github.com/scorbo2/TalkWithMe
+cd TalkWithMe && git log -1 --format="PINNED: %H %d %s"
+pyenv install -l | grep -E '^\s+3\.12' | tail -3   # pick newest 3.12.x
+pyenv local 3.12.<CHOSEN-PATCH>                    # writes .python-version
+python -m venv .venv && source .venv/bin/activate
+pip install -r requirements.txt
+uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+(loopback deviation from README's 0.0.0.0, deliberate).
+**Gate 5.1 PASS** — UI loads.
+
+**Phase 3 (config) — correction + UI intel:** `settings.yaml`
+does NOT ship in the repo (the agent's briefing over-read the
+README): it is **auto-generated when a settings dialog first
+saves**. The UI splits configuration across dialogs: *Servers*
+(LLM/TTS/STT endpoints — LLM URL defaulted to :8080 already,
+owner only disabled TTS+STT), *Settings* (chat behavior:
+`max_persona_replies` 1–4, max context turns, and a **Global
+System Prompt appended to every persona's system prompt** — a
+lever worth remembering for show-wide radio-style rules),
+*Personas*, *Chat Rooms* (sidebar shows per-room "Echo chamber"
+checkbox + who-should-answer routing). Generated settings.yaml, verbatim (post-save state before
+Gates 5.3/5.4 filled the tts/stt URLs via the Servers dialog):
+
+```yaml
+llm:
+  base_url: http://localhost:8080
+  model: default
+  max_tokens: 200
+  temperature: 0.8
+tts:
+  enabled: false
+  base_url: null
+  timeout: 60.0
+  streaming: false
+  parameters: {}
+stt:
+  enabled: false
+  base_url: null
+  timeout: 30.0
+general:
+  persona_name_mentions: true
+  max_persona_replies: 1
+  max_turns_for_context: 6
+  show_tool_calls: true
+  enable_persona_memories: true
+  global_system_prompt: ''
+  personas_directory: null
+mcp:
+  servers: []
+  max_tool_iterations: 8
+```
+
+(Step-6 note: `max_persona_replies` must go 1 → 4 for the
+ensemble; `max_turns_for_context: 6` is a knob the radio show
+will care about later.)
+
+**Phase 4 prep:** persona factory run — 4 scientists created
+(Daniel/Moira/Samantha/Ralph: prompt.md with `/no_think` line 1
++ radio-style constraints, `ref.wav` from macOS `say` voices,
+`ref.txt` exact transcripts). **Full factory commands + cast
+table: `placeholder-personas.md` in this folder** (added by the
+2026-09-16 documentation audit — the commands had existed only
+in chat). Upstream's default personas Alex + Luna kept alongside
+(owner choice; they carry no radio constraints but sit outside
+our chatroom).
+
+**Gate 5.2 PASS — first in-app exchange, verbatim:** owner →
+Daniel: "Status report." · Daniel: **"Equipment failing.
+Zombies in sector three. Over."** — in-character, no markdown
+fluff (persona prompt's anti-markdown clause working where the
+raw curl showed `**Response:**`), no reasoning leak (the
+`/no_think` toggle survives TalkWithMe's prompt assembly),
+owner-reported "almost immediate". The core-question hypothesis
+(configuration, not surgery) is now proven for the LLM leg
+inside the real app.
+
+### 2026-09-16 — Gate 5.3 PASS: voices in-app; streaming mechanics identified from source
+
+**Servers dialog auto-detected the engine on URL entry**
+(screenshot: engine faster-qwen3-tts, model 1.7B-Base, cuda,
+24 kHz — TalkWithMe fetching tts-serve `/capabilities` v2 and
+rendering its parameter schema as form fields: the fixture-based
+integration working live). **Non-streaming:** reply text
+instant; **~5 s to first sound** (whole-utterance synth + WAN).
+**Streaming ON:** owner coaxed a 6-sentence monologue from
+Daniel ("what do you want in your death report") — UI shows 6
+audio fragments, **no perceptible inter-sentence lag**.
+
+**Why gapless — from source, not vibes** (owner demanded code
+evidence; three candidate explanations tested):
+
+1. ✔ **TalkWithMe client-side pipelining** —
+   `static/tts.js` header: "Streaming: split response into
+   sentences, fetch and play in a pipeline"; fetch loop comment
+   (~line 107): "Fetch TTS for queued sentences serially (to
+   preserve order). Runs concurrently with audio playback so
+   the next sentence's audio is ready by the time the current
+   one finishes playing." Sentences are queued as LLM tokens
+   stream in (synthesis starts before the LLM finishes the
+   paragraph). Two independent queues: fetch-ahead + playback.
+2. ✘ NOT tts-serve streaming — the `/synthesize` API is
+   whole-utterance; no streaming exists to credit.
+3. ✘ NOT parallel synthesis — fetches are explicitly serial
+   (code comment above), confirmed by the tmux log timestamps:
+   request N+1 starts ~1 s AFTER request N returns.
+4. ✘ NOT a reference-reuse trick (owner's hypothesis,
+   disproved): `app/routers/tts.py:134` calls
+   `encode_reference_audio(persona.reference_audio)` on EVERY
+   request — the ref clip is re-encoded and re-uploaded per
+   sentence (log: `ref_text_len=96` on each call). The WAN-tax
+   finding stands, now with file:line receipts.
+
+The math that makes it work: per-sentence synth at RTF ≈ 0.5
+(box log: `1.5 s wall / 3.0 s audio RTF=0.491`,
+`0.3 s / 0.5 s RTF=0.644`) — fetch-ahead outruns playback, the
+gapless-broadcast prediction observed in the real app.
+
+```
+05:55:08.153 Synthesizing: seed=840, text_len=48, ref_text_len=96
+05:55:09.609 Synthesis complete: 1.5 s wall-clock, 3.0 s audio, RTF=0.491
+05:55:10.608 Synthesizing: seed=702, text_len=5, ref_text_len=96
+05:55:10.920 Synthesis complete: 0.3 s wall-clock, 0.5 s audio, RTF=0.644
+```
+
+**Owner's interim verdict:** "quite promising… it seems we have
+proved that TalkWithMe + tts-serve can be separated into a local
+client / remote cloud GPU without any local modifications to the
+app." (Formal verdict still waits on the step-6 ensemble session
+and findings.md.) **Owner worry recorded → brainstorm §5 C10**:
+sentence-chunked synthesis may sever paragraph-level emotional
+coherence on emotion-capable engines.
+
+### 2026-09-16 — Gate 5.4 PASS: full voice loop — and challenges C1/C6 observed in the wild
+
+STT enabled in the Servers dialog (`http://localhost:8002`).
+Owner clicked the mic and spoke to Daniel. **The complete chain
+worked**: browser mic → whisper (Norway) → Nemotron (Norway) →
+Faster Qwen3-TTS (Norway) → browser speakers. Every component
+of the §3.1 topology is now live simultaneously.
+
+**The exchange, verbatim — a field specimen of our challenge
+list:** owner said (accented English, imperfect conditions):
+*"Oh no, the zombies got Miss Betty too."* → transcription:
+*"Oh no, the zombie is called Nisbeti too."* → Daniel:
+*"Containment protocols for Nisbeti are being reviewed.
+Over."* — voice audio fine. Reading: (1) **C6 proper-noun
+capture failing exactly as predicted** ("Miss Betty" →
+"Nisbeti"; whisper-small + accent); (2) a brush of **C1**
+robustness limits; (3) and — unplanned — the **in-fiction
+absorption strategy working by accident**: the character
+treated the garbled name as a fact of his world and carried on,
+in character, unbroken. The C6 mitigation we designed on paper
+(graceful degradation inside the fiction) just demonstrated
+itself unprompted. Doubles as evidence for the [spec §10.5]
+heckler-absorption posture.
+
+**Step 5 complete.** Remaining: step 6 (4-persona ensemble
+session + formal measures), optional step 7, teardown, verdict.
+
+### 2026-09-16 (night) — Hibernation gamble taken; provider finding logged
+
+Owner hibernated the box overnight (meter paused). Hyperstack's
+own warning, captured verbatim before confirming: *"Hardware is
+not reserved during hibernation. Restoring requires the same
+flavor to be in stock. If unavailable, the VM cannot be restored
+until resources become available."* → the last provider
+red-flag check answered itself in documentation: hibernate is a
+**restore-lottery** on a stock-volatile flavor. If tomorrow's
+restore fails, the box state is lost — but this runlog's whole
+purpose is that a rebuild costs ~30–45 min of paste (recorded
+commands + cached HF downloads gone, models re-pull). Survey's
+Hyperstack entry updated; demo-week rule hardened: never
+hibernate the show box.
+
+### 2026-09-16 (morning) — Restore lottery WON; hibernation semantics sharpened
+
+The VM restored (same flavor back in stock). **Finding: Hyperstack
+"hibernation" preserves DISK but not RAM/processes** — no process
+survived, not even tmux. Operationally it behaves like
+stop+boot-with-disk-kept, not a true suspend-to-disk resume.
+Consequences: (a) every resume = full service restart — cheap
+here because model caches survived on disk (no re-downloads) and
+every launch command is in this runlog; (b) for Ansible, the
+"resume" playbook and the "fresh boot" playbook are the SAME
+playbook minus downloads — a simplification, if an annoying one;
+(c) demo-week never-hibernate rule now double-underlined.
+
+**Post-restore restart sequence (consolidated from earlier
+entries — the de-facto resume runbook, promotion candidate for
+`runbooks/` at arc close):** on the box: `tmux new -s radio`,
+then per window — `llama`: the canonical docker command
+(**v3**, in the 2026-09-16 pothole entry below) · `tts`:
+`cd ~/faster-Qwen3TTS/tts-serve && source ../.venv/bin/activate`
++ the FASTER_QWEN3TTS launch line · `whisper`: the whisper-fastapi
+docker command · `ops`: `watch -n2 nvidia-smi`. On the laptop:
+the `ssh -N -L` tunnel; TalkWithMe via uvicorn if not still
+running. Gates: the three-curl pulse check. (~90 s llama reload
+window applies.)
+
+### 2026-09-16 — Pothole: llama model cache mount was misrouted; canonical command v3
+
+Post-restore, host `~/models` was EMPTY — the `-hf` download had
+never landed on the mount. Diagnosis: the v1/v2 command's mount
+target (`/root/.cache/llama.cpp`) was an agent assumption about
+where the image caches; the image evidently uses a different
+path, so the 6 GB GGUF lived in the ephemeral container layer
+and died with `--rm` — meaning **every container start silently
+re-downloaded the model** (yesterday's post-restart "wait a bit"
+included). Contrast: whisper's HF-cache mount and the TTS venv's
+host-side cache were routed correctly and survived hibernation.
+
+**Fix — dictate the cache path instead of guessing it**, via
+llama.cpp's `LLAMA_CACHE` env var. Canonical command **v3**
+(supersedes v2):
+
+```
+docker run --name llama --rm --gpus all --network host \
+    -v "$HOME/models:/models" -e LLAMA_CACHE=/models \
+    ghcr.io/ggml-org/llama.cpp:server-cuda \
+    -hf bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M \
+    --host 127.0.0.1 --port 8080 -ngl 99 -c 16384 --parallel 1
+```
+
+Verification gate (new discipline: check the mount, don't assume
+it): `ls -lh ~/models/` on the host must show the growing/final
+`.gguf`. Ansible ledger: model caches are pinned to explicit
+mounted paths via env (`LLAMA_CACHE`, `HF_HOME`-style), never
+via assumptions about a container's HOME.
+
+### 2026-09-16 — Services restored via the recipe; network baseline for measurement day
+
+Full stack rebuilt post-hibernation by following the new
+Reproduction recipe (its first real replay — passed). On-box
+gates green; tunnel pulse green. VRAM read 12.3 GiB (vs 13.5
+with the full trio yesterday) — believed: whisper lazy-loads its
+model at first request; to re-check after first mic use.
+Owner's subjective note: chat "feels a bit more delayed than
+yesterday." **Network baseline for today's measures (laptop →
+box, Norway):**
+
+```
+% ping -c 5 94.101.98.230
+time=277.3 / 212.3 / 179.2 / 191.3 ms  (≈215 ms avg, high variance)
+```
+
+Every measure-(c) number today carries ≥1 RTT (~0.2 s) of
+unavoidable network toll per request — annotate accordingly;
+a Canada-1 demo box would re-price this.
 
 **Deployment-notes ledger (feeds Ansible):** base packages a
 fresh box needs before any tts-serve engine: `python3.X-venv`,

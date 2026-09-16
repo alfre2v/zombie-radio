@@ -353,6 +353,11 @@ happily fiction-friendly: the radio-operator confirmation loop
 graceful degradation (if confidence stays low, the character uses
 "survivor" or a nickname instead of a garbled name). **Status: new
 observation; cheap to handle if designed in from the start.**
+**Field-observed 2026-09-16** (remote-split experiment, Gate
+5.4): owner's accented "Miss Betty" transcribed as "Nisbeti";
+the character absorbed the error in-fiction unprompted
+("Containment protocols for Nisbeti are being reviewed") — the
+paper mitigation demonstrating itself before we built it.
 
 ### C7. Overlapping speakers — several people at once *(agent-added)*
 
@@ -455,6 +460,27 @@ hardware-supported, nothing for us to write. **Status: must-have
 for the v1 voice stream; low risk; the only real decision is the
 container/transport framing, which falls out of the client
 architecture choice (§8).**
+
+### C10. Sentence-chunked TTS vs. emotional coherence *(owner-raised 2026-09-16, during the remote-split experiment)*
+
+TalkWithMe's streaming TTS splits each reply into sentences and
+synthesizes each as an **independent** request (same reference
+audio, no prosodic memory between chunks — verified in source
+during the experiment). For engines that condition emotion/style
+on context, this severs the emotional arc of a paragraph: a
+character building from calm to panic may reset to neutral at
+every full stop. The owner flags this as **potentially the
+Achilles' heel of the TalkWithMe pipeline** for theatrical use.
+Mitigating context: our radio format deliberately keeps
+transmissions to 1–2 sentences, so chunk granularity ≈
+transmission granularity most of the time — the risk
+concentrates in longer monologues. Candidate mitigations:
+paragraph-level chunking (latency tradeoff), engines with
+explicit per-request emotion/style controls driven consistently
+by the director, or director-authored per-line emotional
+stage direction. **Status: recorded, unresolved; explicit test
+item for the §7.2 TTS comparison experiment (evaluate emotional
+coherence across chunks per engine).**
 
 ## 6. Beyond recognition: sound-effects generation (feature target)
 

@@ -219,7 +219,20 @@ government-ID verification for GPU quota. Whoever we pick:
   nvidia-container-toolkit preinstalled**; default-deny security
   groups with TCP/UDP; official (alpha) Terraform provider;
   **hibernate** stops compute billing (stopped-but-not-hibernated
-  does NOT). Youngest of the tier (~2023-24); reports of GPU
+  does NOT). **Hibernation caveat, owner-verified 2026-09-16
+  (their own pre-hibernate warning, verbatim): "Hardware is not
+  reserved during hibernation. Restoring requires the same
+  flavor to be in stock. If unavailable, the VM cannot be
+  restored until resources become available."** So hibernate =
+  cheap pause with a restore-lottery attached — the same
+  stop-is-not-safe pattern as everywhere else, joining the S1.3
+  warning list. **Restore tested 2026-09-16 (lottery won): disk
+  intact, but NO process survives — not even tmux.** Their
+  "hibernation" is operationally stop+boot-with-disk-kept, not a
+  suspend-to-RAM-image resume: budget a full service restart on
+  every resume. Demo-week consequence: NEVER hibernate the show
+  box; provision-the-evening-before-and-leave-running is now
+  triply justified. Youngest of the tier (~2023-24); reports of GPU
   stock-outs and slow support. **Doctrine verdict: good; best
   price-to-fit ratio.**
 

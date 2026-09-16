@@ -26,14 +26,11 @@ current. (Added 2026-09-14 at the owner's request.)*
 3. **Seed the character bibles** — names, personalities, quirks,
    voice descriptions for the four scientists; rough is fine;
    also feeds the LLM audition harness.
-4. **Fork strategy decision** (needed by end of spike): fork
-   TalkWithMe/tts-serve under your GitHub account vs. vendor
-   copies into this repo — affects upstream contribution flow.
-5. **Check the home 3090 box's NVIDIA driver version**
+4. **Check the home 3090 box's NVIDIA driver version**
    (`nvidia-smi`) — under the fleet-minimum-driver posture
    ([spec §6], 2026-09-15) it is the project's real
    compatibility floor; align to the R570 era when practical.
-6. **Radar: demo-day logistics** — venue internet reality,
+5. **Radar: demo-day logistics** — venue internet reality,
    hotspot fallback, whether a "canned episode" emergency mode
    earns MVP scope.
 
