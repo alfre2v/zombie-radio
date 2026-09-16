@@ -92,6 +92,73 @@ Mapped to the pre-registered measures, from runlog evidence only:
   be separated into local client / remote cloud GPU without any
   local modifications."
 
+## Headline findings — five positives, five negatives
+
+*(Distilled 2026-09-16, owner-requested exercise; PRELIMINARY
+like the Results above — to be confirmed or amended at verdict
+time. Interpretation from runlog evidence only; receipts cited.)*
+
+**Five positive findings:**
+
+1. **Zero upstream modifications.** The full remote split —
+   client on the laptop, all three model services behind the
+   tunnel — worked with configuration alone. "Configuration, not
+   surgery" won outright; the agent's predicted 2–4
+   localhost-isms never materialized (runlog steps 1–5, all
+   gates PASS).
+2. **Zero tts-serve adapter needed.** TalkWithMe auto-detected
+   the engine from `/capabilities` and rendered its parameter
+   schema in the UI; the predicted integration effort (measure
+   (d)) turned out to be environment potholes, not code (runlog
+   deployment ledger).
+3. **The full trio fits the 16 GB card** — 13.5/15.3 GiB with
+   llama + TTS + whisper resident. The "16 GB aspirational" tier
+   is empirically real, which reprices the whole provider space
+   downward.
+4. **Latency works over a hostile baseline.** Streaming TTS is
+   gapless for normal sentences (per-sentence RTF 0.46–0.64)
+   *even with* ~215 ms Norway RTT — a Canada-1 demo box only
+   improves on this. The tunnel added no observed instability
+   (cold-connection 0.6–0.7 s, amortized).
+5. **The documentation system paid for itself in-run.** The
+   hibernation wipe cost ~30–45 min of paste because every
+   command was recorded; the Reproduction recipe passed its
+   first real replay. Honorable mention: in-fiction absorption
+   fired unprompted ("Miss Betty" → "Nisbeti", carried
+   in-character — the C6-challenge mitigation demonstrating
+   itself).
+
+**Five negative findings:**
+
+1. **Narrative health is fragile** — label mimicry, transcript
+   contamination, group degeneration, the stale-question round.
+   Big enough to earn its own framework:
+   [discussion 2026-09-16] (storytelling coherence & structure
+   adherence — two axes, 17 candidate failure mechanisms). The
+   adaptation arc's opening backlog; NOT an architectural
+   blocker per the frozen criteria.
+2. **Short-sentence economics are upside-down**: per-request
+   fixed costs (RTT + ~300 KB reference re-upload per sentence,
+   `app/routers/tts.py:134`, + engine floor) make effective
+   RTF > 1 for short sentences, and the naive splitter makes
+   FOUR requests of "Dr. Byrne. 47. Microbiology. Over." —
+   while radio style is MADE of short sentences. Designated
+   fix: the max-chars accumulator (upstream patch candidate).
+3. **Nothing in the stack authenticates anything.** llama-server,
+   tts-serve, whisper-fastapi — all open (measure (f)). The SSH
+   tunnel is load-bearing, not defense-in-depth; there is no
+   second layer.
+4. **Provider fragility is real**: A6000s persistently out of
+   stock (survey warning realized), and Hyperstack "hibernation"
+   is a destructive stop plus a restore lottery. Demo-week rule
+   hardened: never hibernate the show box.
+5. **The environment is pothole-rich**: exact
+   `transformers==5.15.1` pin, numpy-before-sox ordering, the
+   R535 driver disqualifying three TTS engines, Nemotron
+   demanding `/no_think` per persona prompt. All solvable, all
+   in the Ansible ledger — and each one a demo-day landmine if
+   undocumented.
+
 ## Verdict
 
 *(empty until the run)*
