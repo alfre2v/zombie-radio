@@ -50,8 +50,16 @@ values.
 - LLM model: **Nemotron Nano 9B v2 Q4_K_M** (bartowski GGUF)
 - STT: **whisper-fastapi** (heimoshuiyu image), model `small`
 - Network path: laptop ⇄ internet ⇄ box, via `ssh -L` tunnel
-- STILL TO RECORD (owner, from console): exact Hyperstack flavor
-  name + region for the A4000 VM (step 1 residual)
+- **Region: NORWAY-1** (resolved 2026-09-15 via Hyperstack's
+  [flavors/regions doc](https://docs.hyperstack.cloud/docs/hardware/flavors/#family-rtx-a6000)
+  — A4000s live in Norway-1; **the good GPUs, A6000 and up, live
+  in CANADA-1**). ⚠ **Latency context for ALL measurements in
+  this runlog:** every tunnel number includes a laptop↔Norway
+  round trip; a demo-day A6000 box would sit in Canada-1 with
+  different (likely better, for a North-America-side operator)
+  network geometry. Measures (a)/(c) must be read with this in
+  mind — our numbers are a conservative bound if the demo box is
+  closer.
 
 ## Component inventory (agreed 2026-09-15)
 

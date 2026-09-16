@@ -262,6 +262,19 @@ government-ID verification for GPU quota. Whoever we pick:
   demo week (the demo-day protocol's provision-the-evening-
   before rule earns its keep); and the two-provider
   smoke-test hedge stays mandatory.
+
+  **GPU↔region mapping (owner-found 2026-09-15, during the
+  remote-split experiment):** Hyperstack documents which
+  regions host which GPU families —
+  <https://docs.hyperstack.cloud/docs/hardware/flavors/> —
+  and the split matters: **A6000 and better live in CANADA-1;
+  A4000s live in NORWAY-1.** Consequences: (a) region is
+  chosen FOR you by the GPU you pick — plan network latency
+  accordingly (the experiment's A4000 box in Norway put a
+  transatlantic hop inside every measurement); (b) for demo
+  day, the A6000-in-Canada-1 geometry should be verified
+  against the venue's location as part of the
+  provision-the-evening-before protocol.
 - **Verda** (ex-DataCrunch, rebranded Nov 2025; Finnish, $180M+
   raised, SOC 2) — VMs with **root** SSH; A6000 48 GB
   $0.592/hr on-demand / **$0.296 spot**; Docker-preinstalled
