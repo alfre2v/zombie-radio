@@ -88,8 +88,17 @@ current. (Added 2026-09-14 at the owner's request.)*
   `experiments/YYYY-MM-DD-*/` folder per conventions (runlog
   README + findings.md with pre-registered verdict criteria).
 
-  - [ ] **Task 3a — TalkWithMe remote-split test ("the spike").**
-    PRIORITY: first in the experiment queue. SKELETON CREATED
+  - [x] **Task 3a — TalkWithMe remote-split test ("the spike").**
+    DONE (2026-09-16): **verdict PASS** against the frozen
+    criteria; ADR-0001 frozen to `accepted`; Pipecat flip trigger
+    expired unfired. Full record:
+    `experiments/2026-09-14-talkwithme-remote-split-test/`
+    (runlog + findings + TTFA data); show-quality issues routed
+    to the adaptation-arc backlog; narrative-health framework
+    spawned → [discussion 2026-09-16]. Residue: owner completes
+    the console destroy + billing glance (final cost appended to
+    the runlog when read). Original brief kept below for
+    provenance. SKELETON CREATED
     2026-09-14 →
     `experiments/2026-09-14-talkwithme-remote-split-test/` (runlog
     template + draft verdict criteria + agent prediction

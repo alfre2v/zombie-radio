@@ -340,6 +340,26 @@ testability.
   execution). Test: rephrase the same task fully in-fiction
   ("HQ demands a five-line incident report, read it on the
   net") vs the meta phrasing — zero code.
+- **C9. The history window counts turns, not rounds — it shrinks
+  per capita as the cast grows.** Field-observed via the
+  name-memory micro-test (runlog 2026-09-16): recall of a fact
+  planted 3 rounds earlier failed with a CONFABULATED name
+  ("Clare") that the whole cast then adopted. Receipt:
+  `app/config.py:171` + live `settings.yaml:19` —
+  `max_turns_for_context: 6`, counted in single MESSAGES; in a
+  4-persona room that is ~ONE round of visible history, so the
+  fact was physically absent from context (we provision 16k
+  tokens of LLM context and feed it ~1k). A window sized for
+  1-on-1 chat becomes amnesia-by-design in an ensemble, and the
+  model fills the gap in-character — confidently. Distinct from
+  B2 (dilution of what IS in context) and C5 (server-side
+  eviction): C9 is the APP truncating before the server ever
+  sees it. Axis: COHERENCE (world consistency — with a
+  confabulation flavor all its own). Fix shape: pure config
+  lever (raise toward the cap of 50, watch latency), then
+  per-round budgeting upstream. Test: rerun the micro-test at
+  max_turns_for_context 30+ — if recall works, C9 owned this
+  failure, not A1.
 
 ### Locus D — decoding / serving parameters
 
@@ -434,6 +454,15 @@ artifact.*
   personas); `app/routers/chat.py:254-261` (random follower
   conscription); `chat.py:296` (serial rounds — the echoers SAW
   the completed task).
+- **Name-memory micro-test (2026-09-16, owner-run) — C9's
+  founding specimen.** A fact planted 3 rounds back
+  ("Callsign Vulture") was recalled as a confabulated "Clare",
+  instantly adopted by the whole cast (C3). Receipt:
+  `max_turns_for_context: 6` — the fact was physically outside
+  the window. The model stays suspect for the same session's
+  in-context garble (the Betty/Anna pronoun chain, everything in
+  window → A1 evidence); recall itself is exonerated pending the
+  C9 retest at a larger window.
 - **Label mimicry + transcript contamination:** field-observed
   with receipts (`app/session.py:135/159`; the lab→lab2
   fresh-room result) → **C3 proven** as a mechanism, magnitude

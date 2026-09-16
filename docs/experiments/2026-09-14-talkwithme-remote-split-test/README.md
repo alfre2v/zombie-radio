@@ -1243,3 +1243,79 @@ timebox) with one hour of budget left; the discussion doc
 ([discussion 2026-09-16], narrative health §5) carries the soak
 and the zero-code probe battery as designed future tests — they
 are not lost, they are queued where the next arc will look.
+
+### 2026-09-16 — Name-memory micro-test: FAILED, then half-exonerated by a config receipt; final VRAM; teardown initiated
+
+**The test (owner-run, lab3, verbatim).** Setup: "Moira, the
+survivor on the roof is called Callsign Vulture. Remember her."
+In-round echo worked (all four wove "Vulture" in: "Vulture.
+Roof. Secure. Over."). Then two distractor rounds and the recall:
+
+```
+User: Moira, the new head of accounting is Betty, she replaces
+Anna, after she became a zombie herself. Remember her.
+Moira:    Betty's not here anymore. Over.
+Samantha: Accounting reports are paused. Over.
+Daniel:   Accounting frozen. Over.
+Ralph:    Count cans. Over.
+
+User: No, I mean Anna became one of the creatures.
+Moira:    Anna's body's gone feral. Over.
+Ralph:    Cans in the east wing. Over.
+Samantha: East wing secure. Over.
+Daniel:   Secure for now. Over.
+
+User: Moira, what was the name of the survivor on the roof?
+Moira:    Clare. Over.
+Daniel:   Clare was the last one on the roof. Over.
+Samantha: Clare's radio signal went dark minutes ago. Over.
+Ralph:    Clare's radio dead. Over.
+```
+
+Recall FAILED — "Clare" is a confabulated name, promptly adopted
+by the whole cast within the round.
+
+**The receipt that reframes it:** `app/config.py:171` and the
+live `settings.yaml:19` — **`max_turns_for_context: 6`**, counted
+in history ENTRIES (one message each), not rounds. In a 4-persona
+room, six entries ≈ ONE round. At recall time the Vulture fact
+sat ~14 messages back: physically absent from Moira's context.
+"Clare" is not failed recall but FORCED confabulation — the model
+was asked about a fact it was never shown and improvised
+in-character; C3 imitation then locked all four onto the invented
+name (locally coherent, globally amnesiac — the signature of a
+tiny sliding window). Corollaries: (1) we provisioned -c 16384
+and use ~1k of it — the fix is a pure config lever
+(settings.yaml, cap 50); (2) the window counts turns, not rounds,
+so it SHRINKS PER CAPITA as the cast grows — logged to
+[discussion 2026-09-16] as mechanism C9; (3) it may recolor the
+stale-question specimen: at round 2 the round-1 QUESTION sat
+exactly at the 6-entry boundary — the conscripts likely saw
+round-1's answers with their question already evicted.
+
+**What the model does NOT get exonerated for:** the Betty/Anna
+exchange garbled with everything in context ("Betty's not here
+anymore" inverts the stated fact; the pronoun chain defeated it).
+Owner's assessment on the day: "the intelligence of the dialog is
+very low... we cannot rule out having to change the LLM model."
+Exactly the ranked-shortlist design ([discussion 2026-09-14]):
+the Track 3 audition picks the default; Nemotron's rank-1 is
+presumptive, not settled — and the audition should re-run this
+micro-test with a properly sized window.
+
+**Final VRAM reading (full trio, post-mic-use, whisper loaded):**
+
+```
+memory.used [MiB], memory.total [MiB]
+14009 MiB, 15352 MiB
+```
+
+14.0/15.0 GiB — the 16 GB card holds the full stack with ~1.3 GiB
+headroom. The 16 GB-aspiration datum, final form.
+
+**Teardown (step 8): initiated.** Owner defers the console
+destroy + billing glance to later today (meter runs until then);
+the tunnel is closed. Destroy checklist stands: full Delete (not
+Hibernate/Stop) — this box is the grandfathered R535 exception
+and dies by decree; final cost figure to be appended here when
+read.
