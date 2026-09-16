@@ -1081,3 +1081,75 @@ dodged both potholes; counterweights: conda+pip mixing risk, and
 the cu124 torch pin is pip-installed either way. Live question
 for the deployment arc — venv path retained for this experiment
 (the documented-path friction is itself the data).
+
+### 2026-09-16 — lab3 A/B verdict; the stale-question specimen; source audit of the round machinery
+
+**1. lab3 A/B (owner-run): the anti-label prompt is implicated.**
+Fresh room `lab3`, Global System Prompt CLEARED, dialogue held up
+better than the degenerated `lab2` round. Per the pre-wired
+discriminator (previous entry): health implicates the prompt →
+owner's hypothesis supported; agent's task-convergence hypothesis
+wounded (caveat: single trial — implicated, not convicted).
+Standing consequence adopted: allow `[Name]:` labels in context,
+strip them before display/TTS — the one-line output sanitizer is
+now the designated FIRST fork patch (or upstream PR).
+
+**2. The stale-question specimen (owner-run, lab3, verbatim).**
+Round 1 — owner: "Please report how many zombies you see."
+Healthy replies:
+
+```
+Moira:    "Six in the lab. More outside. They're... not human
+          anymore. Over."
+Ralph:    Two. Three. Shamblers. Over.
+Daniel:   Shamblers. Two. Over.
+Samantha: Six. Seven. Over.
+```
+
+Round 2 — owner: "We need to write a report about the incident.
+It must be at least five sentences long. Please proceed." Bad
+replies:
+
+```
+Samantha: Understood. I'll compile the data we have. First,
+          confirm the count of zombies inside and outside.
+          Second, note the behavior changes—shamblers, not
+          human. Third, mention the lab's current status.
+          Fourth, assess if containment holds. Fifth, suggest
+          next steps. Over.
+Ralph:    Six. Seven. Containment breached. Over.
+Moira:    Six. Seven. Containment breached. Over.
+Daniel:   Containment breached. Prioritize securing the
+          perimeter. Over.
+```
+
+Observed failures: Samantha produced a PLAN for the report, not
+the report; Ralph and Moira answered the STALE round-1 question —
+with Samantha's numbers ("Six. Seven."), not their own round-1
+counts; Moira copied Ralph verbatim; nobody wrote five sentences.
+Perfect radio format throughout — the failure is invisible to any
+format check. Interpretation promoted OUT of this experiment to
+[discussion 2026-09-16] (storytelling coherence & structure
+adherence): this is the founding specimen of the COHERENCE axis,
+mapping to six suspected mechanisms (A3, B4, C3, C6, C7, E2
+there).
+
+**3. Source audit triggered by the specimen (receipts):**
+
+- `app/session.py:147-148` — the human user's messages keep role
+  `user` with NO prefix or identity; only personas get `[Name]:`
+  (lines 153–159). The director is the only unnamed participant
+  in the transcript ("the invisible director", C6 in the
+  discussion doc).
+- `app/routers/chat.py:254-261` — only the FIRST speaker of a
+  round is picked by the configured strategy; replies 2..N are
+  `random.choice` among personas who haven't spoken. The report
+  round was one chosen speaker + three random conscripts.
+- `app/routers/chat.py:296` — rounds are SERIAL; each speaker's
+  history "already includes prior personas' replies". Rules OUT
+  stale-snapshot concurrency: the echoers saw the completed task.
+
+Measure-(e) status unchanged by all of the above: show-quality
+findings, not architectural blockers — the scope guard from the
+previous entry stands. Zero-code follow-up probes (owner-typed,
+one variable per run) are catalogued in the discussion doc §5.
