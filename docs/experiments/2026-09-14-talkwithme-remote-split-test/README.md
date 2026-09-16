@@ -1153,3 +1153,74 @@ Measure-(e) status unchanged by all of the above: show-quality
 findings, not architectural blockers — the scope guard from the
 previous entry stands. Zero-code follow-up probes (owner-typed,
 one variable per run) are catalogued in the discussion doc §5.
+
+### 2026-09-16 — Measure (c) harvested: the TTFA table (streaming mode passes; the A/B violators identified)
+
+Raw evidence: `raw-tts-window-tail.txt` (812-line
+`tmux capture-pane -t radio:tts -p -S -100000` dump, scp'd from
+the box). Derived numbers: `extract_tts_timings.py` (committed,
+stdlib-only; constants documented in its header). Reproduce:
+`python3 extract_tts_timings.py`. Script output verbatim:
+
+Parsed 152 synthesis requests -> 24 bursts (gap > 8 s).
+
+| Burst | Start (box time) | Sents | 1st-sent wall (s) | Est. TTFA (s)* | Total wall (s) | Total audio (s) | RTF min-max |
+|---|---|---|---|---|---|---|---|
+| 1 | 20:01:18 | 2 | 1.3 | 1.5 | 1.7 | 1.5 | 0.67-1.48 |
+| 2 | 20:01:53 | 2 | 0.3 | 0.5 | 0.6 | 0.6 | 0.79-0.81 |
+| 3 | 20:02:39 | 2 | 0.3 | 0.5 | 0.6 | 0.8 | 0.72-0.78 |
+| 4 | 20:03:55 | 6 | 3.5 | 3.7 | 14.5 | 31.5 | 0.46-0.72 |
+| 5 | 20:15:55 | 3 | 0.7 | 0.9 | 1.8 | 3.3 | 0.51-0.75 |
+| 6 | 20:16:55 | 2 | 0.6 | 0.8 | 0.9 | 1.6 | 0.54-0.69 |
+| 7 | 20:17:45 | 1 | 0.7 | 0.9 | 0.7 | 1.3 | 0.57-0.57 |
+| 8 | 20:18:51 | 8 | 0.7 | 0.9 | 5.0 | 9.0 | 0.52-0.69 |
+| 9 | 20:26:34 | 8 | 1.8 | 2.0 | 5.7 | 9.7 | 0.48-0.78 |
+| 10 | 20:29:10 | 11 | 1.2 | 1.4 | 5.4 | 9.5 | 0.51-1.12 |
+| 11 | 20:30:36 | 12 | 0.5 | 0.7 | 5.3 | 8.1 | 0.55-1.07 |
+| 12 | 20:40:02 | 9 | 0.4 | 0.6 | 3.3 | 5.4 | 0.55-1.10 |
+| 13 | 20:40:45 | 18 | 1.1 | 1.3 | 9.0 | 15.5 | 0.53-0.78 |
+| 14 | 20:48:35 | 1 | 14.7 | 14.9 | 14.7 | 29.9 | 0.49-0.49 |
+| 15 | 20:49:23 | 1 | 6.6 | 6.8 | 6.6 | 14.5 | 0.45-0.45 |
+| 16 | 20:49:47 | 1 | 5.9 | 6.1 | 5.9 | 13.0 | 0.46-0.46 |
+| 17 | 20:50:09 | 1 | 0.3 | 0.5 | 0.3 | 0.5 | 0.68-0.68 |
+| 18 | 21:00:37 | 1 | 10.2 | 10.4 | 10.2 | 18.3 | 0.56-0.56 |
+| 19 | 21:01:08 | 1 | 6.7 | 6.9 | 6.7 | 14.7 | 0.45-0.45 |
+| 20 | 21:01:33 | 1 | 4.4 | 4.6 | 4.4 | 9.6 | 0.46-0.46 |
+| 21 | 21:01:50 | 1 | 0.3 | 0.5 | 0.3 | 0.4 | 0.73-0.73 |
+| 22 | 21:10:03 | 25 | 0.6 | 0.8 | 14.1 | 24.9 | 0.49-0.95 |
+| 23 | 21:21:55 | 16 | 0.7 | 0.9 | 6.4 | 10.7 | 0.51-0.75 |
+| 24 | 21:34:44 | 19 | 0.5 | 0.7 | 14.4 | 26.8 | 0.48-0.74 |
+
+*Est. TTFA = first-sentence server wall + 1 RTT (0.215 s). Excludes the ~300 KB reference upload and response download; treat as a lower bound.
+
+Verdict input: 19/24 bursts have est. TTFA <= 5.0 s; max 14.9 s, median 0.9 s.
+
+Short-sentence economics (server-side only; the per-request network toll makes the real gap worse):
+- text_len <= 25: 125 requests, mean RTF 0.65, 5 with RTF > 1
+- text_len  > 25: 27 requests, mean RTF 0.50, 0 with RTF > 1
+
+**Reading (interpretation to be consolidated in findings.md at
+verdict time):**
+
+- **Median est. TTFA 0.9 s; 19/24 bursts ≤ 5 s.** Bursts 1–13
+  are THIRTEEN CONSECUTIVE replies under the 5 s line — the
+  frozen criterion's "sustained over ≥10 consecutive lines"
+  clause is met on streaming-mode evidence.
+- **The 5 violators are all single-sentence bursts carrying
+  13–30 s of audio, clustered 20:48–20:50 and 21:00–21:01** —
+  the fingerprint of whole-utterance (non-streaming) synthesis.
+  Believed to be the `streaming: false` A/B trials (owner to
+  confirm timing); if so, measure (c) independently convicts
+  non-streaming mode: worst case 14.9 s est. TTFA, matching the
+  owner's-ear verdict ("very, very long") from the earlier
+  entry.
+- **Short-sentence economics quantified:** 125 requests with
+  text_len ≤ 25 → mean RTF 0.65, five already >1.0 SERVER-SIDE;
+  27 longer requests → mean RTF 0.50, none >1.0. Add the
+  ≥0.2 s/request network toll and short sentences routinely go
+  effective-RTF > 1 — the max-chars accumulator's case, now
+  with numbers.
+- Caveat kept honest: Est. TTFA = server wall + 1 RTT only; the
+  ~300 KB reference upload and response download are excluded,
+  so real client TTFA is somewhat higher — and still clears the
+  bar with margin in streaming mode.

@@ -1,0 +1,812 @@
+ubuntu@persistent-schrodinger:~$
+ubuntu@persistent-schrodinger:~$
+ubuntu@persistent-schrodinger:~$ ls
+faster-Qwen3TTS  models
+ubuntu@persistent-schrodinger:~$ cd faster-Qwen3TTS/
+ubuntu@persistent-schrodinger:~/faster-Qwen3TTS$ cd ~/faster-Qwen3TTS/tts-serve && source ../.venv/bin/acti
+vate
+(.venv) ubuntu@persistent-schrodinger:~/faster-Qwen3TTS/tts-serve$
+(.venv) ubuntu@persistent-schrodinger:~/faster-Qwen3TTS/tts-serve$
+(.venv) ubuntu@persistent-schrodinger:~/faster-Qwen3TTS/tts-serve$ ls
+AGENTS.md  LICENSE  README.md  docs  impl  opencode.json  tools  tts-engine-common
+(.venv) ubuntu@persistent-schrodinger:~/faster-Qwen3TTS/tts-serve$ FASTER_QWEN3TTS_HOST=127.0.0.1 FASTER_QW
+EN3TTS_PORT=8001 python impl/server_fasterQwen3TTS.py
+2026-09-16 19:53:25.045 | INFO     | __main__:<module>:589 - Starting faster-qwen3-tts REST API server on %
+s:%d
+INFO:     Started server process [1739]
+INFO:     Waiting for application startup.
+2026-09-16 19:53:25.062 | INFO     | __main__:_get_runtime:371 - Loading faster-qwen3-tts model '%s' on dev
+ice '%s' ...
+
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rat
+e limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Loading weights: 100%|█████████████████████████████████████████████████| 480/480 [00:02<00:00, 177.66it/s]
+Fetching 4 files: 100%|███████████████████████████████████████████████████| 4/4 [00:00<00:00, 1423.85it/s]
+Download complete: :                                                                  |  0.00B
+Reconstruction complete: |                                                   |  0.00B /  0.00B
+Loading weights: 100%|████████████████████████████████████████████████| 496/496 [00:00<00:00, 1380.24it/s]
+Could not infer sample rate from base model; defaulting to 24000 Hz.
+Warming up predictor (3 runs)...
+Capturing CUDA graph for predictor...
+CUDA graph captured!
+Warming up talker graph (3 runs)...
+Capturing CUDA graph for talker decode...
+Talker CUDA graph captured!
+2026-09-16 19:53:38.995 | INFO     | __main__:_get_runtime:383 - Model loaded successfully.
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8001 (Press CTRL+C to quit)
+INFO:     127.0.0.1:52966 - "GET /capabilities HTTP/1.1" 200 OK
+INFO:     127.0.0.1:58700 - "GET /capabilities HTTP/1.1" 200 OK
+2026-09-16 20:01:18.493 | INFO     | __main__:synthesize:464 - Synthesizing: seed=573, text_len=12, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 20:01:19.796 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.3 s wall-clock, 0.9 s
+audio, RTF=1.476
+INFO:     127.0.0.1:38144 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:01:23.966 | INFO     | __main__:synthesize:464 - Synthesizing: seed=45, text_len=5, ref_text_
+len=96, lang=en (engine: english)
+2026-09-16 20:01:24.346 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.673
+INFO:     127.0.0.1:38148 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:01:53.517 | INFO     | __main__:synthesize:464 - Synthesizing: seed=278, text_len=4, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:01:53.780 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.3 s
+audio, RTF=0.811
+INFO:     127.0.0.1:55222 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:01:55.823 | INFO     | __main__:synthesize:464 - Synthesizing: seed=635, text_len=5, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:01:56.078 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.3 s
+audio, RTF=0.788
+INFO:     127.0.0.1:55232 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:02:39.882 | INFO     | __main__:synthesize:464 - Synthesizing: seed=68, text_len=5, ref_text_
+len=96, lang=en (engine: english)
+2026-09-16 20:02:40.196 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.4 s
+audio, RTF=0.776
+INFO:     127.0.0.1:39062 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:02:42.384 | INFO     | __main__:synthesize:464 - Synthesizing: seed=865, text_len=5, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:02:42.676 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.4 s
+audio, RTF=0.723
+INFO:     127.0.0.1:39068 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:03:55.762 | INFO     | __main__:synthesize:464 - Synthesizing: seed=670, text_len=139, ref_te
+xt_len=96, lang=en (engine: english)
+2026-09-16 20:03:59.274 | INFO     | __main__:synthesize:518 - Synthesis complete: 3.5 s wall-clock, 7.6 s
+audio, RTF=0.462
+INFO:     127.0.0.1:51318 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:04:02.626 | INFO     | __main__:synthesize:464 - Synthesizing: seed=148, text_len=119, ref_te
+xt_len=96, lang=en (engine: english)
+2026-09-16 20:04:05.760 | INFO     | __main__:synthesize:518 - Synthesis complete: 3.1 s wall-clock, 6.7 s
+audio, RTF=0.466
+INFO:     127.0.0.1:57648 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:04:08.794 | INFO     | __main__:synthesize:464 - Synthesizing: seed=932, text_len=91, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 20:04:11.727 | INFO     | __main__:synthesize:518 - Synthesis complete: 2.9 s wall-clock, 6.4 s
+audio, RTF=0.458
+INFO:     127.0.0.1:34274 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:04:14.554 | INFO     | __main__:synthesize:464 - Synthesizing: seed=617, text_len=101, ref_te
+xt_len=96, lang=en (engine: english)
+2026-09-16 20:04:17.262 | INFO     | __main__:synthesize:518 - Synthesis complete: 2.7 s wall-clock, 5.9 s
+audio, RTF=0.457
+INFO:     127.0.0.1:34286 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:04:20.097 | INFO     | __main__:synthesize:464 - Synthesizing: seed=940, text_len=76, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 20:04:22.144 | INFO     | __main__:synthesize:518 - Synthesis complete: 2.0 s wall-clock, 4.4 s
+audio, RTF=0.464
+INFO:     127.0.0.1:57366 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:04:24.863 | INFO     | __main__:synthesize:464 - Synthesizing: seed=244, text_len=5, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:04:25.211 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.718
+INFO:     127.0.0.1:57376 - "POST /synthesize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53070 - "GET /capabilities HTTP/1.1" 200 OK
+2026-09-16 20:15:55.233 | INFO     | __main__:synthesize:464 - Synthesizing: seed=520, text_len=21, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 20:15:55.985 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.3 s
+audio, RTF=0.585
+INFO:     127.0.0.1:45294 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:15:58.327 | INFO     | __main__:synthesize:464 - Synthesizing: seed=991, text_len=25, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 20:15:59.144 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.8 s wall-clock, 1.6 s
+audio, RTF=0.509
+INFO:     127.0.0.1:60416 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:16:01.008 | INFO     | __main__:synthesize:464 - Synthesizing: seed=203, text_len=5, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:16:01.310 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.4 s
+audio, RTF=0.747
+INFO:     127.0.0.1:60426 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:16:55.842 | INFO     | __main__:synthesize:464 - Synthesizing: seed=737, text_len=19, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 20:16:56.447 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.1 s
+audio, RTF=0.538
+INFO:     127.0.0.1:45324 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:16:58.849 | INFO     | __main__:synthesize:464 - Synthesizing: seed=455, text_len=5, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:16:59.182 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.689
+INFO:     127.0.0.1:41734 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:17:45.379 | INFO     | __main__:synthesize:464 - Synthesizing: seed=393, text_len=20, ref_tex
+t_len=82, lang=en (engine: english)
+2026-09-16 20:17:46.118 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.3 s
+audio, RTF=0.575
+INFO:     127.0.0.1:40090 - "POST /synthesize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60460 - "GET /capabilities HTTP/1.1" 200 OK
+2026-09-16 20:18:51.917 | INFO     | __main__:synthesize:464 - Synthesizing: seed=496, text_len=21, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 20:18:52.602 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.3 s
+audio, RTF=0.532
+INFO:     127.0.0.1:60462 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:18:54.880 | INFO     | __main__:synthesize:464 - Synthesizing: seed=111, text_len=5, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:18:55.216 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.693
+INFO:     127.0.0.1:60474 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:18:56.977 | INFO     | __main__:synthesize:464 - Synthesizing: seed=188, text_len=41, ref_tex
+t_len=94, lang=en (engine: english)
+2026-09-16 20:18:58.343 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.4 s wall-clock, 2.6 s
+audio, RTF=0.516
+INFO:     127.0.0.1:60476 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:19:00.947 | INFO     | __main__:synthesize:464 - Synthesizing: seed=796, text_len=5, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 20:19:01.357 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.636
+INFO:     127.0.0.1:51690 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:19:03.029 | INFO     | __main__:synthesize:464 - Synthesizing: seed=536, text_len=30, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 20:19:03.860 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.8 s wall-clock, 1.6 s
+audio, RTF=0.517
+INFO:     127.0.0.1:51704 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:19:06.253 | INFO     | __main__:synthesize:464 - Synthesizing: seed=480, text_len=5, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:19:06.581 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.677
+INFO:     127.0.0.1:51716 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:19:08.606 | INFO     | __main__:synthesize:464 - Synthesizing: seed=827, text_len=17, ref_tex
+t_len=82, lang=en (engine: english)
+2026-09-16 20:19:09.292 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.3 s
+audio, RTF=0.534
+INFO:     127.0.0.1:33134 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:19:11.673 | INFO     | __main__:synthesize:464 - Synthesizing: seed=685, text_len=5, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 20:19:12.047 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.664
+INFO:     127.0.0.1:33144 - "POST /synthesize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:40406 - "GET /capabilities HTTP/1.1" 200 OK
+2026-09-16 20:26:34.353 | INFO     | __main__:synthesize:464 - Synthesizing: seed=450, text_len=38, ref_tex
+t_len=94, lang=en (engine: english)
+2026-09-16 20:26:36.109 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.8 s wall-clock, 2.8 s
+audio, RTF=0.626
+INFO:     127.0.0.1:40410 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:26:38.196 | INFO     | __main__:synthesize:464 - Synthesizing: seed=127, text_len=5, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 20:26:38.554 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.635
+INFO:     127.0.0.1:43476 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:26:40.572 | INFO     | __main__:synthesize:464 - Synthesizing: seed=487, text_len=25, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 20:26:41.460 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.9 s wall-clock, 1.8 s
+audio, RTF=0.503
+INFO:     127.0.0.1:43488 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:26:43.845 | INFO     | __main__:synthesize:464 - Synthesizing: seed=808, text_len=5, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:26:44.205 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.639
+INFO:     127.0.0.1:43494 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:26:45.786 | INFO     | __main__:synthesize:464 - Synthesizing: seed=955, text_len=10, ref_tex
+t_len=82, lang=en (engine: english)
+2026-09-16 20:26:46.210 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.7 s
+audio, RTF=0.585
+INFO:     127.0.0.1:43502 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:26:48.814 | INFO     | __main__:synthesize:464 - Synthesizing: seed=418, text_len=5, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 20:26:49.179 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.648
+INFO:     127.0.0.1:51760 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:26:50.739 | INFO     | __main__:synthesize:464 - Synthesizing: seed=792, text_len=31, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 20:26:51.868 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.1 s wall-clock, 2.3 s
+audio, RTF=0.485
+INFO:     127.0.0.1:51768 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:26:54.493 | INFO     | __main__:synthesize:464 - Synthesizing: seed=771, text_len=5, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:26:54.746 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.3 s
+audio, RTF=0.783
+INFO:     127.0.0.1:51774 - "POST /synthesize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56894 - "GET /capabilities HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56910 - "GET /health HTTP/1.1" 200 OK
+2026-09-16 20:29:10.740 | INFO     | __main__:synthesize:464 - Synthesizing: seed=531, text_len=36, ref_tex
+t_len=94, lang=en (engine: english)
+2026-09-16 20:29:11.897 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.2 s wall-clock, 2.1 s
+audio, RTF=0.555
+INFO:     127.0.0.1:57156 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:29:14.434 | INFO     | __main__:synthesize:464 - Synthesizing: seed=746, text_len=5, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 20:29:14.760 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.674
+INFO:     127.0.0.1:57164 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:29:16.966 | INFO     | __main__:synthesize:464 - Synthesizing: seed=419, text_len=17, ref_tex
+t_len=82, lang=en (engine: english)
+2026-09-16 20:29:17.574 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.1 s
+audio, RTF=0.540
+INFO:     127.0.0.1:57174 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:29:20.099 | INFO     | __main__:synthesize:464 - Synthesizing: seed=92, text_len=4, ref_text_
+len=82, lang=en (engine: english)
+2026-09-16 20:29:20.381 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.4 s
+audio, RTF=0.699
+INFO:     127.0.0.1:41336 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:29:22.090 | INFO     | __main__:synthesize:464 - Synthesizing: seed=629, text_len=5, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 20:29:22.433 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.6 s
+audio, RTF=0.608
+INFO:     127.0.0.1:41338 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:29:24.037 | INFO     | __main__:synthesize:464 - Synthesizing: seed=93, text_len=20, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:29:24.780 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.4 s
+audio, RTF=0.514
+INFO:     127.0.0.1:41348 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:29:28.179 | INFO     | __main__:synthesize:464 - Synthesizing: seed=236, text_len=5, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:29:28.512 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.687
+INFO:     127.0.0.1:41350 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:29:30.030 | INFO     | __main__:synthesize:464 - Synthesizing: seed=638, text_len=5, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:29:30.583 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.0 s
+audio, RTF=0.529
+INFO:     127.0.0.1:41410 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:29:33.141 | INFO     | __main__:synthesize:464 - Synthesizing: seed=667, text_len=18, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 20:29:33.786 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.2 s
+audio, RTF=0.536
+INFO:     127.0.0.1:41422 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:29:36.284 | INFO     | __main__:synthesize:464 - Synthesizing: seed=345, text_len=5, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:29:36.600 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.654
+INFO:     127.0.0.1:41438 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:29:38.186 | INFO     | __main__:synthesize:464 - Synthesizing: seed=918, text_len=1, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:29:38.368 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.2 s wall-clock, 0.2 s
+audio, RTF=1.121
+INFO:     127.0.0.1:43036 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:30:36.435 | INFO     | __main__:synthesize:464 - Synthesizing: seed=842, text_len=13, ref_tex
+t_len=82, lang=en (engine: english)
+2026-09-16 20:30:36.900 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 0.8 s
+audio, RTF=0.577
+INFO:     127.0.0.1:43506 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:30:39.459 | INFO     | __main__:synthesize:464 - Synthesizing: seed=735, text_len=16, ref_tex
+t_len=82, lang=en (engine: english)
+2026-09-16 20:30:40.074 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.1 s
+audio, RTF=0.546
+INFO:     127.0.0.1:47010 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:30:41.938 | INFO     | __main__:synthesize:464 - Synthesizing: seed=219, text_len=5, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 20:30:42.543 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 0.6 s
+audio, RTF=1.073
+INFO:     127.0.0.1:47016 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:30:44.906 | INFO     | __main__:synthesize:464 - Synthesizing: seed=318, text_len=8, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:30:45.349 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.7 s
+audio, RTF=0.612
+INFO:     127.0.0.1:47026 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:30:47.095 | INFO     | __main__:synthesize:464 - Synthesizing: seed=992, text_len=8, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:30:47.552 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 0.8 s
+audio, RTF=0.568
+INFO:     127.0.0.1:47028 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:30:50.117 | INFO     | __main__:synthesize:464 - Synthesizing: seed=88, text_len=5, ref_text_
+len=93, lang=en (engine: english)
+2026-09-16 20:30:50.387 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.3 s
+audio, RTF=0.835
+INFO:     127.0.0.1:47122 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:30:51.944 | INFO     | __main__:synthesize:464 - Synthesizing: seed=288, text_len=1, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:30:52.116 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.2 s wall-clock, 0.2 s
+audio, RTF=1.054
+INFO:     127.0.0.1:47136 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:30:54.600 | INFO     | __main__:synthesize:464 - Synthesizing: seed=68, text_len=12, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 20:30:55.112 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 0.9 s
+audio, RTF=0.579
+INFO:     127.0.0.1:47144 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:30:57.629 | INFO     | __main__:synthesize:464 - Synthesizing: seed=44, text_len=15, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 20:30:58.188 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.0 s
+audio, RTF=0.579
+INFO:     127.0.0.1:47150 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:31:00.830 | INFO     | __main__:synthesize:464 - Synthesizing: seed=97, text_len=5, ref_text_
+len=94, lang=en (engine: english)
+2026-09-16 20:31:01.161 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.682
+INFO:     127.0.0.1:41072 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:31:02.759 | INFO     | __main__:synthesize:464 - Synthesizing: seed=706, text_len=11, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 20:31:03.219 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 0.8 s
+audio, RTF=0.571
+INFO:     127.0.0.1:41078 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:31:05.872 | INFO     | __main__:synthesize:464 - Synthesizing: seed=211, text_len=5, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:31:06.162 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.4 s
+audio, RTF=0.720
+INFO:     127.0.0.1:41084 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:02.266 | INFO     | __main__:synthesize:464 - Synthesizing: seed=25, text_len=8, ref_text_
+len=96, lang=en (engine: english)
+2026-09-16 20:40:02.665 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.619
+INFO:     127.0.0.1:45826 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:04.582 | INFO     | __main__:synthesize:464 - Synthesizing: seed=489, text_len=5, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:40:04.905 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.665
+INFO:     127.0.0.1:45832 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:07.067 | INFO     | __main__:synthesize:464 - Synthesizing: seed=65, text_len=14, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:40:07.595 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 1.0 s
+audio, RTF=0.547
+INFO:     127.0.0.1:45840 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:10.106 | INFO     | __main__:synthesize:464 - Synthesizing: seed=558, text_len=5, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:40:10.427 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.664
+INFO:     127.0.0.1:51686 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:12.740 | INFO     | __main__:synthesize:464 - Synthesizing: seed=467, text_len=1, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:40:12.918 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.2 s wall-clock, 0.2 s
+audio, RTF=1.097
+INFO:     127.0.0.1:51700 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:14.354 | INFO     | __main__:synthesize:464 - Synthesizing: seed=356, text_len=8, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 20:40:14.794 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.7 s
+audio, RTF=0.608
+INFO:     127.0.0.1:51704 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:17.482 | INFO     | __main__:synthesize:464 - Synthesizing: seed=842, text_len=5, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 20:40:17.840 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.635
+INFO:     127.0.0.1:51720 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:20.261 | INFO     | __main__:synthesize:464 - Synthesizing: seed=449, text_len=7, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 20:40:20.700 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.7 s
+audio, RTF=0.606
+INFO:     127.0.0.1:43094 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:22.780 | INFO     | __main__:synthesize:464 - Synthesizing: seed=991, text_len=5, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 20:40:23.153 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.661
+INFO:     127.0.0.1:43104 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:45.232 | INFO     | __main__:synthesize:464 - Synthesizing: seed=727, text_len=13, ref_tex
+t_len=82, lang=en (engine: english)
+2026-09-16 20:40:46.364 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.1 s wall-clock, 1.4 s
+audio, RTF=0.784
+INFO:     127.0.0.1:43542 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:48.276 | INFO     | __main__:synthesize:464 - Synthesizing: seed=393, text_len=3, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 20:40:48.843 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.0 s
+audio, RTF=0.543
+INFO:     127.0.0.1:37728 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:50.779 | INFO     | __main__:synthesize:464 - Synthesizing: seed=125, text_len=9, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 20:40:51.309 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 1.0 s
+audio, RTF=0.550
+INFO:     127.0.0.1:37744 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:53.559 | INFO     | __main__:synthesize:464 - Synthesizing: seed=634, text_len=5, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 20:40:53.891 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.687
+INFO:     127.0.0.1:37760 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:55.884 | INFO     | __main__:synthesize:464 - Synthesizing: seed=903, text_len=16, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 20:40:56.498 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.1 s
+audio, RTF=0.546
+INFO:     127.0.0.1:37762 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:40:58.919 | INFO     | __main__:synthesize:464 - Synthesizing: seed=622, text_len=8, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:40:59.364 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.7 s
+audio, RTF=0.613
+INFO:     127.0.0.1:48470 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:41:01.810 | INFO     | __main__:synthesize:464 - Synthesizing: seed=748, text_len=3, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:41:02.321 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 0.9 s
+audio, RTF=0.577
+INFO:     127.0.0.1:48476 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:41:04.192 | INFO     | __main__:synthesize:464 - Synthesizing: seed=971, text_len=5, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:41:04.490 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.4 s
+audio, RTF=0.739
+INFO:     127.0.0.1:48484 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:41:07.111 | INFO     | __main__:synthesize:464 - Synthesizing: seed=936, text_len=3, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:41:07.473 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.642
+INFO:     127.0.0.1:48496 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:41:09.708 | INFO     | __main__:synthesize:464 - Synthesizing: seed=653, text_len=6, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:41:10.032 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.669
+INFO:     127.0.0.1:45636 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:41:11.463 | INFO     | __main__:synthesize:464 - Synthesizing: seed=170, text_len=3, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:41:11.992 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 1.0 s
+audio, RTF=0.548
+INFO:     127.0.0.1:45650 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:41:14.267 | INFO     | __main__:synthesize:464 - Synthesizing: seed=169, text_len=13, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 20:41:14.947 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.3 s
+audio, RTF=0.529
+INFO:     127.0.0.1:45658 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:41:16.681 | INFO     | __main__:synthesize:464 - Synthesizing: seed=318, text_len=5, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 20:41:17.030 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.6 s
+audio, RTF=0.619
+INFO:     127.0.0.1:45674 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:41:19.481 | INFO     | __main__:synthesize:464 - Synthesizing: seed=77, text_len=3, ref_text_
+len=94, lang=en (engine: english)
+2026-09-16 20:41:19.843 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.641
+INFO:     127.0.0.1:36956 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:41:22.435 | INFO     | __main__:synthesize:464 - Synthesizing: seed=932, text_len=15, ref_tex
+t_len=94, lang=en (engine: english)
+2026-09-16 20:41:23.160 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.4 s
+audio, RTF=0.531
+INFO:     127.0.0.1:36960 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:41:25.396 | INFO     | __main__:synthesize:464 - Synthesizing: seed=31, text_len=15, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 20:41:26.100 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.3 s
+audio, RTF=0.547
+INFO:     127.0.0.1:36966 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:41:28.281 | INFO     | __main__:synthesize:464 - Synthesizing: seed=233, text_len=3, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 20:41:28.715 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.7 s
+audio, RTF=0.599
+INFO:     127.0.0.1:45426 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:41:31.230 | INFO     | __main__:synthesize:464 - Synthesizing: seed=646, text_len=5, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 20:41:31.560 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.681
+INFO:     127.0.0.1:45438 - "POST /synthesize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:56752 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60446 - "GET /capabilities HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60450 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:53838 - "GET /capabilities HTTP/1.1" 200 OK
+2026-09-16 20:48:35.456 | INFO     | __main__:synthesize:464 - Synthesizing: seed=547, text_len=487, ref_te
+xt_len=93, lang=en (engine: english)
+2026-09-16 20:48:50.191 | INFO     | __main__:synthesize:518 - Synthesis complete: 14.7 s wall-clock, 29.9
+s audio, RTF=0.492
+INFO:     127.0.0.1:53854 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:49:23.132 | INFO     | __main__:synthesize:464 - Synthesizing: seed=417, text_len=189, ref_te
+xt_len=82, lang=en (engine: english)
+2026-09-16 20:49:29.718 | INFO     | __main__:synthesize:518 - Synthesis complete: 6.6 s wall-clock, 14.5 s
+ audio, RTF=0.454
+INFO:     127.0.0.1:40590 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:49:47.064 | INFO     | __main__:synthesize:464 - Synthesizing: seed=755, text_len=183, ref_te
+xt_len=94, lang=en (engine: english)
+2026-09-16 20:49:52.966 | INFO     | __main__:synthesize:518 - Synthesis complete: 5.9 s wall-clock, 13.0 s
+ audio, RTF=0.455
+INFO:     127.0.0.1:38922 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 20:50:09.308 | INFO     | __main__:synthesize:464 - Synthesizing: seed=521, text_len=6, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 20:50:09.637 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.679
+INFO:     127.0.0.1:59992 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:00:37.254 | INFO     | __main__:synthesize:464 - Synthesizing: seed=394, text_len=276, ref_te
+xt_len=82, lang=en (engine: english)
+2026-09-16 21:00:47.490 | INFO     | __main__:synthesize:518 - Synthesis complete: 10.2 s wall-clock, 18.3
+s audio, RTF=0.558
+INFO:     127.0.0.1:36264 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:01:08.844 | INFO     | __main__:synthesize:464 - Synthesizing: seed=632, text_len=213, ref_te
+xt_len=94, lang=en (engine: english)
+2026-09-16 21:01:15.521 | INFO     | __main__:synthesize:518 - Synthesis complete: 6.7 s wall-clock, 14.7 s
+ audio, RTF=0.453
+INFO:     127.0.0.1:37118 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:01:33.156 | INFO     | __main__:synthesize:464 - Synthesizing: seed=488, text_len=127, ref_te
+xt_len=93, lang=en (engine: english)
+2026-09-16 21:01:37.560 | INFO     | __main__:synthesize:518 - Synthesis complete: 4.4 s wall-clock, 9.6 s
+audio, RTF=0.458
+INFO:     127.0.0.1:50266 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:01:50.281 | INFO     | __main__:synthesize:464 - Synthesizing: seed=402, text_len=6, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 21:01:50.574 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.4 s
+audio, RTF=0.726
+INFO:     127.0.0.1:58298 - "POST /synthesize HTTP/1.1" 200 OK
+INFO:     127.0.0.1:34550 - "GET /health HTTP/1.1" 200 OK
+INFO:     127.0.0.1:60246 - "GET /capabilities HTTP/1.1" 200 OK
+2026-09-16 21:10:03.183 | INFO     | __main__:synthesize:464 - Synthesizing: seed=452, text_len=11, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 21:10:03.737 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.0 s
+audio, RTF=0.574
+INFO:     127.0.0.1:60256 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:06.079 | INFO     | __main__:synthesize:464 - Synthesizing: seed=956, text_len=6, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 21:10:06.460 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.675
+INFO:     127.0.0.1:60268 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:07.998 | INFO     | __main__:synthesize:464 - Synthesizing: seed=519, text_len=11, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 21:10:08.571 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.0 s
+audio, RTF=0.548
+INFO:     127.0.0.1:46160 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:10.733 | INFO     | __main__:synthesize:464 - Synthesizing: seed=553, text_len=18, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 21:10:11.369 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.2 s
+audio, RTF=0.527
+INFO:     127.0.0.1:46170 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:13.916 | INFO     | __main__:synthesize:464 - Synthesizing: seed=385, text_len=42, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 21:10:15.213 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.3 s wall-clock, 2.6 s
+audio, RTF=0.490
+INFO:     127.0.0.1:46172 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:17.126 | INFO     | __main__:synthesize:464 - Synthesizing: seed=354, text_len=27, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 21:10:18.001 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.9 s wall-clock, 1.7 s
+audio, RTF=0.520
+INFO:     127.0.0.1:46184 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:20.243 | INFO     | __main__:synthesize:464 - Synthesizing: seed=587, text_len=29, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 21:10:21.071 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.8 s wall-clock, 1.6 s
+audio, RTF=0.516
+INFO:     127.0.0.1:48746 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:23.338 | INFO     | __main__:synthesize:464 - Synthesizing: seed=78, text_len=5, ref_text_
+len=93, lang=en (engine: english)
+2026-09-16 21:10:23.671 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.690
+INFO:     127.0.0.1:48762 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:25.734 | INFO     | __main__:synthesize:464 - Synthesizing: seed=76, text_len=1, ref_text_
+len=93, lang=en (engine: english)
+2026-09-16 21:10:25.966 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.2 s wall-clock, 0.2 s
+audio, RTF=0.955
+INFO:     127.0.0.1:48778 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:28.491 | INFO     | __main__:synthesize:464 - Synthesizing: seed=131, text_len=3, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 21:10:28.892 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.622
+INFO:     127.0.0.1:52684 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:31.500 | INFO     | __main__:synthesize:464 - Synthesizing: seed=902, text_len=14, ref_tex
+t_len=94, lang=en (engine: english)
+2026-09-16 21:10:32.269 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.8 s wall-clock, 1.4 s
+audio, RTF=0.532
+INFO:     127.0.0.1:52696 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:34.781 | INFO     | __main__:synthesize:464 - Synthesizing: seed=776, text_len=5, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 21:10:35.117 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.694
+INFO:     127.0.0.1:52712 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:36.726 | INFO     | __main__:synthesize:464 - Synthesizing: seed=835, text_len=7, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 21:10:37.186 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 0.8 s
+audio, RTF=0.571
+INFO:     127.0.0.1:52716 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:39.437 | INFO     | __main__:synthesize:464 - Synthesizing: seed=739, text_len=6, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 21:10:39.798 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.640
+INFO:     127.0.0.1:44556 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:42.150 | INFO     | __main__:synthesize:464 - Synthesizing: seed=590, text_len=5, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 21:10:42.570 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.652
+INFO:     127.0.0.1:44560 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:44.336 | INFO     | __main__:synthesize:464 - Synthesizing: seed=330, text_len=5, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 21:10:44.732 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.615
+INFO:     127.0.0.1:44566 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:46.311 | INFO     | __main__:synthesize:464 - Synthesizing: seed=463, text_len=5, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 21:10:46.660 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.6 s
+audio, RTF=0.619
+INFO:     127.0.0.1:44576 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:49.045 | INFO     | __main__:synthesize:464 - Synthesizing: seed=168, text_len=3, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 21:10:49.411 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.647
+INFO:     127.0.0.1:42184 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:51.126 | INFO     | __main__:synthesize:464 - Synthesizing: seed=670, text_len=9, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 21:10:51.521 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.613
+INFO:     127.0.0.1:42188 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:53.760 | INFO     | __main__:synthesize:464 - Synthesizing: seed=366, text_len=17, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 21:10:54.415 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.2 s
+audio, RTF=0.544
+INFO:     127.0.0.1:42202 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:56.159 | INFO     | __main__:synthesize:464 - Synthesizing: seed=53, text_len=21, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 21:10:56.990 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.8 s wall-clock, 1.6 s
+audio, RTF=0.517
+INFO:     127.0.0.1:42212 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:10:58.713 | INFO     | __main__:synthesize:464 - Synthesizing: seed=494, text_len=16, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 21:10:59.397 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.3 s
+audio, RTF=0.532
+INFO:     127.0.0.1:43464 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:11:01.194 | INFO     | __main__:synthesize:464 - Synthesizing: seed=23, text_len=14, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 21:11:01.668 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 0.8 s
+audio, RTF=0.589
+INFO:     127.0.0.1:43480 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:11:04.626 | INFO     | __main__:synthesize:464 - Synthesizing: seed=469, text_len=33, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 21:11:05.716 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.1 s wall-clock, 2.2 s
+audio, RTF=0.503
+INFO:     127.0.0.1:43494 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:11:07.745 | INFO     | __main__:synthesize:464 - Synthesizing: seed=306, text_len=5, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 21:11:08.080 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.693
+INFO:     127.0.0.1:40164 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:21:55.607 | INFO     | __main__:synthesize:464 - Synthesizing: seed=304, text_len=16, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 21:21:56.267 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.2 s
+audio, RTF=0.547
+INFO:     127.0.0.1:44344 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:21:57.803 | INFO     | __main__:synthesize:464 - Synthesizing: seed=293, text_len=13, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 21:21:58.353 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 1.0 s
+audio, RTF=0.570
+INFO:     127.0.0.1:36924 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:00.511 | INFO     | __main__:synthesize:464 - Synthesizing: seed=311, text_len=10, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 21:22:00.796 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.4 s
+audio, RTF=0.703
+INFO:     127.0.0.1:36928 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:02.366 | INFO     | __main__:synthesize:464 - Synthesizing: seed=809, text_len=18, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 21:22:03.106 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.4 s
+audio, RTF=0.512
+INFO:     127.0.0.1:36940 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:05.481 | INFO     | __main__:synthesize:464 - Synthesizing: seed=889, text_len=5, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 21:22:05.777 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.4 s
+audio, RTF=0.731
+INFO:     127.0.0.1:36952 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:07.300 | INFO     | __main__:synthesize:464 - Synthesizing: seed=26, text_len=1, ref_text_
+len=93, lang=en (engine: english)
+2026-09-16 21:22:07.542 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.2 s wall-clock, 0.3 s
+audio, RTF=0.749
+INFO:     127.0.0.1:49336 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:09.695 | INFO     | __main__:synthesize:464 - Synthesizing: seed=472, text_len=4, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 21:22:09.989 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.4 s
+audio, RTF=0.729
+INFO:     127.0.0.1:49350 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:11.472 | INFO     | __main__:synthesize:464 - Synthesizing: seed=981, text_len=6, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 21:22:11.785 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.647
+INFO:     127.0.0.1:49364 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:13.922 | INFO     | __main__:synthesize:464 - Synthesizing: seed=103, text_len=10, ref_tex
+t_len=82, lang=en (engine: english)
+2026-09-16 21:22:14.362 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.7 s
+audio, RTF=0.607
+INFO:     127.0.0.1:49380 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:15.982 | INFO     | __main__:synthesize:464 - Synthesizing: seed=703, text_len=5, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 21:22:16.366 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.597
+INFO:     127.0.0.1:49390 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:18.678 | INFO     | __main__:synthesize:464 - Synthesizing: seed=757, text_len=10, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 21:22:19.124 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.7 s
+audio, RTF=0.616
+INFO:     127.0.0.1:51910 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:21.725 | INFO     | __main__:synthesize:464 - Synthesizing: seed=648, text_len=4, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 21:22:22.131 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.630
+INFO:     127.0.0.1:51912 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:23.870 | INFO     | __main__:synthesize:464 - Synthesizing: seed=181, text_len=5, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 21:22:24.186 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.654
+INFO:     127.0.0.1:51914 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:26.581 | INFO     | __main__:synthesize:464 - Synthesizing: seed=718, text_len=4, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 21:22:27.019 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.7 s
+audio, RTF=0.605
+INFO:     127.0.0.1:51924 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:28.899 | INFO     | __main__:synthesize:464 - Synthesizing: seed=470, text_len=6, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 21:22:29.381 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 0.8 s
+audio, RTF=0.599
+INFO:     127.0.0.1:46934 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:22:31.905 | INFO     | __main__:synthesize:464 - Synthesizing: seed=610, text_len=5, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 21:22:32.243 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.697
+INFO:     127.0.0.1:46946 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:34:44.237 | INFO     | __main__:synthesize:464 - Synthesizing: seed=442, text_len=11, ref_tex
+t_len=94, lang=en (engine: english)
+2026-09-16 21:34:44.709 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.5 s wall-clock, 0.8 s
+audio, RTF=0.587
+INFO:     127.0.0.1:52164 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:34:46.665 | INFO     | __main__:synthesize:464 - Synthesizing: seed=77, text_len=30, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 21:34:47.836 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.2 s wall-clock, 1.8 s
+audio, RTF=0.634
+INFO:     127.0.0.1:52166 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:34:50.235 | INFO     | __main__:synthesize:464 - Synthesizing: seed=257, text_len=55, ref_tex
+t_len=94, lang=en (engine: english)
+2026-09-16 21:34:51.811 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.6 s wall-clock, 3.3 s
+audio, RTF=0.479
+INFO:     127.0.0.1:47920 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:34:54.418 | INFO     | __main__:synthesize:464 - Synthesizing: seed=899, text_len=55, ref_tex
+t_len=94, lang=en (engine: english)
+2026-09-16 21:34:56.371 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.9 s wall-clock, 4.1 s
+audio, RTF=0.478
+INFO:     127.0.0.1:47936 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:34:59.062 | INFO     | __main__:synthesize:464 - Synthesizing: seed=246, text_len=40, ref_tex
+t_len=94, lang=en (engine: english)
+2026-09-16 21:35:00.303 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.2 s wall-clock, 2.5 s
+audio, RTF=0.499
+INFO:     127.0.0.1:54454 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:02.883 | INFO     | __main__:synthesize:464 - Synthesizing: seed=786, text_len=36, ref_tex
+t_len=94, lang=en (engine: english)
+2026-09-16 21:35:04.053 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.2 s wall-clock, 2.3 s
+audio, RTF=0.503
+INFO:     127.0.0.1:54468 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:06.019 | INFO     | __main__:synthesize:464 - Synthesizing: seed=581, text_len=26, ref_tex
+t_len=94, lang=en (engine: english)
+2026-09-16 21:35:07.051 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.0 s wall-clock, 2.0 s
+audio, RTF=0.515
+INFO:     127.0.0.1:54474 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:09.224 | INFO     | __main__:synthesize:464 - Synthesizing: seed=600, text_len=5, ref_text
+_len=94, lang=en (engine: english)
+2026-09-16 21:35:09.561 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.698
+INFO:     127.0.0.1:53898 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:11.301 | INFO     | __main__:synthesize:464 - Synthesizing: seed=739, text_len=4, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 21:35:11.736 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.7 s
+audio, RTF=0.600
+INFO:     127.0.0.1:53912 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:13.943 | INFO     | __main__:synthesize:464 - Synthesizing: seed=403, text_len=6, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 21:35:14.340 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.616
+INFO:     127.0.0.1:53926 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:15.937 | INFO     | __main__:synthesize:464 - Synthesizing: seed=725, text_len=21, ref_tex
+t_len=82, lang=en (engine: english)
+2026-09-16 21:35:16.679 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.7 s wall-clock, 1.4 s
+audio, RTF=0.513
+INFO:     127.0.0.1:53928 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:19.270 | INFO     | __main__:synthesize:464 - Synthesizing: seed=167, text_len=5, ref_text
+_len=82, lang=en (engine: english)
+2026-09-16 21:35:19.636 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.649
+INFO:     127.0.0.1:55088 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:23.093 | INFO     | __main__:synthesize:464 - Synthesizing: seed=801, text_len=4, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 21:35:23.458 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.648
+INFO:     127.0.0.1:55102 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:25.419 | INFO     | __main__:synthesize:464 - Synthesizing: seed=864, text_len=6, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 21:35:25.825 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.4 s wall-clock, 0.6 s
+audio, RTF=0.630
+INFO:     127.0.0.1:55110 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:27.461 | INFO     | __main__:synthesize:464 - Synthesizing: seed=756, text_len=21, ref_tex
+t_len=93, lang=en (engine: english)
+2026-09-16 21:35:28.058 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.1 s
+audio, RTF=0.531
+INFO:     127.0.0.1:37202 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:29.443 | INFO     | __main__:synthesize:464 - Synthesizing: seed=558, text_len=5, ref_text
+_len=93, lang=en (engine: english)
+2026-09-16 21:35:29.756 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.5 s
+audio, RTF=0.647
+INFO:     127.0.0.1:37208 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:31.727 | INFO     | __main__:synthesize:464 - Synthesizing: seed=367, text_len=21, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 21:35:32.342 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.6 s wall-clock, 1.1 s
+audio, RTF=0.546
+INFO:     127.0.0.1:37212 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:34.729 | INFO     | __main__:synthesize:464 - Synthesizing: seed=695, text_len=34, ref_tex
+t_len=96, lang=en (engine: english)
+2026-09-16 21:35:35.711 | INFO     | __main__:synthesize:518 - Synthesis complete: 1.0 s wall-clock, 1.9 s
+audio, RTF=0.509
+INFO:     127.0.0.1:37218 - "POST /synthesize HTTP/1.1" 200 OK
+2026-09-16 21:35:38.260 | INFO     | __main__:synthesize:464 - Synthesizing: seed=790, text_len=5, ref_text
+_len=96, lang=en (engine: english)
+2026-09-16 21:35:38.557 | INFO     | __main__:synthesize:518 - Synthesis complete: 0.3 s wall-clock, 0.4 s
+audio, RTF=0.736
+INFO:     127.0.0.1:37658 - "POST /synthesize HTTP/1.1" 200 OK
+
