@@ -36,8 +36,10 @@ reader's memory):
   and brainstorm §3.
 - **Trigger:** time allows after the MVP's TTS path works
   end-to-end with an existing engine — explicitly a SOFT goal;
-  also triggered if the §8.4 engine comparison experiment finds
-  the existing six inadequate for 4 distinct character voices.
+  also triggered if the [spec §7.2] engine comparison experiment
+  finds the existing six inadequate for 4 distinct character
+  voices. *(Pointer corrected 2026-09-16: was "§8.4", a stale
+  pre-spec number.)*
 - **Fix shape:** implement a tts-serve server module per engine
   following the existing `impl/server_*.md` pattern
   (<https://github.com/scorbo2/tts-serve/tree/master/impl>);
@@ -63,3 +65,30 @@ reader's memory):
 - **Fix shape:** one-hour smoke test on a $0.35/hr A30 — check
   code coverage at deploy, `docker run --gpus all`, and port
   reachability; if all pass, promote to dev-workhorse candidate.
+
+## TalkWithMe upstream-contribution candidates — two designated patches
+
+- **The gap:** the remote-split spike closed with zero forks and
+  two small, fully-scoped patches designated but NOT built
+  (deliberate scope guard): (1) a one-line output sanitizer
+  stripping leading `[Name]:` labels before display/TTS — the
+  firebreak for label mimicry, and the fork-vs-upstream decision
+  point per the fork strategy ("defer until the first patch");
+  (2) a max-chars sentence accumulator replacing per-sentence
+  chunking in `static/tts.js` — fixes both the naive splitter
+  ("Dr. Byrne" → four requests) and the short-sentence
+  economics (effective RTF > 1; quantified in the spike's TTFA
+  data). A third config-only lever rides along: raise
+  `max_turns_for_context` from 6 (amnesia-by-design in a
+  4-persona room — taxonomy C9).
+- **Where flagged:** remote-split runlog + findings (2026-09-16);
+  mechanisms C1/C9 and the economics receipts in
+  [discussion 2026-09-16] (narrative health).
+- **Trigger:** the adaptation arc opens (these are its first
+  backlog items); the sanitizer fires EARLY if a show room gets
+  label-contaminated and fresh-room hygiene stops sufficing.
+- **Fix shape:** sanitizer = one line in the reply path (or
+  client-side before TTS enqueue); accumulator = replace the
+  sentence-split loop in `static/tts.js` with
+  pack-up-to-N-chars; both are candidate PRs to scorbo2 once
+  proven in our fork.

@@ -1357,3 +1357,11 @@ the order of magnitude is established).
 folder is now edited only to fix factual transcription errors
 (dated note). Verdict: PASS (findings.md). The box is gone; the
 recipe (R0–R13) is the box, whenever we need it again.
+
+### 2026-09-16 (post-close dated note, per the sealed-folder rule)
+
+The measure-(c) hedge is resolved: the owner CONFIRMED the
+20:48–20:50 and 21:00–21:01 windows were the `streaming: false`
+trials. The five >5 s TTFA bursts are now owner-confirmed (not
+merely "believed") to be the rejected non-streaming mode — the
+attribution in findings.md stands as written.

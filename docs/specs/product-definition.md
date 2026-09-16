@@ -98,27 +98,35 @@ measures.
 
 ### §3.2 Foundation
 
-Per [ADR-0001] (draft): adapt **TalkWithMe** (client + persona
-orchestration base) and **tts-serve** (TTS abstraction), rather
-than adopt a voice-agent framework. Validation gate: the WAN
-spike (§7.1) with a named flip trigger to Pipecat.
+Per [ADR-0001] (**accepted** 2026-09-16): adapt **TalkWithMe**
+(client + persona orchestration base) and **tts-serve** (TTS
+abstraction), rather than adopt a voice-agent framework. The
+validation gate — the WAN spike (§7.1) — **passed**; the named
+flip trigger to Pipecat expired unfired.
 
-### §3.3 The decoupling question **[UNKNOWN — gated by spike §7.1]**
+### §3.3 The decoupling question **[RESOLVED by spike §7.1 — verdict PASS, 2026-09-16]**
 
-With the §3.1 topology (TalkWithMe local, models remote), the
-decoupling question shrinks encouragingly: TalkWithMe already
-reaches its model services *by URL* (OpenAI-compatible
-`base_url` for the LLM, HTTP endpoints for TTS and
-whisper-fastapi), so the split may be largely **configuration,
-not surgery**. What remains genuinely unknown: whether its
-streaming TTS playback and session flow tolerate WAN latency and
-jitter between app and model services, per-line latency stacking
-(each line = LLM round-trip + TTS round-trip), and any
-hardcoded-localhost corners. Radio pacing tolerates seconds, and
-PTT input has no realtime constraint (record fully, then upload)
-— but this remains the MVP's biggest untested assumption; the
-spike tests it with pass/partial/fail criteria pre-registered in
-TODO Task 3a.
+What was the MVP's biggest untested assumption is now its
+best-tested fact: the split is **configuration, not surgery** —
+demonstrated with **zero upstream modifications**. TalkWithMe on
+the laptop reached all three model services (llama.cpp,
+tts-serve/Faster Qwen3-TTS, whisper-fastapi) through the SSH
+tunnel by URL alone; streaming TTS playback survived real WAN
+conditions (~215 ms RTT to NORWAY-1) with median
+time-to-first-audio 0.9 s and 13 consecutive replies under the
+5 s criterion; no hardcoded-localhost corners were found. Full
+record: `experiments/2026-09-14-talkwithme-remote-split-test/`.
+
+**What this does NOT resolve (owner ruling, 2026-09-16): the
+fork question.** "Configuration suffices to SPLIT the app" is
+not "configuration suffices to SHIP the show." The spike's
+narrative-coherence findings ([discussion 2026-09-16]) make a
+fork likely anyway — designated candidate patches already exist
+(the `[Name]:` output sanitizer, the max-chars TTS accumulator;
+follow-ups.md) even though none was needed for the split itself.
+The fork-strategy ruling stands: defer until the first patch is
+actually required; that moment decides fork-vs-upstream with
+data.
 
 ## §4. Model stack
 
@@ -130,7 +138,11 @@ TODO Task 3a.
   **[UNKNOWN — the working default is picked by the audition
   experiment over that list, and must exist before
   prompt-engineering starts; prompts overfit to a model's
-  voice.]**
+  voice.]** Field intel from the spike (2026-09-16): the rank-1
+  presumptive (Nemotron, at Q4_K_M with reasoning off) showed
+  in-context dialog-quality concerns in ensemble use (runlog,
+  name-memory entry) — this sharpens the audition's mandate, it
+  does not pre-judge it.
 - **STT** — DECIDED: Whisper via whisper-fastapi
   (TalkWithMe-native). Size is a free config knob **[UNKNOWN —
   set by the VRAM experiment §7.2]**. Whisper confidence
@@ -146,8 +158,12 @@ TODO Task 3a.
   24 GB** (hard requirement: the stack must fit a 24 GB card —
   the owner's RTX 3090 class). **Aspirational, explicitly NOT a
   hard target (owner ruling 2026-09-13): fit in 16 GB.**
-  Unconfirmed that it's reachable; treated as a nice-to-have
-  the §7.2 experiment should report on, not design for. Why it
+  Partially confirmed by the spike (2026-09-16): the
+  ONE-TTS-engine trio (9B-Q4 LLM at 16k ctx + Faster Qwen3-TTS +
+  Whisper small) measured 14.0/15.3 GiB fully warm on an A4000 —
+  ~1.3 GiB headroom. The MVP's two-engine stack remains
+  unmeasured; still a nice-to-have the §7.2 experiment reports
+  on, not designs for. Why it
   would matter if achieved: it widens who can self-host (16 GB
   consumer cards are far more common than 24 GB ones — the
   local-AI-first soul) and unlocks the cheapest cloud tiers
@@ -177,7 +193,14 @@ broadcast needs a director loop: who speaks next, pacing, when to
 open interaction beats, dead-air/static texture between segments
 (in-fiction filler that also buys the pipeline generation time).
 Session/loop length target also open. This is expected design +
-build work of unknown-but-real size (see §8).
+build work of unknown-but-real size (see §8). Still unshaped, but
+no longer uninformed (2026-09-16): the spike's ensemble sessions
+produced the narrative-health framework — two axes (storytelling
+coherence / structure adherence) and a 20-mechanism failure
+taxonomy with a zero-code test battery ([discussion 2026-09-16])
+— and its evidence (nothing in the stack owns coherence;
+taxonomy E3) suggests the director may be load-bearing rather
+than nice-to-have. That map is where this design work starts.
 
 ## §6. Deployment & operations
 
@@ -221,8 +244,11 @@ build work of unknown-but-real size (see §8).
 ## §7. Validation gates & experiments
 
 1. **§7.1 TalkWithMe remote-split test** ("the spike"; TODO Task 3a; 2-day
-   timebox; verdict criteria pre-registered) — gates ADR-0001's
-   freeze; FAIL flips the foundation to Pipecat.
+   timebox; verdict criteria pre-registered) — gated ADR-0001's
+   freeze; FAIL would have flipped the foundation to Pipecat.
+   **RUN 2026-09-15/16, verdict PASS** (zero upstream
+   modifications; total cost $2.97); ADR-0001 accepted. Record:
+   `experiments/2026-09-14-talkwithme-remote-split-test/`.
 2. **§7.2 TTS engine comparison + VRAM budget** — picks the two
    deployed engines, the Whisper size, and validates the whole
    stack fits one GPU. Shape TBD when scoped (experiments
@@ -288,8 +314,10 @@ model-inference server.
 ### §10.1 Authentication (app-logic side)
 
 TalkWithMe, tts-serve, llama.cpp, and whisper-fastapi are all
-localhost-born; assume **none provides authentication**
-**[UNKNOWN — verify during the spike §7.1]**. With the §3.1
+localhost-born; **none provides authentication** **[VERIFIED by
+the spike §7.1, 2026-09-16 — measure (f): llama-server warns
+openly, tts-serve and whisper-fastapi offer nothing; the tunnel
+is thereby load-bearing, not defense-in-depth]**. With the §3.1
 topology, the remote surface is the *model services*. Posture:
 model APIs bound to the box's loopback; the internet-facing
 channel (whichever §10.3 option wins) carries a shared-secret /
