@@ -1,13 +1,18 @@
 # Zombie-Radio — Product definition spec
 
-**Status:** PRELIMINARY DRAFT (2026-09-13) — the arc's working
-spec, living until the Product definition arc closes. Unknowns are
-deliberately left visible and marked **[UNKNOWN — gate]**. This
-spec enables conversation; it does not lock implementation —
-deviation during the build is expected and annotated in place.
+**Status:** WRAPPED WITH OPEN QUESTIONS (2026-09-16; drafted
+2026-09-13) — under the **prototype-first inversion**
+([discussion 2026-09-16]): the remaining `[UNKNOWN]`s are
+*deferred-to-prototype*, not blocking; they get answered by
+in-prototype experiments during the MVP-prototype arc, and this
+spec is then maintained as a LEDGER — as-built entries land
+within a session of each settled prototype decision (guardrail
+3). This spec enables conversation; it does not lock
+implementation — deviation during the build is expected and
+annotated in place.
 
 **Provenance:** brainstorm (`discussions/2026-09-13-product-definition-brainstorm.md`),
-framework survey, provider survey, [ADR-0001] (draft), QA log.
+framework survey, provider survey, [ADR-0001] (accepted), QA log.
 Where this spec and a discussion disagree, this spec wins from
 2026-09-13 forward; the discussions remain as history.
 
@@ -135,8 +140,9 @@ data.
   ([discussion 2026-09-14] LLM survey §6: Nemotron Nano 9B v2 ·
   Gemma 4 12B via RP variant · Rocinante-X-12B · Qwen3.5-9B ·
   Wayfarer-2-12B; LFM2.5-2.6B reserved for utility roles).
-  **[UNKNOWN — the working default is picked by the audition
-  experiment over that list, and must exist before
+  **[UNKNOWN — deferred to prototype: the working default is
+  picked by the §7.3 audition, now run IN the MVP prototype
+  (inversion, 2026-09-16), and must exist before
   prompt-engineering starts; prompts overfit to a model's
   voice.]** Field intel from the spike (2026-09-16): the rank-1
   presumptive (Nemotron, at Q4_K_M with reasoning off) showed
@@ -145,16 +151,19 @@ data.
   does not pre-judge it.
 - **STT** — DECIDED: Whisper via whisper-fastapi
   (TalkWithMe-native). Size is a free config knob **[UNKNOWN —
-  set by the VRAM experiment §7.2]**. Whisper confidence
+  deferred to prototype: set by the in-prototype §7.2
+  experiment]**. Whisper confidence
   filtering (C1) is part of the input path even with PTT.
 - **TTS** — tts-serve is the interface; the MVP prepares
   deployment for the **two engines** that win the comparison
   experiment (§7.2); deciding criterion: 4 distinct stable
   character voices via reference-audio cloning at acceptable
-  latency. **[UNKNOWN — winners TBD by experiment.]** Soft goal:
+  latency. **[UNKNOWN — deferred to prototype: winners picked by
+  the in-prototype §7.2 experiment.]** Soft goal:
   add F5-TTS and Breeze TTS 2 to tts-serve (follow-ups.md).
 - **VRAM budget** — LLM + 2 TTS engines + Whisper on one card:
-  **[UNKNOWN — measured, not guessed; §7.2].** The **target is
+  **[UNKNOWN — deferred to prototype: measured, not guessed;
+  in-prototype §7.2].** The **target is
   24 GB** (hard requirement: the stack must fit a 24 GB card —
   the owner's RTX 3090 class). **Aspirational, explicitly NOT a
   hard target (owner ruling 2026-09-13): fit in 16 GB.**
@@ -186,7 +195,7 @@ commercial LLMs, used not literally but as guide-rails keeping
 small local models on a story arc. Preserves local-AI-first
 (offline authoring only).
 
-### §5.3 The ensemble director **[UNKNOWN — design work, not yet shaped]**
+### §5.3 The ensemble director **[UNKNOWN — deferred to prototype: design work, shaped against the live prototype]**
 
 TalkWithMe's multi-persona routing is chat-turn-shaped; a radio
 broadcast needs a director loop: who speaks next, pacing, when to
@@ -238,8 +247,10 @@ than nice-to-have. That map is where this design work starts.
   owner's private Ansible project — at deployment time, by the
   owner.
 - Demo-day network risk: venue internet → cloud GPU.
-  **[UNKNOWN — fallback undesigned: hotspot? canned pre-rendered
-  episode mode?]**
+  **[UNKNOWN — deferred to prototype: fallback design open
+  (hotspot?), but one piece is DECIDED (owner ruling 2026-09-16):
+  a "canned episode" emergency mode is a MUST — recorded from the
+  prototype once it works.]**
 
 ## §7. Validation gates & experiments
 
@@ -251,15 +262,24 @@ than nice-to-have. That map is where this design work starts.
    `experiments/2026-09-14-talkwithme-remote-split-test/`.
 2. **§7.2 TTS engine comparison + VRAM budget** — picks the two
    deployed engines, the Whisper size, and validates the whole
-   stack fits one GPU. Shape TBD when scoped (experiments
-   protocol applies: timebox, runlog, pre-registered verdicts).
+   stack fits one GPU. **Re-scoped 2026-09-16 to an IN-PROTOTYPE
+   experiment** ([discussion 2026-09-16] inversion): runs on the
+   MVP prototype by swapping the tts-serve engine (one URL /
+   launch line per candidate; LuxTTS newly in the pool —
+   follow-ups.md). Protocol skeleton retained (timebox, runlog,
+   pre-registered pick criteria — guardrail 1).
 3. **§7.3 The LLM audition** ([discussion 2026-09-14] LLM survey,
-   Track 3) — a prompt harness over the ranked five-model
-   shortlist (4 personas, N lines per candidate, identical
-   settings; counting loops, format breaks, refusals, character
-   bleed) that picks the LLM working default. Runs on the
-   owner's RTX 3090, no cloud needed; feeds on the character
-   bibles; experiments protocol applies.
+   Track 3) — picks the LLM working default over the ranked
+   five-model shortlist (4 personas, identical settings; counting
+   loops, format breaks, refusals, character bleed — plus the
+   narrative-health axes from [discussion 2026-09-16]: adherence
+   AND coherence scoring, Q4 vs Q8, the name-memory retest at a
+   proper history window). **Re-scoped 2026-09-16 to an
+   IN-PROTOTYPE experiment**: swapping the model is one `-hf`
+   flag in the llama launch command, and the prototype's real
+   context machinery is exactly what a standalone harness would
+   have gotten wrong (the C9 lesson). Feeds on the character
+   bibles; protocol skeleton retained.
 
 ## §8. Where the effort goes (believed, not measured)
 

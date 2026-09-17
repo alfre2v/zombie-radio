@@ -126,3 +126,41 @@ reader's memory):
 - **Fix shape:** nothing to build — include in the §7.2 harness;
   verify the VRAM claim first (it's the cheapest check and the
   biggest prize).
+
+## Voice-sample hygiene — famous-actor clips NEVER enter the repo
+
+- **The gap/rule:** the owner will likely source the four
+  reference voice samples from famous actors' movie audio (comedy
+  value). RULING (owner, 2026-09-16): these files are curated and
+  used locally but **never committed** to this public repo
+  (rights + hygiene). Same logic extends to any derived cleaned
+  clips.
+- **Where flagged:** owner, 2026-09-16, while ruling on the
+  action queue ([discussion 2026-09-16] prototype-first
+  inversion).
+- **Trigger:** the moment the first sample file exists.
+- **Fix shape:** add a `.gitignore` block for the samples
+  directory (e.g. `voices/` or `samples/` — name it when
+  created); keep the curated set in a local/private location the
+  Ansible deployment can copy from; document the expected
+  directory layout in the prototype's setup notes so a cold
+  rebuild knows what to supply.
+
+## Find the voice-isolation tool from scorbo2's podcast
+
+- **The gap:** extracting a clean voice from noisy movie audio
+  (music, effects) needs a voice-isolation/separation tool. The
+  author of TalkWithMe/tts-serve (scorbo2) mentioned on his
+  podcast an open-source solution he uses for exactly this — the
+  owner forgot the name and asked to be reminded to search for
+  it.
+- **Where flagged:** owner, 2026-09-16 (side note while ruling on
+  voice samples).
+- **Trigger:** BEFORE curating the voice samples (item above) —
+  the tool is what makes movie-sourced clips usable as TTS
+  references.
+- **Fix shape:** re-listen to / search the podcast episode, or
+  survey the obvious candidates (the open-source
+  vocal-separation space: Demucs-family, UVR-family) and confirm
+  against what he mentioned; record the pick and the one-line
+  usage in the prototype's setup notes.

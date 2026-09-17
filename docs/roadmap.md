@@ -41,14 +41,29 @@ arcs close)*
 
 ## Feature build order
 
-1. **Product definition** — IN PROGRESS since 2026-09-12
-   (execution state lives in TODO.md, never here): conduct the
-   discussions about what we want to build and land
-   `specs/product-definition.md`. Surveys done; preliminary spec
-   drafted; validation spike DONE (2026-09-16, verdict PASS).
-   Remaining: LLM audition + TTS comparison experiments, fold
-   results into the spec, close ritual.
-2. *(subsequent arcs emerge from the Product definition arc)*
+1. **Product definition** — IN PROGRESS since 2026-09-12,
+   WRAPPING (execution state lives in TODO.md, never here):
+   conduct the discussions about what we want to build and land
+   `specs/product-definition.md`. Surveys done; spec drafted with
+   spike results folded; validation spike DONE (2026-09-16,
+   verdict PASS). The arc's ending was reshaped by the
+   **prototype-first inversion** ([discussion 2026-09-16]): the
+   two remaining experiments moved to the next arc; this arc now
+   closes with a spec quick-wrap + review + close ritual.
+2. **MVP prototype** — NEXT (named 2026-09-16 by the inversion):
+   deploy the spike's exact validated configuration (experiment
+   recipe R0–R13 + TalkWithMe local + 4 personas) as a
+   repeatable, easily re-deployable prototype — then use it as
+   the experiment platform. Opening material: the in-prototype
+   experiments (LLM audition over the ranked five [spec §7.3] ·
+   TTS comparison + VRAM budget [spec §7.2], LuxTTS in the pool ·
+   the narrative-health zero-code probe battery
+   [discussion 2026-09-16]) and the follow-ups backlog (label
+   sanitizer · max-chars accumulator · `max_turns_for_context`
+   lever). Guardrails riding along: experiments keep the protocol
+   skeleton; prompt work stays disposable until the audition;
+   the spec is updated as a ledger during the build.
+3. *(further arcs emerge as the prototype teaches us)*
 
 ## Ideas / parking lot
 

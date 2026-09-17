@@ -7,9 +7,29 @@
 reviewed and its PR merges.
 
 **Notation recap** (full conventions in [docs/README.md](README.md)):
-`[ ]` open · `[x]` done (with commit SHA in parentheses) · `Task N`
-is a sub-step here, never a PR number · cite discussions as
+`[ ]` open · `[x]` done (with commit SHA in parentheses) · `[~]`
+re-scoped/moved to another arc (says where) · `Task N` is a
+sub-step here, never a PR number · cite discussions as
 `[discussion YYYY-MM-DD]`, specs as `[spec §X.Y]`.
+
+## ⚡ THE PROTOTYPE-FIRST INVERSION (2026-09-16) — read this first
+
+The arc's ending was reshaped by owner decision the evening the
+spike closed ([discussion 2026-09-16] prototype-first inversion):
+**build the MVP prototype first (the spike's exact validated
+configuration), run the remaining experiments ON the prototype,
+write the spec's remaining parts alongside the build.** Three
+guardrails accepted: experiments lighter-not-looser (protocol
+skeleton survives) · prompt work disposable until the
+in-prototype audition · spec as ledger (decisions still get
+written, lag ≤ one session). Consequences: §7.2/§7.3 experiments
+MOVE to the next arc ("MVP prototype", roadmap); this arc now
+wraps quickly — spec quick-pass → Task 5 review → Task 6 close.
+
+This file is the **living parking-lot table** of the task
+landscape (owner-requested 2026-09-16): updated at every
+execution or decision; the re-orientation surface when revisiting
+any topic.
 
 ## Owner action queue
 
@@ -17,19 +37,26 @@ is a sub-step here, never a PR number · cite discussions as
 scrollback. Items get DELETED when done; the agent keeps this
 current. (Added 2026-09-14 at the owner's request.)*
 
-1. **Gather 4 reference voice samples** (a few clean seconds
-   each) for the TTS comparison experiment; casual consent if
-   the voices are friends'.
-2. **Seed the character bibles** — names, personalities, quirks,
-   voice descriptions for the four scientists; rough is fine;
-   also feeds the LLM audition harness.
-3. **Check the home 3090 box's NVIDIA driver version**
-   (`nvidia-smi`) — under the fleet-minimum-driver posture
-   ([spec §6], 2026-09-15) it is the project's real
-   compatibility floor; align to the R570 era when practical.
-4. **Radar: demo-day logistics** — venue internet reality,
-   hotspot fallback, whether a "canned episode" emergency mode
-   earns MVP scope.
+1. **Gather 4 reference voice samples** — EXECUTING SOON (owner,
+   2026-09-16). Likely famous-actor movie clips for comedy value
+   → **NEVER committed to the repo** (curated and used locally;
+   gitignore rule in follow-ups.md). Unblocks the in-prototype
+   TTS comparison. Related: find the voice-isolation tool
+   scorbo2 mentioned on his podcast (follow-ups.md).
+2. **Seed the character bibles** — EXECUTING SOON (owner,
+   2026-09-16). Names, personalities, quirks, voice descriptions
+   for the four scientists; rough is fine. Model-neutral, so safe
+   under guardrail 2; unblocks the in-prototype LLM audition.
+3. **Check the home 3090 box's NVIDIA driver** — DEPRIORITIZED
+   (owner ruling 2026-09-16): the demo is cloud-only; the 3090
+   leaves the MVP fleet, retiring the fleet-minimum-driver worry
+   (show boxes are pinned R570 per [spec §6]). Revisit only if
+   local development on the 3090 resumes.
+4. **Demo-day logistics radar** — POSTPONED until a working MVP
+   exists (owner ruling 2026-09-16). One piece pre-decided: the
+   **"canned episode" emergency mode is a MUST** — recorded from
+   the prototype once it works; the rest (venue internet,
+   hotspot fallback) stays on radar.
 
 *(SSH-keypair item deleted 2026-09-16: done — the spike ran its
 whole life through that key.)*
@@ -73,24 +100,29 @@ whole life through that key.)*
     brainstorm §4): Docker preferred, NOT mandatory — per-engine
     bare-metal-via-Ansible is a sanctioned fallback, with
     per-engine isolation required either way.
-  - [ ] **LLM choice** — survey Tracks 1–2 RUN 2026-09-14
-    ([discussion 2026-09-14] §4–§6). Deliverable reshaped by
-    owner ruling: a RANKED SHORTLIST of five, no single pick
-    without an experiment — (1) Nemotron Nano 9B v2,
-    (2) Gemma 4 12B StyleTune/heretic, (3) Rocinante-X-12B,
-    (4) Qwen3.5-9B, (5) Wayfarer-2-12B; LFM2.5-2.6B reserved
-    for utility roles + 16 GB safety valve. The Track 3
-    audition picks the working default from this list.
-  - [ ] **Latency/VRAM budget** — measure, don't guess; runs as
-    a Task 3 experiment together with the TTS engine comparison.
-    PARTIAL DATA from the spike (2026-09-16): full trio fits
-    16 GB (14.0/15.3 GiB warm); streaming TTFA median 0.9 s over
-    a ~215 ms WAN. Remaining: per-engine numbers on the R570
-    box, and the 24 GB-tier budget.
-- [ ] **Task 3 — Experiments (conditional).** Fires when a survey
-  leaves a question needing measurement. Each gets a timeboxed
-  `experiments/YYYY-MM-DD-*/` folder per conventions (runlog
-  README + findings.md with pre-registered verdict criteria).
+  - [~] **LLM choice** — RE-SCOPED to the MVP-prototype arc by
+    the inversion (2026-09-16). What this arc delivered: the
+    RANKED SHORTLIST of five ([discussion 2026-09-14] §4–§6) —
+    (1) Nemotron Nano 9B v2, (2) Gemma 4 12B StyleTune/heretic,
+    (3) Rocinante-X-12B, (4) Qwen3.5-9B, (5) Wayfarer-2-12B;
+    LFM2.5-2.6B reserved for utility roles. The audition that
+    picks the working default now runs IN the prototype
+    (guardrail 1: protocol skeleton retained). Field intel: the
+    rank-1 presumptive showed dialog-quality concerns in the
+    spike (spec §4).
+  - [~] **Latency/VRAM budget** — RE-SCOPED to the MVP-prototype
+    arc (in-prototype §7.2 experiment). PARTIAL DATA already
+    from the spike (2026-09-16): full trio fits 16 GB
+    (14.0/15.3 GiB warm); streaming TTFA median 0.9 s over a
+    ~215 ms WAN. Remaining there: per-engine numbers (LuxTTS now
+    in the pool — follow-ups.md), two-engine stack, 24 GB-tier
+    budget, Whisper size.
+- [x] **Task 3 — Experiments (conditional).** CLOSED for this arc
+  (2026-09-16): Task 3a ran and PASSED; the two remaining
+  candidates (§7.2 TTS comparison, §7.3 LLM audition) moved to
+  the MVP-prototype arc as in-prototype experiments per the
+  inversion — they keep the protocol skeleton (timebox,
+  pre-registered pick criteria, runlog) per guardrail 1.
 
   - [x] **Task 3a — TalkWithMe remote-split test ("the spike").**
     DONE (2026-09-16): **verdict PASS** against the frozen
@@ -161,11 +193,15 @@ whole life through that key.)*
       with self-contained runlog README.md (every command + its
       output) and findings.md (interpretation only).
 - [ ] **Task 4 — Draft `specs/product-definition.md`.**
-  IN PROGRESS: preliminary draft written 2026-09-13 (§1–§9,
-  unknowns explicitly marked **[UNKNOWN — gate]**; effort-center
-  question §8 recorded as believed-not-measured). Remaining:
-  iterate with owner · fold in spike + experiment results ·
-  derive follow-on arc candidates for the roadmap build order.
+  QUICK-WRAP under the inversion (2026-09-16): spike results
+  already folded (§3.3 resolved, §10.1 verified, §7.1 PASS);
+  remaining pass is small — mark the open `[UNKNOWN]`s as
+  *deferred-to-prototype* (LLM default, TTS winners + Whisper
+  size, §5.3 director, §6 demo-day fallback) rather than
+  blocking, and record the next-arc derivation (MVP prototype —
+  roadmap). The spec then lives as a LEDGER during the build
+  (guardrail 3): as-built entries land within a session of each
+  prototype decision.
 - [ ] **Task 5 — Owner review of the spec; ADRs frozen.** Truth
   audit on any draft ADRs, then mark accepted.
 - [ ] **Task 6 — Close ritual in the PR.** Roadmap Features Shipped
@@ -185,9 +221,9 @@ gaps. The agent keeps pushing on "missing" cells.*
 | Task | Definition | What's still missing |
 |---|---|---|
 | Task 1 — Vision & interaction model | **defined — ready for spec write-up** | All majors settled (QA log Entries 2–4; brainstorm §1–2, §4): radio-show fiction, laptop-client + cloud-GPU-server demo for Oct 8 (booth = future vision), push-to-talk MVP interaction, live-first dialogue ("theatrical live improvisation with LLMs", hybrid trajectory-scaffolds post-MVP). Residual smalls: session/loop length target · client form (browser page vs native) |
-| Task 2 — Architecture & tech survey | **nearly done** (2026-09-16) | Settled: foundation (ADR-0001 accepted via the spike) · provider survey + Docker/GPU verified on Hyperstack · STT (whisper-fastapi) · TTS goal (tts-serve + two winning engines) · LLM narrowed to a ranked shortlist of five. Missing: the LLM audition (Track 3, needs character bibles) · per-engine latency/VRAM budget (§7.2 experiment, needs R570 box + voice samples) |
-| Task 3 — Experiments | **in progress** | Task 3a (remote split) DONE — verdict PASS. Remaining candidates: §7.2 TTS engine comparison + VRAM budget · LLM audition (Track 3) |
-| Task 4 — Draft spec | shape known, **unblocked** | Preliminary draft exists (§1–§10); next: fold spike results, replace `[UNKNOWN — gate]` markers resolved by the verdict (§3.3 at minimum), derive follow-on arc candidates |
+| Task 2 — Architecture & tech survey | **done for this arc** (2026-09-16, via the inversion) | Settled: foundation (ADR-0001 accepted via the spike) · provider survey + Docker/GPU verified · STT (whisper-fastapi) · TTS goal (tts-serve + two winning engines) · LLM ranked shortlist of five. The two picks that remained (LLM default, TTS winners) are re-scoped to in-prototype experiments in the MVP-prototype arc |
+| Task 3 — Experiments | **closed for this arc** | Task 3a (remote split) DONE — verdict PASS. §7.2 + §7.3 moved to the MVP-prototype arc (guardrail 1: protocol skeleton retained) |
+| Task 4 — Draft spec | **quick-wrap** | Spike results folded (2026-09-16); remaining: mark open `[UNKNOWN]`s deferred-to-prototype; the spec becomes a ledger during the build (guardrail 3) |
 | Task 5 — Spec review, ADR freeze | defined | — |
 | Task 6 — Close ritual in PR | defined | — |
 
