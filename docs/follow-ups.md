@@ -164,3 +164,25 @@ reader's memory):
   vocal-separation space: Demucs-family, UVR-family) and confirm
   against what he mentioned; record the pick and the one-line
   usage in the prototype's setup notes.
+
+## Communicate the cloud-deployment story to the self-hosted AI community
+
+- **The gap/idea (owner, 2026-09-17):** the deploy/ playbook is
+  useful beyond this project — a middle ground for self-hosted AI
+  enthusiasts: deploy TalkWithMe + tts-serve predictably on a
+  rented cloud GPU to experiment BEFORE committing to a local
+  install. This framing belongs in a future talk/write-up on the
+  project's motivations, and the owner asked that the idea not be
+  lost ("annotate somewhere we need to communicate at some point
+  the significance of the cloud deployment automation").
+- **Where flagged:** [discussion 2026-09-17] deployment-first
+  brainstorm §5.
+- **Trigger:** the project goes well — concretely: the MVP works
+  and the deploy/ playbook is proven; then this feeds (a) the
+  hackTNT presentation's motivation section, and (b) a possible
+  standalone write-up/README section aimed at the community.
+- **Fix shape:** a short "why cloud deployment matters for
+  self-hosters" narrative — the agent helps draft it from this
+  entry + the deployment-first discussion + real playbook usage
+  numbers (deploy time, cost per session — we already have
+  $2.97/experiment as a datum).
