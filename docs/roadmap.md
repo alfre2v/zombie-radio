@@ -36,19 +36,43 @@ the job of the **Product definition** arc (first in the build order).
 
 ## Features Shipped
 
-*(nothing yet — dated, user-facing narrative entries land here as
-arcs close)*
+- **2026-09-17 — Product definition** (arc closed, PR #3; started
+  2026-09-12). The project went from an empty repo and an idea to:
+  a product spec (`specs/product-definition.md`, wrapped with
+  explicitly-deferred questions) · a validated foundation —
+  TalkWithMe + tts-serve, proven by the remote-split experiment
+  to run split across laptop + cloud GPU with ZERO modifications
+  ([ADR-0001] accepted; experiment verdict PASS, total cost
+  $2.97) · surveys with rulings (audio frameworks, 13 cloud GPU
+  providers, LLM ranked shortlist of five, TTS engine ranking) ·
+  a security posture (SSH tunnel, single-operator, no-secrets
+  repo) · the narrative-health framework (two axes, 20 failure
+  mechanisms) born from live ensemble testing · a reproduction
+  recipe + restart runbook that rebuild the whole stack from
+  nothing · and the prototype-first inversion that shapes the
+  next arc.
 
 ## Feature build order
 
-1. **Product definition** — IN PROGRESS since 2026-09-12
-   (execution state lives in TODO.md, never here): conduct the
-   discussions about what we want to build and land
-   `specs/product-definition.md`. Surveys done; preliminary spec
-   drafted; validation spike DONE (2026-09-16, verdict PASS).
-   Remaining: LLM audition + TTS comparison experiments, fold
-   results into the spec, close ritual.
-2. *(subsequent arcs emerge from the Product definition arc)*
+1. **Product definition** — DONE (2026-09-12 → 2026-09-17,
+   closed PR #3; see Features Shipped). Ending reshaped by the
+   **prototype-first inversion** ([discussion 2026-09-16]): the
+   two remaining experiments moved into arc 2 rather than
+   preceding it.
+2. **MVP prototype** — NEXT (named 2026-09-16 by the inversion):
+   deploy the spike's exact validated configuration (experiment
+   recipe R0–R13 + TalkWithMe local + 4 personas) as a
+   repeatable, easily re-deployable prototype — then use it as
+   the experiment platform. Opening material: the in-prototype
+   experiments (LLM audition over the ranked five [spec §7.3] ·
+   TTS comparison + VRAM budget [spec §7.2], LuxTTS in the pool ·
+   the narrative-health zero-code probe battery
+   [discussion 2026-09-16]) and the follow-ups backlog (label
+   sanitizer · max-chars accumulator · `max_turns_for_context`
+   lever). Guardrails riding along: experiments keep the protocol
+   skeleton; prompt work stays disposable until the audition;
+   the spec is updated as a ledger during the build.
+3. *(further arcs emerge as the prototype teaches us)*
 
 ## Ideas / parking lot
 
