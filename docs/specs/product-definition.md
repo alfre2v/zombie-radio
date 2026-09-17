@@ -1,7 +1,8 @@
 # Zombie-Radio — Product definition spec
 
-**Status:** WRAPPED WITH OPEN QUESTIONS (2026-09-16; drafted
-2026-09-13) — under the **prototype-first inversion**
+**Status:** WRAPPED WITH OPEN QUESTIONS — arc closed 2026-09-17
+(PR #3); drafted 2026-09-13 — under the **prototype-first
+inversion**
 ([discussion 2026-09-16]): the remaining `[UNKNOWN]`s are
 *deferred-to-prototype*, not blocking; they get answered by
 in-prototype experiments during the MVP-prototype arc, and this
