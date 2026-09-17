@@ -1,6 +1,7 @@
 # Build the MVP on TalkWithMe and tts-serve
 **Date:** 2026-09-13
-**Status:** draft
+**Status:** accepted (2026-09-16 — the validation gate passed;
+see Validation below)
 
 ## Context
 
@@ -93,3 +94,32 @@ loses wiring, not soul); the decision is explicitly scoped to the
 MVP — the post-MVP booth arc (always-listening) re-opens the
 framework question, where partial Pipecat adoption (smart-turn
 first) is anticipated. Supersede via a new ADR if that happens.
+
+## Validation (2026-09-16) — gate passed, decision frozen
+
+The spike ran 2026-09-15/16 (Hyperstack RTX A4000, NORWAY-1) and
+returned **PASS** against its pre-registered criteria
+(`experiments/2026-09-14-talkwithme-remote-split-test/`,
+findings.md Verdict). Truth-audit of this ADR's claims against
+the evidence:
+
+- "Unknown WAN behavior until the spike reports" (the largest
+  open risk) — resolved BETTER than claimed: the split needed
+  **zero upstream modifications**; TalkWithMe reaches all model
+  services by URL through the SSH tunnel.
+- "tts-serve is one thin adapter away" — overcautious: **zero
+  adapter** was needed; TalkWithMe auto-detected the engine from
+  `/capabilities`.
+- "We inherit code of unverified quality" — partially retired:
+  the spike's source audits (session/round machinery, tts.js
+  pipeline) found readable, patchable code; two small designated
+  patches are already scoped (output sanitizer for `[Name]:`
+  labels; max-chars sentence accumulator in `static/tts.js`).
+- The ensemble-exists-on-day-one claim held (4-persona group
+  sessions with distinct cloned voices, end-to-end), with the
+  honest amendment that ensemble NARRATIVE quality is now a
+  mapped problem of its own ([discussion 2026-09-16], narrative
+  health).
+
+The **Pipecat flip trigger expires unfired.** This ADR is frozen;
+changes from here go through a superseding ADR.

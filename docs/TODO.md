@@ -17,21 +17,22 @@ is a sub-step here, never a PR number · cite discussions as
 scrollback. Items get DELETED when done; the agent keeps this
 current. (Added 2026-09-14 at the owner's request.)*
 
-1. **Generate the project SSH keypair** — now THE security
-   perimeter (tunnel decision, [spec §10.3]); register the
-   public key at Hyperstack + Vast.ai. Blocks the spike.
-2. **Gather 4 reference voice samples** (a few clean seconds
+1. **Gather 4 reference voice samples** (a few clean seconds
    each) for the TTS comparison experiment; casual consent if
    the voices are friends'.
-3. **Seed the character bibles** — names, personalities, quirks,
+2. **Seed the character bibles** — names, personalities, quirks,
    voice descriptions for the four scientists; rough is fine;
    also feeds the LLM audition harness.
-4. **Fork strategy decision** (needed by end of spike): fork
-   TalkWithMe/tts-serve under your GitHub account vs. vendor
-   copies into this repo — affects upstream contribution flow.
-5. **Radar: demo-day logistics** — venue internet reality,
+3. **Check the home 3090 box's NVIDIA driver version**
+   (`nvidia-smi`) — under the fleet-minimum-driver posture
+   ([spec §6], 2026-09-15) it is the project's real
+   compatibility floor; align to the R570 era when practical.
+4. **Radar: demo-day logistics** — venue internet reality,
    hotspot fallback, whether a "canned episode" emergency mode
    earns MVP scope.
+
+*(SSH-keypair item deleted 2026-09-16: done — the spike ran its
+whole life through that key.)*
 
 ## Sub-steps
 
@@ -82,13 +83,26 @@ current. (Added 2026-09-14 at the owner's request.)*
     audition picks the working default from this list.
   - [ ] **Latency/VRAM budget** — measure, don't guess; runs as
     a Task 3 experiment together with the TTS engine comparison.
+    PARTIAL DATA from the spike (2026-09-16): full trio fits
+    16 GB (14.0/15.3 GiB warm); streaming TTFA median 0.9 s over
+    a ~215 ms WAN. Remaining: per-engine numbers on the R570
+    box, and the 24 GB-tier budget.
 - [ ] **Task 3 — Experiments (conditional).** Fires when a survey
   leaves a question needing measurement. Each gets a timeboxed
   `experiments/YYYY-MM-DD-*/` folder per conventions (runlog
   README + findings.md with pre-registered verdict criteria).
 
-  - [ ] **Task 3a — TalkWithMe remote-split test ("the spike").**
-    PRIORITY: first in the experiment queue. SKELETON CREATED
+  - [x] **Task 3a — TalkWithMe remote-split test ("the spike").**
+    DONE (2026-09-16): **verdict PASS** against the frozen
+    criteria; ADR-0001 frozen to `accepted`; Pipecat flip trigger
+    expired unfired. Full record:
+    `experiments/2026-09-14-talkwithme-remote-split-test/`
+    (runlog + findings + TTFA data); show-quality issues routed
+    to the adaptation-arc backlog; narrative-health framework
+    spawned → [discussion 2026-09-16]. Residue: owner completes
+    the console destroy + billing glance (final cost appended to
+    the runlog when read). Original brief kept below for
+    provenance. SKELETON CREATED
     2026-09-14 →
     `experiments/2026-09-14-talkwithme-remote-split-test/` (runlog
     template + draft verdict criteria + agent prediction
@@ -157,7 +171,11 @@ current. (Added 2026-09-14 at the owner's request.)*
 - [ ] **Task 6 — Close ritual in the PR.** Roadmap Features Shipped
   entry, task_history migration, TODO reset, staleness sweep
   (CLAUDE.md included). PR reviewed, approved, and merged by the
-  owner.
+  owner. **Runbook promotions flagged during the spike** (moved
+  here 2026-09-16 from the deleted compaction handoff): the
+  post-restore restart sequence (runlog 2026-09-16 morning entry)
+  and the demo-day protocol are candidates for `runbooks/` at arc
+  close.
 
 ## Task definition status
 
@@ -167,9 +185,9 @@ gaps. The agent keeps pushing on "missing" cells.*
 | Task | Definition | What's still missing |
 |---|---|---|
 | Task 1 — Vision & interaction model | **defined — ready for spec write-up** | All majors settled (QA log Entries 2–4; brainstorm §1–2, §4): radio-show fiction, laptop-client + cloud-GPU-server demo for Oct 8 (booth = future vision), push-to-talk MVP interaction, live-first dialogue ("theatrical live improvisation with LLMs", hybrid trajectory-scaffolds post-MVP). Residual smalls: session/loop length target · client form (browser page vs native) |
-| Task 2 — Architecture & tech survey | **partial, direction set** | Main plan inverted (QA log, Entry 2): adapt TalkWithMe + tts-serve; owner effort on deployment + new TTS engines for tts-serve; LiveKit/Pipecat demoted to comparison note. Demo confirmed on a cloud GPU instance (QA log, Entry 4) → provider survey now on the critical path. Missing: LLM & STT choices · latency/VRAM budget · cloud-GPU provider survey (Docker+GPU passthrough) · F5-TTS vs newer engines. Ansible-deployment project: deferred by ruling (private repo; surgical extraction at deployment time — QA log, Entry 3) |
-| Task 3 — Experiments | **vague by design** | Fires only if Task 2 leaves measurable questions; candidates so far: TTS engine quality/latency, provider GPU-in-Docker check |
-| Task 4 — Draft spec | shape known | Blocked on Tasks 1–2 content |
+| Task 2 — Architecture & tech survey | **nearly done** (2026-09-16) | Settled: foundation (ADR-0001 accepted via the spike) · provider survey + Docker/GPU verified on Hyperstack · STT (whisper-fastapi) · TTS goal (tts-serve + two winning engines) · LLM narrowed to a ranked shortlist of five. Missing: the LLM audition (Track 3, needs character bibles) · per-engine latency/VRAM budget (§7.2 experiment, needs R570 box + voice samples) |
+| Task 3 — Experiments | **in progress** | Task 3a (remote split) DONE — verdict PASS. Remaining candidates: §7.2 TTS engine comparison + VRAM budget · LLM audition (Track 3) |
+| Task 4 — Draft spec | shape known, **unblocked** | Preliminary draft exists (§1–§10); next: fold spike results, replace `[UNKNOWN — gate]` markers resolved by the verdict (§3.3 at minimum), derive follow-on arc candidates |
 | Task 5 — Spec review, ADR freeze | defined | — |
 | Task 6 — Close ritual in PR | defined | — |
 
