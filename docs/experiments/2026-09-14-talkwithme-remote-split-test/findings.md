@@ -1,8 +1,9 @@
 # TalkWithMe remote-split test ("the spike") — findings
 
-**Status:** VERDICT CRITERIA FROZEN by the commit landing this
-line (2026-09-14), before any spike command has run.
-Interpretation only; raw evidence lives in `README.md` (the
+**Status:** CLOSED — verdict **PASS**, 2026-09-16 (run
+2026-09-15/16, inside the 2-day timebox; total cost $2.97).
+Verdict criteria were frozen 2026-09-14, before any spike command
+ran. Interpretation only; raw evidence lives in `README.md` (the
 runlog).
 
 ## Verdict criteria (pre-registered — frozen before the data exists)
@@ -44,88 +45,109 @@ engine on an A6000, uncomfortably straddling the 5 s line.
 the slot is closed, not forgotten. The agent's prediction above
 stands alone for grading.
 
-## Results
+## Results (final — consolidated at close, 2026-09-16)
 
-### PRELIMINARY (2026-09-16 — experiment in progress; steps 6–8 outstanding; nothing here is a verdict)
+*Mapped to the pre-registered measures, from runlog evidence
+only. (A preliminary snapshot written mid-experiment was
+consolidated into this final section at close — findings.md is
+the living interpretation, not an append-only log; the runlog
+preserves the chronology.)*
 
-Mapped to the pre-registered measures, from runlog evidence only:
-
-- **(a) Audio over WAN** — partial: single-persona sessions
-  deliver cloned speech through the tunnel with no observed
-  drops/stalls; streaming mode played a 6-fragment monologue
-  gaplessly (client-side fetch-ahead pipeline, source-verified).
-  PENDING: sustained multi-persona session behavior.
-- **(b) 4-persona session** — PENDING (step 6); all four
-  personas exist with distinct cloned voices; single-persona
-  chat proven for text + voice + mic.
-- **(c) Time-to-first-audio** — partial: non-streaming
-  single-line ≈ 5 s to first sound; streaming mode makes
-  first-audio ≈ first-sentence synth; per-sentence RTF 0.46–0.64
-  (gapless threshold cleared 2×); tunnel cold-connection
-  overhead 0.6–0.7 s, amortized by persistent connections.
-  PENDING: the formal ≥10-consecutive-lines table in ensemble
-  conditions (GPU contention included).
-- **(d) tts-serve adapter effort** — answered by observation:
-  **ZERO adapter needed** — TalkWithMe auto-detected the engine
-  from `/capabilities` and rendered its parameter schema in the
-  UI. The real integration cost was environment, not code: the
-  documented potholes (apt packages, numpy-before-sox,
-  transformers==5.15.1 pin) in the runlog's deployment ledger.
-- **(e) Architectural red flags** — collected: reference audio
-  re-uploaded per sentence (stateless API; WAN tax;
-  `app/routers/tts.py:134`); sentence-chunked synthesis severs
-  prosodic continuity (→ brainstorm C10); Nemotron reasoning
-  toggle must be managed per persona prompt; model reload ≈90 s
-  windows on container restart. NONE structural — all
-  configuration-level or upstream-improvable.
-- **(f) Security observations** — every service in the stack is
-  unauthenticated (llama-server warns openly; tts-serve and
-  whisper-fastapi offer nothing); without the tunnel, ports
-  8080/8001/8002 would all need public exposure. The SSH-tunnel
-  posture ([spec §10.3]) is thereby validated as load-bearing,
-  not optional.
-- **Bonus observations**: full 3-service trio fits the 16 GB
-  card at 13.5/15.3 GiB (16 GB-aspiration datum); challenges
-  C1/C6 field-observed ("Miss Betty"→"Nisbeti") with the
-  in-fiction absorption mitigation firing unprompted; the
-  owner's headline interim reading: "TalkWithMe + tts-serve can
-  be separated into local client / remote cloud GPU without any
-  local modifications."
-
-### FINAL (2026-09-16 — experiment closed inside the timebox)
-
-The preliminary section above is kept as written (honest
-snapshot); this section resolves its PENDING items from runlog
-evidence:
-
-- **(a) Audio over WAN** — RESOLVED, yes: multi-persona group
+- **(a) Audio over WAN — YES.** Single- and multi-persona
   sessions delivered cloned speech through the tunnel across
-  multiple evenings with no drops or stalls observed; the only
-  audio complaints (inter-sentence pauses on short sentences)
-  are per-request economics, not WAN transport behavior.
-- **(b) 4-persona session** — RESOLVED, yes: the `Lab`/`lab2`/
-  `lab3` group sessions ran 4 scientists with distinct cloned
-  voices end-to-end (runlog step 6 entries, screenshots in owner
-  archive).
-- **(c) Time-to-first-audio** — RESOLVED, PASS with data: the
-  harvested TTFA table (152 requests → 24 bursts,
-  `extract_tts_timings.py`) shows median est. TTFA 0.9 s and
-  **13 consecutive replies ≤ 5 s** in streaming mode, meeting
-  the ≥10-consecutive-lines clause; the only >5 s bursts were
-  the deliberately-tested (and rejected) non-streaming A/B
-  trials. Numbers carry the conservative ~215 ms NORWAY-1 RTT.
-- **(d), (e), (f)** — as in the preliminary section (zero
-  adapter; red flags all non-structural; tunnel load-bearing).
+  multiple evenings and one hibernation cycle with no observed
+  drops or stalls; streaming mode played a 6-fragment monologue
+  gaplessly (client-side fetch-ahead pipeline, source-verified).
+  The only audio complaints — inter-sentence pauses on short
+  sentences — are per-request economics (see (e)), not WAN
+  transport behavior.
+- **(b) 4-persona session — YES.** The `Lab`/`lab2`/`lab3`
+  group sessions ran 4 scientists with distinct cloned voices
+  end-to-end (runlog step 6 entries; screenshots in owner
+  archive), with routing, persona-to-persona replies, and mic
+  round trips all working.
+- **(c) Time-to-first-audio — PASS with data.** The harvested
+  TTFA table (152 requests → 24 bursts,
+  `extract_tts_timings.py`): median est. TTFA **0.9 s**, and
+  **13 consecutive replies ≤ 5 s** in streaming mode — the
+  ≥10-consecutive-lines clause met. Per-sentence RTF 0.46–0.64
+  on normal sentences; tunnel cold-connection overhead 0.6–0.7 s,
+  amortized by persistent connections. The only >5 s bursts
+  (6.1–14.9 s) were the `streaming: false` A/B trials —
+  **owner-confirmed** by wall-clock window (runlog post-close
+  note). That A/B was itself a tested result: **non-streaming
+  mode is WORSE for this show** (whole-utterance synthesis defers
+  first audio; turn pipelining does not cross speaker turns) —
+  streaming stays ON. All numbers carry the conservative ~215 ms
+  NORWAY-1 RTT; a closer region only improves them.
+- **(d) tts-serve adapter effort — ZERO.** TalkWithMe
+  auto-detected the engine from `/capabilities` and rendered its
+  parameter schema in the UI. The real integration cost was
+  environment, not code: the documented potholes (apt packages,
+  numpy-before-sox, `transformers==5.15.1` pin) in the runlog's
+  deployment ledger.
+- **(e) Architectural red flags — collected; NONE structural.**
+  All are configuration-level or upstream-improvable:
+  - Reference audio re-uploaded per sentence (~300 KB; stateless
+    API; WAN tax; `app/routers/tts.py:134`) — combined with the
+    naive sentence splitter (splits at every period, "Dr."
+    included) this makes effective RTF > 1 on short sentences,
+    and radio style is made of short sentences.
+  - Sentence-chunked synthesis severs prosodic continuity
+    (→ brainstorm C10).
+  - Group-history format induces speaker-label mimicry: other
+    personas injected as `[Name]:`-prefixed user messages
+    (`app/session.py:135/159`); one leaked label re-seeds the
+    convention permanently (transcript contamination — examples
+    beat instructions). The human director is the only UNLABELED
+    participant (`session.py:147-148`), implicated in
+    stale-question answering; and the anti-label prompt lever
+    itself degraded dialogue quality (lab3 A/B) — the sanitizer,
+    not the prompt, is the right fix.
+  - `max_turns_for_context: 6` (app-side, counted in single
+    messages) = amnesia-by-design in a 4-persona room; we
+    provision 16k tokens of LLM context and feed it ~1k.
+  - Round routing: first speaker by strategy, followers by
+    `random.choice` (`app/routers/chat.py:254-261`) — conscripts
+    speakers with nothing to say.
+  - Nemotron's reasoning toggle must be managed per persona
+    prompt (`/no_think` line 1); model reload ≈ 90 s windows on
+    container restart.
+  The ensemble-narrative dimension of these findings is mapped
+  in full in [discussion 2026-09-16] (narrative health: two
+  axes, 20 mechanisms, zero-code test battery).
+- **(f) Security observations — assumption VERIFIED.** Every
+  service in the stack is unauthenticated (llama-server warns
+  openly; tts-serve and whisper-fastapi offer nothing); without
+  the tunnel, ports 8080/8001/8002 would all need public
+  exposure. The SSH-tunnel posture ([spec §10.3]) is thereby
+  validated as load-bearing, not optional.
+- **Bonus observations:** full 3-service trio fits the 16 GB
+  card — 13.5/15.3 GiB loaded, **14.0/15.3 GiB fully warm**
+  (whisper lazy-loads its model at first STT request: VRAM reads
+  ~12.3 GiB until then — confirmed across the hibernation cycle);
+  challenges C1/C6 field-observed ("Miss Betty"→"Nisbeti") with
+  the in-fiction absorption mitigation firing unprompted; the
+  owner's headline reading, which the verdict upheld:
+  "TalkWithMe + tts-serve can be separated into local client /
+  remote cloud GPU without any local modifications."
 
-Show-quality issues found (become adaptation-arc backlog per the
-PARTIAL/PASS machinery, listed with fix shapes): output sanitizer
-for `[Name]:` labels (one line, designated first fork patch) ·
-max-chars sentence accumulator in `static/tts.js` (designated
-upstream patch; fixes both splitter naivety and short-sentence
-economics) · narrative-health fragility (framework + 20-mechanism
-taxonomy + zero-code test battery in [discussion 2026-09-16]) ·
-`max_turns_for_context: 6` amnesia (pure config lever — raise it;
-taxonomy C9).
+**Show-quality issues found** (adaptation-arc backlog per the
+PASS machinery; each with fix shape and rough cost):
+
+1. Output sanitizer for `[Name]:` labels — one line; designated
+   FIRST fork patch (cost: minutes, plus the fork decision).
+2. Max-chars sentence accumulator in `static/tts.js` — replaces
+   per-sentence chunking; fixes splitter naivety AND
+   short-sentence economics (cost: a small, local JS patch;
+   candidate upstream PR).
+3. Raise `max_turns_for_context` from 6 — pure settings.yaml
+   lever, cap 50 (cost: one line; watch latency as context
+   grows).
+4. Narrative-health fragility — not one fix but a mapped design
+   space: [discussion 2026-09-16], with its zero-code probe
+   battery as the cheap next moves (cost: adaptation-arc design
+   work; the §5.3 director question).
 
 ## Prediction grading (in public, per protocol)
 
