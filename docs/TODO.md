@@ -12,9 +12,22 @@ session of each settled decision; no new spec for this arc.
 
 **Deliverables:** **D1** — deployment machinery (Ansible +
 Docker, cloud VM ≡ localhost) · **D2** — the running prototype
-(the spike's configuration as a product, real cast) · **D3** —
-the in-prototype experiment verdicts (LLM default, two TTS
-engines, Whisper size, VRAM budget).
+(the spike's configuration as a product, real cast).
+**Acceptance:** a full 4-persona session runs on a stack stood
+up ENTIRELY by the playbook — machinery proven end-to-end, not
+curl-deep · **D3** — the in-prototype experiment verdicts (LLM
+default, two TTS engines, Whisper size, VRAM budget).
+
+**NOT in this arc (deliberate boundary, 2026-09-17):** the
+ensemble-director design ([spec §5.3]), story/episode authoring,
+and the full demo rehearsal — that is the next arc's material
+("the show arc"), shaped by what this prototype teaches. This
+arc builds the platform, picks the components, and patches the
+worst rough edges.
+
+**Parallelism note:** Task 4 (the owner's cast work) has ZERO
+dependency on Tasks 1–3 — it is the long pole and can start
+immediately, any day, box or no box.
 
 **Notation recap** (full conventions in [docs/README.md](README.md)):
 `[ ]` open · `[x]` done (with commit SHA in parentheses) · `[~]`
@@ -53,14 +66,18 @@ the agent keeps this current. These carry across arcs.*
   **TIMEBOX: 3 days** from first playbook commit
   ([discussion 2026-09-17] ruling 1). Playbook-first, debugged
   live against a fresh R570 box; source material = the sealed
-  Reproduction recipe (R0–R13).
+  Reproduction recipe (R0–R13). Boundary (owner ruling
+  2026-09-17): the playbook starts at "SSH-able **Ubuntu** box
+  exists" — VM provisioning stays manual/console; assuming
+  Ubuntu everywhere is a named portability bet (safe across most
+  GPU providers).
   - [ ] `deploy/` skeleton in THIS repo (ruling 3): playbook,
     roles, example inventory; real inventory/host_vars
     gitignored.
-  - [ ] Roles: base packages · llama.cpp container (canonical v3
-    command as template) · tts-serve engine (**parametrized** —
-    engine name/launch line are variables) · whisper container.
-    Idempotent re-runs.
+  - [ ] **One role per service** (owner ruling 2026-09-17):
+    `base` · `llama` (canonical v3 command as template) ·
+    `tts_engine` (**parametrized** — engine name/launch line are
+    variables) · `whisper`. Idempotent re-runs.
   - [ ] Two targets: cloud VM (Hyperstack R570 image) +
     `delegate_to: localhost` (BUILT now, TESTED later — ruling
     4).
@@ -96,6 +113,15 @@ the agent keeps this current. These carry across arcs.*
     the first check**; picks two engines + Whisper size;
     measures the two-engine stack vs 24 GB target / 16 GB
     aspiration. Needs Task 4 samples.
+  - [ ] **5c — Narrative-health probe battery**
+    ([discussion 2026-09-16] taxonomy §5): the zero-code,
+    owner-run probes — `[Director]:` prefix (C6) · named
+    addressee (E2) · in-fiction phrasing (C8) · long-form escape
+    hatch (B4) · fixed responder (E1) — one variable flipped per
+    run against the same two-round protocol. Protocol-lite (a
+    dated runlog section, no full experiment folder). Runnable
+    as soon as Task 2 completes — does NOT need the real cast;
+    findings feed prompt and config choices before 5a.
 - [ ] **Task 6 — First patches, on trigger.** The `[Name]:`
   output sanitizer (fires on label contamination) · the
   max-chars accumulator in `static/tts.js`. The first one
