@@ -1,0 +1,5 @@
+---
+- name: Placeholder — the tts_engine role lands here (Task 1)
+  ansible.builtin.debug:
+    msg: "tts_engine role: not yet implemented"
+  when: tts_engine_enabled

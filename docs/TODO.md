@@ -63,8 +63,12 @@ the agent keeps this current. These carry across arcs.*
 ## Sub-steps
 
 - [ ] **Task 1 — Deployment machinery v1 (deliverable D1).**
-  **TIMEBOX: 3 days** from first playbook commit
-  ([discussion 2026-09-17] ruling 1). Playbook-first, debugged
+  **TIMEBOX: started 2026-09-17 ~17:30 → abort by end of
+  2026-09-20** ([discussion 2026-09-17] ruling 1). Skeleton
+  committed (site.yml + preflights + inventories + base role +
+  Makefile; llama/tts_engine/whisper roles stubbed). NEXT: install
+  Ansible on the laptop (owner: brew/pipx) → syntax checks →
+  write the three service roles → live debug on a fresh R570 box. Playbook-first, debugged
   live against a fresh R570 box; source material = the sealed
   Reproduction recipe (R0–R13). Boundary (owner ruling
   2026-09-17): the playbook starts at "SSH-able **Ubuntu** box

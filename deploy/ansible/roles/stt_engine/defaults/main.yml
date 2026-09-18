@@ -1,0 +1,4 @@
+---
+# Self-gate: the role applies only on hosts in its same-named inventory group
+# (override with -e stt_engine_enabled=true to force it elsewhere).
+stt_engine_enabled: "{{ 'stt_engine' in group_names }}"

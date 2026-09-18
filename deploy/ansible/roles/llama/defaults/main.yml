@@ -1,0 +1,4 @@
+---
+# Self-gate: the role applies only on hosts in its same-named inventory group
+# (override with -e llama_enabled=true to force it elsewhere).
+llama_enabled: "{{ 'llama' in group_names }}"

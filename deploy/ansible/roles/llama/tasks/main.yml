@@ -1,0 +1,5 @@
+---
+- name: Placeholder — the llama role lands here (Task 1)
+  ansible.builtin.debug:
+    msg: "llama role: not yet implemented"
+  when: llama_enabled

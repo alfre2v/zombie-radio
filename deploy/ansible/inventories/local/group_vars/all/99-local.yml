@@ -1,0 +1,4 @@
+---
+zr_environment: local
+# Local box overrides land here (e.g. zr_service_user, zr_models_dir)
+# the day the localhost target gets tested.

@@ -1,0 +1,5 @@
+---
+- name: Placeholder — the stt_engine role lands here (Task 1)
+  ansible.builtin.debug:
+    msg: "stt_engine role: not yet implemented"
+  when: stt_engine_enabled

@@ -28,7 +28,7 @@ deploy/
     ├── README.md                 # usage + current structure (living)
     ├── ansible.cfg               # no hardcoded inventory (Makefile passes -i);
     │                             #   sets collections_path to ./collections
-    ├── site.yml                  # THE deployment play: base → llama → tts_engine → whisper
+    ├── site.yml                  # THE deployment play: base → llama → tts_engine → stt_engine
     │                             # (top level also hosts future standalone playbooks —
     │                             #  see "Reserved playbook slots" below)
     ├── collections/
@@ -51,7 +51,7 @@ deploy/
         ├── base/
         ├── llama/
         ├── tts_engine/
-        └── whisper/
+        └── stt_engine/
 ```
 
 **Collections convention (owner, 2026-09-17):** dependencies are
@@ -101,10 +101,17 @@ role defaults revert to their proper job — harmless fallbacks.
 
 **Hosts files are YAML** (`hosts.yml`), static — no dynamic
 inventory script needed for this project (the slot exists at that
-level if a dynamic environment ever appears). Both environments
-define the same group name, **`gpu`**, which is what `site.yml`
-targets — one playbook, identical execution, `-i` picks the
-world:
+level if a dynamic environment ever appears).
+
+**Service-shaped groups (owner's pattern, adopted 2026-09-17,
+superseding the agent's single `gpu` group):** each environment
+declares one group PER SERVICE — `llama`, `tts_engine`,
+`stt_engine` — listing the hosts that run it, plus an `all.hosts`
+block carrying per-host connection data (the inventory NAME stays
+stable; `ansible_host` chases the ephemeral IP). The inventory
+thereby states the topology: moving a service to another box is a
+pure inventory edit (see §11 for how roles read the groups). One
+playbook, identical execution, `-i` picks the world:
 
 ```
 ansible-playbook -i inventories/cloud site.yml
@@ -117,15 +124,18 @@ box IP accidentally committed is acceptable; anything genuinely
 secret goes through the vault pattern instead. The only
 gitignored deployment path is `collections/ansible_collections/`
 (downloaded artifacts). Until the first provision, the cloud
-`hosts.yml` carries an un-pasteable placeholder
-(`<PASTE-BOX-IP-HERE>`, per the placeholder discipline).
+`hosts.yml` carries the `REPLACE_ME_box_ip` sentinel (owner's
+sentinel convention, §9), guarded by the placeholder preflight.
 
 ## 3. Role anatomy (owner's convention)
 
 Standard, full role structure per role: `defaults/ files/ tasks/
 templates/ handlers/ vars/` as needed. One role per service
 (owner ruling 2026-09-17): **`base` · `llama` · `tts_engine` ·
-`whisper`**.
+`stt_engine`** *(renamed from `whisper` 2026-09-17: the role↔group
+naming is 1:1, and whisper is an implementation the way
+faster_qwen3tts is — the STT engine slot is swappable, Speaches
+being the named fallback)*.
 
 **Engine dispatch in `tts_engine`:** `tasks/main.yml` handles
 what is genuinely common (venv creation, tts-serve clone, systemd
@@ -143,7 +153,8 @@ different strings).
 
 ## 4. Supervision (decided: option a)
 
-- `llama` and `whisper`: **detached Docker containers with
+- `llama` and `stt_engine` (whisper-fastapi): **detached Docker
+  containers with
   `--restart unless-stopped`** — Docker is the supervisor. With
   the Docker service enabled, they also rise on VM reboot.
 - `tts-serve` engine (bare venv process): **systemd unit**
@@ -253,3 +264,91 @@ project's "what can I run" documentation.
   client runs on ANY system that can open the SSH tunnel; on demo
   day it runs on the owner's laptop. No per-environment client
   assumption exists anywhere in the deployment.
+
+## 9. The preflight pattern (adopted 2026-09-17 from the owner's other project)
+
+The play runs `gather_facts: false` and imports two guard task
+files as its first pre_tasks; `ansible.builtin.setup` gathers
+facts explicitly AFTER them. The property this buys: `assert`
+executes on the CONTROL NODE and needs no connection, so a
+misdirected or unwired run **fails before Ansible dials the host
+at all**. Guards live as bare task files in `deploy/ansible/
+tasks/` — not roles, because nothing in them is composed against
+host groups ("composition against host groups is what earns a
+role", the owner's criterion, adopted).
+
+- **`tasks/preflight-environment.yml`** — asserts
+  `zr_environment == inventory_dir | basename` (each
+  `99-<env>.yml` states its environment). Today the drift it
+  prevents is mild; it becomes load-bearing the day the reserved
+  vault slots fill (env would then select keys/secrets).
+- **`tasks/preflight-placeholders.yml`** — asserts no
+  deploy-critical variable still carries a **`REPLACE_ME`**
+  sentinel (owner ruling: this spelling over `<PASTE-…-HERE>` —
+  catches the eye faster; the `<PASTE-…>` convention remains for
+  PROSE docs like recipes). Especially load-bearing here because
+  `cloud/hosts.yml` is COMMITTED carrying
+  `REPLACE_ME_box_ip` at rest between provisions — the guard
+  turns a far-away getaddrinfo error into a named, zero-dial
+  failure. List starts at `ansible_host`; grows only with real
+  contract variables.
+
+Companion conventions adopted in the same round: **`zr_` prefix**
+on all project variables · **`ans-` prefix** on the Makefile's
+Ansible action targets (file stays `site.yml` per Ansible
+convention) · **minimal comments in deployment code** (owner
+posture 2026-09-17: doctrine lives in these docs, not in the
+YAML; more comments only on explicit request).
+
+## 10. Timebox ledger
+
+- **Task 1 clock started 2026-09-17 ~17:30** (skeleton commit) →
+  **abort by end of 2026-09-20** (3 days, late-day start counted
+  fairly). First live-debug run against a fresh R570 box is the
+  next session's opening move; Ansible itself still needs
+  installing on the laptop (the control node).
+
+## 11. Amendments from the skeleton review round (2026-09-17, late)
+
+Settled during the owner's line-level review of the skeleton;
+each supersedes anything above that contradicts it.
+
+- **Self-gating roles (owner's pattern, from his `stack_` role):**
+  site.yml stays ONE play (`hosts: all`); each service role gates
+  ITSELF via a role-prefixed variable in its own defaults —
+  `<role>_enabled: "{{ '<role>' in group_names }}"` — checked by
+  its tasks. The inventory's service groups drive execution
+  through the gate, not through per-group plays or playbook-level
+  `when`s. Property this buys: role reusability — drop the role
+  into any playbook and it acts only where the inventory says, or
+  force it anywhere with `-e <role>_enabled=true`. (The agent's
+  one-play-per-group alternative was discussed and rejected:
+  equivalent power, more scaffolding; the agent initially — and
+  wrongly — presented plays as the ONLY group→role binding
+  mechanism.)
+- **Tags: REMOVED.** They were agent-proposed, never explicitly
+  ratified, and with self-gated roles a full idempotent run is
+  the re-run story. Removing them also removed a latent bug the
+  relitigation surfaced: `--tags <role>` would have skipped the
+  untagged preflight guards (they would have needed `always`).
+- **`whisper` role renamed `stt_engine`** (1:1 with its group).
+- **`hosts.example.yml` dropped**: hosts.yml is committed and
+  carries the REPLACE_ME sentinel between provisions; the
+  placeholder preflight is the guard.
+- **YAML style ruling:** block style throughout — no flow-style
+  `{ }` / one-liner collections in playbooks (short inline tag
+  lists were the only tolerated exception, now moot). One
+  navigation comment per role in site.yml (owner-requested
+  exception to the minimal-comments posture).
+- **ansible.cfg additions** (from the EW template): explicit
+  `roles_path`, `vault_id_match = True` (strict before the first
+  vault exists), `any_unparsed_is_failed = True` (a typo'd -i
+  must fail, not green-deploy nothing — re-measured here, exit
+  0 → 1).
+- **Verification state at freeze:** syntax checks pass (both
+  envs) · ansible-lint clean at the `production` profile ·
+  placeholder preflight self-test fails correctly on the control
+  node (`unreachable=0`) · bad-inventory probe exits 1 ·
+  collections pinned (community.docker 5.3.0) · ansible-core
+  2.21.4 locked via uv (floor >=2.21, 1-week supply-chain
+  quarantine) · ansible-lint in, no commit hooks (owner ruling).
