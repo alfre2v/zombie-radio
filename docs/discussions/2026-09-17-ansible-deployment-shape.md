@@ -365,3 +365,114 @@ each supersedes anything above that contradicts it.
   (who services run as) sit side by side there — same user today,
   deliberately separable later; hosts.yml carries connection
   ADDRESSES only.
+
+## 12. Synthesis: the two group→work binding mechanisms (added 2026-09-18)
+
+*The §11 bullet compressed a discussion the owner ruled worth
+keeping whole. This section is the agreed synthesis — including a
+reframing (2026-09-18) that upgraded the conclusion itself.*
+
+### The model
+
+An Ansible playbook is a list of PLAYS; a play binds a host set
+(`hosts:`) to work (roles/tasks). Everything in a play runs on
+every host the play targets. GROUPS (inventory) say where things
+run; TAGS filter what work runs at invocation time — an
+orthogonal axis that neither mechanism below depends on. The
+question both mechanisms answer: the inventory says host X is in
+group `llama` — what translates that membership into "the llama
+work executes on X and nowhere else"?
+
+### Mechanism 1 — play-level binding
+
+One play per group: `hosts: llama` + `roles: [llama]`. The host
+set is resolved before the play starts; non-members never see the
+play's tasks. This is the textbook-native mechanism, and during
+the skeleton review the agent initially presented it as the ONLY
+mechanism — which is false, and the record keeps the error.
+
+### Mechanism 2 — conditional gating (ADOPTED)
+
+One play (`hosts: all`); every role listed; each role gates its
+own tasks on a predicate over `group_names` (the per-host magic
+variable listing that host's groups). Our idiom: the gate is a
+role-prefixed variable in the role's defaults —
+
+```yaml
+# roles/llama/defaults/main.yml
+llama_enabled: "{{ 'llama' in group_names }}"
+# roles/llama/tasks/main.yml — one block, gated once
+- name: Deploy the llama.cpp LLM server
+  when: llama_enabled
+  block: ...
+```
+
+— which is also overridable (`-e llama_enabled=true` forces the
+role anywhere), the property that makes roles reusable drop-in
+units.
+
+### The decisive argument (owner's reframing, 2026-09-18)
+
+The first recorded reason for Mechanism 2 was role portability.
+That is true but it is a COROLLARY. The root reason:
+
+**A role encapsulates a CONCERN; a group encodes TOPOLOGY — and
+nothing guarantees the two dimensions align.** Example: "deploy
+the webapp" is ONE concern that legitimately touches THREE
+topological places — the `webapp` hosts (install the backend),
+the `proxy` host (render the vhost forwarding to those backends),
+the `monitors` hosts (define the health checks watching them).
+
+- Mechanism 1 silently assumes concern boundaries coincide with
+  group boundaries. In the 1:1 case (our current stack:
+  llama-concern = llama-group) it works and looks clean. For a
+  cross-cutting concern it forces you to SHATTER the role along
+  topology lines — per-group role fragments, or one concern
+  choreographed across several plays: the playbook becomes a
+  hand-maintained join table between what and where. And that
+  join table ENGRAVES A COPY OF THE TOPOLOGY INTO CODE: the
+  inventory already states where things run; the play structure
+  now states it again — two sources of truth for one fact.
+- Mechanism 2 keeps the concern whole and expresses the join as
+  DATA: per-task predicates over `group_names`, resolved per host
+  at runtime against the inventory. The what stays cohesive in
+  the role; the where stays solely in the inventory; the binding
+  is LATE (runtime) rather than STRUCTURAL (frozen play
+  boundaries). The cross-cutting webapp role is just one role
+  whose task clusters carry different gates
+  (`'webapp' in group_names`, `'proxy' in group_names`,
+  `'monitors' in group_names`).
+
+Corrected power claim: the mechanisms are equivalent ONLY in the
+degenerate 1:1 concern↔group case. For cross-cutting concerns,
+Mechanism 2 is strictly more expressive with no structural
+surgery. Portability follows: a role whose where-logic is
+late-bound data never welded itself to a partitioning scheme, so
+it survives transplantation.
+
+### Honest costs and the boundary where plays stay right
+
+- Mechanism 2's costs, all cosmetic at our scale: `skipping:`
+  output for gated tasks on non-member hosts (zero on one box);
+  topology read from inventory + gates instead of announced by
+  play headers (site.yml's per-role navigation comments carry
+  that load); per-task predicate evaluation (microseconds).
+- Ordering across groups is NOT a Mechanism-1 exclusive: within
+  one play, each task completes across all applicable hosts
+  before the next task starts, so "backends installed before the
+  proxy vhost renders" holds naturally.
+- Plays remain the right tool when you need ORCHESTRATION
+  SEMANTICS — `serial` rolling batches, `max_fail_percentage`,
+  distinct strategies, deliberate phases ("DB tier fully
+  converged before the app tier starts"). That is plays doing
+  their real job (sequencing phases), not standing in as a
+  concern→topology map.
+
+### What this settled here
+
+site.yml is ONE play (`hosts: all`) with self-gating roles; the
+service groups in each environment's hosts.yml are the sole
+statement of topology; moving a service to another box is a pure
+inventory edit; and tags were removed (§11) — with self-gated
+roles a full idempotent run is the re-run story, and `--tags`
+would have silently skipped the untagged preflight guards.
