@@ -352,3 +352,16 @@ each supersedes anything above that contradicts it.
   collections pinned (community.docker 5.3.0) · ansible-core
   2.21.4 locked via uv (floor >=2.21, 1-week supply-chain
   quarantine) · ansible-lint in, no commit hooks (owner ruling).
+- **Role-variable indirection (owner pattern, 2026-09-17, during
+  the llama-role review):** role TASKS use only `<role>_*`
+  variables; the role's `defaults/main.yml` maps each one to its
+  project variable (`llama_service_user: "{{ zr_service_user }}"`)
+  — the defaults file IS the role's declared dependency manifest
+  on the outside context. Lazy Jinja evaluation keeps group_vars
+  authoritative; direct `<role>_*` overrides still work at
+  role-application time.
+- **User declarations unified in `common_vars.yml`:**
+  `ansible_user` (who Ansible connects as) and `zr_service_user`
+  (who services run as) sit side by side there — same user today,
+  deliberately separable later; hosts.yml carries connection
+  ADDRESSES only.

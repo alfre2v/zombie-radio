@@ -2,7 +2,11 @@
 # Shared truth for ALL environments (symlinked as group_vars/all/00-common.yml).
 # Env-specific overrides win in 99-<env>.yml.
 
+# Users, unified here: ansible_user is who Ansible connects as; zr_service_user
+# is who the services run as. Same user today, deliberately separable later.
+ansible_user: ubuntu
 zr_service_user: ubuntu
+
 zr_bind_host: 127.0.0.1
 
 # The single collision-free port registry (host networking: one shared port space)
@@ -12,8 +16,11 @@ zr_whisper_port: 8002
 
 zr_models_dir: "/home/{{ zr_service_user }}/models"
 
+zr_llama_image: "ghcr.io/ggml-org/llama.cpp:server-cuda"  # floating tag; digest-pin at show-freeze
 zr_llama_model_hf: "bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M"
 zr_llama_ctx: 16384
+zr_llama_ngl: 99
+zr_llama_parallel: 1
 
 zr_tts_engine: faster_qwen3tts
 

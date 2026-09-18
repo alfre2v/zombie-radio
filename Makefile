@@ -66,7 +66,7 @@ check:
 
 ssh-tunnel:
 	@host="$$(awk '/ansible_host:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/cloud/hosts.yml")"; \
-	 user="$$(awk '/ansible_user:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/cloud/hosts.yml")"; \
+	 user="$$(awk '/^ansible_user:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/common_vars.yml")"; \
 	 test -n "$$host" || { echo "no ansible_host found in inventories/cloud/hosts.yml"; exit 2; }; \
 	 case "$$host" in REPLACE_ME*) echo "cloud hosts.yml still carries the REPLACE_ME sentinel"; exit 2;; esac; \
 	 echo "Tunnel to $$host: llama :8080 / tts :8001 / whisper :8002   (Ctrl-C closes it)"; \

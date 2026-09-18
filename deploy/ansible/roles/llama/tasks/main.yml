@@ -1,5 +1,61 @@
 ---
-- name: Placeholder — the llama role lands here (Task 1)
-  ansible.builtin.debug:
-    msg: "llama role: not yet implemented"
+- name: Deploy the llama.cpp LLM server
   when: llama_enabled
+  block:
+    - name: Ensure the model cache directory exists
+      ansible.builtin.file:
+        path: "{{ llama_models_dir }}"
+        state: directory
+        owner: "{{ llama_service_user }}"
+        group: "{{ llama_service_user }}"
+        mode: "0755"
+
+    - name: Run the llama-server container
+      community.docker.docker_container:
+        name: llama
+        image: "{{ llama_image }}"
+        pull: missing
+        state: started
+        restart_policy: unless-stopped
+        network_mode: host
+        device_requests:
+          - driver: nvidia
+            count: -1
+            capabilities:
+              - ["gpu"]
+        env:
+          LLAMA_CACHE: /models
+        volumes:
+          - "{{ llama_models_dir }}:/models"
+        command: >-
+          -hf {{ llama_model_hf }}
+          --host {{ llama_bind_host }} --port {{ llama_port }}
+          -ngl {{ llama_ngl }} -c {{ llama_ctx }}
+          --parallel {{ llama_parallel }}
+
+    - name: Wait for the LLM server to answer /health
+      ansible.builtin.uri:
+        url: "http://{{ llama_bind_host }}:{{ llama_port }}/health"
+      register: llama_health
+      until: llama_health.status == 200
+      retries: "{{ llama_health_retries }}"
+      delay: "{{ llama_health_delay }}"
+
+    # The canonical-v3 pothole lesson: check the mount, don't assume it — a
+    # misrouted cache means silent re-downloads on every container start.
+    - name: Find the GGUF in the mounted model cache
+      ansible.builtin.find:
+        paths: "{{ llama_models_dir }}"
+        patterns: "*.gguf"
+        recurse: true
+      register: llama_gguf
+
+    - name: Assert the model landed on the host-side cache
+      ansible.builtin.assert:
+        that:
+          - llama_gguf.matched >= 1
+        fail_msg: >-
+          No .gguf under {{ llama_models_dir }} although the server is healthy —
+          the LLAMA_CACHE mount is misrouted and the model lives in the
+          container layer (it will re-download on every start).
+        quiet: true
