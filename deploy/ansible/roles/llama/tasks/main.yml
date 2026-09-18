@@ -43,19 +43,21 @@
 
     # The canonical-v3 pothole lesson: check the mount, don't assume it — a
     # misrouted cache means silent re-downloads on every container start.
-    - name: Find the GGUF in the mounted model cache
+    # Checked by SIZE, not filename: llama.cpp's -hf cache layout changed to
+    # HF-hub-style extension-less blobs (found live, 2026-09-18).
+    - name: Find the model in the mounted cache (any file over 1 GB)
       ansible.builtin.find:
         paths: "{{ llama_models_dir }}"
-        patterns: "*.gguf"
+        size: 1g
         recurse: true
-      register: llama_gguf
+      register: llama_model_files
 
     - name: Assert the model landed on the host-side cache
       ansible.builtin.assert:
         that:
-          - llama_gguf.matched >= 1
+          - llama_model_files.matched >= 1
         fail_msg: >-
-          No .gguf under {{ llama_models_dir }} although the server is healthy —
-          the LLAMA_CACHE mount is misrouted and the model lives in the
-          container layer (it will re-download on every start).
+          No multi-GB model file under {{ llama_models_dir }} although the
+          server is healthy — the LLAMA_CACHE mount is misrouted and the model
+          lives in the container layer (it will re-download on every start).
         quiet: true

@@ -27,6 +27,7 @@
         repo: "{{ tts_engine_serve_repo }}"
         dest: "{{ tts_engine_serve_dir }}"
         version: "{{ tts_engine_serve_version }}"
+      register: tts_engine_clone
       notify: Restart the tts service
 
     - name: Load the engine's launch contract

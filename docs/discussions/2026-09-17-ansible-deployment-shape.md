@@ -119,13 +119,38 @@ ansible-playbook -i inventories/local site.yml
 ```
 
 Gitignore ruling (owner, 2026-09-17, reversing the agent's
-proposal): **hosts files are COMMITTED, both environments** — a
-box IP accidentally committed is acceptable; anything genuinely
-secret goes through the vault pattern instead. The only
-gitignored deployment path is `collections/ansible_collections/`
-(downloaded artifacts). Until the first provision, the cloud
-`hosts.yml` carries the `REPLACE_ME_box_ip` sentinel (owner's
-sentinel convention, §9), guarded by the placeholder preflight.
+proposal; clarified 2026-09-18 after the agent nearly committed a
+live IP): **hosts files are COMMITTED, both environments — but
+their at-rest, committed state carries the `REPLACE_ME_box_ip`
+sentinel.** A real IP lives ONLY in the local working tree during
+a box's lifetime and is flipped back to the sentinel at teardown;
+an IP that slips into history by accident is tolerable (hence no
+vault ceremony for addresses), but it is never committed
+deliberately while the box is alive. The only gitignored
+deployment path is `collections/ansible_collections/` (downloaded
+artifacts).
+
+**Enforced by the NEVER_COMMIT hook (owner-designed,
+2026-09-18):** a line carrying the `NEVER_COMMIT` marker is
+committable only while a `REPLACE_ME` placeholder appears BEFORE
+the marker on the same line — the at-rest form
+`ansible_host: REPLACE_ME_box_ip  # NEVER_COMMIT` passes; pasting
+a real value onto the marked line SELF-ARMS the tripwire, so
+there is no marker ritual at provision or teardown, the value
+change alone flips it. The pre-commit hook
+(`.githooks/pre-commit`, armed per clone by `make install` via
+`core.hooksPath`) scans STAGED content only (the index), so a
+dirty-but-unstaged hosts.yml never blocks unrelated commits — it
+fires exactly on the `git add hosts.yml` / `git commit -a`
+accident. Exclusions: the hook itself and `docs/**` (docs must be
+able to discuss the convention). Deliberate bypass:
+`git commit --no-verify`. Verified at install with a three-case
+battery (real value staged → blocked; placeholder staged → pass;
+dirty-unstaged + unrelated staged → pass). This supersedes the
+short-lived manual exclude-from-commit protocol, and narrowly
+amends the no-commit-hooks ruling (owner, same day). Defense in
+depth around it: the placeholder preflight (deploy side) and the
+`make ssh-tunnel` sentinel guard.
 
 ## 3. Role anatomy (owner's convention)
 

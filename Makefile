@@ -28,6 +28,7 @@ help:
 
 install:
 	uv sync
+	git config core.hooksPath .githooks
 
 ans-deps:
 	uv run ansible-galaxy collection install -r $(ANSIBLE_DIR)/collections/requirements.yml
