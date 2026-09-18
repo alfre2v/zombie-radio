@@ -63,37 +63,24 @@ the agent keeps this current. These carry across arcs.*
 ## Sub-steps
 
 - [ ] **Task 1 — Deployment machinery v1 (deliverable D1).**
-  **TIMEBOX: started 2026-09-17 ~17:30 → abort by end of
-  2026-09-20** ([discussion 2026-09-17] ruling 1). Skeleton
-  committed (site.yml + preflights + inventories + base role +
-  Makefile; llama/tts_engine/whisper roles stubbed). NEXT: install
-  Ansible on the laptop (owner: brew/pipx) → syntax checks →
-  write the three service roles → live debug on a fresh R570 box. Playbook-first, debugged
-  live against a fresh R570 box; source material = the sealed
-  Reproduction recipe (R0–R13). Boundary (owner ruling
-  2026-09-17): the playbook starts at "SSH-able **Ubuntu** box
-  exists" — VM provisioning stays manual/console; assuming
-  Ubuntu everywhere is a named portability bet (safe across most
-  GPU providers).
-  - [ ] `deploy/` skeleton in THIS repo (ruling 3): playbook,
-    roles, example inventory; real inventory/host_vars
-    gitignored.
-  - [ ] **One role per service** (owner ruling 2026-09-17):
-    `base` · `llama` (canonical v3 command as template) ·
-    `tts_engine` (**parametrized** — engine name/launch line are
-    variables) · `whisper`. Idempotent re-runs.
-  - [ ] Two targets: cloud VM (Hyperstack R570 image) +
-    `delegate_to: localhost` (BUILT now, TESTED later — ruling
-    4).
-  - [ ] First live run against a fresh R570 box = the image
-    validation run; deltas amend the playbook in place.
-  - [ ] On first success: rewrite
-    `runbooks/service-restart-sequence.md` to point at the
-    playbook (single source of truth — ruling 2).
-- [ ] **Task 2 — Laptop client wiring + smoke gate.** TalkWithMe
-  on the Mac (manual — the Mac client is OUT of Ansible v1
-  scope): tunnel to the new box, server URLs, the
-  text→voice→mic smoke gate. Mostly recipe R7–R13.
+  NEARLY DONE (2026-09-18, well inside the timebox): all four
+  roles written; **proven live on a fresh A6000/R570 box** — full
+  stack from zero, one command, idempotent (changed=0); potholes
+  fixed in-role and journaled ([discussion 2026-09-18] arc-plan);
+  NEVER_COMMIT tripwire armed. **D2 acceptance MET the same day**
+  (4 distinct voices + mic loop on the deployed stack; 58 ms
+  CANADA-1 RTT, "almost natural" pauses). Remaining to close:
+  - [ ] Reboot test (unattended auto-rise proof).
+  - [ ] Rewrite `runbooks/service-restart-sequence.md` to point
+    at the playbook (ruling-2 trigger FIRED: first success).
+  - [ ] `deploy/ansible/README.md` (usage, promised by the shape
+    doc).
+  - [ ] Owner call: keep the box overnight ($0.50/hr) vs destroy
+    (rebuild is a proven ~15-min command).
+- [x] **Task 2 — Laptop client wiring + smoke gate.** DONE
+  2026-09-18: tunnel to the new box, `make check` three-ok,
+  TalkWithMe smoke passed, saved server config carried over
+  unchanged (same localhost ports as the experiment).
 - [ ] **Task 3 — Cheap config wins, BEFORE experimenting.** So
   every experiment measures the improved baseline, not known
   defects: raise `max_turns_for_context` from 6 (taxonomy C9) ·
@@ -126,13 +113,34 @@ the agent keeps this current. These carry across arcs.*
     dated runlog section, no full experiment folder). Runnable
     as soon as Task 2 completes — does NOT need the real cast;
     findings feed prompt and config choices before 5a.
-- [ ] **Task 6 — First patches, on trigger.** The `[Name]:`
-  output sanitizer (fires on label contamination) · the
-  max-chars accumulator in `static/tts.js`. The first one
-  required decides fork-vs-upstream with data (fork strategy).
+- [ ] **Task 6 — First patches, on trigger.** **TRIGGER FIRED
+  2026-09-18**: labels are back in show output and SPOKEN (no
+  Global System Prompt per lab3) → the sanitizer is required →
+  the fork moment arrived. Disposition ([discussion 2026-09-18]
+  arc-plan, Q1): fork thin, patch minimally (sanitizer +
+  max-chars accumulator — the accumulator now triply motivated,
+  incl. the ultra-short-input echo artifact), offer both
+  upstream. Executes after Task 1 closes.
 - [ ] **Task 7 — The canned episode (owner MUST) + demo-day
   protocol runbook.** Recorded from the working prototype; the
   runbook promotion deferred from the last arc lands here.
+- [ ] **Task 7b — `client-talkwithme-mac.yml`: standalone Mac client-install
+  playbook (tangential nice-to-have; NOT MVP).** A top-level
+  playbook (reserved-slots pattern) that installs the TalkWithMe
+  client on the Mac laptop, assuming the cloud backend.
+  **Hard separation, stressed:** totally separate from site.yml —
+  run with NO `-i`, hosts: localhost inline; it must never read,
+  reference, or touch the deployment inventories in any way (the
+  EW `lab.yml` precedent: deliberately inventory-free).
+  Scope: clone (the fork, once it exists) + venv + requirements +
+  settings template (tunnel ports) + **the placeholder-voice
+  factory automated** — the `say`/`afconvert` blocks from the
+  experiment's `placeholder-personas.md` — so the synthetic cast
+  arrives with audio, resolving the audio-fragments caveat; the
+  REAL cast stays manual (never-committed samples,
+  private-assets-dir variable). No supervisor: uvicorn by hand at
+  showtime. Depends on: the fork (Task 6). ([discussion
+  2026-09-18] arc-plan, Q3 + owner's say-automation idea.)
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec ledger audit

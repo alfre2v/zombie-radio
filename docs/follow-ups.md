@@ -77,10 +77,11 @@ reader's memory):
   firebreak for label mimicry, and the fork-vs-upstream decision
   point per the fork strategy ("defer until the first patch");
   (2) a max-chars sentence accumulator replacing per-sentence
-  chunking in `static/tts.js` — fixes both the naive splitter
-  ("Dr. Byrne" → four requests) and the short-sentence
-  economics (effective RTF > 1; quantified in the spike's TTFA
-  data). A third config-only lever rides along: raise
+  chunking in `static/tts.js` — fixes the naive splitter
+  ("Dr. Byrne" → four requests), the short-sentence economics
+  (effective RTF > 1; quantified in the spike's TTFA data), AND
+  ultra-short-input audio artifacts (field-observed 2026-09-18:
+  an echo on a lone "1." — also a §7.2 per-engine test item). A third config-only lever rides along: raise
   `max_turns_for_context` from 6 (amnesia-by-design in a
   4-persona room — taxonomy C9).
 - **Where flagged:** remote-split runlog + findings (2026-09-16);

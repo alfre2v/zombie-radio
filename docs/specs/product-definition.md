@@ -214,6 +214,16 @@ than nice-to-have. That map is where this design work starts.
 
 ## §6. Deployment & operations
 
+**AS-BUILT (ledger entry, 2026-09-18):** the deployment machinery
+EXISTS and is proven live — `deploy/ansible/` (design:
+[discussion 2026-09-17] ansible-deployment-shape; events:
+[discussion 2026-09-18] arc-plan journal). One command
+(`make ans-deploy ENV=cloud`) converges a bare pinned-image box
+to the full model stack; idempotent (changed=0); validated
+end-to-end on an A6000 (CANADA-1, ~58 ms RTT) including a
+4-persona client session. The local (`ENV=local`) target is built,
+untested by ruling.
+
 - Linux-only targets; **Ansible-driven, idempotent**; identical
   local/cloud deployment (the "cloud-capable" identity half).
 - **Driver/CUDA/OS posture for new VMs (agreed 2026-09-15):**
