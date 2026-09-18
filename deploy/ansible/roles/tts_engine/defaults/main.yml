@@ -2,3 +2,25 @@
 # Self-gate: the role applies only on hosts in its same-named inventory group
 # (override with -e tts_engine_enabled=true to force it elsewhere).
 tts_engine_enabled: "{{ 'tts_engine' in group_names }}"
+
+# Project-variable mappings — the role's declared dependencies on the outside
+# context; tasks use ONLY tts_engine_* names.
+tts_engine_name: "{{ zr_tts_engine }}"
+tts_engine_service_user: "{{ zr_service_user }}"
+tts_engine_bind_host: "{{ zr_bind_host }}"
+tts_engine_port: "{{ zr_tts_port }}"
+tts_engine_serve_repo: "{{ zr_tts_serve_repo }}"
+tts_engine_serve_version: "{{ zr_tts_serve_version }}"
+
+# On-box layout: per-engine root (the recipe's ~/faster-Qwen3TTS shape) holding
+# the venv and the tts-serve clone side by side.
+tts_engine_root: "/home/{{ tts_engine_service_user }}/{{ tts_engine_name }}"
+tts_engine_venv: "{{ tts_engine_root }}/.venv"
+tts_engine_serve_dir: "{{ tts_engine_root }}/tts-serve"
+tts_engine_python: python3
+tts_engine_unit: "tts-{{ tts_engine_name }}"
+
+# Health budget sized for the cold path: the engine loads its checkpoint at
+# startup, and the first deploy downloads it (~5 GB).
+tts_engine_health_retries: 60
+tts_engine_health_delay: 15

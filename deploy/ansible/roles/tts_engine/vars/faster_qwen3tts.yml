@@ -1,0 +1,6 @@
+---
+# The engine's launch contract, consumed by the generic unit template.
+tts_engine_launch_cmd: "{{ tts_engine_venv }}/bin/python impl/server_fasterQwen3TTS.py"
+tts_engine_launch_env:
+  FASTER_QWEN3TTS_HOST: "{{ tts_engine_bind_host }}"
+  FASTER_QWEN3TTS_PORT: "{{ tts_engine_port }}"

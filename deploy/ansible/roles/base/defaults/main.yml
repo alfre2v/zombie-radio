@@ -3,3 +3,4 @@ base_packages:
   - python3-venv
   - sox
   - git
+  - acl  # lets become_user drop from root to the service user (tmpfile perms)

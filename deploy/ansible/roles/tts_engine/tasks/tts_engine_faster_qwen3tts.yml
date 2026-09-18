@@ -1,0 +1,41 @@
+---
+# Proven install order (experiment recipe R4): numpy BEFORE the engine (its
+# legacy sox setup.py needs it), version pins LAST (they override what the
+# engine pulled). Order is the pothole.
+- name: Install numpy first
+  become: true
+  become_user: "{{ tts_engine_service_user }}"
+  ansible.builtin.pip:
+    name: numpy
+    virtualenv: "{{ tts_engine_venv }}"
+
+- name: Install the Faster Qwen3-TTS engine
+  become: true
+  become_user: "{{ tts_engine_service_user }}"
+  ansible.builtin.pip:
+    name: faster-qwen3-tts
+    virtualenv: "{{ tts_engine_venv }}"
+  notify: Restart the tts service
+
+- name: Install the tts-serve server dependencies
+  become: true
+  become_user: "{{ tts_engine_service_user }}"
+  ansible.builtin.pip:
+    name:
+      - "{{ tts_engine_serve_dir }}/tts-engine-common"
+      - fastapi
+      - uvicorn
+      - loguru
+      - soundfile
+    virtualenv: "{{ tts_engine_venv }}"
+  notify: Restart the tts service
+
+- name: Apply the version pins (after the engine)
+  become: true
+  become_user: "{{ tts_engine_service_user }}"
+  ansible.builtin.pip:
+    name:
+      - "transformers==5.15.1"
+      - "huggingface-hub>=1.16,<2"
+    virtualenv: "{{ tts_engine_venv }}"
+  notify: Restart the tts service

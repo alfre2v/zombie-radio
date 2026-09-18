@@ -476,3 +476,29 @@ statement of topology; moving a service to another box is a pure
 inventory edit; and tags were removed (§11) — with self-gated
 roles a full idempotent run is the re-run story, and `--tags`
 would have silently skipped the untagged preflight guards.
+
+## 13. Privilege doctrine (owner ruling, 2026-09-18)
+
+**Roles assume root.** `become: true` is declared ONCE, at the
+play level in site.yml, and stays there. Any task that must run
+as a lesser user — including ansible_user — says so explicitly
+with `become_user` on that task (paired with its own
+`become: true`, which the partial-become lint rule requires at
+the same level).
+
+Why this is the right default: **root is the only user identity
+that never varies across systems.** An unmarked task therefore
+has an unambiguous answer to "who is executing this?" — root,
+always. If the default were ansible_user instead, every unmarked
+task would raise a per-system question ("who IS ansible_user on
+this box?"), and the answer would change between environments.
+Explicit-when-not-root makes the exceptions visible and the
+default constant.
+
+Consequences: roles do NOT carry their own blanket
+`become: true` (an earlier agent hardening pass added block-level
+and per-task becomes; relaxed back under this ruling) — a role
+transplanted into a foreign playbook assumes that playbook also
+grants root at play level, and that assumption is now documented
+here rather than encoded redundantly per task. Handlers likewise
+rely on the play-level become.
