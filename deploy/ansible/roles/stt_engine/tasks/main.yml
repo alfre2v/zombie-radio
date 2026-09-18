@@ -1,5 +1,38 @@
 ---
-- name: Placeholder — the stt_engine role lands here (Task 1)
-  ansible.builtin.debug:
-    msg: "stt_engine role: not yet implemented"
+- name: Deploy the STT server (whisper-fastapi)
   when: stt_engine_enabled
+  block:
+    - name: Ensure the HF cache directory exists
+      ansible.builtin.file:
+        path: "{{ stt_engine_cache_dir }}"
+        state: directory
+        owner: "{{ stt_engine_service_user }}"
+        group: "{{ stt_engine_service_user }}"
+        mode: "0755"
+
+    - name: Run the whisper-fastapi container
+      community.docker.docker_container:
+        name: whisper
+        image: "{{ stt_engine_image }}"
+        pull: missing
+        state: started
+        restart_policy: unless-stopped
+        network_mode: host
+        device_requests:
+          - driver: nvidia
+            count: -1
+            capabilities:
+              - ["gpu"]
+        volumes:
+          - "{{ stt_engine_cache_dir }}:/root/.cache/huggingface"
+        command: >-
+          --model {{ stt_engine_model }} --device cuda
+          --host {{ stt_engine_bind_host }} --port {{ stt_engine_port }}
+
+    - name: Wait for the STT server to answer /docs
+      ansible.builtin.uri:
+        url: "http://{{ stt_engine_bind_host }}:{{ stt_engine_port }}/docs"
+      register: stt_engine_health
+      until: stt_engine_health.status == 200
+      retries: "{{ stt_engine_health_retries }}"
+      delay: "{{ stt_engine_health_delay }}"

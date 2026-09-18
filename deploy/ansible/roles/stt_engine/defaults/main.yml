@@ -2,3 +2,17 @@
 # Self-gate: the role applies only on hosts in its same-named inventory group
 # (override with -e stt_engine_enabled=true to force it elsewhere).
 stt_engine_enabled: "{{ 'stt_engine' in group_names }}"
+
+# Project-variable mappings — the role's declared dependencies on the outside
+# context; tasks use ONLY stt_engine_* names.
+stt_engine_service_user: "{{ zr_service_user }}"
+stt_engine_bind_host: "{{ zr_bind_host }}"
+stt_engine_port: "{{ zr_stt_port }}"
+stt_engine_image: "{{ zr_stt_image }}"
+stt_engine_model: "{{ zr_stt_model }}"
+stt_engine_cache_dir: "{{ zr_stt_cache_dir }}"
+
+# Small budget: /docs answers as soon as the server binds — whisper lazy-loads
+# its model at the first STT request, not at start.
+stt_engine_health_retries: 12
+stt_engine_health_delay: 5

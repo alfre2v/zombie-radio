@@ -12,7 +12,7 @@ zr_bind_host: 127.0.0.1
 # The single collision-free port registry (host networking: one shared port space)
 zr_llama_port: 8080
 zr_tts_port: 8001
-zr_whisper_port: 8002
+zr_stt_port: 8002
 
 zr_models_dir: "/home/{{ zr_service_user }}/models"
 
@@ -24,4 +24,6 @@ zr_llama_parallel: 1
 
 zr_tts_engine: faster_qwen3tts
 
-zr_whisper_model: small
+zr_stt_image: "docker.io/heimoshuiyu/whisper-fastapi:latest"  # floating tag; digest-pin at show-freeze
+zr_stt_model: small
+zr_stt_cache_dir: "/home/{{ zr_service_user }}/.cache/huggingface"
