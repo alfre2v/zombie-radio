@@ -229,3 +229,5 @@ id_ed25519*
 vault.yml
 secrets.yml
 secrets.yaml
+deploy/ansible/collections/ansible_collections/
+.venv/

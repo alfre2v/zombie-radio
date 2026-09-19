@@ -59,19 +59,23 @@ the job of the **Product definition** arc (first in the build order).
    **prototype-first inversion** ([discussion 2026-09-16]): the
    two remaining experiments moved into arc 2 rather than
    preceding it.
-2. **MVP prototype** — NEXT (named 2026-09-16 by the inversion):
-   deploy the spike's exact validated configuration (experiment
-   recipe R0–R13 + TalkWithMe local + 4 personas) as a
-   repeatable, easily re-deployable prototype — then use it as
-   the experiment platform. Opening material: the in-prototype
-   experiments (LLM audition over the ranked five [spec §7.3] ·
-   TTS comparison + VRAM budget [spec §7.2], LuxTTS in the pool ·
-   the narrative-health zero-code probe battery
-   [discussion 2026-09-16]) and the follow-ups backlog (label
-   sanitizer · max-chars accumulator · `max_turns_for_context`
-   lever). Guardrails riding along: experiments keep the protocol
-   skeleton; prompt work stays disposable until the audition;
-   the spec is updated as a ledger during the build.
+2. **MVP prototype** — IN PROGRESS since 2026-09-17 (named
+   2026-09-16 by the inversion; execution state lives in
+   TODO.md, never here). **Deliverable #1 is the deployment
+   machinery** ([discussion 2026-09-17]): Ansible + Docker
+   automation standing up the full model-service stack
+   identically on a cloud GPU VM and on a local GPU machine
+   (`delegate_to: localhost`) — "deployment is 50% of the MVP"
+   (owner). Then: the spike's configuration as a running
+   prototype with the real cast, used as the experiment platform
+   — in-prototype experiments (LLM audition [spec §7.3] · TTS
+   comparison + VRAM budget [spec §7.2], LuxTTS in the pool ·
+   the narrative-health probe battery [discussion 2026-09-16])
+   and the follow-ups backlog (label sanitizer · max-chars
+   accumulator · `max_turns_for_context` lever). Guardrails
+   riding along: experiments keep the protocol skeleton; prompt
+   work stays disposable until the audition; the spec is updated
+   as a ledger during the build.
 3. *(further arcs emerge as the prototype teaches us)*
 
 ## Ideas / parking lot

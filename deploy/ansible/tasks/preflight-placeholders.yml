@@ -1,0 +1,12 @@
+---
+- name: Assert no deploy-critical variable still carries a REPLACE_ME sentinel
+  ansible.builtin.assert:
+    that:
+      - not (lookup('vars', item) | string).startswith('REPLACE_ME')
+    fail_msg: >-
+      {{ item }} still carries its REPLACE_ME sentinel for environment
+      '{{ zr_environment | default(inventory_dir | basename) }}'.
+      Fill it in {{ inventory_dir }}/hosts.yml.
+    quiet: true
+  loop:
+    - ansible_host

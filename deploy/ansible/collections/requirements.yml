@@ -1,0 +1,10 @@
+---
+# Install: make ans-deps. Lands project-local (collections_path in ../ansible.cfg).
+# Exact pins on purpose: ansible-galaxy has no lockfile, so the pin is the only
+# reproducibility lever. Policy: add a collection when a task genuinely needs it,
+# naming it explicitly when proposed (adopted 2026-09-17 from the owner's
+# standing collection policy).
+collections:
+  # docker_container for the llama and whisper roles.
+  - name: community.docker
+    version: "5.3.0"

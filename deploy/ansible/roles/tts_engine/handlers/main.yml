@@ -1,0 +1,6 @@
+---
+- name: Restart the tts service
+  ansible.builtin.systemd:
+    name: "{{ tts_engine_unit }}"
+    state: restarted
+    daemon_reload: true

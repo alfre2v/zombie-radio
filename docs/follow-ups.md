@@ -77,10 +77,11 @@ reader's memory):
   firebreak for label mimicry, and the fork-vs-upstream decision
   point per the fork strategy ("defer until the first patch");
   (2) a max-chars sentence accumulator replacing per-sentence
-  chunking in `static/tts.js` — fixes both the naive splitter
-  ("Dr. Byrne" → four requests) and the short-sentence
-  economics (effective RTF > 1; quantified in the spike's TTFA
-  data). A third config-only lever rides along: raise
+  chunking in `static/tts.js` — fixes the naive splitter
+  ("Dr. Byrne" → four requests), the short-sentence economics
+  (effective RTF > 1; quantified in the spike's TTFA data), AND
+  ultra-short-input audio artifacts (field-observed 2026-09-18:
+  an echo on a lone "1." — also a §7.2 per-engine test item). A third config-only lever rides along: raise
   `max_turns_for_context` from 6 (amnesia-by-design in a
   4-persona room — taxonomy C9).
 - **Where flagged:** remote-split runlog + findings (2026-09-16);
@@ -164,3 +165,25 @@ reader's memory):
   vocal-separation space: Demucs-family, UVR-family) and confirm
   against what he mentioned; record the pick and the one-line
   usage in the prototype's setup notes.
+
+## Communicate the cloud-deployment story to the self-hosted AI community
+
+- **The gap/idea (owner, 2026-09-17):** the deploy/ playbook is
+  useful beyond this project — a middle ground for self-hosted AI
+  enthusiasts: deploy TalkWithMe + tts-serve predictably on a
+  rented cloud GPU to experiment BEFORE committing to a local
+  install. This framing belongs in a future talk/write-up on the
+  project's motivations, and the owner asked that the idea not be
+  lost ("annotate somewhere we need to communicate at some point
+  the significance of the cloud deployment automation").
+- **Where flagged:** [discussion 2026-09-17] deployment-first
+  brainstorm §5.
+- **Trigger:** the project goes well — concretely: the MVP works
+  and the deploy/ playbook is proven; then this feeds (a) the
+  hackTNT presentation's motivation section, and (b) a possible
+  standalone write-up/README section aimed at the community.
+- **Fix shape:** a short "why cloud deployment matters for
+  self-hosters" narrative — the agent helps draft it from this
+  entry + the deployment-first discussion + real playbook usage
+  numbers (deploy time, cost per session — we already have
+  $2.97/experiment as a datum).

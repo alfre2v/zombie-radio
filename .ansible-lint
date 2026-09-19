@@ -1,0 +1,5 @@
+---
+# Vendored collections are a build artifact (make ans-deps recreates them),
+# not our code.
+exclude_paths:
+  - deploy/ansible/collections/
