@@ -70,11 +70,12 @@ the agent keeps this current. These carry across arcs.*
   NEVER_COMMIT tripwire armed. **D2 acceptance MET the same day**
   (4 distinct voices + mic loop on the deployed stack; 58 ms
   CANADA-1 RTT, "almost natural" pauses). Remaining to close:
-  - [ ] Reboot test (unattended auto-rise proof).
-  - [ ] Rewrite `runbooks/service-restart-sequence.md` to point
-    at the playbook (ruling-2 trigger FIRED: first success).
-  - [ ] `deploy/ansible/README.md` (usage, promised by the shape
-    doc).
+  - [x] Reboot test PASSED (2026-09-18): full unattended
+    auto-rise in under a minute; client reconnected on a fresh
+    tunnel alone.
+  - [x] `runbooks/service-restart-sequence.md` rewritten around
+    the playbook (ruling-2 executed, 2026-09-18).
+  - [x] `deploy/ansible/README.md` written (2026-09-18).
   - [ ] Owner call: keep the box overnight ($0.50/hr) vs destroy
     (rebuild is a proven ~15-min command).
 - [x] **Task 2 — Laptop client wiring + smoke gate.** DONE

@@ -4,8 +4,10 @@
 # placeholder, found BEFORE the marker on the same line. A marked line
 # without its placeholder means someone pasted a real value — block.
 # Scans STAGED content only (the index), so a dirty-but-unstaged file
-# never blocks unrelated commits. Bypass (deliberate): git commit --no-verify.
-hits=$(git grep --cached -n "NEVER_COMMIT" -- ':!.githooks/*' ':!docs/*' | grep -v "REPLACE_ME.*NEVER_COMMIT")
+# never blocks unrelated commits. Markdown is excluded everywhere: prose may
+# DISCUSS the convention; the guard protects value-carrying files.
+# Bypass (deliberate): git commit --no-verify.
+hits=$(git grep --cached -n "NEVER_COMMIT" -- ':!.githooks/*' ':!*.md' | grep -v "REPLACE_ME.*NEVER_COMMIT")
 if [ -n "$hits" ]; then
     echo "COMMIT BLOCKED: NEVER_COMMIT line(s) carry a real value (placeholder gone):" >&2
     echo "$hits" | sed 's/^/  /' >&2

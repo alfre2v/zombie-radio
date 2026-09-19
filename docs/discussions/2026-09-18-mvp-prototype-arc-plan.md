@@ -1,20 +1,50 @@
 # MVP-prototype arc — build plan & journal
 
 **Arc:** MVP prototype (opened 2026-09-17) · **Type:** the arc's
-build plan/journal — the document the close ritual expects a
-closing entry from. **Living, append-only dated entries**;
-findings are INTEGRATED per session (never a chat chronicle).
-The task-level live state stays in `TODO.md` (the parking-lot
-table); THIS doc records what building taught us and what was
-decided in the field. Patterns graduate to the shape doc
-([discussion 2026-09-17]); this journal holds the events and
-their dispositions.
+plan document — **the extended notepad for TODO.md's tasks across
+their whole lifecycle** (owner convention, clarified 2026-09-18):
+
+- **BEFORE execution** — expanded per-task notes too long for the
+  terse TODO line (approach sketches, open questions, gathered
+  intel) live in *Task notes* below.
+- **DURING execution** — the same sections hold working notes, so
+  the TODO stays a clean state table.
+- **AFTER execution** — findings land as dated *Journal entries*,
+  INTEGRATED per session (never a chat chronicle).
+
+The task-level live STATE stays in `TODO.md` (the parking-lot
+table); patterns graduate to the shape doc
+([discussion 2026-09-17]); this doc holds the depth. It is the
+document the close ritual expects a closing entry from.
 
 **The plan in one line:** deliver D1 (deployment machinery) →
 D2 (running prototype, real cast) → D3 (in-prototype experiment
 verdicts), under the prototype-first inversion's guardrails.
 Deliverables, acceptance lines, and task decomposition:
 `TODO.md`.
+
+---
+
+## Task notes (living, per task — pre/during execution depth)
+
+*(Sections appear when a task earns notes; they may be trimmed
+once their content graduates into a journal entry.)*
+
+### Task 6 — the fork + first patches (trigger fired 2026-09-18)
+
+Seed notes for when it starts: fork thin under the owner's
+account; keep the diff minimal and upstreamable (sanitizer +
+max-chars accumulator as separable commits → candidate PRs to
+scorbo2). Sanitizer options to weigh at write time: server-side
+(strip in the reply path before persist/TTS) vs client-side
+(strip in `static/tts.js` before enqueue) — server-side also
+cleans the transcript that feeds back into context (a C3
+contamination win), so it is the presumptive choice. The
+accumulator: replace the per-sentence split in `tts.js` with
+pack-up-to-N-chars; N becomes a settings knob; test items —
+"Dr. Byrne. 47. Microbiology. Over." as one request, and the
+lone-"1." echo case. The uv drop-in mode applies to the fork's
+client env (entry 2026-09-17 analysis).
 
 ---
 
@@ -31,6 +61,54 @@ verified hostless: syntax both envs, ansible-lint clean at the
 `production` profile, placeholder preflight self-test failing
 correctly on the control node with zero dial. Task 1 timebox
 started ~17:30.
+
+**Design-day decisions not captured elsewhere (distilled):**
+
+- **Control-node tooling: uv** (over plain venv / global
+  installs) — top-level `pyproject.toml` + committed `uv.lock`;
+  `ansible-core` only (never the ~700 MB `ansible` distribution);
+  `exclude-newer = "1 week"` supply-chain quarantine adopted from
+  the owner's EW project; ansible-core locked at 2.21.4, floor
+  `>=2.21`; `.python-version` (3.12) pins both uv and the owner's
+  pyenv shell. Side analysis banked: converting a TalkWithMe fork
+  to uv = drop-in ~zero effort (`uv pip install -r`), full
+  pyproject conversion ~30–60 min with the real cost being merge
+  friction against upstream's requirements.txt — drop-in mode
+  until the fork stops tracking upstream.
+- **The owner's EW project was mined as a pattern template**
+  (never copied wholesale): the Makefile conventions
+  (`require_ansible_env` guard, timestamped run logs to
+  `~/.config/zombie-radio/logs/`, `ANS_VERBOSE`, `ans-*` action
+  naming, `ANSIBLE_CONFIG` exported ABSOLUTE — cfg discovery is
+  CWD-relative and silently ignored in world-writable dirs), the
+  control-node preflight pattern, and the ansible.cfg hardening:
+  `any_unparsed_is_failed = True` (a typo'd `-i` is only a
+  WARNING by default — a green deploy of nothing; re-measured
+  here, exit 0 → 1), `vault_id_match = True` (strict before the
+  first vault exists), explicit `roles_path`.
+- **Collections: exactly one** (community.docker, pinned 5.3.0 —
+  galaxy has no lockfile, the pin is the only reproducibility
+  lever). `ansible.posix` and `community.general` REJECTED with
+  named reasons: no bootstrap playbook → no `authorized_key`
+  need; ufw is off by §10.2 ruling → the one module justifying
+  community.general is one we decided never to call.
+- **ansible-lint: "very in"** (owner) — passes at the strictest
+  `production` profile; no commit hooks (later narrowly amended
+  by the NEVER_COMMIT hook, entry 2026-09-18).
+- **The owner's skeleton review rounds each improved the
+  artifact:** flow-style YAML banned (block style throughout) ·
+  one navigation comment per role in site.yml (owner-requested
+  exception to the minimal-comments posture) · **tags removed**
+  (agent-proposed, never explicitly ratified — the relitigation
+  also surfaced a latent bug: `--tags` would have silently
+  skipped the untagged preflight guards) · service-shaped groups
+  + self-gating roles (the concern-vs-topology argument, shape
+  doc §12) · **role-variable indirection** (tasks speak only
+  `<role>_*`; defaults map to `zr_*` — the dependency manifest) ·
+  user declarations unified in common_vars (`ansible_user` vs
+  `zr_service_user`, same today, separable later) · the privilege
+  doctrine (root is the only invariant identity; shape doc §13) ·
+  inventory host aliases `cloud-1`/`local-1`.
 
 ## Entry 2026-09-18 — D1 proven live on a fresh A6000; D2 MET; the tripwire is born
 
@@ -112,6 +190,32 @@ nothing.
 - Dialog intelligence remains low — the audition's mandate
   (Task 5a), unchanged.
 
+**Smaller facts worth keeping:**
+
+- **Timebox accounting:** D1 proven + D2 met at ~1.5 days of the
+  3-day budget.
+- This was also the pinned image's **first real validation**
+  (`R570 CUDA 12.8 with Docker`, Ubuntu 24.04) — the §6 posture
+  held; the only image-related surprise was the PyPI-side CUDA
+  float, not the image itself.
+- **nvtop ruling:** NOT added to base packages (owner: installs
+  it himself when needed). Method note worth reusing: the safety
+  question ("will apt pull a conflicting NVIDIA driver?") was
+  answered with `apt-get install --dry-run nvtop` on the box —
+  one package, zero driver deps (nvtop dlopens the existing
+  libnvidia-ml at runtime).
+- **Client config carried over untouched:** TalkWithMe's saved
+  server settings from the spike (localhost:8080/8001/8002) drove
+  the new box through the tunnel with zero reconfiguration —
+  the stable-ports contract paying out.
+- Not collected (offered, skipped): an A6000 vs A4000 LLM tok/s
+  comparison — one curl away whenever wanted.
+- **Guardrail-3 compliance:** the spec received a same-evening
+  deep ledger pass (7 dated updates: §6 as-built + operational
+  properties + the cu-index corollary + the cribbing supersession,
+  §7.2/§7.3 as-built mechanics, §8 first measurement, §10.2
+  correction, §10.4 reworked to the tiered secrets doctrine).
+
 **Q&A dispositions (owner + agent, same evening):**
 
 - **Q1 — fork trigger:** JUMPED. Chain: spoken labels are
@@ -154,3 +258,15 @@ nothing.
 trigger fired: the playbook succeeded today) · spec §6 as-built
 ledger line · TODO true-up · keep-vs-destroy call on the box
 ($0.50/hr; rebuild is now a proven one-command, ~15-minute act).
+
+**Addendum, later the same evening — the reboot test PASSED, and
+then some:** full unattended auto-rise in UNDER A MINUTE (warm
+NVMe makes the model reload far quicker than the cold ~90 s);
+TalkWithMe reconnected on nothing but a fresh tunnel. The last
+live checkbox of Task 1. Also logged: the NEVER_COMMIT hook
+scored its first production catch — the owner deliberately left
+the live IP armed, the agent's `git add -A` swept it up, the hook
+refused by file:line ("Ah, got you!"). Ruling-2 executed: the
+restart runbook is rewritten around the playbook;
+`deploy/ansible/README.md` written. Remaining in Task 1: only the
+owner's keep-vs-destroy call on the box.
