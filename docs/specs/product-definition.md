@@ -506,6 +506,21 @@ carrying ufw-docker rules in Ansible is too much infra for this
 project. Consequence recorded in §10.2: with no public app
 ports, the Docker-vs-ufw complication is obviated, not solved.
 
+**AS-BUILT addendum (ledger 2026-09-19) — the SSH client
+posture:** the deployment declares its own identity
+(`ansible_ssh_private_key_file` in common_vars — a committable
+path whose public half is pre-registered in the provider console)
+and offers ONLY that key (`IdentitiesOnly=yes`); host keys follow
+trust-on-first-use for the disposable cloud boxes
+(`StrictHostKeyChecking=accept-new`: unknown hosts auto-accepted
+so no human ever logs into a fresh box, CHANGED keys still
+hard-fail), recorded in a project-scoped known_hosts
+(`~/.config/zombie-radio/`) so rental churn never touches the
+laptop's own. The tunnel (`make ssh-tunnel`) carries the same
+posture. Scoped per-environment: a long-lived box can graduate to
+strict checking with pre-seeded host keys (cloud-init), parked as
+the booth-era option. Doctrine: shape doc §15.
+
 ### §10.4 Secrets hygiene *(reworked 2026-09-18 to the as-built doctrine)*
 
 This repo is public. The 2026-09-13 draft said "IPs live in

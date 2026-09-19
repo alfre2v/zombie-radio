@@ -276,6 +276,25 @@ government-ID verification for GPU quota. Whoever we pick:
   before rule earns its keep); and the two-provider
   smoke-test hedge stays mandatory.
 
+  **Box-birth ritual (owner-verified 2026-09-19; repeat on EVERY
+  rental):** a freshly created Hyperstack VM is not reachable
+  until these manual console steps are done in
+  `console.hyperstack.cloud`, on the VM's page:
+
+  1. **Networking → "Attach a public IP"** — the VM has no
+     public address until you do; note the assigned IP (it goes
+     into `inventories/cloud/hosts.yml`, NEVER committed).
+  2. **Firewall → "Enable SSH Access"** — default-deny security
+     groups mean port 22 is closed until clicked.
+  3. **Firewall → "Enable ICMP Access"** — nice-to-have so the
+     box answers ping (network-latency measurement; CANADA-1
+     from the owner's laptop ≈ 58 ms, NORWAY-1 ≈ 215 ms).
+  4. From the laptop: ping the IP and (optional but cheap)
+     eyeball the hardware over SSH (`nvidia-smi`, `nproc`,
+     `free -h`, `df -h`) before pointing the playbook at it. No
+     manual host-key acceptance is needed — the deployment
+     accepts unknown hosts automatically (TOFU; shape doc §15).
+
   **GPU↔region mapping (owner-found 2026-09-15, during the
   remote-split experiment):** Hyperstack documents which
   regions host which GPU families —

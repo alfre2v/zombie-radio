@@ -16,7 +16,6 @@ Operations: `docs/runbooks/service-restart-sequence.md` and
 make install      # uv venv + ansible + arms the NEVER_COMMIT git hook
 make ans-deps     # pinned collections, project-local
 # paste the box IP into inventories/cloud/hosts.yml (NEVER_COMMIT line)
-# accept the host key once: ssh ubuntu@<ip> true
 make ans-deploy ENV=cloud
 make ssh-tunnel   # separate terminal, stays open
 make check        # three ok lines = stack reachable from the laptop
@@ -59,3 +58,10 @@ make check        # three ok lines = stack reachable from the laptop
   `zr_cuda_variant`. The rule: provider survey §S5; the events:
   the arc journal, entries 2026-09-18/19.
 - Deploy runs log to `~/.config/zombie-radio/logs/`.
+- SSH: the identity is declared (`ansible_ssh_private_key_file`
+  in common_vars) and is the only key offered; unknown host keys
+  are accepted automatically on first contact (TOFU — no manual
+  `ssh` before deploying), recorded in
+  `~/.config/zombie-radio/known_hosts`. Providers recycle IPs: a
+  "REMOTE HOST IDENTIFICATION HAS CHANGED" failure means a stale
+  entry there — delete the file (or the line) and rerun.

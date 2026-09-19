@@ -566,3 +566,52 @@ machinery it produced.*
   box-level property, exactly what `base` exists to assert
   (Ubuntu, docker, nvidia tooling — and now the driver's CUDA
   ceiling).
+
+## 15. Amendment (2026-09-19): SSH connection doctrine — declared identity + TOFU host keys
+
+*Provoked mid-box-birth (the R550 test box): the owner rejected
+the "accept the host key once" manual prerequisite — a deployment
+must not depend on a human logging into a freshly commissioned
+host — and separately required the SSH identity to be DECLARED in
+the deployment rather than inherited from the laptop's ambient
+ssh setup (default key names, agent, ~/.ssh/config).*
+
+- **Declared identity:** `ansible_ssh_private_key_file`
+  (`~/.ssh/hyperstack_2026`) lives in `common_vars.yml` beside
+  the user declarations (§11's unification doctrine: connection
+  identity is common truth). It is a path, not a secret —
+  committable. The public half is pre-registered in the provider
+  console at VM creation; key *generation* stays a manual,
+  once-per-provider act outside the playbook's scope.
+- **`IdentitiesOnly=yes`** (owner-proposed): the declared key is
+  the ONLY key offered. Without it, ssh also tries every
+  agent-loaded and default identity — which can authenticate with
+  the wrong key (masking a broken declaration) and can trip
+  `MaxAuthTries` on key-rich laptops.
+- **TOFU host keys, scoped to the cloud env** (`99-cloud.yml`
+  `ansible_ssh_common_args`): `StrictHostKeyChecking=accept-new`
+  auto-accepts an UNKNOWN host on first contact and still
+  hard-fails on a CHANGED key — trust-on-first-use, the right
+  shape for disposable rental boxes whose IPs are always fresh.
+  Scoped per-environment ON PURPOSE: a future long-lived box (the
+  booth era) can override back to strict checking, or graduate to
+  the parked gold standard — pre-seeded host keys via cloud-init
+  user-data (rejected for v1: adds a provision-time step and
+  private-key vault machinery, disproportionate for disposable
+  dev boxes).
+- **Project-scoped known_hosts**
+  (`~/.config/zombie-radio/known_hosts`): rental churn never
+  touches `~/.ssh/known_hosts`. Known failure mode: providers
+  RECYCLE IPs, so a reused IP with a stale entry fails loudly
+  ("REMOTE HOST IDENTIFICATION HAS CHANGED") — remedy: delete the
+  project file (or the one line) and rerun. The parent directory
+  is a CONTROL-NODE responsibility, so it belongs to the Makefile
+  (ssh-tunnel mkdirs it; ans-deploy already creates it via the
+  log dir), never to a role — roles run on the box.
+- **The Makefile's `ssh-tunnel` carries the same posture**
+  (`-i` + the same three `-o` options), parsing the key path from
+  `common_vars.yml` exactly as it parses the user — the Makefile
+  stays a consumer of inventory truth, never a second source.
+- **Net effect on box-birth:** console clicks (IP, SSH, ICMP) →
+  paste IP into hosts.yml → `make ans-deploy ENV=cloud`. No
+  mandatory human SSH anywhere in the path.

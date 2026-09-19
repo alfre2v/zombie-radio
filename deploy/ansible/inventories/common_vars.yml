@@ -7,6 +7,11 @@
 ansible_user: ubuntu
 zr_service_user: ubuntu
 
+# Connection identity, declared rather than ambient: the laptop-side private
+# key whose public half is pre-registered in the provider console. A path,
+# not a secret. The env ssh args (99-cloud) make it the ONLY key offered.
+ansible_ssh_private_key_file: "~/.ssh/hyperstack_2026"
+
 zr_bind_host: 127.0.0.1
 
 # The single collision-free port registry (host networking: one shared port space)

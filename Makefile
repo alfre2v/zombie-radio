@@ -8,9 +8,15 @@ ANSIBLE_DIR := $(CURDIR)/deploy/ansible
 # silently ignored in world-writable dirs); exporting pins it for every target.
 export ANSIBLE_CONFIG = $(ANSIBLE_DIR)/ansible.cfg
 
-ANS_LOG_DIR := $(HOME)/.config/zombie-radio/logs
+ZR_CONF_DIR := $(HOME)/.config/zombie-radio
+ANS_LOG_DIR := $(ZR_CONF_DIR)/logs
 ANS_LOG_STAMP := $(shell date +%Y%m%d-%H%M%S)
 ANS_VERBOSITY := $(if $(ANS_VERBOSE),-v,)
+
+# Same SSH posture as the deployment's ansible_ssh_common_args (99-cloud.yml):
+# only the declared key, auto-accept unknown hosts, alarm on changed ones.
+SSH_TOFU_OPTS := -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new \
+                 -o UserKnownHostsFile=$(ZR_CONF_DIR)/known_hosts
 
 .PHONY: help install ans-deps ans-config ans-lint ans-deploy ans-check-syntax check ssh-tunnel
 
@@ -66,10 +72,14 @@ check:
 	@curl -sf -o /dev/null http://localhost:8002/docs && echo "whisper: ok" || echo "whisper: FAIL"
 
 ssh-tunnel:
+	@mkdir -p $(ZR_CONF_DIR)
 	@host="$$(awk '/ansible_host:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/cloud/hosts.yml")"; \
 	 user="$$(awk '/^ansible_user:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/common_vars.yml")"; \
+	 key="$$(awk -F'"' '/^ansible_ssh_private_key_file:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/common_vars.yml")"; \
+	 case "$$key" in "~"*) key="$$HOME$${key#\~}";; esac; \
 	 test -n "$$host" || { echo "no ansible_host found in inventories/cloud/hosts.yml"; exit 2; }; \
 	 case "$$host" in REPLACE_ME*) echo "cloud hosts.yml still carries the REPLACE_ME sentinel"; exit 2;; esac; \
+	 test -n "$$key" || { echo "no ansible_ssh_private_key_file found in inventories/common_vars.yml"; exit 2; }; \
 	 echo "Tunnel to $$host: llama :8080 / tts :8001 / whisper :8002   (Ctrl-C closes it)"; \
-	 ssh -N -o ExitOnForwardFailure=yes \
+	 ssh -N -o ExitOnForwardFailure=yes -i "$$key" $(SSH_TOFU_OPTS) \
 	     -L 8080:127.0.0.1:8080 -L 8001:127.0.0.1:8001 -L 8002:127.0.0.1:8002 "$$user@$$host"

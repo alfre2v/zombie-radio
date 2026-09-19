@@ -1,2 +1,11 @@
----
 zr_environment: cloud
+
+# Disposable rental boxes: offer ONLY the declared key (IdentitiesOnly),
+# accept an UNKNOWN host key on first contact (TOFU: no human login needed on
+# a fresh box), still hard-fail on a CHANGED one. Rental-box churn lives in a
+# project-scoped known_hosts (the Makefile creates the directory), never in
+# ~/.ssh/known_hosts. Doctrine: shape doc §15.
+ansible_ssh_common_args: >-
+  -o IdentitiesOnly=yes
+  -o StrictHostKeyChecking=accept-new
+  -o UserKnownHostsFile=~/.config/zombie-radio/known_hosts

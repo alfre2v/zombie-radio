@@ -29,10 +29,12 @@ make ans-deploy ENV=cloud     # or ENV=local
 ```
 
 Prerequisites (once per clone): `make install` + `make ans-deps`.
-Per box: paste its IP into `inventories/cloud/hosts.yml`
-(the `NEVER_COMMIT` line guards it) and accept the SSH host key
-once (`ssh ubuntu@<ip> true`). First-ever deploy downloads models
-(~11 GB total); budget ~15 min.
+Per box: paste its IP into `inventories/cloud/hosts.yml` (the
+`NEVER_COMMIT` line guards it) — nothing else: host keys are
+accepted automatically on first contact (TOFU, changed-key alarm
+kept; shape doc §15), and the SSH identity is declared in
+common_vars. First-ever deploy downloads models (~11 GB total);
+budget ~15 min.
 
 ## The manual bits (laptop side, by design)
 

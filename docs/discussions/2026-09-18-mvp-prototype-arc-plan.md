@@ -368,3 +368,22 @@ expression was verified offline against six driver/variant cases
 (12.8·12.4·12.2·13.2 vs cu128 pass; 12.8 vs cu130 and 11.8 vs
 cu128 fail). Doctrine recorded: shape doc §14. Verification:
 syntax both envs + ansible-lint clean at `production`.
+
+**Addendum, same day — the proof-box session births the SSH
+doctrine.** The owner ruled the new preflight logic unproven-live
+→ merge gate: a fresh from-zero deploy. He rented a deliberately
+DIFFERENT image — `Server 22.04 LTS R550 CUDA 12.4 with Docker` —
+to test the rule table's middle row (same-major/older-minor
+minor-compat, plus a free confound: 22.04's Python 3.10 venv) at
+the same time. Mid-box-birth, two rulings landed and were built
+(shape doc §15): (1) **no human SSH on a fresh box, ever** — host
+keys are TOFU (`accept-new` + project-scoped known_hosts in the
+cloud env's `ansible_ssh_common_args`; recycled-IP remedy
+documented); (2) **the SSH identity is declared, not ambient** —
+`ansible_ssh_private_key_file` (+ `IdentitiesOnly=yes`,
+owner-proposed) in common_vars; `make ssh-tunnel` parses and uses
+the same key and options. The Hyperstack box-birth console ritual
+(attach IP / enable SSH / enable ICMP) was captured in the
+provider survey's Hyperstack entry. Also fixed: the
+box-inspection runbook falsely claimed nvtop ships in base
+packages (it never did — 09-18 ruling).

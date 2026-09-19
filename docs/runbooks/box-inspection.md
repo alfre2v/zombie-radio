@@ -44,7 +44,8 @@ sudo journalctl -u tts-faster_qwen3tts -f    # -n 100 for a snapshot
 
 ```bash
 nvidia-smi        # driver/CUDA versions, per-process VRAM
-nvtop             # live cockpit (in base packages)
+nvtop             # live cockpit (NOT preinstalled — owner installs when
+                  # wanted; apt dry-run verified: zero driver deps)
 ```
 
 Healthy full stack (one TTS engine): llama ~6.7 GiB · tts
