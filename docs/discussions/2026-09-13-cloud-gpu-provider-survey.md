@@ -276,6 +276,25 @@ government-ID verification for GPU quota. Whoever we pick:
   before rule earns its keep); and the two-provider
   smoke-test hedge stays mandatory.
 
+  **Box-birth ritual (owner-verified 2026-09-19; repeat on EVERY
+  rental):** a freshly created Hyperstack VM is not reachable
+  until these manual console steps are done in
+  `console.hyperstack.cloud`, on the VM's page:
+
+  1. **Networking → "Attach a public IP"** — the VM has no
+     public address until you do; note the assigned IP (it goes
+     into `inventories/cloud/hosts.yml`, NEVER committed).
+  2. **Firewall → "Enable SSH Access"** — default-deny security
+     groups mean port 22 is closed until clicked.
+  3. **Firewall → "Enable ICMP Access"** — nice-to-have so the
+     box answers ping (network-latency measurement; CANADA-1
+     from the owner's laptop ≈ 58 ms, NORWAY-1 ≈ 215 ms).
+  4. From the laptop: ping the IP and (optional but cheap)
+     eyeball the hardware over SSH (`nvidia-smi`, `nproc`,
+     `free -h`, `df -h`) before pointing the playbook at it. No
+     manual host-key acceptance is needed — the deployment
+     accepts unknown hosts automatically (TOFU; shape doc §15).
+
   **GPU↔region mapping (owner-found 2026-09-15, during the
   remote-split experiment):** Hyperstack documents which
   regions host which GPU families —
@@ -449,6 +468,112 @@ with Scaleway as EU alternate). The hedge stands unchanged.
 **Graduation path:** provider choice + demo-day protocol become
 an ADR + a runbook (`runbooks/deploy-gpu-instance.md`) once the
 smoke test passes; this survey remains as provenance.
+
+## S5. The driver ↔ CUDA ↔ wheel compatibility rule, and the OS-image dimension (added 2026-09-19)
+
+*Provenance: the rule was learned live 2026-09-18 (PyPI's default
+torch, a cu130 build, crash-looped on the R570 box — arc-plan
+journal, pothole 1) and generalized 2026-09-19 during the owner's
+PR #4 review, when he asked the two questions this section
+answers: what happens on a VM with an OLDER driver, and how
+portable is the deployment across providers? The survey's original
+axes (price, billing, automation) lacked this one: **which OS
+image / driver branch to pick**, and what the choice commits us
+to. This section closes that gap.*
+
+### S5.1 The rule (what actually happens)
+
+The driver's `CUDA Version` reported by `nvidia-smi` is the
+**maximum** CUDA runtime generation that driver supports — it is a
+capability ceiling, not the version of anything installed. Three
+cases for a torch-family wheel built for CUDA `X.Y` (e.g. our
+`cu128` pins, [arc journal 2026-09-18]):
+
+| Box driver vs the wheel's CUDA build | Example | Result |
+|---|---|---|
+| Driver **newer** than the wheel, any amount, even across majors | R595 (CUDA 13.2) running cu128 wheels | **Works.** Drivers run applications built against older CUDA unconditionally — backward compatibility is the driver's contract. |
+| **Same major, driver minor older** | R550 (12.4) or R535 (12.2) running cu128 wheels | **PROVEN 2026-09-19 (upgraded from "expected"):** the full stack converged from zero on an R550/CUDA 12.4 box and served REAL inference (TTS synthesis + STT) on cu128 wheels — see the arc journal. Mechanism: CUDA 12 "minor version compatibility" — the pip wheels bundle their own CUDA 12.8 runtime libraries (the `nvidia-*-cu12` wheel dependencies), and the driver-side ABI is stable within a major version; NVIDIA's stated floor for any CUDA 12.x app is the R525 branch (CUDA 12.0). Caveat stands in principle (features needing newer kernel-mode support *can* fail under minor-compat) but did not bite a full inference workload at 12.4; R535 remains untested. |
+| Driver **major older** than the wheel's major | R570 (12.8) running **cu130** wheels | **Hard fail** — the exact `"driver too old"` crash loop we ate live on 2026-09-18. CUDA 13 wheels need an R580-family driver or newer. There is no forward compatibility across majors for these wheels. |
+
+Two corollaries that keep the rule honest:
+
+1. **The failure we debugged was not "the pin is fragile"** — it
+   was PyPI's *default* being the newest major (cu130 at the
+   time). A deliberately pinned, one-major-behind variant like
+   cu128 is close to the most portable choice available: it runs
+   on every CUDA 12.x driver (exactly or via minor-compat) AND on
+   every CUDA 13.x driver (backward compat). The floating default
+   is the fragile choice — it hard-fails on every box whose
+   driver hasn't caught up to the newest major yet, which near a
+   major transition is *most* boxes.
+2. **The same rule governs the Docker containers.** The llama.cpp
+   and whisper-fastapi images carry their own CUDA builds inside;
+   the host driver must support *their* CUDA major too. Wheels
+   and images sit on the same side of the line; the driver is the
+   only thing on the other side.
+
+### S5.2 The Hyperstack image menu, mapped (console snapshot 2026-09-19)
+
+Against our cu128 pins and CUDA-12-built containers:
+
+- **Server 24.04 LTS R570 CUDA 12.8 with Docker** — our pinned
+  image ([spec §6]); exact match, proven live 2026-09-18.
+- **Server 22.04 LTS R570 CUDA 12.8 with Docker** — same driver
+  branch, older Ubuntu LTS; the base role asserts Ubuntu but not
+  the release, and the per-engine-venv rule makes system Python
+  irrelevant, so this should converge identically. Untested.
+- **Server 24.04 LTS R595 CUDA 13.2 with Docker** — newer-driver
+  case: cu128 works (backward compat). Also the only image on the
+  menu where PyPI's floating cu130 default would have worked —
+  and the natural candidate when we someday cross the CUDA-13
+  line deliberately.
+- **Server 22.04 LTS R550 CUDA 12.4 with Docker** — minor-compat
+  territory, **PROVEN 2026-09-19**: from-zero converge,
+  changed=0 idempotency, and a real TalkWithMe session on this
+  exact image (which also proved the 22.04/Python 3.10 side —
+  the engine venv is version-agnostic in practice).
+- **Server 22.04 LTS R535 CUDA 12.2 with Docker** — same
+  territory, still untested by us. (Historical note:
+  the R535 generation is also the filter that killed half of
+  tts-serve's engines in the remote-split experiment's ranking —
+  driver age bites engines through more paths than torch wheels.)
+- **All the non-Docker variants** (plain R570/R550/R535 CUDA
+  images, vanilla 22.04/24.04 LTS) — excluded by design: the base
+  role asserts docker/nvidia-smi/nvidia-ctk preexist and
+  deliberately never installs them ([spec §6] posture: the image
+  provides the platform, Ansible provides the stack).
+
+### S5.3 The portability contract (any provider)
+
+What the deployment actually requires of a rented VM, stated once:
+
+> **Ubuntu + Docker + nvidia-container-toolkit + a CUDA-12-capable
+> NVIDIA driver (R525 or newer)** — with a driver ≥ the
+> wheels'/images' own CUDA minor preferred, and same-major
+> minor-compat tolerated.
+
+Every "with Docker" GPU image in the Hyperstack menu satisfies
+this, and the mainstream providers (survey S2/S3) ship R535–R595
+today. The contract breaks only on drivers older than R525
+(CUDA < 12.0 — museum pieces on GPU clouds in 2026) or on the day
+the ecosystem's default images go CUDA-13-only — at which point
+the pin moves once, fleet-wide, per the [spec §6] never-cross-a-
+major-casually posture.
+
+### S5.4 What this changed in the machinery (2026-09-19)
+
+The hardware dependency is now explicit and asserted, not implied
+by hardcoded pins: the CUDA generation is a project variable
+(`zr_cuda_variant: "cu128"`, with `zr_torch_version` beside it, in
+`inventories/common_vars.yml`); every torch-family pin and its
+index URL derive from it; and a base-role preflight parses the
+driver's supported CUDA version from `nvidia-smi` and **asserts
+the driver's major can run the pinned variant** — converting the
+09-18 experience (crash loop discovered *after* a 5 GB model
+download) into a seconds-fast, named failure at the top of the
+run. Adapting to a different provider or driver branch is a
+one-line `99-<env>.yml` override. Mechanics: shape doc §14
+([discussion 2026-09-17]).
 
 ---
 

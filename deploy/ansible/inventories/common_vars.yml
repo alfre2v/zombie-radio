@@ -1,0 +1,57 @@
+---
+# Shared truth for ALL environments (symlinked as group_vars/all/00-common.yml).
+# Env-specific overrides win in 99-<env>.yml.
+
+# Users, unified here: ansible_user is who Ansible connects as; zr_service_user
+# is who the services run as. Same user today, deliberately separable later.
+ansible_user: ubuntu
+zr_service_user: ubuntu
+
+# Connection identity, declared rather than ambient: the laptop-side private
+# key whose public half is pre-registered in the provider console. A path,
+# not a secret. The ssh args below make it the ONLY key offered.
+ansible_ssh_private_key_file: "~/.ssh/hyperstack_2026"
+
+# Control-node (laptop) state directory: deploy logs and the project-scoped
+# known_hosts live under it. The Makefile extracts THIS line (single source).
+zr_control_dir: "~/.config/zombie-radio"
+
+# Offer ONLY the declared key (IdentitiesOnly); accept an UNKNOWN host key on
+# first contact (TOFU — no human login on a fresh box), still hard-fail on a
+# CHANGED one; rental-box churn never touches ~/.ssh/known_hosts. Inert for
+# connection: local environments. Doctrine: shape doc §15.
+ansible_ssh_common_args: >-
+  -o IdentitiesOnly=yes
+  -o StrictHostKeyChecking=accept-new
+  -o UserKnownHostsFile={{ zr_control_dir }}/known_hosts
+
+zr_bind_host: 127.0.0.1
+
+# The single collision-free port registry (host networking: one shared port space)
+zr_llama_port: 8080
+zr_tts_port: 8001
+zr_stt_port: 8002
+
+zr_models_dir: "/home/{{ zr_service_user }}/models"
+
+# The box's CUDA generation (wheel-variant form): every torch-family pin
+# derives its build suffix and index URL from it, and the base role asserts
+# the driver can run it. A provider/driver change is a 99-<env> override.
+# cu128 runs on: R570 (CUDA 12.8, proven), R580+/R595 (13.x, backward compat),
+# R525-R565 (12.0-12.6, minor-compat, unproven). Hard-fails below R525.
+zr_cuda_variant: "cu128"
+zr_torch_version: "2.9.1"
+
+zr_llama_image: "ghcr.io/ggml-org/llama.cpp:server-cuda"  # floating tag; digest-pin at show-freeze
+zr_llama_model_hf: "bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M"
+zr_llama_ctx: 16384
+zr_llama_ngl: 99
+zr_llama_parallel: 1
+
+zr_tts_engine: faster_qwen3tts
+zr_tts_serve_repo: "https://github.com/scorbo2/tts-serve"
+zr_tts_serve_version: "1.1"  # pinned tag (upstream tags carry no v prefix); bump deliberately
+
+zr_stt_image: "docker.io/heimoshuiyu/whisper-fastapi:latest"  # floating tag; digest-pin at show-freeze
+zr_stt_model: small
+zr_stt_cache_dir: "/home/{{ zr_service_user }}/.cache/huggingface"

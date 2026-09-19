@@ -1,0 +1,21 @@
+---
+# Self-gate: the role applies only on hosts in its same-named inventory group
+# (override with -e llama_enabled=true to force it elsewhere).
+llama_enabled: "{{ 'llama' in group_names }}"
+
+# Project-variable mappings — the role's declared dependencies on the outside
+# context; tasks use ONLY llama_* names.
+llama_service_user: "{{ zr_service_user }}"
+llama_bind_host: "{{ zr_bind_host }}"
+llama_port: "{{ zr_llama_port }}"
+llama_models_dir: "{{ zr_models_dir }}"
+llama_image: "{{ zr_llama_image }}"
+llama_model_hf: "{{ zr_llama_model_hf }}"
+llama_ctx: "{{ zr_llama_ctx }}"
+llama_ngl: "{{ zr_llama_ngl }}"
+llama_parallel: "{{ zr_llama_parallel }}"
+
+# Health budget sized for the cold path: first deploy downloads ~6 GB, every
+# start reloads the model (~90 s). Warm restarts pass in the first probes.
+llama_health_retries: 60
+llama_health_delay: 15

@@ -1,0 +1,17 @@
+[project]
+name = "zombie-radio-tooling"
+version = "0.1.0"
+description = "Control-node tooling for Zombie-Radio (Ansible deployment, project scripts)"
+requires-python = ">=3.12"
+# ansible-core only, never the ~700 MB `ansible` distribution; collections are
+# pinned in deploy/ansible/collections/requirements.yml.
+dependencies = [
+    "ansible-core>=2.21",
+    "ansible-lint>=26.6",
+]
+
+[tool.uv]
+package = false
+# Supply-chain quarantine: refuse packages younger than a week at (re)lock time;
+# malicious releases are usually yanked within days.
+exclude-newer = "1 week"

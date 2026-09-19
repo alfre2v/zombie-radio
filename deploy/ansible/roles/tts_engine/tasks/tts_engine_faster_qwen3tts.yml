@@ -1,0 +1,77 @@
+---
+# Proven install order (experiment recipe R4): numpy BEFORE the engine (its
+# legacy sox setup.py needs it), version pins LAST (they override what the
+# engine pulled). Order is the pothole.
+- name: Install numpy first
+  become: true
+  become_user: "{{ tts_engine_service_user }}"
+  ansible.builtin.pip:
+    name: numpy
+    virtualenv: "{{ tts_engine_venv }}"
+
+# PyPI's default torch/torchaudio FLOAT to the newest CUDA major and
+# crash-loop on an older-major driver, so BOTH come from the variant's own
+# index, pinned together (same version, same ABI), BEFORE the engine drags in
+# the defaults (found live, 2026-09-18: "driver too old" crash loop, then a
+# torchaudio .so that could not load against the replaced torch). The variant
+# knob is zr_cuda_variant; the base role asserts the driver can run it.
+- name: Install torch and torchaudio built for the box's CUDA generation (before the engine)
+  become: true
+  become_user: "{{ tts_engine_service_user }}"
+  ansible.builtin.pip:
+    name:
+      - "torch=={{ tts_engine_torch_version }}+{{ tts_engine_cuda_variant }}"
+      - "torchaudio=={{ tts_engine_torch_version }}+{{ tts_engine_cuda_variant }}"
+    virtualenv: "{{ tts_engine_venv }}"
+    extra_args: "--index-url https://download.pytorch.org/whl/{{ tts_engine_cuda_variant }}"
+  notify: Restart the tts service
+
+- name: Install the Faster Qwen3-TTS engine
+  become: true
+  become_user: "{{ tts_engine_service_user }}"
+  ansible.builtin.pip:
+    name: faster-qwen3-tts
+    virtualenv: "{{ tts_engine_venv }}"
+  notify: Restart the tts service
+
+- name: Install the tts-serve server dependencies
+  become: true
+  become_user: "{{ tts_engine_service_user }}"
+  ansible.builtin.pip:
+    name:
+      - fastapi
+      - uvicorn
+      - loguru
+      - soundfile
+    virtualenv: "{{ tts_engine_venv }}"
+  notify: Restart the tts service
+
+# Local-path pip installs ALWAYS report changed (pip reinstalls them blindly),
+# which broke converge idempotency — so this one is guarded: install only when
+# absent or when the clone actually changed.
+- name: Check whether tts-engine-common is installed
+  become: true
+  become_user: "{{ tts_engine_service_user }}"
+  ansible.builtin.command: "{{ tts_engine_venv }}/bin/pip show tts-engine-common"
+  register: tts_engine_common_check
+  changed_when: false
+  failed_when: false
+
+- name: Install tts-engine-common from the clone
+  become: true
+  become_user: "{{ tts_engine_service_user }}"
+  ansible.builtin.pip:
+    name: "{{ tts_engine_serve_dir }}/tts-engine-common"
+    virtualenv: "{{ tts_engine_venv }}"
+  when: tts_engine_common_check.rc != 0 or tts_engine_clone.changed
+  notify: Restart the tts service
+
+- name: Apply the version pins (after the engine)
+  become: true
+  become_user: "{{ tts_engine_service_user }}"
+  ansible.builtin.pip:
+    name:
+      - "transformers==5.15.1"
+      - "huggingface-hub>=1.16,<2"
+    virtualenv: "{{ tts_engine_venv }}"
+  notify: Restart the tts service

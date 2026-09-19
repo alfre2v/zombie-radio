@@ -1,0 +1,14 @@
+---
+- name: Assert the inventory environment matches its directory name
+  ansible.builtin.assert:
+    that:
+      - zr_environment is defined
+      - zr_environment | length > 0
+      - zr_environment == (inventory_dir | basename)
+    fail_msg: >-
+      Environment identity drift: zr_environment is
+      '{{ zr_environment | default("<UNDEFINED>") }}' but the inventory
+      directory is '{{ inventory_dir | basename }}' ({{ inventory_dir }}).
+      Fix the zr_environment line in
+      {{ inventory_dir }}/group_vars/all/99-*.yml.
+    quiet: true

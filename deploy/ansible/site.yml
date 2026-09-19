@@ -1,0 +1,32 @@
+---
+# Converge the GPU box(es) to the Zombie-Radio model-service stack.
+# Run: make ans-deploy ENV=<cloud|local>
+# Roles are SELF-GATING: each service role applies itself only on hosts in its
+# same-named inventory group (<role>_enabled in the role's defaults).
+# Doctrine: docs/discussions/2026-09-17-ansible-deployment-shape.md
+
+- name: Converge the Zombie-Radio GPU boxes
+  hosts: all
+  become: true
+  gather_facts: false  # preflights run on the control node, before any dial
+
+  pre_tasks:
+    - name: Assert this inventory's environment identity
+      ansible.builtin.import_tasks: tasks/preflight-environment.yml
+
+    - name: Assert no REPLACE_ME sentinel survives into this deploy
+      ansible.builtin.import_tasks: tasks/preflight-placeholders.yml
+
+    - name: Gather host facts
+      ansible.builtin.setup:
+
+  roles:
+    # OS sanity + prerequisites: asserts Ubuntu and docker/NVIDIA tooling, apt basics.
+    # Ungated: every box gets the baseline.
+    - role: base
+    # LLM server: llama.cpp container (Nemotron GGUF), host networking, model cache on disk.
+    - role: llama
+    # TTS server: tts-serve engine in a bare venv behind a systemd unit (engine is a variable).
+    - role: tts_engine
+    # STT server: whisper-fastapi container, HF model cache on disk.
+    - role: stt_engine

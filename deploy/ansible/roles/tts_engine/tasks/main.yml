@@ -1,0 +1,62 @@
+---
+- name: Deploy the TTS server (tts-serve + the selected engine)
+  when: tts_engine_enabled
+  block:
+    - name: Ensure the engine root directory exists
+      ansible.builtin.file:
+        path: "{{ tts_engine_root }}"
+        state: directory
+        owner: "{{ tts_engine_service_user }}"
+        group: "{{ tts_engine_service_user }}"
+        mode: "0755"
+
+    - name: Create the venv (seeded with wheel and setuptools)
+      become: true
+      become_user: "{{ tts_engine_service_user }}"
+      ansible.builtin.pip:
+        name:
+          - wheel
+          - setuptools
+        virtualenv: "{{ tts_engine_venv }}"
+        virtualenv_command: "{{ tts_engine_python }} -m venv"
+
+    - name: Clone tts-serve at the pinned version
+      become: true
+      become_user: "{{ tts_engine_service_user }}"
+      ansible.builtin.git:
+        repo: "{{ tts_engine_serve_repo }}"
+        dest: "{{ tts_engine_serve_dir }}"
+        version: "{{ tts_engine_serve_version }}"
+      register: tts_engine_clone
+      notify: Restart the tts service
+
+    - name: Load the engine's launch contract
+      ansible.builtin.include_vars: "{{ tts_engine_name }}.yml"
+
+    - name: Install the engine's packages
+      ansible.builtin.include_tasks: "tts_engine_{{ tts_engine_name }}.yml"
+
+    - name: Install the systemd unit
+      ansible.builtin.template:
+        src: tts-service.j2
+        dest: "/etc/systemd/system/{{ tts_engine_unit }}.service"
+        mode: "0644"
+      notify: Restart the tts service
+
+    - name: Enable and start the tts service
+      ansible.builtin.systemd:
+        name: "{{ tts_engine_unit }}"
+        enabled: true
+        state: started
+        daemon_reload: true
+
+    - name: Apply any pending restart before the health gate
+      ansible.builtin.meta: flush_handlers
+
+    - name: Wait for the TTS server to answer /capabilities
+      ansible.builtin.uri:
+        url: "http://{{ tts_engine_bind_host }}:{{ tts_engine_port }}/capabilities"
+      register: tts_engine_health
+      until: tts_engine_health.status == 200
+      retries: "{{ tts_engine_health_retries }}"
+      delay: "{{ tts_engine_health_delay }}"

@@ -1,0 +1,17 @@
+#!/bin/sh
+# NEVER_COMMIT convention (deployment shape doc, sec. 2): a line carrying
+# NEVER_COMMIT is committable only while its value is still a REPLACE_ME
+# placeholder, found BEFORE the marker on the same line. A marked line
+# without its placeholder means someone pasted a real value — block.
+# Scans STAGED content only (the index), so a dirty-but-unstaged file
+# never blocks unrelated commits. Markdown is excluded everywhere: prose may
+# DISCUSS the convention; the guard protects value-carrying files.
+# Bypass (deliberate): git commit --no-verify.
+hits=$(git grep --cached -n "NEVER_COMMIT" -- ':!.githooks/*' ':!*.md' | grep -v "REPLACE_ME.*NEVER_COMMIT")
+if [ -n "$hits" ]; then
+    echo "COMMIT BLOCKED: NEVER_COMMIT line(s) carry a real value (placeholder gone):" >&2
+    echo "$hits" | sed 's/^/  /' >&2
+    echo "Unstage the file (git restore --staged <file>) or restore its REPLACE_ME placeholder." >&2
+    exit 1
+fi
+exit 0
