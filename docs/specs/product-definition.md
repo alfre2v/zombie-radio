@@ -260,6 +260,26 @@ retires the old rebuild anxiety the hibernation era created.
   remote-split experiment's `tts-engine-ranking.md`; the spike
   box stays a grandfathered R535 exception that dies at
   teardown.)
+- **The driver↔CUDA compatibility rule + the portability
+  contract (ledger 2026-09-19, generalized during the PR #4
+  review):** the driver's `CUDA Version` (nvidia-smi) is the
+  MAXIMUM runtime it supports. Newer driver / older wheel: always
+  works, even across majors. Same major, older driver minor:
+  expected to work (CUDA minor-version compatibility — the wheels
+  bundle their own runtime; floor R525 for CUDA 12) but unproven
+  by us. Driver major older than the wheel's major: hard fail
+  (the 2026-09-18 crash loop). The same rule governs the service
+  CONTAINERS (llama, whisper carry their own CUDA builds). The
+  distilled contract a rented VM must satisfy, for ANY provider:
+  **Ubuntu + Docker + nvidia-container-toolkit + a CUDA-12-capable
+  driver (R525+)** — driver ≥ the wheels'/images' minor preferred,
+  same-major minor-compat tolerated. **As-built (same day):** the
+  CUDA generation is the `zr_cuda_variant` knob (common_vars,
+  `"cu128"` today) from which every torch-family pin and index URL
+  derive, and a base-role preflight asserts the box's driver can
+  run it before anything installs — a new provider or driver
+  branch is a one-line `99-<env>.yml` override. Full analysis:
+  provider survey §S5; machinery: shape doc §14.
 - **Docker preferred, not mandatory** (2026-09-13 ruling):
   per-engine bare-metal fallback via Ansible for quirky engines,
   with mandatory per-engine venv/conda isolation.

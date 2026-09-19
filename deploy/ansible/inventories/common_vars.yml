@@ -16,6 +16,14 @@ zr_stt_port: 8002
 
 zr_models_dir: "/home/{{ zr_service_user }}/models"
 
+# The box's CUDA generation (wheel-variant form): every torch-family pin
+# derives its build suffix and index URL from it, and the base role asserts
+# the driver can run it. A provider/driver change is a 99-<env> override.
+# cu128 runs on: R570 (CUDA 12.8, proven), R580+/R595 (13.x, backward compat),
+# R525-R565 (12.0-12.6, minor-compat, unproven). Hard-fails below R525.
+zr_cuda_variant: "cu128"
+zr_torch_version: "2.9.1"
+
 zr_llama_image: "ghcr.io/ggml-org/llama.cpp:server-cuda"  # floating tag; digest-pin at show-freeze
 zr_llama_model_hf: "bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M"
 zr_llama_ctx: 16384

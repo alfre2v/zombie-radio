@@ -50,7 +50,12 @@ make check        # three ok lines = stack reachable from the laptop
 - `REPLACE_ME` values are sentinels; the placeholder preflight
   blocks deploys, and the NEVER_COMMIT hook blocks commits of a
   marked line whose placeholder was replaced by a real value.
-- Torch and torchaudio are pinned to cu128 builds matching the
-  R570 image's CUDA 12.8 — PyPI defaults (cu130) crash-loop on
-  this driver. Details: the arc journal, entry 2026-09-18.
+- Torch-family wheels are pinned to the CUDA generation in
+  `zr_cuda_variant` (`cu128` today, matching the R570 image) —
+  PyPI defaults float to the newest CUDA major and crash-loop on
+  older-major drivers. The base role asserts the box's driver can
+  run the pinned generation before anything installs; a different
+  provider/driver is a one-line `99-<env>.yml` override of
+  `zr_cuda_variant`. The rule: provider survey §S5; the events:
+  the arc journal, entries 2026-09-18/19.
 - Deploy runs log to `~/.config/zombie-radio/logs/`.

@@ -1,4 +1,8 @@
 ---
+# Project-variable mapping: the CUDA generation the engine wheels and service
+# images are built for; the driver preflight asserts the box can run it.
+base_cuda_variant: "{{ zr_cuda_variant }}"
+
 base_packages:
   - python3-venv
   - sox

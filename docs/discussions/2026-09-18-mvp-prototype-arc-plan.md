@@ -319,3 +319,52 @@ without contribution distraction. The playbook is built GENERAL
 fork, or any future client); the fork then proceeds without
 ceremony. Full strategy: [discussion 2026-09-19]
 upstream-contribution-strategy.
+
+## Entry 2026-09-19 — PR #4 review yields the CUDA rule; the hardware dependency becomes a variable + assert
+
+Provenance: reviewing PR #4's torch/torchaudio task, the owner
+asked what would happen on a VM with an OLDER driver than the
+R570 we debugged against — and asked for the deployment to adapt
+easily to other cloud GPU providers (assuming Ubuntu + Docker +
+GPU access). The answer generalized the 09-18 pothole into a rule,
+and the rule into machinery (green-lit and executed the same day).
+
+**The rule — which devices we can deploy to.** The driver's
+`CUDA Version` in nvidia-smi is the MAXIMUM runtime generation it
+supports. For our cu128-pinned wheels:
+
+| Box driver vs cu128 wheel | Result |
+|---|---|
+| Driver newer, even across majors (R595 / CUDA 13.2) | **Works** — drivers run older-CUDA apps unconditionally. |
+| Same major, driver minor older (R550 / 12.4, R535 / 12.2) | **Expected to work, unproven by us** — CUDA 12 minor-version compatibility (wheels bundle their own runtime; driver ABI stable within a major; floor R525). Smoke-test before trusting. |
+| Driver major older than the wheel's (R570 / 12.8 vs a cu130 wheel) | **Hard fail** — the exact "driver too old" crash loop of 09-18. CUDA 13 wheels need R580+. |
+
+The 09-18 failure was therefore not "the pin is fragile" but
+"PyPI's *default* floats to the newest major": a deliberate
+one-major-behind pin like cu128 is close to the most portable
+choice available — on Hyperstack's whole current image menu
+(R535/R550/R570/R595 with Docker) it hard-fails nowhere, while
+the floating default fails on everything below R595. The same
+rule governs the two CUDA-built containers (llama, whisper): the
+driver is the only thing outside our pinning reach. Distilled
+portability contract for ANY provider: **Ubuntu + Docker +
+nvidia-container-toolkit + a CUDA-12-capable driver (R525+)**.
+Full analysis with the mapped Hyperstack menu: provider survey
+§S5 ([discussion 2026-09-13]); spec §6 carries the ledger line.
+
+**The machinery change (owner green-light, agent-built, this
+entry's session):** `zr_cuda_variant: "cu128"` +
+`zr_torch_version: "2.9.1"` in common_vars; the tts_engine role
+derives its pins and index URL from them through the usual
+defaults indirection; and the base role gained a driver preflight
+— parse the driver's supported CUDA version from `nvidia-smi -q`,
+assert driver-major ≥ variant-major (majors-only on purpose:
+older-major is the hard failure, older-minor is tolerated
+minor-compat). This converts the 09-18 experience — crash loop
+discovered after a 5 GB model download — into a seconds-fast
+named failure at the top of the run, and makes a new
+provider/driver a one-line `99-<env>.yml` override. The assert
+expression was verified offline against six driver/variant cases
+(12.8·12.4·12.2·13.2 vs cu128 pass; 12.8 vs cu130 and 11.8 vs
+cu128 fail). Doctrine recorded: shape doc §14. Verification:
+syntax both envs + ansible-lint clean at `production`.

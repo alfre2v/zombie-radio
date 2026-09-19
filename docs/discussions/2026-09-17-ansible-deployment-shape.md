@@ -527,3 +527,42 @@ transplanted into a foreign playbook assumes that playbook also
 grants root at play level, and that assumption is now documented
 here rather than encoded redundantly per task. Handlers likewise
 rely on the play-level become.
+
+## 14. Amendment (2026-09-19): the CUDA generation is a variable, and the driver is asserted
+
+*Provoked by the owner's PR #4 review question ("what happens on
+a VM with an older driver?") and his portability requirement
+(adapt easily to any provider whose VMs give Ubuntu + Docker +
+GPU access). The full compatibility analysis — the
+driver↔wheel rule, the Hyperstack image menu mapped, the
+portability contract — lives in the provider survey §S5
+([discussion 2026-09-13]); this section records only the
+machinery it produced.*
+
+- **The hardware dependency is a project variable, not a
+  hardcoded pin.** `common_vars.yml` declares
+  `zr_cuda_variant: "cu128"` (the wheel-variant form of the box's
+  CUDA generation) and `zr_torch_version: "2.9.1"`. The
+  tts_engine role maps both through its defaults (role-variable
+  indirection, §11) and derives the torch/torchaudio pins
+  (`torch=={{ version }}+{{ variant }}`) and the index URL
+  (`download.pytorch.org/whl/{{ variant }}`) from them. Every
+  future torch-carrying engine does the same. Moving the fleet to
+  a different driver era — or one odd provider to an older one —
+  is a one-line `99-<env>.yml` override.
+- **The base role asserts the driver can run the variant** before
+  anything heavy happens: it parses the driver's supported CUDA
+  version from `nvidia-smi -q` and asserts driver-major ≥
+  variant-major. Rationale for majors-only: an older-major driver
+  hard-fails (the 2026-09-18 crash loop — the failure the assert
+  exists to catch early); a same-major older-minor driver is
+  tolerated by CUDA minor-version compatibility (survey §S5.1),
+  so blocking it would reject boxes that work. The fail message
+  names both values and both fixes (newer image, or lower the
+  variant).
+- **Placement:** the probe+assert live in the `base` role — not
+  in tts_engine — because the rule also governs the CUDA-built
+  service containers (llama, whisper); the driver floor is a
+  box-level property, exactly what `base` exists to assert
+  (Ubuntu, docker, nvidia tooling — and now the driver's CUDA
+  ceiling).

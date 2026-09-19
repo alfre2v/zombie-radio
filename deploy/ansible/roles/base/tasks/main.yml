@@ -17,6 +17,32 @@
     - nvidia-ctk
   changed_when: false
 
+# The driver's reported "CUDA Version" is the MAXIMUM runtime it supports;
+# wheels/images built for a NEWER CUDA major hard-fail on it ("driver too
+# old", found live 2026-09-18). Same-major/older-minor is tolerated (CUDA
+# minor-version compatibility). Full rule: provider survey S5.
+- name: Read the driver's supported CUDA version
+  ansible.builtin.shell: >-
+    set -o pipefail;
+    nvidia-smi -q | awk -F': *' '/CUDA Version/ {print $2; exit}'
+  args:
+    executable: /bin/bash
+  register: base_cuda_probe
+  changed_when: false
+
+- name: Assert the driver can run the pinned CUDA generation
+  ansible.builtin.assert:
+    that:
+      - >-
+        (base_cuda_probe.stdout | trim | split('.') | first | int)
+        >= (base_cuda_variant | regex_replace('^cu(\d+)\d$', '\1') | int)
+    fail_msg: >-
+      The driver supports CUDA {{ base_cuda_probe.stdout | trim }} at most,
+      but the wheel pins target {{ base_cuda_variant }} — an older-major
+      driver crash-loops ("driver too old"). Fix: provision an image with a
+      newer driver branch, or lower zr_cuda_variant in a 99-<env> override.
+    quiet: true
+
 - name: Ensure the Docker service is enabled and started
   ansible.builtin.systemd:
     name: docker

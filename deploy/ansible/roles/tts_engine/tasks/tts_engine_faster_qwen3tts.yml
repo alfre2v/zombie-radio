@@ -9,20 +9,21 @@
     name: numpy
     virtualenv: "{{ tts_engine_venv }}"
 
-# PyPI's default torch/torchaudio are cu130 builds; the pinned R570 image
-# drives CUDA 12.8, so BOTH must come from the cu128 index, pinned together
-# (same version, same ABI), BEFORE the engine drags in the defaults (found
-# live, 2026-09-18: "driver too old" crash loop, then a torchaudio .so that
-# could not load against the replaced torch).
-- name: Install torch and torchaudio built for CUDA 12.8 (before the engine)
+# PyPI's default torch/torchaudio FLOAT to the newest CUDA major and
+# crash-loop on an older-major driver, so BOTH come from the variant's own
+# index, pinned together (same version, same ABI), BEFORE the engine drags in
+# the defaults (found live, 2026-09-18: "driver too old" crash loop, then a
+# torchaudio .so that could not load against the replaced torch). The variant
+# knob is zr_cuda_variant; the base role asserts the driver can run it.
+- name: Install torch and torchaudio built for the box's CUDA generation (before the engine)
   become: true
   become_user: "{{ tts_engine_service_user }}"
   ansible.builtin.pip:
     name:
-      - "torch==2.9.1+cu128"
-      - "torchaudio==2.9.1+cu128"
+      - "torch=={{ tts_engine_torch_version }}+{{ tts_engine_cuda_variant }}"
+      - "torchaudio=={{ tts_engine_torch_version }}+{{ tts_engine_cuda_variant }}"
     virtualenv: "{{ tts_engine_venv }}"
-    extra_args: "--index-url https://download.pytorch.org/whl/cu128"
+    extra_args: "--index-url https://download.pytorch.org/whl/{{ tts_engine_cuda_variant }}"
   notify: Restart the tts service
 
 - name: Install the Faster Qwen3-TTS engine
