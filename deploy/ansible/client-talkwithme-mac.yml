@@ -1,0 +1,254 @@
+---
+# Standalone installer: the TalkWithMe client (director + web UI) on THIS Mac.
+# Deliberately inventory-free (reserved-slots pattern): run with NO -i —
+#   make client-mac        (or: ansible-playbook deploy/ansible/client-talkwithme-mac.yml)
+# It never reads the deployment inventories: the client is laptop-side and
+# stays out of site.yml's automatic path.
+# Upstream-vanilla on purpose (plain venv + pip, no uv): this playbook is
+# offerable to the upstream project and must not impose our tooling.
+# Polite about user state: settings.yaml and each Personas/<Name>/ are
+# created only when absent, never overwritten.
+- name: Install the TalkWithMe client on this Mac
+  hosts: localhost
+  connection: local
+  gather_facts: true
+  vars:
+    client_repo: "https://github.com/scorbo2/TalkWithMe"
+    client_version: "7.1"  # pinned tag (upstream tags carry no v prefix); bump deliberately
+    client_dir: "{{ ansible_facts['user_dir'] }}/TalkWithMe-client"
+    client_python: python3
+    client_venv: "{{ client_dir }}/.venv"
+    # Reserved for the real cast's never-committed voice samples (manual for
+    # now): a private directory OUTSIDE the repo and the clone.
+    # client_private_assets_dir: ""
+    client_personas:
+      - name: Daniel
+        voice: Daniel
+        ref_text: >-
+          Generator status is holding steady for now, though the fuel
+          reserves concern me greatly tonight.
+        prompt: |
+          ---
+          description: Dr. Daniel Hayworth, systems engineer keeping the lab alive
+          router_hints: power, generators, machinery, repairs, fuel, infrastructure
+          avatar_color: "#B5651D"
+          allow_tool_calls: false
+          ---
+          /no_think
+          You are Dr. Daniel Hayworth, systems engineer of a besieged research lab during a zombie outbreak, speaking over the lab's shortwave radio.
+          Dry British understatement; competent, tired, quietly heroic. Every transmission is one or two short SPOKEN sentences — this is radio, never
+          prose. No markdown, no lists, no stage directions, no asterisks. End each transmission with "Over."
+      - name: Moira
+        voice: Moira
+        ref_text: >-
+          The samples are showing cellular activity that should be quite
+          impossible in deceased tissue.
+        prompt: |
+          ---
+          description: Dr. Moira Byrne, microbiologist studying the outbreak
+          router_hints: infection, biology, samples, symptoms, science, the dead
+          avatar_color: "#4A7C59"
+          allow_tool_calls: false
+          ---
+          /no_think
+          You are Dr. Moira Byrne, microbiologist in a besieged research lab during a zombie outbreak, speaking over the lab's shortwave radio. Irish
+          lilt in your phrasing; grimly fascinated by the science of the outbreak, sometimes forgetting to be afraid. One or two short SPOKEN
+          sentences per transmission — radio, never prose. No markdown, no lists, no stage directions. End each transmission with "Over."
+      - name: Samantha
+        voice: Samantha
+        ref_text: >-
+          This is the communications desk, still broadcasting, still hopeful,
+          and still very much alive.
+        prompt: |
+          ---
+          description: Dr. Samantha Reyes, communications lead running the broadcast
+          router_hints: radio, broadcast, listeners, outside world, rescue, hope
+          avatar_color: "#C0392B"
+          allow_tool_calls: false
+          ---
+          /no_think
+          You are Dr. Samantha Reyes, communications lead of a besieged research lab during a zombie outbreak, running the lab's shortwave broadcast.
+          Warm, professional radio voice; optimism worn like armor, cracks showing at the edges. You address unseen listeners directly. One or two
+          short SPOKEN sentences per transmission — radio, never prose. No markdown, no lists, no stage directions. End each transmission with "Over."
+      - name: Ralph
+        voice: Ralph
+        ref_text: >-
+          I have counted the doors again, and I will keep counting them until
+          morning comes.
+        prompt: |
+          ---
+          description: Dr. Ralph Okafor, security officer holding the perimeter
+          router_hints: doors, perimeter, threats, weapons, safety, the horde
+          avatar_color: "#5D6D7E"
+          allow_tool_calls: false
+          ---
+          /no_think
+          You are Dr. Ralph Okafor, security officer of a besieged research lab during a zombie outbreak, speaking over the lab's shortwave radio.
+          Deep, deliberate, a little paranoid; you count things — doors, cans, shamblers — because counting keeps you calm. One or two short SPOKEN
+          sentences per transmission — radio, never prose. No markdown, no lists, no stage directions. End each transmission with "Over."
+
+  tasks:
+    - name: Assert this machine is a Mac
+      ansible.builtin.assert:
+        that:
+          - ansible_facts['os_family'] == 'Darwin'
+        fail_msg: >-
+          This playbook installs the macOS client (say/afconvert are macOS
+          tools). Found: {{ ansible_facts['os_family'] | default('unknown') }}.
+        quiet: true
+
+    - name: Assert the client toolchain is present (asserted, never installed)
+      ansible.builtin.command: "which {{ item }}"
+      loop:
+        - git
+        - "{{ client_python }}"
+        - say
+        - afconvert
+      changed_when: false
+
+    # force: false means a locally MODIFIED clone fails loudly instead of
+    # being clobbered — user code edits are user state too.
+    - name: Clone TalkWithMe at the pinned version
+      ansible.builtin.git:
+        repo: "{{ client_repo }}"
+        dest: "{{ client_dir }}"
+        version: "{{ client_version }}"
+        force: false
+
+    - name: Create the venv and install the requirements (plain venv + pip)
+      ansible.builtin.pip:
+        requirements: "{{ client_dir }}/requirements.txt"
+        virtualenv: "{{ client_venv }}"
+        virtualenv_command: "{{ client_python }} -m venv"
+
+    - name: Check whether settings.yaml exists
+      ansible.builtin.stat:
+        path: "{{ client_dir }}/settings.yaml"
+      register: client_settings_state
+
+    # Upstream gitignores settings.yaml (user state); a fresh clone has none.
+    # Seeded once with the proven config: model services reached through the
+    # SSH tunnel's localhost ports.
+    - name: Seed settings.yaml pointing at the tunnel ports (create-if-absent)
+      ansible.builtin.copy:
+        dest: "{{ client_dir }}/settings.yaml"
+        mode: "0644"
+        content: |
+          llm:
+            base_url: http://localhost:8080
+            model: default
+            max_tokens: 200
+            temperature: 0.8
+          tts:
+            enabled: true
+            base_url: http://localhost:8001
+            timeout: 60.0
+            streaming: true
+            parameters: {}
+          stt:
+            enabled: true
+            base_url: http://localhost:8002
+            timeout: 30.0
+          general:
+            persona_name_mentions: true
+            max_persona_replies: 4
+            max_turns_for_context: 50
+            show_tool_calls: true
+            enable_persona_memories: true
+            global_system_prompt: ''
+            personas_directory: null
+          mcp:
+            servers: []
+            max_tool_iterations: 8
+      when: not client_settings_state.stat.exists
+
+    # The placeholder-voice factory. Granularity is the PERSONA: an existing
+    # Personas/<Name>/ is user state and is skipped whole; an absent one is
+    # created complete (prompt.md + say-generated ref.wav + ref.txt).
+    - name: Check which personas already exist
+      ansible.builtin.stat:
+        path: "{{ client_dir }}/Personas/{{ item.name }}"
+      loop: "{{ client_personas }}"
+      loop_control:
+        label: "{{ item.name }}"
+      register: client_personas_state
+
+    - name: Create the missing persona directories
+      ansible.builtin.file:
+        path: "{{ client_dir }}/Personas/{{ item.item.name }}"
+        state: directory
+        mode: "0755"
+      loop: "{{ client_personas_state.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+      when: not item.stat.exists
+
+    - name: Write the persona prompts (absent personas only)
+      ansible.builtin.copy:
+        dest: "{{ client_dir }}/Personas/{{ item.item.name }}/prompt.md"
+        mode: "0644"
+        content: "{{ item.item.prompt }}"
+      loop: "{{ client_personas_state.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+      when: not item.stat.exists
+
+    - name: Speak the reference clips (absent personas only)
+      ansible.builtin.command:
+        argv:
+          - say
+          - -v
+          - "{{ item.item.voice }}"
+          - -o
+          - "/tmp/zr-ref-{{ item.item.name }}.aiff"
+          - "{{ item.item.ref_text }}"
+        creates: "{{ client_dir }}/Personas/{{ item.item.name }}/ref.wav"
+      loop: "{{ client_personas_state.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+      when: not item.stat.exists
+
+    - name: Convert the clips to reference wavs (absent personas only)
+      ansible.builtin.command:
+        argv:
+          - afconvert
+          - -f
+          - WAVE
+          - -d
+          - LEI16@24000
+          - "/tmp/zr-ref-{{ item.item.name }}.aiff"
+          - "{{ client_dir }}/Personas/{{ item.item.name }}/ref.wav"
+        creates: "{{ client_dir }}/Personas/{{ item.item.name }}/ref.wav"
+      loop: "{{ client_personas_state.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+      when: not item.stat.exists
+
+    - name: Write the reference transcripts (absent personas only)
+      ansible.builtin.copy:
+        dest: "{{ client_dir }}/Personas/{{ item.item.name }}/ref.txt"
+        mode: "0644"
+        content: "{{ item.item.ref_text }}"
+      loop: "{{ client_personas_state.results }}"
+      loop_control:
+        label: "{{ item.item.name }}"
+      when: not item.stat.exists
+
+    - name: Clean up the intermediate aiff clips
+      ansible.builtin.file:
+        path: "/tmp/zr-ref-{{ item.name }}.aiff"
+        state: absent
+      loop: "{{ client_personas }}"
+      loop_control:
+        label: "{{ item.name }}"
+      changed_when: false
+
+    # No supervisor by design: uvicorn is launched by hand at showtime.
+    - name: How to run it
+      ansible.builtin.debug:
+        msg:
+          - "Installed: {{ client_dir }} at TalkWithMe {{ client_version }}."
+          - "1. Open the tunnel to the box:  make ssh-tunnel ENV=cloud"
+          - "2. cd {{ client_dir }} && source .venv/bin/activate"
+          - "3. uvicorn app.main:app --host 127.0.0.1 --port 8000"
+          - "4. Browse http://localhost:8000 — the seeded settings.yaml already points at the tunnel ports."

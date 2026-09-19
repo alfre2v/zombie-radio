@@ -21,7 +21,7 @@ ANS_VERBOSITY := $(if $(ANS_VERBOSE),-v,)
 SSH_TOFU_OPTS := -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new \
                  -o UserKnownHostsFile=$(ZR_CONF_DIR)/known_hosts
 
-.PHONY: help install ans-deps ans-config ans-lint ans-deploy ans-check-syntax check ssh-tunnel
+.PHONY: help install ans-deps ans-config ans-lint ans-deploy ans-check-syntax check ssh-tunnel client-mac
 
 help:
 	@echo "Available targets:"
@@ -34,6 +34,7 @@ help:
 	@echo "  ans-check-syntax ENV=x  hostless syntax parse of site.yml against env x"
 	@echo "  check               health-check all services from the laptop, through the tunnel"
 	@echo "  ssh-tunnel ENV=x    open the SSH tunnel to env x's box (IP from its inventory)"
+	@echo "  client-mac          install the TalkWithMe client on this Mac (standalone, inventory-free)"
 
 install:
 	uv sync
@@ -78,6 +79,13 @@ check:
 	@curl -sf http://localhost:8080/health > /dev/null && echo "llama:   ok" || echo "llama:   FAIL"
 	@curl -sf -o /dev/null http://localhost:8001/capabilities && echo "tts:     ok" || echo "tts:     FAIL"
 	@curl -sf -o /dev/null http://localhost:8002/docs && echo "whisper: ok" || echo "whisper: FAIL"
+
+# Standalone and inventory-free BY DESIGN (no ENV, no -i): the client playbook
+# must never read the deployment inventories.
+client-mac:
+	$(call ensure_control_dirs)
+	ANSIBLE_LOG_PATH="$${ANSIBLE_LOG_PATH:-$(ANS_LOG_DIR)/client-mac-$(ANS_LOG_STAMP).log}" \
+	uv run ansible-playbook $(ANSIBLE_DIR)/client-talkwithme-mac.yml $(ANS_VERBOSITY) $(ANS_ARGS)
 
 ssh-tunnel:
 	$(call require_ansible_env,ssh-tunnel)

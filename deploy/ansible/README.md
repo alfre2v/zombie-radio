@@ -44,6 +44,19 @@ make check        # three ok lines = stack reachable from the laptop
 - `collections/` — pinned, project-local (`ansible.cfg`
   `collections_path`).
 
+## The Mac client installer (standalone)
+
+`client-talkwithme-mac.yml` installs the TalkWithMe CLIENT on the
+Mac laptop — deliberately outside site.yml and the inventories
+(run it with no `-i`): `make client-mac`. Upstream-vanilla (plain
+venv + pip), pinned to an upstream tag via `client_version`,
+polite about user state (settings.yaml and existing
+`Personas/<Name>/` are never overwritten), and it ships the
+four-scientist placeholder cast with `say`-generated reference
+voices. The fork, when it lands, is one `client_repo` flip away.
+No supervisor: uvicorn by hand (the playbook's final message
+prints the liturgy).
+
 ## Conventions that bite if unknown
 
 - `REPLACE_ME` values are sentinels; the placeholder preflight
