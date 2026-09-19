@@ -62,8 +62,8 @@ the agent keeps this current. These carry across arcs.*
 
 ## Sub-steps
 
-- [ ] **Task 1 — Deployment machinery v1 (deliverable D1).**
-  NEARLY DONE (2026-09-18, well inside the timebox): all four
+- [x] **Task 1 — Deployment machinery v1 (deliverable D1).**
+  DONE (2026-09-18, ~1.5 days of the 3-day timebox): all four
   roles written; **proven live on a fresh A6000/R570 box** — full
   stack from zero, one command, idempotent (changed=0); potholes
   fixed in-role and journaled ([discussion 2026-09-18] arc-plan);
@@ -76,17 +76,26 @@ the agent keeps this current. These carry across arcs.*
   - [x] `runbooks/service-restart-sequence.md` rewritten around
     the playbook (ruling-2 executed, 2026-09-18).
   - [x] `deploy/ansible/README.md` written (2026-09-18).
-  - [ ] Owner call: keep the box overnight ($0.50/hr) vs destroy
-    (rebuild is a proven ~15-min command).
+  - [x] Owner call RESOLVED (2026-09-18): destroying soon —
+    boxes are disposable now; rebuild is a proven ~15-min
+    command. (When destroyed: restore the hosts.yml sentinel —
+    the working tree goes clean by itself.)
 - [x] **Task 2 — Laptop client wiring + smoke gate.** DONE
   2026-09-18: tunnel to the new box, `make check` three-ok,
   TalkWithMe smoke passed, saved server config carried over
   unchanged (same localhost ports as the experiment).
-- [ ] **Task 3 — Cheap config wins, BEFORE experimenting.** So
-  every experiment measures the improved baseline, not known
-  defects: raise `max_turns_for_context` from 6 (taxonomy C9) ·
-  fresh rooms, Global System Prompt cleared (lab3 lesson) · read
-  the sampler params TalkWithMe sends (taxonomy D1, never done).
+- [x] **Task 3 — Cheap config wins, BEFORE experimenting.** DONE
+  (2026-09-18):
+  - [x] `max_turns_for_context` raised 6→50 (owner, 2026-09-18)
+    — and the C9 retest PASSED with it: keyword recall works;
+    coherence otherwise unchanged (see taxonomy evidence ledger).
+  - [x] Fresh rooms, Global System Prompt cleared — standing
+    practice since lab3.
+  - [x] Sampler params read (taxonomy D1, source audit — no box
+    needed): persona requests send ONLY max_tokens (live: 200, UI-editable) +
+    temperature (live: 0.8); everything else is llama-server
+    defaults; router uses temp 0.1. One residual curl (/props on
+    a live box) folded into the next box session.
 - [ ] **Task 4 — Real cast replaces placeholders.** Character
   bibles → the four `Personas/<Name>/prompt.md` (keep
   `/no_think` while on Nemotron; no heavy prompt tuning yet —

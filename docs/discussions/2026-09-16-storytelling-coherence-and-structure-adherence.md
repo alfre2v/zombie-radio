@@ -359,7 +359,11 @@ testability.
   lever (raise toward the cap of 50, watch latency), then
   per-round budgeting upstream. Test: rerun the micro-test at
   max_turns_for_context 30+ — if recall works, C9 owned this
-  failure, not A1.
+  failure, not A1. **TEST RUN 2026-09-18 (owner, window raised
+  6→50): PASSED — a planted code word ("Arrow") was recalled
+  across intervening rounds. C9 CONVICTED for the amnesia; A1
+  exonerated on recall (its in-context-quality suspicion
+  stands).**
 
 ### Locus D — decoding / serving parameters
 
@@ -370,7 +374,16 @@ testability.
   boilerplate every turn — while low temperature encourages the
   echo-collapse that kills coherence. Axis: BOTH, via different
   knobs. Test: cheapest in the whole taxonomy — read the request
-  TalkWithMe sends (one look), then sweep.
+  TalkWithMe sends (one look), then sweep. **READ 2026-09-18
+  (source audit, `app/services/llm.py:75-76`): persona requests
+  send ONLY max_tokens + temperature — live values 200 + 0.8 from settings.yaml (both UI-editable; config.py's 1024 is a never-shipped code fallback) —
+  no repeat_penalty/top_p/top_k are sent, so llama-server's own
+  defaults govern those (modern llama.cpp defaults repeat_penalty
+  to 1.0 = off; confirm via /props on a live box). The
+  penalty-vs-format worry is likely moot; the no-fork tunable
+  surface is temperature alone. Bonus: router calls use
+  temperature 0.1 / max_tokens 16 (`llm.py:132-133`) —
+  near-deterministic speaker picking.**
 
 ### Locus E — orchestration (the machinery around the model)
 
@@ -463,6 +476,17 @@ artifact.*
   in-context garble (the Betty/Anna pronoun chain, everything in
   window → A1 evidence); recall itself is exonerated pending the
   C9 retest at a larger window.
+- **C9 retest (2026-09-18, owner-run, window 6→50): recall
+  WORKS** — "Arrow" planted, distractor rounds, recalled by the
+  addressed persona (and echoed by others). C9 convicted; the
+  same session showed coherence otherwise unchanged ("characters
+  still very dumb" — owner), plus two new specimens:
+  **cross-persona label wearing** (Ralph replying under
+  `[Daniel]:`; Daniel under a DOUBLED `[Moira]: [Moira]:`) —
+  identity bleed beyond self-labeling, evidence for C2/C3 on the
+  identity layer — and a clean **C8 specimen**: the meta-request
+  "remember the code word" absorbed as an in-fiction EVENT
+  (Daniel: "The lab is destroyed. Over.").
 - **Label mimicry + transcript contamination:** field-observed
   with receipts (`app/session.py:135/159`; the lab→lab2
   fresh-room result) → **C3 proven** as a mechanism, magnitude

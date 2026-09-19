@@ -270,3 +270,28 @@ refused by file:line ("Ah, got you!"). Ruling-2 executed: the
 restart runbook is rewritten around the playbook;
 `deploy/ansible/README.md` written. Remaining in Task 1: only the
 owner's keep-vs-destroy call on the box.
+
+**Second addendum, end of day — Task 3's big lever already
+pulled:** the owner raised `max_turns_for_context` 6→50 during
+the post-deploy testing and ran the C9 retest inline: **PASSED**
+— a planted code word ("Arrow") recalled across distractor
+rounds. C9 convicted for the amnesia; the model exonerated on
+recall. Coherence otherwise unchanged ("the characters are still
+very dumb"), and the session yielded two new taxonomy specimens:
+cross-persona label WEARING (Ralph under `[Daniel]:`, a doubled
+`[Moira]: [Moira]:`) — identity bleed, more fuel for the
+sanitizer — and a clean C8 case (the meta-request "remember the
+code word" absorbed as an in-fiction event: "The lab is
+destroyed. Over."). Box fate resolved: owner destroys it soon;
+Task 1 marked DONE.
+
+**Third addendum — Task 3 CLOSED:** the last item (the D1 sampler
+read) turned out to need no box — a source audit answered it:
+persona requests carry only `max_tokens` (live 200) +
+`temperature` (live 0.8; both UI-settable, persisted in settings.yaml); no penalty/top_p/top_k are sent,
+so llama-server defaults govern them (modern default:
+repeat_penalty off — likely mooting the penalty-vs-"Over." worry;
+one /props curl next box session confirms). Router calls run
+near-deterministic (temp 0.1, 16 tokens). Practical upshot for
+the audition: without a fork, temperature is the ONLY client-side
+sampling knob.
