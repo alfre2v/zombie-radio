@@ -94,8 +94,11 @@ the agent keeps this current. These carry across arcs.*
   - [x] Sampler params read (taxonomy D1, source audit — no box
     needed): persona requests send ONLY max_tokens (live: 200, UI-editable) +
     temperature (live: 0.8); everything else is llama-server
-    defaults; router uses temp 0.1. One residual curl (/props on
-    a live box) folded into the next box session.
+    defaults; router uses temp 0.1. Residual RESOLVED
+    (2026-09-19, /props on the R550 box): `repeat_penalty: 1.0`
+    = off — the penalty-vs-"Over." worry is moot without a fork
+    ([discussion 2026-09-18] arc-plan journal has the full
+    defaults).
 - [ ] **Task 4 — Real cast replaces placeholders.** Character
   bibles → the four `Personas/<Name>/prompt.md` (keep
   `/no_think` while on Nemotron; no heavy prompt tuning yet —

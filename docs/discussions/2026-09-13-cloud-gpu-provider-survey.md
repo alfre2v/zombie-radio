@@ -492,7 +492,7 @@ cases for a torch-family wheel built for CUDA `X.Y` (e.g. our
 | Box driver vs the wheel's CUDA build | Example | Result |
 |---|---|---|
 | Driver **newer** than the wheel, any amount, even across majors | R595 (CUDA 13.2) running cu128 wheels | **Works.** Drivers run applications built against older CUDA unconditionally — backward compatibility is the driver's contract. |
-| **Same major, driver minor older** | R550 (12.4) or R535 (12.2) running cu128 wheels | **Expected to work — unproven by us.** CUDA 12 "minor version compatibility": the pip wheels bundle their own CUDA 12.8 runtime libraries (the `nvidia-*-cu12` wheel dependencies), and the driver-side ABI is stable within a major version; NVIDIA's stated floor for any CUDA 12.x app is the R525 branch (CUDA 12.0). Caveat: features needing newer kernel-mode driver support *can* fail under minor-compat; inference workloads generally don't. Treat as "should work, smoke-test before trusting." |
+| **Same major, driver minor older** | R550 (12.4) or R535 (12.2) running cu128 wheels | **PROVEN 2026-09-19 (upgraded from "expected"):** the full stack converged from zero on an R550/CUDA 12.4 box and served REAL inference (TTS synthesis + STT) on cu128 wheels — see the arc journal. Mechanism: CUDA 12 "minor version compatibility" — the pip wheels bundle their own CUDA 12.8 runtime libraries (the `nvidia-*-cu12` wheel dependencies), and the driver-side ABI is stable within a major version; NVIDIA's stated floor for any CUDA 12.x app is the R525 branch (CUDA 12.0). Caveat stands in principle (features needing newer kernel-mode support *can* fail under minor-compat) but did not bite a full inference workload at 12.4; R535 remains untested. |
 | Driver **major older** than the wheel's major | R570 (12.8) running **cu130** wheels | **Hard fail** — the exact `"driver too old"` crash loop we ate live on 2026-09-18. CUDA 13 wheels need an R580-family driver or newer. There is no forward compatibility across majors for these wheels. |
 
 Two corollaries that keep the rule honest:
@@ -527,9 +527,13 @@ Against our cu128 pins and CUDA-12-built containers:
   menu where PyPI's floating cu130 default would have worked —
   and the natural candidate when we someday cross the CUDA-13
   line deliberately.
-- **Server 22.04 LTS R550 CUDA 12.4 with Docker** and
-  **Server 22.04 LTS R535 CUDA 12.2 with Docker** — minor-compat
-  territory: expected pass, never tested by us. (Historical note:
+- **Server 22.04 LTS R550 CUDA 12.4 with Docker** — minor-compat
+  territory, **PROVEN 2026-09-19**: from-zero converge,
+  changed=0 idempotency, and a real TalkWithMe session on this
+  exact image (which also proved the 22.04/Python 3.10 side —
+  the engine venv is version-agnostic in practice).
+- **Server 22.04 LTS R535 CUDA 12.2 with Docker** — same
+  territory, still untested by us. (Historical note:
   the R535 generation is also the filter that killed half of
   tts-serve's engines in the remote-split experiment's ranking —
   driver age bites engines through more paths than torch wheels.)

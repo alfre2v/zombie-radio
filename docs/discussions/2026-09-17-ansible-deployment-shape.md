@@ -566,6 +566,19 @@ machinery it produced.*
   box-level property, exactly what `base` exists to assert
   (Ubuntu, docker, nvidia tooling — and now the driver's CUDA
   ceiling).
+- **Postscript (same day, live-proof run): two doctrine lessons
+  the box taught.** (1) In shell tasks, `pipefail` (lint-required
+  and right) turns an awk early-`exit` into SIGPIPE rc=141 —
+  consume the stream instead of exiting early. (2) **Keep
+  `assert.that` expressions TRIVIAL:** complex Jinja (inline
+  regex + filter chains) inside `that:` evaluates through a
+  different path than `{{ }}` templating and silently returned
+  the WRONG verdict (12.4-vs-cu130 passed); precompute values in
+  task `vars`, assert on simple comparisons. Both found only by
+  running against the live box — offline validation was
+  structurally blind to the second one (a degraded comparison
+  passes the happy cases identically). Corollary method rule:
+  test commands on the box before spending playbook runs.
 
 ## 15. Amendment (2026-09-19): SSH connection doctrine — declared identity + TOFU host keys
 

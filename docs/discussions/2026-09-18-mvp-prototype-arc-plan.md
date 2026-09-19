@@ -390,3 +390,49 @@ mirrors the same options and dir. The Hyperstack box-birth console ritual
 provider survey's Hyperstack entry. Also fixed: the
 box-inspection runbook falsely claimed nvtop ships in base
 packages (it never did — 09-18 ruling).
+
+**Second addendum — the R550 proof run: everything passes, and
+the box catches two bugs no offline check could.** Results on the
+`Server 22.04 LTS R550 CUDA 12.4 with Docker` A6000 (CANADA-1,
+~64 ms avg RTT):
+
+- **Two live-caught bugs in the new preflight, both fixed
+  in-role and re-proven on the box:** (1) the CUDA probe died
+  with rc=141 — SIGPIPE: awk's early `exit` closed the pipe on a
+  still-writing `nvidia-smi -q` and `pipefail` (correctly kept)
+  reported it; fixed by consuming the stream (first-match guard,
+  no exit). (2) **The assert silently passed 12.4-vs-cu130** —
+  the sabotage run (`-e zr_cuda_variant=cu130`) sailed through:
+  complex Jinja inside `assert.that` evaluates through a
+  different path than `{{ }}` templating and returned the wrong
+  verdict, while the identical expression in a debug task said
+  False; the agent's offline six-case validation was
+  structurally incapable of catching it (a variant-major that
+  silently degrades to 0 passes the same cases). Fix: precompute
+  the majors in task `vars`, keep `that:` trivial — warning
+  comment now in the role. **Method ruling (owner, sharp):
+  with a live box on the meter, test the actual commands ON THE
+  BOX before spending playbook runs — the agent runs its own
+  checks first.**
+- **Negative test PASSED (re-run post-fix):** the sabotage
+  deploy dies at the assert, changed=0, full named message
+  (12.4 vs cu130, both fixes offered).
+- **The rule table's middle row is now PROVEN, not assumed:**
+  from-zero converge (changed=13), idempotent re-run
+  (**changed=0**), and a real TalkWithMe session — TTS synthesis
+  and STT through the mic — on cu128 wheels over the CUDA 12.4
+  driver. Minor-version compatibility carried actual inference,
+  not just an install. The 22.04 confound also resolved: the
+  engine venv built and ran on Python 3.10 (Python again a
+  non-event). Dialogue quality unchanged-dumb, as expected —
+  Task 5a's mandate, not this arc's.
+- **TOFU + declared-key debut clean:** first contact with zero
+  prompts, key recorded in the project known_hosts, only
+  `hyperstack_2026` offered.
+- **Task 3's last residual RESOLVED — `/props` read through the
+  tunnel:** `repeat_penalty: 1.0` (neutral/off, llama-server
+  modern default confirmed) → the penalty-vs-"Over." worry is
+  moot without a fork. Server defaults banked: temp 0.8,
+  top_k 40, top_p 0.95, min_p 0.05, repeat_last_n 64 (inert at
+  penalty 1.0), DRY off, mirostat off; n_ctx 16384 and the
+  Nemotron Q4_K_M alias confirmed serving.

@@ -265,9 +265,11 @@ retires the old rebuild anxiety the hibernation era created.
   review):** the driver's `CUDA Version` (nvidia-smi) is the
   MAXIMUM runtime it supports. Newer driver / older wheel: always
   works, even across majors. Same major, older driver minor:
-  expected to work (CUDA minor-version compatibility — the wheels
-  bundle their own runtime; floor R525 for CUDA 12) but unproven
-  by us. Driver major older than the wheel's major: hard fail
+  works (CUDA minor-version compatibility — the wheels bundle
+  their own runtime; floor R525 for CUDA 12) — **PROVEN
+  2026-09-19: full stack + real inference on cu128 wheels over an
+  R550/CUDA 12.4 driver, Ubuntu 22.04/Py3.10 also a non-event**.
+  Driver major older than the wheel's major: hard fail
   (the 2026-09-18 crash loop). The same rule governs the service
   CONTAINERS (llama, whisper carry their own CUDA builds). The
   distilled contract a rented VM must satisfy, for ANY provider:

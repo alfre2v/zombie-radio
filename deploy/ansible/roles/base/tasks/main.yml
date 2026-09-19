@@ -24,18 +24,23 @@
 - name: Read the driver's supported CUDA version
   ansible.builtin.shell: >-
     set -o pipefail;
-    nvidia-smi -q | awk -F': *' '/CUDA Version/ {print $2; exit}'
+    nvidia-smi -q | awk -F': *' '/CUDA Version/ && !seen {print $2; seen=1}'
   args:
     executable: /bin/bash
   register: base_cuda_probe
   changed_when: false
 
+# Majors are precomputed in vars ON PURPOSE: complex Jinja inside assert.that
+# evaluates through a different path than {{ }} templating and can silently
+# yield the wrong verdict (found live 2026-09-19: the inline-regex form passed
+# 12.4-vs-cu130). Keep the that: expression trivial.
 - name: Assert the driver can run the pinned CUDA generation
+  vars:
+    base_cuda_driver_major: "{{ base_cuda_probe.stdout | trim | split('.') | first }}"
+    base_cuda_variant_major: "{{ base_cuda_variant | regex_replace('^cu(\\d+)\\d$', '\\1') }}"
   ansible.builtin.assert:
     that:
-      - >-
-        (base_cuda_probe.stdout | trim | split('.') | first | int)
-        >= (base_cuda_variant | regex_replace('^cu(\d+)\d$', '\1') | int)
+      - base_cuda_driver_major | int >= base_cuda_variant_major | int
     fail_msg: >-
       The driver supports CUDA {{ base_cuda_probe.stdout | trim }} at most,
       but the wheel pins target {{ base_cuda_variant }} — an older-major
