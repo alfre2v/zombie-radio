@@ -15,7 +15,7 @@ systemd units (proven 2026-09-18: full auto-rise in under a
 minute). Just re-open the tunnel and verify:
 
 ```bash
-make ssh-tunnel        # own terminal, stays open
+make ssh-tunnel ENV=cloud    # own terminal, stays open
 make check             # expect three ok lines
 ```
 
@@ -38,7 +38,7 @@ budget ~15 min.
 
 ## The manual bits (laptop side, by design)
 
-- The tunnel: `make ssh-tunnel`.
+- The tunnel: `make ssh-tunnel ENV=cloud`.
 - TalkWithMe: `cd ~/workspace/hackTNT_2026/TalkWithMe &&
   source .venv/bin/activate && uvicorn app.main:app
   --host 127.0.0.1 --port 8000` → http://localhost:8000

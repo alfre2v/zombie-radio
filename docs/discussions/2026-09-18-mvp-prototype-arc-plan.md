@@ -377,12 +377,15 @@ to test the rule table's middle row (same-major/older-minor
 minor-compat, plus a free confound: 22.04's Python 3.10 venv) at
 the same time. Mid-box-birth, two rulings landed and were built
 (shape doc §15): (1) **no human SSH on a fresh box, ever** — host
-keys are TOFU (`accept-new` + project-scoped known_hosts in the
-cloud env's `ansible_ssh_common_args`; recycled-IP remedy
-documented); (2) **the SSH identity is declared, not ambient** —
+keys are TOFU (`accept-new` + project-scoped known_hosts under
+`zr_control_dir`, all in common_vars' `ansible_ssh_common_args`;
+the agent's initial 99-cloud scoping was relitigated to common
+truth in the owner's review; recycled-IP remedy documented);
+(2) **the SSH identity is declared, not ambient** —
 `ansible_ssh_private_key_file` (+ `IdentitiesOnly=yes`,
-owner-proposed) in common_vars; `make ssh-tunnel` parses and uses
-the same key and options. The Hyperstack box-birth console ritual
+owner-proposed) in common_vars; `make ssh-tunnel ENV=<env>`
+(hardcoded cloud also caught in review) parses the same key and
+mirrors the same options and dir. The Hyperstack box-birth console ritual
 (attach IP / enable SSH / enable ICMP) was captured in the
 provider survey's Hyperstack entry. Also fixed: the
 box-inspection runbook falsely claimed nvtop ships in base

@@ -9,8 +9,21 @@ zr_service_user: ubuntu
 
 # Connection identity, declared rather than ambient: the laptop-side private
 # key whose public half is pre-registered in the provider console. A path,
-# not a secret. The env ssh args (99-cloud) make it the ONLY key offered.
+# not a secret. The ssh args below make it the ONLY key offered.
 ansible_ssh_private_key_file: "~/.ssh/hyperstack_2026"
+
+# Control-node (laptop) state directory: deploy logs and the project-scoped
+# known_hosts live under it. The Makefile extracts THIS line (single source).
+zr_control_dir: "~/.config/zombie-radio"
+
+# Offer ONLY the declared key (IdentitiesOnly); accept an UNKNOWN host key on
+# first contact (TOFU — no human login on a fresh box), still hard-fail on a
+# CHANGED one; rental-box churn never touches ~/.ssh/known_hosts. Inert for
+# connection: local environments. Doctrine: shape doc §15.
+ansible_ssh_common_args: >-
+  -o IdentitiesOnly=yes
+  -o StrictHostKeyChecking=accept-new
+  -o UserKnownHostsFile={{ zr_control_dir }}/known_hosts
 
 zr_bind_host: 127.0.0.1
 

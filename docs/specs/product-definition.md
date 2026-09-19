@@ -514,10 +514,11 @@ and offers ONLY that key (`IdentitiesOnly=yes`); host keys follow
 trust-on-first-use for the disposable cloud boxes
 (`StrictHostKeyChecking=accept-new`: unknown hosts auto-accepted
 so no human ever logs into a fresh box, CHANGED keys still
-hard-fail), recorded in a project-scoped known_hosts
-(`~/.config/zombie-radio/`) so rental churn never touches the
-laptop's own. The tunnel (`make ssh-tunnel`) carries the same
-posture. Scoped per-environment: a long-lived box can graduate to
+hard-fail), recorded in a project-scoped known_hosts (under
+`zr_control_dir`) so rental churn never touches the laptop's own.
+The tunnel (`make ssh-tunnel ENV=<env>`) carries the same
+posture. All declared in common inventory truth; any future
+long-lived environment can override in its own layer — up to
 strict checking with pre-seeded host keys (cloud-init), parked as
 the booth-era option. Doctrine: shape doc §15.
 

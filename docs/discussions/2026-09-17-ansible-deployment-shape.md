@@ -588,30 +588,41 @@ ssh setup (default key names, agent, ~/.ssh/config).*
   agent-loaded and default identity — which can authenticate with
   the wrong key (masking a broken declaration) and can trip
   `MaxAuthTries` on key-rich laptops.
-- **TOFU host keys, scoped to the cloud env** (`99-cloud.yml`
-  `ansible_ssh_common_args`): `StrictHostKeyChecking=accept-new`
+- **TOFU host keys, declared in `common_vars.yml`**
+  (`ansible_ssh_common_args`): `StrictHostKeyChecking=accept-new`
   auto-accepts an UNKNOWN host on first contact and still
   hard-fails on a CHANGED key — trust-on-first-use, the right
   shape for disposable rental boxes whose IPs are always fresh.
-  Scoped per-environment ON PURPOSE: a future long-lived box (the
-  booth era) can override back to strict checking, or graduate to
-  the parked gold standard — pre-seeded host keys via cloud-init
-  user-data (rejected for v1: adds a provision-time step and
-  private-key vault machinery, disproportionate for disposable
-  dev boxes).
-- **Project-scoped known_hosts**
-  (`~/.config/zombie-radio/known_hosts`): rental churn never
-  touches `~/.ssh/known_hosts`. Known failure mode: providers
-  RECYCLE IPs, so a reused IP with a stale entry fails loudly
-  ("REMOTE HOST IDENTIFICATION HAS CHANGED") — remedy: delete the
-  project file (or the one line) and rerun. The parent directory
-  is a CONTROL-NODE responsibility, so it belongs to the Makefile
-  (ssh-tunnel mkdirs it; ans-deploy already creates it via the
-  log dir), never to a role — roles run on the box.
+  *Placement relitigated same day (owner):* the agent first
+  scoped this to `99-cloud.yml` ("TOFU is a disposable-box
+  property"); moved to common truth because the identity and its
+  enforcement belong in ONE file, `connection: local`
+  environments ignore ssh args anyway, and the numbered-layers
+  pattern already gives any future long-lived env its override
+  path — including graduating to strict checking with pre-seeded
+  host keys via cloud-init user-data, the parked gold standard
+  (rejected for v1: a provision-time step plus private-key vault
+  machinery, disproportionate for disposable dev boxes).
+- **Project-scoped known_hosts** under `zr_control_dir`
+  (`~/.config/zombie-radio`, declared in `common_vars.yml`; the
+  ssh args template the path from it; the Makefile spells the
+  same path explicitly — owner readability ruling over an awk
+  extraction, deliberate redundancy, keep in sync): rental churn
+  never touches
+  `~/.ssh/known_hosts`. Known failure mode: providers RECYCLE
+  IPs, so a reused IP with a stale entry fails loudly ("REMOTE
+  HOST IDENTIFICATION HAS CHANGED") — remedy: delete the project
+  file (or the one line) and rerun. The directory is a
+  CONTROL-NODE responsibility, so it belongs to the Makefile
+  (a shared `ensure_control_dirs` fragment called by both
+  `ans-deploy` and `ssh-tunnel`), never to a role — roles run on
+  the box.
 - **The Makefile's `ssh-tunnel` carries the same posture**
-  (`-i` + the same three `-o` options), parsing the key path from
-  `common_vars.yml` exactly as it parses the user — the Makefile
-  stays a consumer of inventory truth, never a second source.
+  (`-i` + the same three `-o` options) and takes `ENV=<env>` like
+  every other environment-touching target (no hardcoded cloud),
+  parsing the key path from `common_vars.yml` exactly as it
+  parses the user (the control dir alone is spelled explicitly,
+  per the readability ruling above).
 - **Net effect on box-birth:** console clicks (IP, SSH, ICMP) →
   paste IP into hosts.yml → `make ans-deploy ENV=cloud`. No
   mandatory human SSH anywhere in the path.

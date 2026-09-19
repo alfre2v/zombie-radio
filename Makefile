@@ -8,12 +8,15 @@ ANSIBLE_DIR := $(CURDIR)/deploy/ansible
 # silently ignored in world-writable dirs); exporting pins it for every target.
 export ANSIBLE_CONFIG = $(ANSIBLE_DIR)/ansible.cfg
 
+# Deliberately redundant with zr_control_dir (common_vars.yml) for
+# readability — keep the two in sync. The extracting alternative:
+# ZR_CONF_DIR := $(patsubst ~%,$(HOME)%,$(shell awk -F'"' '/^zr_control_dir:/ {print $$2; exit}' $(ANSIBLE_DIR)/inventories/common_vars.yml))
 ZR_CONF_DIR := $(HOME)/.config/zombie-radio
 ANS_LOG_DIR := $(ZR_CONF_DIR)/logs
 ANS_LOG_STAMP := $(shell date +%Y%m%d-%H%M%S)
 ANS_VERBOSITY := $(if $(ANS_VERBOSE),-v,)
 
-# Same SSH posture as the deployment's ansible_ssh_common_args (99-cloud.yml):
+# Same SSH posture as the deployment's ansible_ssh_common_args (common_vars):
 # only the declared key, auto-accept unknown hosts, alarm on changed ones.
 SSH_TOFU_OPTS := -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new \
                  -o UserKnownHostsFile=$(ZR_CONF_DIR)/known_hosts
@@ -30,7 +33,7 @@ help:
 	@echo "                      (runs logged to ~/.config/zombie-radio/logs/; ANS_VERBOSE=1 adds -v)"
 	@echo "  ans-check-syntax ENV=x  hostless syntax parse of site.yml against env x"
 	@echo "  check               health-check all services from the laptop, through the tunnel"
-	@echo "  ssh-tunnel          open the SSH tunnel to the cloud box (IP from cloud inventory)"
+	@echo "  ssh-tunnel ENV=x    open the SSH tunnel to env x's box (IP from its inventory)"
 
 install:
 	uv sync
@@ -54,9 +57,14 @@ define require_ansible_env
 	    exit 2; }
 endef
 
+# Guarantees the control-node state dir (logs + the ssh known_hosts parent).
+define ensure_control_dirs
+	@mkdir -p "$(ANS_LOG_DIR)"
+endef
+
 ans-deploy:
 	$(call require_ansible_env,ans-deploy)
-	@mkdir -p $(ANS_LOG_DIR)
+	$(call ensure_control_dirs)
 	ANSIBLE_LOG_PATH="$${ANSIBLE_LOG_PATH:-$(ANS_LOG_DIR)/$(ENV)-deploy-$(ANS_LOG_STAMP).log}" \
 	uv run ansible-playbook -i $(ANSIBLE_DIR)/inventories/$(ENV) \
 	    $(ANSIBLE_DIR)/site.yml $(ANS_VERBOSITY) $(ANS_ARGS)
@@ -72,13 +80,14 @@ check:
 	@curl -sf -o /dev/null http://localhost:8002/docs && echo "whisper: ok" || echo "whisper: FAIL"
 
 ssh-tunnel:
-	@mkdir -p $(ZR_CONF_DIR)
-	@host="$$(awk '/ansible_host:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/cloud/hosts.yml")"; \
+	$(call require_ansible_env,ssh-tunnel)
+	$(call ensure_control_dirs)
+	@host="$$(awk '/ansible_host:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/$(ENV)/hosts.yml")"; \
 	 user="$$(awk '/^ansible_user:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/common_vars.yml")"; \
 	 key="$$(awk -F'"' '/^ansible_ssh_private_key_file:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/common_vars.yml")"; \
 	 case "$$key" in "~"*) key="$$HOME$${key#\~}";; esac; \
-	 test -n "$$host" || { echo "no ansible_host found in inventories/cloud/hosts.yml"; exit 2; }; \
-	 case "$$host" in REPLACE_ME*) echo "cloud hosts.yml still carries the REPLACE_ME sentinel"; exit 2;; esac; \
+	 test -n "$$host" || { echo "no ansible_host found in inventories/$(ENV)/hosts.yml"; exit 2; }; \
+	 case "$$host" in REPLACE_ME*) echo "$(ENV) hosts.yml still carries the REPLACE_ME sentinel"; exit 2;; esac; \
 	 test -n "$$key" || { echo "no ansible_ssh_private_key_file found in inventories/common_vars.yml"; exit 2; }; \
 	 echo "Tunnel to $$host: llama :8080 / tts :8001 / whisper :8002   (Ctrl-C closes it)"; \
 	 ssh -N -o ExitOnForwardFailure=yes -i "$$key" $(SSH_TOFU_OPTS) \
