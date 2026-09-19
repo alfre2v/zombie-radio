@@ -149,8 +149,19 @@ the agent keeps this current. These carry across arcs.*
   arrives with audio, resolving the audio-fragments caveat; the
   REAL cast stays manual (never-committed samples,
   private-assets-dir variable). No supervisor: uvicorn by hand at
-  showtime. Depends on: the fork (Task 6). ([discussion
-  2026-09-18] arc-plan, Q3 + owner's say-automation idea.)
+  showtime. **REORDERED BEFORE Task 6 (owner, 2026-09-19): built
+  first AGAINST UPSTREAM TalkWithMe** — the deploy machinery may
+  interest scorbo2 as a contribution, so demonstrate it on the
+  upstream repo; `client_repo`/`client_version` play vars make it
+  fork-agnostic (the old fork dependency is dissolved, not
+  deferred). **NEXT UP in execution order; upstream OUTREACH
+  deferred past the deadline (owner, 2026-09-19) — build
+  offerable, contact nobody yet.** Contribution-shaped
+  constraints: plain venv+pip (no
+  uv imposed), never clobber existing settings.yaml/Personas
+  (create-if-absent), clone dir is a variable so upstream and the
+  future fork can coexist. ([discussion 2026-09-18] arc-plan Q3 +
+  Task-notes.)
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec ledger audit

@@ -295,3 +295,27 @@ one /props curl next box session confirms). Router calls run
 near-deterministic (temp 0.1, 16 tokens). Practical upshot for
 the audition: without a fork, temperature is the ONLY client-side
 sampling knob.
+
+**Reorder ruling (2026-09-19, owner): Task 7b executes BEFORE
+Task 6.** Rationale: build `client-talkwithme-mac.yml` against
+UPSTREAM TalkWithMe first — the deployment machinery might
+interest scorbo2 as a contribution (to TalkWithMe or tts-serve),
+and an upstream-targeting demo is the honest offer; after the
+fork, the same playbook follows via one `client_repo` var flip.
+Design constraints this framing adds (agent, agreed): stay
+upstream-vanilla (plain venv+pip, no uv imposed on the playbook's
+subject), create-if-absent semantics for settings.yaml and
+Personas/ (an installer that clobbers user state is dead on
+arrival), and a variable clone dir so upstream and fork coexist
+during the transition. Expectation calibrated: a modest offer —
+adoption is a bonus, not the goal; the bigger contribution story
+(the backend deploy) stays with the community write-up
+(follow-ups).
+
+**Refinement (2026-09-19, owner): 7b executes NEXT, but upstream
+outreach is DEFERRED past the deadline** — contribution readiness
+without contribution distraction. The playbook is built GENERAL
+(in-play vars: repo, version, clone dir — serves upstream, our
+fork, or any future client); the fork then proceeds without
+ceremony. Full strategy: [discussion 2026-09-19]
+upstream-contribution-strategy.
