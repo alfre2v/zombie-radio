@@ -15,7 +15,7 @@ Operations: `docs/runbooks/service-restart-sequence.md` and
 ```bash
 make install      # uv venv + ansible + arms the NEVER_COMMIT git hook
 make ans-deps     # pinned collections, project-local
-# paste the box IP into inventories/cloud/hosts.yml (NEVER_COMMIT line)
+make ans-set ENV=cloud IP=<box-ip>   # wires hosts.yml (make ans-unset reverts)
 make ans-deploy ENV=cloud
 make ssh-tunnel ENV=cloud   # separate terminal, stays open
 make check        # three ok lines = stack reachable from the laptop
