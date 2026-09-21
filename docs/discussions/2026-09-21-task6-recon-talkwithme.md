@@ -4,8 +4,10 @@
 **Arc:** MVP prototype · **Branch:** `alfre2v/task6-recon-brief`
 **Type:** guided code tour, unit 1 of the Task 6 reconnaissance
 brief (umbrella: `docs/discussions/2026-09-21-task6-reconnaissance-brief.md`).
-**Status:** section 1 written; sections 2–7 pending. Open questions
-are marked OPEN.
+**Status:** breadth pass COMPLETE — sections 1–7 written (sections
+2–6 at question-gathering depth per the owner's 2026-09-21
+breadth-first ruling). Open questions Q1–Q3 (§1.7) and Q8–Q13 (§8)
+are marked OPEN; the answer pass comes later.
 
 *Context for the cold reader.* TalkWithMe is scorbo2's local
 multi-persona chat application: a FastAPI server with a plain
@@ -504,45 +506,376 @@ one patch?
 
 ## 2. The server-side reply path and the sanitizer insertion point
 
-*Pending. Will detail the persistence and message model
-(`ChatMessage`, `history.json`), the exact insertion point for the
-stream-head filter, and the argument for server-side placement,
-building on F1.*
+*Breadth-pass depth (2026-09-21): findings and questions, no
+decisions. Section 1 walked the reply path hop by hop; this
+section adds the exact geometry the sanitizer question needs.
+Paths are absolute under
+`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/`.*
 
-## 3. The anatomy of `static/tts.js`
+- **There are two token sources, not one.** The plain path streams
+  from `stream_chat`
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/chat.py:328`
+  to 330). The tool-calling path streams token events from
+  `stream_chat_with_tools` (`chat.py:316` to 319; the tokens are
+  produced in
+  `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/services/llm.py:274`).
+  Our personas have tool calls off, but a patch that filters only
+  the plain path leaves a hole upstream would notice. The clean
+  single point is a small async-generator wrapper applied to
+  whichever token source is in use, right where the loop reads it,
+  so both paths pass through the same filter. *Measured.*
+- **The echo chamber bypasses the LLM** (`chat.py:291` to 294) and
+  echoes the user's text as one token. The filter must not run
+  there, or a user typing "[Moira]: hello" would be altered.
+  Trivial to skip; worth stating.
+- **The stored shape.** In memory, a reply is a `ChatMessage` with
+  role, content, persona, and id
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/models.py:287`
+  to 298). On disk it is a row with id, sender, text, audio
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/persistence.py:198`
+  to 203). On room load the stored text is pushed straight back
+  into history
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/session.py:47`
+  to 64). *Consequence:* a sanitizer cleans NEW replies only. Every
+  existing `history.json` keeps its labels and feeds them back into
+  context whenever that room is loaded. Our fresh-rooms practice
+  already covers this, but it means "clean transcript" is true
+  from the fork forward, not retroactively.
+- **What the head of a reply can look like.** From the watch-list
+  specimens: `[Moira]:`, a doubled `[Moira]: [Moira]:`, the wrong
+  name `[Daniel]:` under Ralph. From the 2024 wire format, a bare
+  `Moira:` is plausible. The filter has to hold tokens until it has
+  seen either a complete label pattern or enough non-label text to
+  give up — a few tokens of delay, invisible in practice. This is
+  what open question Q2 asks: which of these shapes to strip.
+- **A shape the head filter cannot catch.** If the model switches
+  speaker mid-reply — "[Moira]: I agree. [Ralph]: No." — the label
+  appears mid-text. Only a full-text pass at persist time
+  (`chat.py:337`) catches that, and it would come after the
+  sentence was already spoken. → **Q8** (§1.7 / §8 of this
+  document): head filter only, or head filter plus a persist-time
+  sweep.
+- **Testability upstream is good.** The SSE endpoint has a dedicated
+  suite,
+  `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/tests/test_chat_sse.py`,
+  with one test class per behavior: request validation, single
+  reply, persona selection, multi-persona replies, echo chamber,
+  tool calls, persona memory, global system prompt, stream errors.
+  The LLM is stubbed at the router's import site (upstream's rule,
+  `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/AGENTS.md:35`),
+  so a test can feed the token sequence `[`, `Mo`, `ira`, `]:`,
+  ` We` and assert what reaches the SSE stream and what gets
+  persisted. A sanitizer patch gets its own test class in the
+  existing pattern. *Measured.*
 
-*Pending. Will detail the splitter and the two queues at function
-level, where the vanished-sentence item is observable (F4), and
-where a maximum-characters knob enters the accumulate/enqueue
-path.*
+## 3. The anatomy of `static/tts.js`, and where N enters
 
-## 4. Settings plumbing
+*Breadth-pass depth (2026-09-21). The file is 221 lines and has
+exactly one cut point.*
 
-*Pending. How a knob travels `settings.yaml` → `app/config.py` →
-`app/routers/settings.py` → `static/settings.js` /
-`static/gen-settings.js`, so the accumulator's N and a sanitizer
-toggle land as proper settings.*
+- **`accumulateForTTS` is the only place text is cut**
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/tts.js:88`
+  to 95). It appends the token to a buffer, calls
+  `extractSentences` (lines 72 to 83, the regex
+  `/[^.!?]*[.!?]+/g`), and enqueues each complete sentence. The
+  accumulator replaces exactly this: keep appending complete
+  sentences into a chunk until adding the next one would exceed N
+  characters, then enqueue the chunk. Nothing downstream changes —
+  the two queues (`processTTSRequests`, lines 111–129;
+  `processAudioBufferQueue`, lines 136–150) and playback stay as
+  they are.
+- **The flush on `done` is the second touch point**
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/chat.js:249`
+  to 256). Today it flushes the partial sentence left in the
+  buffer. With an accumulator there is also a packed chunk
+  waiting, so the flush must send both — chunk first, then the
+  remainder — in order.
+- **N makes the abbreviation problem mostly disappear, but not the
+  lone fragment.** With N around 100 characters or more, "Dr." gets
+  packed with the sentence that follows it, so it is never
+  synthesized alone. Two cases remain: a fragment at the very end
+  of a reply, and a reply that consists of only "1." or "Over.".
+  → **Q9**: the policy for tiny remnants — send as is, hold them
+  for a minimum length, or drop below a threshold.
+- **Both extremes of N already exist as configuration.** Streaming
+  mode is N = one sentence. Streaming OFF (`enqueueTTS`,
+  `tts.js:38` to 44, reached from `chat.js:259`) sends the whole
+  reply as one request, which is N = infinity. The patch adds the
+  middle. *Consequence for Q4, the latency measurement:* the
+  N-infinity end can be measured tonight on any box by flipping
+  `tts.streaming` to false in the Servers dialog — no code needed.
+- **How the browser learns TTS settings today is the pattern for
+  N.** The `streaming` flag travels: `settings.yaml` → `TTSConfig`
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/config.py:75`)
+  → the health response
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/tts.py:41`;
+  model `TTSHealthResponse` at
+  `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/models.py:157`
+  to 160) → the browser at startup
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/app.js:80`)
+  → the `start` handler (`chat.js:217`). N would ride the same
+  road. *Measured.*
+- **Where the vanished sentence is observable** — finding F4 in
+  §1.4: `fetchTTS` returns `null` on non-OK or missing
+  `audio_base64` (`tts.js:172` to 178) and the fetch loop skips it
+  silently (`tts.js:118`); devtools console and the Network tab's
+  `/api/tts` entry are the places to look when it recurs.
+
+## 4. Settings plumbing — the journey of one knob
+
+*Breadth-pass depth (2026-09-21). Tracing `max_turns_for_context`
+and `streaming` end to end gives the recipe. A knob touches seven
+files, and two of the steps are manual mappings that upstream's own
+notes warn about.*
+
+1. **The config model.**
+   `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/config.py`:
+   `GeneralConfig` (lines 167 to 189) for chat behavior,
+   `TTSConfig` (71 to 146) for speech. A missing YAML key takes the
+   model default, so old files keep working. `save_settings` (474
+   to 487) dumps every section with `exclude_none=False`, so a new
+   key is written to `settings.yaml` on the first save after the
+   upgrade. `personas_directory` (line 189) shows a yaml-only knob
+   with no UI at all.
+2. **The API models.**
+   `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/models.py`:
+   `GeneralSettingsRequest` (213 to 231) is a PARTIAL update —
+   every field optional, omitted means keep. `TTSSettingsRequest`
+   (188 to 203) is a FULL replacement. Each has a response twin
+   (241 to 280).
+3. **The router.**
+   `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/settings.py`:
+   `_to_response` (24 to 53) maps every field BY HAND, so a new
+   field that is not added there never reaches the browser.
+   `update_settings` (86 to 155): the general section merges
+   automatically via `model_dump(exclude_none=True)` (116 to 118)
+   — upstream added this precisely because a hand-rebuilt section
+   once reset `show_tool_calls` on every save
+   (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/AGENTS.md:90`);
+   the tts section is rebuilt field by field (127 to 133), so a new
+   tts field must be added there too.
+4. **The form.**
+   `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/templates/index.html`:
+   inputs with ids `gsf-*` for the General dialog (lines 411 to
+   440) and `sf-*` for the Servers dialog (292 to 382).
+   `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/state.js`
+   holds a DOM reference per input (128 to 170) and a global per
+   runtime value (12 to 22).
+5. **The dialog scripts.**
+   `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/gen-settings.js`
+   loads (44 to 64) and submits (75 to 140);
+   `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/settings.js`
+   populates (274 to 299), collects (331 to 366), validates (368
+   to 402). *One stale leftover for the audit:* the General dialog
+   still sends `seed: current.tts.seed ?? 0` with a comment about
+   an API contract that no longer exists (`gen-settings.js:101`
+   to 102); the request model ignores the unknown key, so it is
+   harmless, but it is a receipt that this file predates the TTS
+   generification.
+6. **The runtime consumers.** The browser reads general values at
+   startup
+   (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/app.js:35`
+   to 48) and TTS flags from the health check (`app.js:74` to 92);
+   the server reads `get_settings()` on every request
+   (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/chat.py:222`),
+   so saves take effect immediately with no restart.
+7. **Tests and docs.**
+   `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/tests/test_config.py`,
+   `tests/test_models.py`, `tests/test_routers_settings.py`, and a
+   Node test if the TTS wiring in `settings.js` is touched
+   (`AGENTS.md:33`).
+
+**Where our two knobs would live — options for Q10.** N belongs in
+the `tts` section next to `streaming`, reported through the health
+response like `streaming` is, and probably exposed in the Servers
+dialog since people will tune it. The sanitizer toggle belongs in
+`general`, where the partial-update merge picks it up with no
+router change, and it could start yaml-only like
+`personas_directory` — zero frontend files, and an opt-in shape
+upstream tends to accept.
 
 ## 5. Seams for the narration future
 
-*Pending. Router and follower code, room and turn model (F8),
-mapped against spec §5.3's four open questions and the 2024
-baseline (umbrella document §7). Maps only, designs nothing.*
+*Breadth-pass depth (2026-09-21). Mapped against the four open
+questions of spec §5.3 (who speaks next, pacing, when to open
+interaction beats, dead-air texture), plus two structural facts
+that matter more than any of them. Maps only; designs nothing —
+the director is the next arc's work.*
+
+- **Who speaks next.** Two lines decide it: the first-speaker
+  strategy in `_pick_persona`
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/chat.py:98`
+  to 133) and the follower `random.choice` (line 261). A director
+  replaces those two decisions. BUT the existing request field
+  `who_answers`
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/models.py:17`
+  to 20) is already an external hook: a process outside TalkWithMe
+  can POST a message with `who_answers` set to a persona name and
+  `max_persona_replies` at 1, and it has chosen the speaker with
+  no fork at all. That process would be the 2024 Narrator reborn:
+  its directive arrives as a user message, exactly as in 2024, and
+  the narrative-health taxonomy's `[Director]:` probe (mechanism
+  C6, Task 5c) is this experiment done by hand.
+- **The structural gap that decides where a director can live.**
+  TalkWithMe has NO server-initiated channel to the browser. Every
+  SSE stream answers a request the browser itself made
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/chat.js:119`
+  to 159). An external director's posts would get their own SSE
+  streams that the browser never sees, so nothing would be spoken.
+  Three placements follow, and this is the next arc's central
+  question, recorded as **Q13**: (a) a director inside the
+  browser — a timer that auto-sends narrator turns through the
+  existing send path; (b) a director inside the server with a new
+  push channel (WebSocket or a long-lived SSE) to the browser; (c)
+  an external director plus a browser that polls the room history
+  (`GET /api/session/load-room/<room>`) and speaks new lines.
+- **Pacing.** The only levers are `max_tokens` (global; §1.4 F2),
+  the 80 ms inter-sentence gap
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/tts.js:143`),
+  and the LLM-side word-count directive, which is prompt content.
+  There is no attach point for timing in the reply loop.
+- **Interaction beats.** The browser blocks sending while a turn
+  streams (`chat.js:67`) and the microphone is not gated on
+  playback (umbrella §8, C4). A director that wants "now the radio
+  listens" has to wait for `complete` and would want to gate the
+  mic. **The echo chamber is the precedent to copy:** a per-room
+  flag read in the reply loop that changes its behavior
+  (`chat.py:234` to 250 and 291 to 294, set through
+  `PUT /api/chatrooms/{name}/echo-chamber`). A "show mode" room
+  flag would follow the same pattern, and upstream's own feature
+  doc for it
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/docs/feature_echo_chamber.md`)
+  shows the shape.
+- **Two injection points for directives.** The 2024 way is a USER
+  MESSAGE, which persists, re-enters context as a user turn, and
+  is visible in the chat. The other is the SYSTEM-PROMPT TAIL:
+  `_with_global_system_prompt` (`chat.py:183` to 201) appends text
+  after the persona prompt and memories on every call, so a
+  per-turn stage direction — or the entropy terms — could enter
+  there without ever appearing in the transcript. About five lines
+  of change. → **Q12** records the choice for the director arc.
+- **Dead-air texture.** Browser only, via the existing
+  AudioContext (umbrella §8, C8). The server has nothing to offer
+  here.
+- **Persona-to-persona is upstream's own multi-reply design.** Its
+  feature doc
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/docs/feature_persona_to_persona.md`)
+  states the rules we observed — followers random and
+  non-repeating, "who should answer" applies to the first responder
+  only — and its addendum explains WHY history is rewritten to the
+  `user` role (consecutive assistant messages produced 400 errors
+  from the LLM server) and why the audio queues were refactored to
+  stamp message ids (audio landing on the wrong persona). Useful as
+  a receipt that the label mechanism is deliberate, not accidental.
 
 ## 6. Upstreamability audit
 
-*Pending. Two separable commits off tag 7.1; upstream's `AGENTS.md`
-(45 KB) and pytest conventions as house-style receipts; test
-posture per patch; alignment with [discussion 2026-09-19] §4.*
+*Breadth-pass depth (2026-09-21). How scorbo2 works, read from the
+repository, and what it implies for two offerable patches.
+Alignment target: [discussion 2026-09-19] upstream-contribution
+strategy §4 (outreach deferred past the deadline; build offerable,
+contact nobody).*
+
+*Framing changed the same day (owner ruling, recorded in the
+umbrella §2 and in the strategy doc §7): the fork becomes a new
+app, TalkWithZombies, free to diverge from upstream; only the
+accumulator remains a plausible upstream patch, and the
+deployment machinery is the real offer. This section therefore
+stands as KNOWLEDGE about how scorbo2 works — useful for reading
+his code, for the accumulator offer, and for keeping his agent
+guide and tests meaningful in our fork — and no longer as a
+CONSTRAINT on what we change.*
+
+- **Workflow, measured from git.** Topic branches named
+  `issue_<N>_<topic>`, commits titled "Issue #N - description",
+  merged by pull request into a per-release dev branch
+  (`7.1-dev-branch`), then to `master`, then tagged `N.0` or `N.1`
+  with no `v` prefix. Releases 1.0 through 7.1 exist; the default
+  branch is `master`. An offerable change therefore starts as a
+  GitHub issue.
+- **The house genre is the feature doc.** Every feature has
+  `docs/feature_<name>.md` with the same skeleton: "This document
+  describes an addition to the TalkWithMe app", *Current state*,
+  *Desired state*, then an addendum of problems discovered during
+  implementation (examples:
+  `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/docs/feature_persona_to_persona.md`,
+  `docs/feature_echo_chamber.md`, `docs/feature_chat_rooms.md`).
+  Spec first, then code, then the addendum — tts-serve's README
+  says the same about itself. A patch offered with a feature doc
+  in this shape speaks the maintainer's language and lets his own
+  agent maintain it.
+- **The rules an agent must obey.**
+  `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/AGENTS.md` is
+  45 KB. The binding ones for us: every code change needs a fully
+  green `pytest` with no skips (line 33); new functionality needs
+  new tests in the matching `test_*.py` before the change counts as
+  done (line 34); routers are stubbed at the import site (line 35);
+  the endpoint table in `AGENTS.md` is itself under test
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/tests/test_docs.py`),
+  so a new endpoint must be documented or the suite fails.
+  Dependencies are pinned exactly
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/requirements.txt`),
+  no uv — which our Task 7b installer already respects.
+- **Test-coverage asymmetry that changes patch (b)'s cost.** Python
+  is fully covered (one `test_routers_*.py` per router, plus
+  service and model suites). JavaScript has two Node tests — for
+  the persona form (`tests/test_persona_form.js`) and for the TTS
+  parameter section plus settings wiring
+  (`tests/test_tts_settings.js`) — run with plain Node 20+, no
+  packages, in a fresh `vm.Context` per test against a minimal DOM
+  stub (`AGENTS.md:30`). **`static/tts.js` has no test at all.** So
+  the accumulator either ships untested on the browser side —
+  which upstream may accept, since the current splitter is
+  untested too — or we add a third Node test in the existing
+  harness. → **Q11.**
+- **File counts — the surprise.** Patch (a), the sanitizer:
+  `app/routers/chat.py` plus possibly `app/services/llm.py`, a
+  `general` knob if toggleable, `tests/test_chat_sse.py`, a feature
+  doc, one `AGENTS.md` paragraph. Patch (b), the accumulator:
+  `static/tts.js`, `static/chat.js`, and — if N is a proper
+  setting — the whole seven-file journey of §4 plus the health
+  response, plus tests. The "small" patch is the BIGGER one by file
+  count. Both stay separable because they share no file except
+  possibly `app/config.py` and `app/models.py`, and even there they
+  touch different sections.
+- **Merge friction.** Eight release tags and issue numbers past
+  120 say this upstream moves fast. Small commits off tag 7.1,
+  rebased when we bump, are the way to keep the fork thin. Our
+  installer already tracks the fork through one `client_repo`
+  variable (Task 7b).
 
 ## 7. Explicitly out
 
 No fork is created, no patch code is written, and no director is
 designed in this tour.
 
-## 8. Update trail
+## 8. Questions added by the breadth pass of sections 2–6 (OPEN)
+
+- **Q8 — OPEN. Sanitizer reach.** Head filter only, or head filter
+  plus a persist-time sweep for mid-reply labels (§2).
+- **Q9 — OPEN. Accumulator remnant policy.** What to do with a
+  trailing fragment shorter than a threshold, or a reply that is
+  only "1." (§3).
+- **Q10 — OPEN. Knob homes.** N in the `tts` section via the health
+  response — UI or yaml-only; the sanitizer toggle in `general`,
+  yaml-only to start (§4).
+- **Q11 — OPEN. A Node test for `tts.js`.** Add the third harness,
+  or ship the accumulator untested like the code it replaces (§6).
+- **Q12 — OPEN, record only. Directive injection point for the
+  director arc.** User message, 2024 style, versus the
+  system-prompt tail (§5).
+- **Q13 — OPEN, record only. Director placement given no
+  server-push channel.** Browser timer, server plus push channel,
+  or external process plus polling — the next arc's question (§5).
+
+## 9. Update trail
 
 - **2026-09-21** — Document created. Section 1 (pipeline map,
   eight hops, sequence diagram, findings F1–F8, vocabulary,
   itinerary, open questions Q1–Q3) written after the section-1
   conversation, at conversation-level detail (owner rule).
+- **2026-09-21, later** — Sections 2–6 written at breadth-pass
+  depth (findings and questions, no decisions), after the owner's
+  ruling to gather questions across all products before answering.
+  Questions Q8–Q13 added (§8); update trail renumbered to §9.
+  Unit 1's breadth pass is complete; §7 stands as written.

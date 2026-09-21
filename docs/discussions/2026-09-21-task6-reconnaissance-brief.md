@@ -6,9 +6,10 @@
 about to fork, written so that the owner's own study of three
 codebases starts oriented and so that the Task 6 fork's shape
 round argues from receipts rather than from memory.
-**Status:** IN PROGRESS, breadth pass. Unit 1 (TalkWithMe)
-section 1 written; unit 2 (tts-serve) breadth pass written; units
-3–4 not started. Open questions are marked OPEN where they stand.
+**Status:** IN PROGRESS, breadth pass. Unit 1 (TalkWithMe) breadth
+pass complete (sections 1–7); unit 2 (tts-serve) breadth pass
+written; units 3–4 not started. Thirteen open questions (index in
+§5b) and six seam questions (§5) await the answer pass.
 
 *Context for the cold reader.* Zombie-Radio is an interactive,
 audio-only theater play performed by four AI voice actors:
@@ -40,6 +41,10 @@ Two facts triggered it:
   "Dr.") produce audio artifacts; the fix is to pack text up to a
   maximum number of characters instead. Both patches are meant to
   be small, separable, and offerable upstream to scorbo2.
+  *Superseded in part on 2026-09-21 (see the ruling at the end of
+  §2): the fork becomes a new app, TalkWithZombies, free to
+  diverge; only the accumulator remains an upstream candidate; and
+  both patches now wait for two design decisions.*
 - **The owner wants to understand the codebases himself** before
   the fork is shaped: TalkWithMe, tts-serve, and his own 2024
   project, to form his own view of how TalkWithMe should change
@@ -88,6 +93,49 @@ one refinement per unit accepted after the agent's pushback:
 **Explicitly out of the brief:** creating the fork, writing patch
 code, designing the ensemble director (that is the next arc's
 work; the brief only maps where a director would attach).
+
+**Owner ruling 2026-09-21, after the breadth passes of units 1
+and 2 — "do not worry about upstream".** Recorded in full in
+TODO.md (Task 6 disposition + the arc-boundary note) and in
+[discussion 2026-09-19] upstream-contribution-strategy §7; the
+essentials for this brief:
+
+- The clone becomes a NEW app, **TalkWithZombies** — a real GitHub
+  fork of scorbo2/TalkWithMe at tag 7.1 (provenance and MIT
+  attribution kept, "forked from" labeled prominently in our
+  README), then modified freely. No upstream compatibility
+  pretence: the turn-taking and the whole per-turn prompt
+  structure are expected to change significantly.
+- **Two design discussions must precede any source patch**, each
+  in its own dated discussion doc, dialog-first: (1) the **prompt
+  structure** — TalkWithMe's one-request-per-persona with the
+  `[Name]:` history rewrite, versus a 2024-style single shared
+  context with a hidden narrator, versus a better structure not
+  yet thought of; (2) the **story loop** — how to force a show
+  that keeps turning into TalkWithMe's "one user message → up to
+  four replies → stop" design, given no server-initiated channel
+  to the browser (question Q13). The prompt-structure discussion
+  is the substance of unit 4 (§10); the story-loop discussion
+  follows it, because the loop's shape depends on who assembles
+  the prompt.
+- **Consequence for the two Task 6 patches:** the sanitizer's fate
+  DEPENDS on the prompt-structure decision (its cause is the
+  history rewrite at
+  `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/session.py:156`
+  to 161; in a shared-context design the label becomes wire
+  protocol and the sanitizer becomes a parser); the accumulator is
+  design-independent and may proceed at any time.
+- **Contribution ledger re-ranked:** the deployment machinery
+  first (what scorbo2 may adopt or advertise), the accumulator as
+  the only plausible app-code patch, the sanitizer dropped.
+  Outreach stays deferred past the deadline.
+- **Arc boundary shifted, said out loud:** the two decisions above
+  belong to the director's design, which TODO.md had placed in the
+  next arc. They are pulled into this arc because no patch can be
+  shaped without them; the next arc builds on the decisions
+  instead of taking them. The tour's upstreamability audit (unit 1
+  §6) remains as knowledge about how scorbo2 works, no longer as a
+  constraint on our changes.
 
 ## 3. Method
 
@@ -154,6 +202,14 @@ work; the brief only maps where a director would attach).
      separable, minimal, and offerable, using upstream's own
      `AGENTS.md` and test conventions as house-style receipts;
   7. what is explicitly out.
+  Sections 2–6 written at breadth-pass depth on 2026-09-21: the
+  reply path's two token sources and the head-filter geometry; the
+  single cut point in `tts.js` and the `streaming`-flag road for N;
+  the seven-file journey of a settings knob; the director seams
+  (the `who_answers` hook, the no-server-push gap, the echo-chamber
+  precedent, the two directive injection points); the
+  upstreamability audit (issue-branch workflow, feature-doc genre,
+  the AGENTS.md rules, the JS test gap, file counts).
 - `docs/discussions/2026-09-21-task6-recon-tts-serve.md` — the
   **tts-serve tour** (unit 2): orientation (layout, versions, how
   our role runs it, house style), the synthesize contract as our
@@ -252,6 +308,28 @@ question, never over it.
   frightened" — reach the engine: a per-request parameter override
   on `/api/tts`, a per-persona choice among several reference
   clips, or both? *Status: OPEN.*
+
+### 5b. Index of open questions (Q1–Q13)
+
+*The question pile the breadth pass collects; each lives with its
+context in a tour document. The answer pass rules on them product
+by product.*
+
+| Q | One line | Where |
+|---|---|---|
+| Q1 | Does the label sanitizer become a stream-head filter in `_chat_stream`? | TalkWithMe tour §1.7, §2 |
+| Q2 | Which labels to strip: own name only, any `[X]:`, bare `Name:`? | TalkWithMe tour §1.7, §2 |
+| Q3 | Mention detection overriding who-answers — keep it for a radio show? | TalkWithMe tour §1.7, §5 |
+| Q4 | S3 measurement (latency vs text length) before the fork decides N, or a provisional N first? | tts-serve tour §7 |
+| Q5 | Task 4 reference material spec: ~10 s clean clips with exact transcripts? | tts-serve tour §7 |
+| Q6 | Keep the per-sentence reference upload as is (cheap per F1)? | tts-serve tour §7 |
+| Q7 | Mac-local TTS probe with the MLX engine (candidate experiment 5d)? | tts-serve tour §8 Q5; umbrella §10 |
+| Q8 | Sanitizer reach: head filter only, or plus a persist-time sweep? | TalkWithMe tour §2, §8 |
+| Q9 | Accumulator remnant policy for tiny trailing fragments? | TalkWithMe tour §3, §8 |
+| Q10 | Knob homes: N in `tts` via the health response; sanitizer toggle in `general`, yaml-only? | TalkWithMe tour §4, §8 |
+| Q11 | Add a Node test harness for `tts.js`, or ship the accumulator untested? | TalkWithMe tour §6, §8 |
+| Q12 | Director directives: user message (2024 style) or system-prompt tail? Record only. | TalkWithMe tour §5, §8 |
+| Q13 | Director placement given no server-push channel: browser, server+push, or external+polling? Record only. | TalkWithMe tour §5, §8 |
 
 ## 6. Glossary
 
@@ -646,6 +724,23 @@ later, each with a dated resolution beside its ledger entry in §5.*
 *Not started. Will map the 2024 mechanisms (§7) onto TalkWithMe's
 seams (tour document, section 5) and tts-serve's contract (unit 2).*
 
+*Reframed 2026-09-21 (owner ruling, §2): unit 4 IS the
+**prompt-structure discussion** — TalkWithMe's per-turn prompt
+(one request per persona; system prompt = persona prompt +
+memories + global prompt; history rewritten so other personas'
+lines become `[Name]:` user turns) contrasted with the 2024
+structure (one shared context, the model plays the whole cast in
+`Name: line` wire format, a hidden in-prompt Narrator issues one
+directive per turn carrying speaker, emotional register, word
+count, and an entropy term), with the door explicitly left open
+to a third structure neither of us has thought of yet. It gets its
+own dated discussion doc; this section will hold the synthesis and
+the pointer. The **story-loop discussion** (Q13's three
+placements — browser timer, server plus push channel, external
+process plus polling — against TalkWithMe's request-driven,
+one-turn design) follows in its own doc, because the loop's shape
+depends on who assembles the prompt.*
+
 *Parked candidate raised on 2026-09-21 (tts-serve tour §8, Q5):
 **experiment 5d / question Q7** — a Mac-local TTS probe. tts-serve
 ships a native Apple-Silicon engine (Qwen3-TTS via MLX, tag 1.2)
@@ -677,3 +772,11 @@ evening; no box.*
   probe with tts-serve's MLX engine (see tts-serve tour §8, Q5).
   Sections renumbered: synthesis §9, integration §10, update trail
   §11.
+- **2026-09-21, "do not worry about upstream" ruling** — recorded
+  at the end of §2 and in §10; TODO.md (Task 6 disposition, arc
+  boundary) and the upstream-contribution strategy (§7 addendum)
+  carry the full text.
+- **2026-09-21, unit 1 breadth pass closed** — TalkWithMe tour
+  sections 2–6 written; Q8–Q13 added; the question index §5b
+  created (Q1–Q13). Unit 1's breadth pass is complete; the pile is
+  ready for the answer pass or for unit 4's breadth questions.

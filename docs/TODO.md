@@ -24,6 +24,18 @@ and the full demo rehearsal — that is the next arc's material
 ("the show arc"), shaped by what this prototype teaches. This
 arc builds the platform, picks the components, and patches the
 worst rough edges.
+**Boundary shifted (owner ruling 2026-09-21, after the Task 6
+reconnaissance):** two design decisions that belong to the
+director's design are pulled INTO this arc because no source
+patch can be shaped without them — (1) the **prompt structure**
+sent to the LLM each turn (TalkWithMe's one-request-per-persona
+with `[Name]:` history rewrite, versus a 2024-style single shared
+context with a hidden narrator, versus a third structure not yet
+thought of), and (2) the **story loop** (how to make the show
+keep turning inside TalkWithMe's "one user message → up to four
+replies → stop" design, given the app has no server-initiated
+channel to the browser). Each gets its own discussion doc; the
+next arc BUILDS on the two decisions instead of taking them.
 
 **Parallelism note:** Task 4 (the owner's cast work) has ZERO
 dependency on Tasks 1–3 — it is the long pole and can start
@@ -134,6 +146,60 @@ the agent keeps this current. These carry across arcs.*
   max-chars accumulator — the accumulator now triply motivated,
   incl. the ultra-short-input echo artifact), offer both
   upstream. Executes after Task 1 closes.
+  **Disposition REVISED (owner ruling 2026-09-21, after the
+  reconnaissance breadth pass):** we do NOT stay close to
+  upstream. The clone becomes a NEW app, **TalkWithZombies** — a
+  real GitHub fork of scorbo2/TalkWithMe at tag 7.1 (provenance
+  and the MIT attribution kept; "forked from" labeled
+  prominently in our README once forked), then modified as we
+  please with no upstream-compatibility pretence. The two patches
+  are now GATED on the two design discussions above: the
+  **sanitizer's fate depends on the prompt structure** (its cause
+  is the `[Name]:` history rewrite in `app/session.py:156-161`; a
+  2024-style shared context turns the label into wire protocol
+  and the sanitizer into a parser), while the **accumulator is
+  design-independent** and may proceed any time. Contribution
+  candidates re-ranked: the deployment machinery (site.yml + the
+  Mac client installer) is the thing scorbo2 may want to adopt or
+  advertise; the accumulator is the only plausible app-code
+  patch; the sanitizer is no longer a candidate. Outreach still
+  deferred past the deadline. Recorded in [discussion 2026-09-19]
+  upstream-contribution-strategy (addendum) and [discussion
+  2026-09-21] task6-reconnaissance-brief §1–§2.
+  **TIMEBOX (owner proposal + agent conditions, agreed
+  2026-09-21): 3 days to execute the two axes — prompt structure
+  and story loop — in the fork.** Modeled on D1's 3-day box
+  (finished in ~1.5). Terms:
+  - **Start trigger:** the moment TalkWithZombies is actually
+    forked. Deliberation is NOT timed: both discussion docs
+    (prompt structure, story loop) are finished and ruled on
+    BEFORE the fork exists, so day one is not spent talking.
+    Realistic fork date ≈ 2026-09-24 → checkpoint ≈ 2026-09-27,
+    leaving ~11 days for 5a/5b/5c, Task 7, and Task 8, with
+    Task 4 (owner) in parallel throughout — no slack for a second
+    attempt.
+  - **Exit criterion, judged on MECHANISM, not narrative
+    quality:** TalkWithZombies runs an unattended loop of at least
+    ten turns with the four placeholder personas; speakers chosen
+    by the new structure, not at random; one audience interaction
+    beat that opens the microphone and absorbs the reply;
+    sentences accumulated, not split; on the deployed stack
+    through the tunnel. Placeholder voices, dumb dialogue, and
+    yaml-only knobs are acceptable. Whether the story is GOOD is
+    Task 5a's question (a small model's behavior under the chosen
+    prompt structure is an audition matter, not an engineering
+    one).
+  - **Midpoint checkpoint at day 1.5:** continue, scale down, or
+    stop — decided explicitly, as in D1.
+  - **Fallback if the box is missed:** TalkWithMe 7.1 as it stands
+    plus the canned episode (Task 7) is still a demo; the failure
+    mode is a less ambitious show, not no show.
+  - **Caution recorded:** the story-loop decision may be the
+    arc's largest single build depending on which placement wins
+    (browser-side timer ≈ a day; a server push channel is more;
+    external process + polling in between) — the story-loop
+    discussion ranks the placements by BUILD COST as well as fit,
+    so the box is set knowing what it contains.
   - [ ] **Reconnaissance brief FIRST** (owner-ratified
     2026-09-21; branch `alfre2v/task6-recon-brief`): a guided
     tour of the fork-relevant anatomy of TalkWithMe (tag 7.1),
