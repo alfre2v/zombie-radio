@@ -6,8 +6,9 @@
 about to fork, written so that the owner's own study of three
 codebases starts oriented and so that the Task 6 fork's shape
 round argues from receipts rather than from memory.
-**Status:** IN PROGRESS. Unit 1 (TalkWithMe) under way; units 2–4
-not started. Open questions are marked OPEN where they stand.
+**Status:** IN PROGRESS, breadth pass. Unit 1 (TalkWithMe)
+section 1 written; unit 2 (tts-serve) breadth pass written; units
+3–4 not started. Open questions are marked OPEN where they stand.
 
 *Context for the cold reader.* Zombie-Radio is an interactive,
 audio-only theater play performed by four AI voice actors:
@@ -114,6 +115,13 @@ work; the brief only maps where a director would attach).
   conversation, discussed until settled or explicitly parked, then
   written. The owner reviews the uncommitted files in VS Code;
   commits happen on his word, however many that turns out to be.
+  **Breadth first (owner ruling 2026-09-21, after unit 1 section
+  1):** the open questions are NOT answered as they arise. One
+  general pass goes over all three products gathering the
+  questions (the Q-list across the tour documents and the seam
+  ledger below); then a second pass, product by product, answers
+  what can be answered. Section 1 of the TalkWithMe tour therefore
+  left Q1–Q3 open on purpose, and the tts-serve tour added Q4–Q6.
 - **Writing rule for these documents** (owner, 2026-09-21): the
   files must not be denser than the conversation that produced
   them. Same level of detail, human-readable layout, self-contained
@@ -147,7 +155,10 @@ work; the brief only maps where a director would attach).
      `AGENTS.md` and test conventions as house-style receipts;
   7. what is explicitly out.
 - `docs/discussions/2026-09-21-task6-recon-tts-serve.md` — the
-  **tts-serve tour** (unit 2), to be created when unit 2 starts.
+  **tts-serve tour** (unit 2): orientation (layout, versions, how
+  our role runs it, house style), the synthesize contract as our
+  client experiences it, findings F1–F10, the seam-ledger
+  proposals, vocabulary, itinerary, questions Q4–Q6.
 - `docs/visuals/task6-reconnaissance-brief/` — the **HTML
   derivatives**: one self-contained page per tour plus an index.
   Diagrams as inline Mermaid (single-sourced from the markdown),
@@ -177,7 +188,15 @@ question, never over it.
   sentence over the SSH tunnel to the GPU box. Real actor clips may
   be longer. Question: does tts-serve offer any reference caching
   or a voice identifier, or is per-request upload the only
-  contract? *Status: OPEN.*
+  contract? *Status: OPEN — proposed resolution from the tts-serve
+  tour (F1), 2026-09-21: per-request upload IS the only contract
+  (no voice identifier, no upload-once endpoint), but the server
+  stages the clip under a content-hash filename and keeps it, and
+  the engine caches the encoded voice prompt per clip+transcript,
+  so the compute cost is paid once per unique clip; what repeats
+  per sentence is bandwidth only, a few tens of milliseconds on
+  our tunnel. No fork work needed. Awaits the owner's ruling in
+  the answer pass.*
 - **S2 — Several emotional references per persona.** *Raised by
   the 2024 prologue, owed by unit 2.* The 2024 prototype realized a
   character's emotion by choosing an emotionally matching reference
@@ -185,13 +204,54 @@ question, never over it.
   `ref.wav` per persona. Question: can tts-serve switch the
   reference per request cheaply enough that one persona could
   carry several emotional references, chosen per line? *Status:
-  OPEN.*
+  OPEN — half answered by the tts-serve tour (F3), 2026-09-21: on
+  the tts-serve side, yes, at no extra cost — every request is
+  stateless and each clip is cached separately. The blocker is
+  entirely in TalkWithMe (one `ref.wav` per persona; the TTS proxy
+  looks the clip up by persona name). The remaining half is a
+  TalkWithMe design question for the fork or the director.
+  Alternative path noted: IndexTTS exposes explicit emotion
+  control (8-component vector, emotion clip, or text), 22.05 kHz.*
 - **S3 — Text length per synthesis request.** *Raised by unit 1,
   owed by unit 2.* The max-chars accumulator's N is bounded by
   what the engine tolerates in one request (and by how latency
   grows with text length). Question: what limits does tts-serve or
   the engine impose, and how does synthesis time scale with input
-  length? *Status: OPEN.*
+  length? *Status: OPEN — reframed by the tts-serve tour (F2, F4),
+  2026-09-21: tts-serve imposes NO upper bound on `text`, and no
+  server streams audio, so N is bounded by latency and quality,
+  not by a limit. Becomes a measurement question: the
+  latency-versus-length curve on a box, using the `time_used` and
+  `rtf` fields every response already carries. See Q4 in the
+  tts-serve tour.*
+- **S4 — Two engines on one box (Task 5b).** *Raised by the
+  tts-serve tour, owed by the 5b planning.* Every tts-serve
+  engine is one process in its own venv on its own port, and
+  synthesis inside a process is serialized by a lock. Our Ansible
+  role selects ONE engine by name (`zr_tts_engine`). Question:
+  what is the deployment shape for two engines side by side — the
+  role run twice, or a list variable? *Status: OPEN, parked for
+  5b.*
+- **S5 — Synthesis telemetry.** *Raised by the tts-serve tour,
+  owed by the director design.* Every synthesis response carries
+  `time_used`, `rtf`, and the `seed` used; TalkWithMe reads only
+  `audio_base64` and discards the rest. Question: should the
+  client surface or log these, and where — for 5b's engine
+  comparison and for a director's pacing model? *Status: OPEN,
+  parked.*
+- **S6 — Per-request TTS parameter overrides through TalkWithMe.**
+  *Raised by the owner's emotion questions (tts-serve tour §8, Q2
+  and Q3), owed by the fork or the director design.* tts-serve has
+  no central emotion knob; emotion lives in the reference clip for
+  most engines, and in engine-specific knobs for two (Chatterbox
+  `exaggeration`, IndexTTS `emotion_vector` / clip / text).
+  TalkWithMe exposes engine knobs as ONE global settings map and
+  its TTS request carries only `text` and `persona_name`
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/models.py:56`
+  to 59). Question: how would a per-line instruction — "this line,
+  frightened" — reach the engine: a per-request parameter override
+  on `/api/tts`, a per-persona choice among several reference
+  clips, or both? *Status: OPEN.*
 
 ## 6. Glossary
 
@@ -221,6 +281,35 @@ Project terms coined or fixed in this brief:
   presumptive shape of the Task 6 label sanitizer (see the tour
   document, section 1 findings).
 - **Seam question** — see §5.
+- **ICL mode / x-vector mode** — two voice-cloning modes of the
+  Qwen3-TTS family. *In-context learning (ICL)*: the reference
+  clip AND its exact transcript are kept in the model's context;
+  higher quality; the transcript is mandatory. *x-vector (speaker
+  embedding) only*: a voice embedding extracted from the clip
+  alone; no transcript; lower quality. Our engine, faster-qwen3-tts,
+  exposes ICL only.
+- **Staging** — tts-serve writing the decoded reference clip to a
+  temp file because the engine loads prompt audio from a path.
+  Two flavours: *content-addressed and kept* (filename = SHA-256
+  of the bytes; repeat clips reuse the file and the engine's
+  per-path cache — our engine), and *one-shot* (UUID name, deleted
+  after the request — LuxTTS).
+- **Real-time factor (RTF)** — synthesis wall-clock time divided
+  by the duration of the audio produced; below 1.0 means faster
+  than real time. Returned on every tts-serve response.
+
+Upstream tts-serve vocabulary: **engine** (one wrapped
+text-to-speech model; identified by a stable slug such as
+`faster-qwen3-tts`), **core vocabulary** (the five request fields
+every engine may support: `text`, `audio_base64`,
+`reference_text`, `language`, `seed`), **capabilities document**
+(the JSON at `GET /capabilities`, derived from the server's own
+request model, describing every accepted parameter with type,
+bounds, default, and UI hints), **schema version** (the document's
+contract version, 2 today; bumped only on breaking changes),
+**reference audio spec** (the document's statement of what clip
+the engine wants: required or not, formats, minimum duration,
+notes).
 
 Upstream TalkWithMe vocabulary (the words the fork discussion will
 use, in upstream's sense): **persona** (a character: prompt,
@@ -385,20 +474,206 @@ effect was added to the spec on 2026-09-21.
   parked here as a one-liner: it costs a second generation per
   rejected line, the most expensive of the three families.
 
-## 8. Synthesis (unit 3)
+## 8. The brainstorm's ten voice challenges (C1–C10), revisited against the code
+
+*Owner's question Q6 of 2026-09-21. The canonical copy of this
+section is the dated addendum in the challenges' own home,
+`docs/discussions/2026-09-13-product-definition-brainstorm.md`
+(section "C1–C10 revisited …"); it is repeated here in full so the
+brief stays self-contained (owner rule: repeating load-bearing
+facts in place is healthy for humans).*
+
+*Method: each of the ten challenges in §5 was re-read against the
+TalkWithMe 7.1 and tts-serve 1.2 source during the Task 6
+reconnaissance brief. For each: what the code says, whether the
+challenge got easier from the perspective of these projects, and
+what new problem the code surfaced. The status quo assumed is the
+MVP's push-to-talk, which §5 already credits with solving C2, C4,
+C5 by construction. Paths into the sibling clones are absolute;
+paths into this repository are root-relative. Labels: measured /
+docs-say / believed.*
+
+**C1 — Noise robustness, Whisper inventing text.** The STT proxy
+asks for `response_format=json` and reads only `text`
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/services/stt_client.py:72`
+to 81). No confidence signal is requested or examined, so the
+"cheap must-have" §5 names — filtering on Whisper's no-speech
+probability and average log-probability — does not exist here. It
+is a small patch in the proxy: ask for the verbose format, drop or
+flag low-confidence transcripts. **A new problem the code
+surfaces (measured):** when Whisper returns empty text, the proxy
+substitutes the literal string "No response received from STT
+server" (line 81); the browser sees a non-empty `text` and
+auto-sends it
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/stt.js:75`
+to 98), and that sentence becomes the user's message to the cast.
+A silent or noisy recording therefore produces a hallucination of
+the app's own making, before Whisper gets a chance to invent
+anything.
+
+**C2 — End-of-speech detection.** Solved by construction, with one
+nuance §5 did not have: the microphone is a click-to-start,
+click-to-stop TOGGLE, not hold-to-talk
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/stt.js:9`
+to 14; Ctrl+Space toggles too,
+`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/app.js:134`).
+"Button release equals end of speech" assumed a held button. With a
+toggle, a nervous visitor can forget to stop, and the recording
+runs until they do. A hold-to-talk variant would be a small change
+in the same file.
+
+**C3 — Speaker identification.** Nothing in either project.
+TalkWithMe is single-user by construction — one session object for
+the process
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/session.py:170`).
+Status unchanged: wishlist.
+
+**C4 — Self-hearing.** Solved by construction ONLY if the
+microphone cannot open while the actors speak — and the code does
+not enforce that: `toggleMicrophone` never checks whether audio is
+playing, and the audio queues keep playing while a recording runs.
+Sending a message is blocked during a streaming turn
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/chat.js:67`);
+recording is not. With a laptop microphone and loudspeakers, a
+recording started during a reply captures the actors' voices,
+Whisper transcribes them, and the transcript is auto-sent. **New
+problem** — measured in code, believed in effect (the risk depends
+on speakers versus headphones). A cheap fix on the fork: disable
+the mic while the playback queues are non-empty, or duck playback
+when the mic opens — which is also the radio's own "over"
+discipline.
+
+**C5 — Addressee detection.** Solved by construction. One adjacent
+feature exists: mention detection routes the message to a persona
+whose name appears in the text
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/chat.js:80`
+to 91). That is a small in-fiction wake protocol already — and it
+is also the behavior flagged as open question Q3 in the TalkWithMe
+tour, for the director design to decide on.
+
+**C6 — Proper-name capture. This one got EASIER.** The
+OpenAI-style transcription endpoint accepts a `prompt` field that
+biases the recognizer toward given vocabulary, and a `language`
+field. TalkWithMe sends neither
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/services/stt_client.py:72`
+to 74), so Whisper auto-detects the language and knows none of our
+names. Sending the cast's names, "Over", and a few lab terms as the
+prompt, plus forcing English, is a few lines in the proxy and is
+the standard remedy for "Miss Betty" becoming "Nisbeti" (the
+2026-09-16 field observation). *Believed* that whisper-fastapi
+honors the prompt field as the OpenAI API defines it — a one-curl
+check on the next box. This would be a THIRD small, upstreamable
+patch candidate, outside Task 6's current two.
+
+**C7 — Overlapping speakers.** Nothing in either project.
+Push-to-talk stands. Unchanged.
+
+**C8 — Audio mixing. EASIER than assumed.** TalkWithMe already
+mixes in the browser with the Web Audio API: one `AudioContext`,
+buffer sources connected to the destination
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/tts.js:205`
+to 219). Static, dead-air texture, or effects are one more buffer
+source and a gain node into the same context, and the browser
+resamples every source to the context's rate on decode — which
+also disposes of the sample-rate differences between engines
+(24 kHz, 48 kHz, 22.05 kHz). The "server versus client mixing"
+decision §5 deferred is effectively made by the foundation:
+client-side, with assets shipped once — exactly the refined
+version that survived the owner's 2026-09-13 pushback.
+
+**C9 — Audio compression.** Neither project has it. tts-serve
+always returns 16-bit PCM WAV in base64
+(`/Users/alfredo/workspace/hackTNT_2026/tts-serve/tts-engine-common/src/tts_engine_common/models.py:137`);
+TalkWithMe forwards it as base64 in JSON to the browser. The
+venue-internet leg is the SSH tunnel between the box and the
+laptop; the laptop-to-browser leg is localhost and free. So
+compression matters on ONE leg, and we own both ends of it — which
+gives two options §5 did not list: an Opus output option in
+tts-serve (a natural upstream candidate, since the response core
+is versioned by `schema_version`), or, as a zero-code stopgap for a
+bad venue link, SSH's own compression flag (`-C`) on the tunnel —
+worth one measurement, because PCM compresses only moderately.
+Also relevant: the reference clip travels the OTHER way on the
+same leg on every request (tts-serve tour F1).
+
+**C10 — Sentence-chunked TTS versus emotional coherence.**
+Confirmed in code on both sides: each sentence is an independent
+request from the browser
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/tts.js:88`
+to 104), and tts-serve is stateless — no prosodic memory. **Two
+new angles.** First, each request draws a FRESH RANDOM SEED unless
+one is supplied
+(`/Users/alfredo/workspace/hackTNT_2026/tts-serve/impl/server_fasterQwen3TTS.py:458`),
+so part of the chunk-to-chunk inconsistency the owner heard on
+2026-09-16 is dice, not the model. Fixing the seed per reply
+removes that part for free; today it can only be fixed globally
+through TalkWithMe's `settings.tts.parameters`, and per reply would
+be a patch. Second, the max-chars accumulator is a direct C10
+mitigation — fewer and longer chunks — so BOTH Task 6 patches
+serve this challenge. The engine-side emotion knobs (Chatterbox
+`exaggeration`, IndexTTS `emotion_vector`) are the third lever,
+and they need seam question S6 (per-request TTS parameter
+overrides through TalkWithMe).
+
+**Problems the code surfaced that were not on the list:**
+
+- The substituted "No response received from STT server" text
+  becoming a user turn (C1).
+- The microphone not gated on playback (C4).
+- The transcript auto-sent with no review step, so every
+  recognition error goes straight to the cast (C6 — also the
+  "Nisbeti" mechanism).
+- The `[Name]:` label leak — already known; the Task 6 trigger.
+- Replies cut at the 200-token cap, persisted truncated and spoken
+  as fragments (TalkWithMe tour, F2).
+- No streaming synthesis anywhere, so time-to-first-audio is tied
+  to chunk size (tts-serve tour, F4).
+- One synthesis at a time per engine process (a lock), so a
+  director cannot prefetch several personas in parallel on one
+  engine (tts-serve tour, F5) — relevant to dead-air planning.
+- Good news too: our engine captures its CUDA graphs at startup
+  (`server_fasterQwen3TTS.py:381`, `model.warmup()`), so the first
+  request is not slow; LuxTTS by contrast pays about 10 seconds
+  on its first request.
+
+## 9. Synthesis (unit 3)
 
 *Not started. Will resolve S1–S3 and any seam questions raised
 later, each with a dated resolution beside its ledger entry in §5.*
 
-## 9. Integration pass (unit 4)
+## 10. Integration pass (unit 4)
 
 *Not started. Will map the 2024 mechanisms (§7) onto TalkWithMe's
 seams (tour document, section 5) and tts-serve's contract (unit 2).*
 
-## 10. Update trail
+*Parked candidate raised on 2026-09-21 (tts-serve tour §8, Q5):
+**experiment 5d / question Q7** — a Mac-local TTS probe. tts-serve
+ships a native Apple-Silicon engine (Qwen3-TTS via MLX, tag 1.2)
+and five engines accept PyTorch's `mps` device. If the owner's Mac
+has enough unified memory, the whole stack (llama.cpp on Metal,
+Whisper, a tts-serve engine) could run locally — a second
+emergency mode for demo day next to the canned episode, and a
+free rehearsal setup. Needs: the Mac's chip and memory; one
+evening; no box.*
+
+## 11. Update trail
 
 - **2026-09-21** — Document created after the shape rulings of the
   same day (units, seam ledger, documents, visuals folder, cadence,
   path and writing rules). Prologue (§7) written from the read of
   `zombie_radio_ai` and the owner's recollections. Seam questions
   S1–S3 opened. Glossary opened with the entropy-term decision.
+- **2026-09-21, later** — Cadence changed to breadth-first (owner
+  ruling). tts-serve tour written; S1 and S2 received proposed
+  resolutions, S3 was reframed as a measurement, S4 and S5 opened.
+  Glossary gained the tts-serve terms and the ICL/x-vector,
+  staging, and RTF entries.
+- **2026-09-21, later still** — The owner's six follow-up questions
+  on the tts-serve findings were answered and persisted: Q1–Q5 in
+  the tts-serve tour §8; Q6 as the new §8 here ("C1–C10
+  revisited", canonical copy appended to the brainstorm document).
+  Seam question S6 (per-request TTS parameter overrides) opened.
+  Candidate experiment 5d / question Q7 noted: a Mac-local TTS
+  probe with tts-serve's MLX engine (see tts-serve tour §8, Q5).
+  Sections renumbered: synthesis §9, integration §10, update trail
+  §11.

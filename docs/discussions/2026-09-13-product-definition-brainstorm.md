@@ -257,6 +257,15 @@ concerns even with a button. C8 stands apart: it is an
 Each challenge: what it is → why it bites us → what we know about
 solutions → status.
 
+*Addendum pointer (2026-09-21): after studying the source of the
+two projects we build on (TalkWithMe 7.1, tts-serve 1.2) during
+the Task 6 reconnaissance brief, every challenge below was
+re-examined against the code. The updated view — which challenges
+got easier, which got harder, and which new problems the code
+surfaced — is the dated section "C1–C10 revisited after studying
+TalkWithMe and tts-serve" at the end of this document. The
+original entries below are preserved as written.*
+
 ### C1. Noise robustness — Whisper transcribing nonsense
 
 Whisper (our speech-to-text model in 2024) is a generative
@@ -882,3 +891,177 @@ nothing heroic.
 itself from a remote host to a public audience (re-triggers the
 secure-context/TLS question — see [spec §10.3] option 4), or a
 multi-user client.
+
+---
+
+## 11. C1–C10 revisited after studying TalkWithMe and tts-serve (addendum, 2026-09-21)
+
+*Dated addendum. This is an UPDATED VIEW of §5's ten challenges,
+written after the Task 6 reconnaissance brief read the source of
+the two projects we are building on — TalkWithMe at tag 7.1 and
+tts-serve at tag 1.2 ([discussion 2026-09-21] task6-reconnaissance-brief
+and its two tour documents). The §5 entries above stand as written
+on 2026-09-13 and 2026-09-16; this section reports what the code
+changed about each one. It is also repeated in the brief's umbrella
+document (§8) so the brief stays self-contained; this copy is the
+canonical one, because the challenges live here.*
+
+*Method: each of the ten challenges in §5 was re-read against the
+TalkWithMe 7.1 and tts-serve 1.2 source during the Task 6
+reconnaissance brief. For each: what the code says, whether the
+challenge got easier from the perspective of these projects, and
+what new problem the code surfaced. The status quo assumed is the
+MVP's push-to-talk, which §5 already credits with solving C2, C4,
+C5 by construction. Paths into the sibling clones are absolute;
+paths into this repository are root-relative. Labels: measured /
+docs-say / believed.*
+
+**C1 — Noise robustness, Whisper inventing text.** The STT proxy
+asks for `response_format=json` and reads only `text`
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/services/stt_client.py:72`
+to 81). No confidence signal is requested or examined, so the
+"cheap must-have" §5 names — filtering on Whisper's no-speech
+probability and average log-probability — does not exist here. It
+is a small patch in the proxy: ask for the verbose format, drop or
+flag low-confidence transcripts. **A new problem the code
+surfaces (measured):** when Whisper returns empty text, the proxy
+substitutes the literal string "No response received from STT
+server" (line 81); the browser sees a non-empty `text` and
+auto-sends it
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/stt.js:75`
+to 98), and that sentence becomes the user's message to the cast.
+A silent or noisy recording therefore produces a hallucination of
+the app's own making, before Whisper gets a chance to invent
+anything.
+
+**C2 — End-of-speech detection.** Solved by construction, with one
+nuance §5 did not have: the microphone is a click-to-start,
+click-to-stop TOGGLE, not hold-to-talk
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/stt.js:9`
+to 14; Ctrl+Space toggles too,
+`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/app.js:134`).
+"Button release equals end of speech" assumed a held button. With a
+toggle, a nervous visitor can forget to stop, and the recording
+runs until they do. A hold-to-talk variant would be a small change
+in the same file.
+
+**C3 — Speaker identification.** Nothing in either project.
+TalkWithMe is single-user by construction — one session object for
+the process
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/session.py:170`).
+Status unchanged: wishlist.
+
+**C4 — Self-hearing.** Solved by construction ONLY if the
+microphone cannot open while the actors speak — and the code does
+not enforce that: `toggleMicrophone` never checks whether audio is
+playing, and the audio queues keep playing while a recording runs.
+Sending a message is blocked during a streaming turn
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/chat.js:67`);
+recording is not. With a laptop microphone and loudspeakers, a
+recording started during a reply captures the actors' voices,
+Whisper transcribes them, and the transcript is auto-sent. **New
+problem** — measured in code, believed in effect (the risk depends
+on speakers versus headphones). A cheap fix on the fork: disable
+the mic while the playback queues are non-empty, or duck playback
+when the mic opens — which is also the radio's own "over"
+discipline.
+
+**C5 — Addressee detection.** Solved by construction. One adjacent
+feature exists: mention detection routes the message to a persona
+whose name appears in the text
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/chat.js:80`
+to 91). That is a small in-fiction wake protocol already — and it
+is also the behavior flagged as open question Q3 in the TalkWithMe
+tour, for the director design to decide on.
+
+**C6 — Proper-name capture. This one got EASIER.** The
+OpenAI-style transcription endpoint accepts a `prompt` field that
+biases the recognizer toward given vocabulary, and a `language`
+field. TalkWithMe sends neither
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/services/stt_client.py:72`
+to 74), so Whisper auto-detects the language and knows none of our
+names. Sending the cast's names, "Over", and a few lab terms as the
+prompt, plus forcing English, is a few lines in the proxy and is
+the standard remedy for "Miss Betty" becoming "Nisbeti" (the
+2026-09-16 field observation). *Believed* that whisper-fastapi
+honors the prompt field as the OpenAI API defines it — a one-curl
+check on the next box. This would be a THIRD small, upstreamable
+patch candidate, outside Task 6's current two.
+
+**C7 — Overlapping speakers.** Nothing in either project.
+Push-to-talk stands. Unchanged.
+
+**C8 — Audio mixing. EASIER than assumed.** TalkWithMe already
+mixes in the browser with the Web Audio API: one `AudioContext`,
+buffer sources connected to the destination
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/tts.js:205`
+to 219). Static, dead-air texture, or effects are one more buffer
+source and a gain node into the same context, and the browser
+resamples every source to the context's rate on decode — which
+also disposes of the sample-rate differences between engines
+(24 kHz, 48 kHz, 22.05 kHz). The "server versus client mixing"
+decision §5 deferred is effectively made by the foundation:
+client-side, with assets shipped once — exactly the refined
+version that survived the owner's 2026-09-13 pushback.
+
+**C9 — Audio compression.** Neither project has it. tts-serve
+always returns 16-bit PCM WAV in base64
+(`/Users/alfredo/workspace/hackTNT_2026/tts-serve/tts-engine-common/src/tts_engine_common/models.py:137`);
+TalkWithMe forwards it as base64 in JSON to the browser. The
+venue-internet leg is the SSH tunnel between the box and the
+laptop; the laptop-to-browser leg is localhost and free. So
+compression matters on ONE leg, and we own both ends of it — which
+gives two options §5 did not list: an Opus output option in
+tts-serve (a natural upstream candidate, since the response core
+is versioned by `schema_version`), or, as a zero-code stopgap for a
+bad venue link, SSH's own compression flag (`-C`) on the tunnel —
+worth one measurement, because PCM compresses only moderately.
+Also relevant: the reference clip travels the OTHER way on the
+same leg on every request (tts-serve tour F1).
+
+**C10 — Sentence-chunked TTS versus emotional coherence.**
+Confirmed in code on both sides: each sentence is an independent
+request from the browser
+(`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/tts.js:88`
+to 104), and tts-serve is stateless — no prosodic memory. **Two
+new angles.** First, each request draws a FRESH RANDOM SEED unless
+one is supplied
+(`/Users/alfredo/workspace/hackTNT_2026/tts-serve/impl/server_fasterQwen3TTS.py:458`),
+so part of the chunk-to-chunk inconsistency the owner heard on
+2026-09-16 is dice, not the model. Fixing the seed per reply
+removes that part for free; today it can only be fixed globally
+through TalkWithMe's `settings.tts.parameters`, and per reply would
+be a patch. Second, the max-chars accumulator is a direct C10
+mitigation — fewer and longer chunks — so BOTH Task 6 patches
+serve this challenge. The engine-side emotion knobs (Chatterbox
+`exaggeration`, IndexTTS `emotion_vector`) are the third lever,
+and they need seam question S6 (per-request TTS parameter
+overrides through TalkWithMe).
+
+**Problems the code surfaced that were not on the list:**
+
+- The substituted "No response received from STT server" text
+  becoming a user turn (C1).
+- The microphone not gated on playback (C4).
+- The transcript auto-sent with no review step, so every
+  recognition error goes straight to the cast (C6 — also the
+  "Nisbeti" mechanism).
+- The `[Name]:` label leak — already known; the Task 6 trigger.
+- Replies cut at the 200-token cap, persisted truncated and spoken
+  as fragments (TalkWithMe tour, F2).
+- No streaming synthesis anywhere, so time-to-first-audio is tied
+  to chunk size (tts-serve tour, F4).
+- One synthesis at a time per engine process (a lock), so a
+  director cannot prefetch several personas in parallel on one
+  engine (tts-serve tour, F5) — relevant to dead-air planning.
+- Good news too: our engine captures its CUDA graphs at startup
+  (`server_fasterQwen3TTS.py:381`, `model.warmup()`), so the first
+  request is not slow; LuxTTS by contrast pays about 10 seconds
+  on its first request.
+
+*Consequences recorded elsewhere on the same day: seam question S6
+(per-request TTS parameter overrides) in the brief's ledger; the
+Whisper `prompt`/`language` fields as a third small patch
+candidate; the mic-gating and STT-placeholder issues as fork
+candidates; the seed-per-reply idea as a C10 mitigation for the
+§7.2 TTS comparison to test.*

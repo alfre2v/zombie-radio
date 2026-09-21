@@ -19,6 +19,27 @@ reader's memory):
 
 ---
 
+## Bump the tts-serve pin from 1.1 to 1.2 at the next box deployment
+
+- **The gap:** `deploy/ansible/inventories/common_vars.yml` pins
+  `zr_tts_serve_version: "1.1"`. Upstream's latest tag is `1.2`
+  (2026-09-18; adds only the Apple-Silicon Qwen3-TTS MLX engine —
+  the shared package and our engine's server are byte-identical
+  between the two tags, verified by `git diff --stat 1.1 1.2` on
+  2026-09-21).
+- **Where flagged:** owner ruling 2026-09-21 during the Task 6
+  reconnaissance brief ([discussion 2026-09-21] tts-serve tour §1):
+  the pin is not set in stone — we track the latest tag unless a
+  release breaks the deployment or the TalkWithMe contract. Not
+  changed on the recon branch on purpose: a pin bump is a
+  deployment change and must be proven on a box.
+- **Trigger:** the next `make ans-deploy` against a fresh box
+  (first experiment evening, Task 5c or 5a).
+- **Fix shape:** edit the one line to `"1.2"`; deploy from zero;
+  re-run must be `changed=0`; `make check` three-ok; one TalkWithMe
+  synthesis through the tunnel. Then delete this entry and bank
+  the version in the arc-plan journal.
+
 ## Add new TTS engines to tts-serve (F5-TTS, Breeze TTS 2) — soft goal
 
 - **The gap:** tts-serve wraps seven engines (Chatterbox,
