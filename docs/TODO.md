@@ -134,6 +134,22 @@ the agent keeps this current. These carry across arcs.*
   max-chars accumulator — the accumulator now triply motivated,
   incl. the ultra-short-input echo artifact), offer both
   upstream. Executes after Task 1 closes.
+  - [ ] **Reconnaissance brief FIRST** (owner-ratified
+    2026-09-21; branch `alfre2v/task6-recon-brief`): a guided
+    tour of the fork-relevant anatomy of TalkWithMe (tag 7.1),
+    the tts-serve seam (tag 1.2), and the 2024 `zombie_radio_ai`
+    prototype — every claim with a file:line receipt. Four
+    units, each its own deliverable, dialog-driven: (1) the
+    TalkWithMe tour · (2) the tts-serve contract-and-extension-
+    points tour · (3) synthesis resolving the seam-question
+    ledger (S1, S2, …) · (4) the 2024 prototype integration
+    pass. Umbrella doc
+    `discussions/2026-09-21-task6-reconnaissance-brief.md` + one
+    tour doc per project; HTML derivatives (diagrams, annotated
+    excerpts, VS Code deep links) under
+    `visuals/task6-reconnaissance-brief/`. Unit 1 alone unblocks
+    the fork. Shape, method, cadence: [discussion 2026-09-18]
+    arc-plan Task notes.
 - [ ] **Task 7 — The canned episode (owner MUST) + demo-day
   protocol runbook.** Recorded from the working prototype; the
   runbook promotion deferred from the last arc lands here.
