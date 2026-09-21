@@ -189,6 +189,19 @@ looping (the 2024 entropy-terms trick is the baseline; brainstorm
 §2). Trigger to revisit: live narration proves too incoherent to
 demo (→ hybrid, §5.2).
 
+*(Ledger correction 2026-09-21, from the Task 6 reconnaissance
+brief's read of the 2024 code: the baseline is the COMMITTED 2024
+mechanism, not the richer remembered one — a hidden in-prompt
+Narrator issuing one directive per turn that names a random
+speaker, a random emotional register, a random word count (5–50),
+and ONE random adjective from a single ~70-word list; the themed
+verb/nature/animal lists described in the brainstorm never reached
+the code. Standardized terms: "entropy terms" for the injected
+words, "entropy-term injection" for the mechanism. Owner
+recollection, same day: the narrator directive made the narration
+feel alive; the entropy terms fought repetition. Full account:
+[discussion 2026-09-21] task6-reconnaissance-brief §7.)*
+
 ### §5.2 Post-MVP hybrid (registered intent, not MVP scope)
 
 Trajectory scaffolds: stories collected offline from bigger
