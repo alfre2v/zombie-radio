@@ -282,8 +282,10 @@ government-ID verification for GPU quota. Whoever we pick:
   `console.hyperstack.cloud`, on the VM's page:
 
   1. **Networking → "Attach a public IP"** — the VM has no
-     public address until you do; note the assigned IP (it goes
-     into `inventories/cloud/hosts.yml`, NEVER committed).
+     public address until you do; note the assigned IP (wired
+     into `inventories/cloud/hosts.yml` via
+     `make ans-set ENV=cloud IP=<ip>`, reverted with
+     `make ans-unset`; NEVER committed).
   2. **Firewall → "Enable SSH Access"** — default-deny security
      groups mean port 22 is closed until clicked.
   3. **Firewall → "Enable ICMP Access"** — nice-to-have so the

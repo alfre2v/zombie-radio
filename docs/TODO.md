@@ -137,8 +137,17 @@ the agent keeps this current. These carry across arcs.*
 - [ ] **Task 7 — The canned episode (owner MUST) + demo-day
   protocol runbook.** Recorded from the working prototype; the
   runbook promotion deferred from the last arc lands here.
-- [ ] **Task 7b — `client-talkwithme-mac.yml`: standalone Mac client-install
-  playbook (tangential nice-to-have; NOT MVP).** A top-level
+- [x] **Task 7b — `client-talkwithme-mac.yml`: standalone Mac client-install
+  playbook (tangential nice-to-have; NOT MVP).** DONE 2026-09-19
+  (branch `alfre2v/client-talkwithme-mac`): built to every
+  constraint below and proven on the Mac — fresh install
+  (TalkWithMe pinned `7.1` = the exact proven client version;
+  upstream tags carry no v prefix, verified), idempotent re-run
+  changed=0, create-if-absent verified by tamper test
+  (settings.yaml + persona edits survive), app boots and serves
+  200 from the fresh install. `make client-mac` wraps it.
+  Findings + final shape: [discussion 2026-09-18] arc-plan
+  journal, entry 2026-09-19. Original scope kept for the record: A top-level
   playbook (reserved-slots pattern) that installs the TalkWithMe
   client on the Mac laptop, assuming the cloud backend.
   **Hard separation, stressed:** totally separate from site.yml —

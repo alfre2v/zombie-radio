@@ -436,3 +436,39 @@ the box catches two bugs no offline check could.** Results on the
   top_k 40, top_p 0.95, min_p 0.05, repeat_last_n 64 (inert at
   penalty 1.0), DRY off, mirostat off; n_ctx 16384 and the
   Nemotron Q4_K_M alias confirmed serving.
+
+**Third addendum — Task 7b executed the same evening (PR #4
+merged in between; branch `alfre2v/client-talkwithme-mac`).**
+`deploy/ansible/client-talkwithme-mac.yml` built to the ratified
+constraints as ONE self-contained file (vars block = the whole
+contract; the offerable shape). Facts the write-time
+verifications produced:
+
+- **Upstream TalkWithMe tags 1.0–7.1, no v prefix** (scorbo2
+  house style confirmed twice now); default branch `master`.
+  Pinned `client_version: "7.1"` — bit-identical to the owner's
+  proven manual client (his clone `git describe` = 7.1).
+- **Upstream gitignores BOTH `settings.yaml` and `Personas/`** —
+  a fresh clone has neither, so the playbook's seeding is
+  load-bearing, not decorative. settings.yaml is seeded once
+  (create-if-absent) with the proven config: tunnel-port
+  endpoints, max_tokens 200 / temp 0.8, window 50,
+  max_persona_replies 4.
+- **Create-if-absent granularity is the PERSONA:** an existing
+  `Personas/<Name>/` is user state, skipped whole; an absent one
+  is created complete (prompt.md + `say`-generated ref.wav
+  LEI16@24000 + ref.txt — the experiment factory, now tasks with
+  argv form and `creates:` guards). Clone protection too:
+  `git force: false`, so a locally modified clone fails loudly.
+- **Prompt bodies wrapped** to satisfy the 160-char lint line
+  limit — newlines are semantically neutral in a persona prompt;
+  no lint exception carved.
+- **Proof battery on the Mac (all passed):** fresh install
+  changed=8 → `~/TalkWithMe-client` at 7.1 · idempotent re-run
+  **changed=0** (skipped=6) · tamper test: injected edits to
+  settings.yaml and a persona ref.txt SURVIVED the re-run ·
+  venv imports clean (plain venv + pip, no uv anywhere) · the
+  app boots from the fresh install and serves HTTP 200.
+- `make client-mac` added (inventory-free by design — no ENV,
+  no -i; logs to the usual place). Upstream outreach stays
+  DEFERRED: the playbook is now offerable, nobody is contacted.
