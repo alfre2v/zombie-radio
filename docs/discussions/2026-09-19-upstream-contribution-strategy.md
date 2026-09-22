@@ -142,3 +142,55 @@ Everything currently pointed at upstream, across docs:
 - Licensing/attribution mechanics if anything is adopted
   (both upstreams are MIT; our repo is public) — expected
   trivial, verify at PR time.
+
+---
+
+## 7. Addendum 2026-09-21 — the contribution ledger re-ranked; the fork stops tracking upstream
+
+*Owner ruling during the Task 6 reconnaissance brief ([discussion
+2026-09-21] task6-reconnaissance-brief), agent pushbacks accepted.*
+
+**The ruling.** We do not have to concern ourselves with staying
+close to upstream. No app-code contributions are anticipated
+beyond one. The clone becomes a NEW app named **TalkWithZombies**,
+signalling that it no longer pretends to be upstream-compatible:
+the turn-taking and the whole prompt structure sent to the LLM
+each turn are expected to change significantly (the two design
+discussions the ruling opened — prompt structure, story loop — are
+recorded in TODO.md's boundary note and in the brief's §10).
+
+**What stays offerable, re-ranked:**
+
+1. **The Ansible deployment machinery** — `site.yml` and the Mac
+   client installer `client-talkwithme-mac.yml`. Not app code; it
+   lowers the barrier to experimenting with both of scorbo2's
+   projects. The owner believes this is the part scorbo2 might
+   adopt, or at least advertise prominently in TalkWithMe's
+   README. Built fork-agnostic on purpose (§2 of this document),
+   so it keeps working against upstream after we diverge.
+2. **The sentence accumulator** — the one app-source patch that
+   could plausibly go upstream: TalkWithMe's per-sentence split
+   "clearly needs improving" (owner), and the patch is independent
+   of our prompt-structure decision.
+3. *(dropped as a candidate)* the `[Name]:` label sanitizer — its
+   need is a consequence of TalkWithMe's history rewrite and may
+   not survive our prompt-structure change; even if it does, it
+   is ours, not an offer.
+4. *(soft, tts-serve side, unchanged)* an Opus output option and a
+   voice-identifier API — ideas noted in the brief's tts-serve
+   tour, not planned.
+
+**Fork mechanics (agent pushback, accepted):** start from a REAL
+GitHub fork of scorbo2/TalkWithMe at tag 7.1 and rename it, rather
+than a fresh repository with copied files: the fork keeps the
+"forked from" provenance visible (the honest thing for a renamed
+MIT project — both upstream projects are MIT, © 2026 Steve
+Corbett) and keeps the accumulator offerable from a branch that
+shares history. Diverge freely afterwards. The owner: "I will
+always pay respect and attribution to upstream, we stay clearly a
+fork, and prominently label that fact in our README, once we
+actually fork."
+
+**Consequence for §6:** the outreach question stays DEFERRED past
+the deadline exactly as before; what changes is the content of
+the eventual offer — machinery first, one patch at most.

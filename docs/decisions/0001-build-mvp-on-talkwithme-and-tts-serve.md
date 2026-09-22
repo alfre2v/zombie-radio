@@ -123,3 +123,15 @@ the evidence:
 
 The **Pipecat flip trigger expires unfired.** This ADR is frozen;
 changes from here go through a superseding ADR.
+
+---
+
+*Annotation 2026-09-21 (dated note; the text above is frozen):* the
+"forking and owning rather than tracking" clause of Consequences,
+and the F5-TTS upstream contribution mentioned under "what it
+buys", are sharpened by **ADR-0002** (fork TalkWithMe as
+TalkWithZombies, diverging, in a sibling repository; contribution
+ledger re-ranked — deployment machinery first, the sentence
+accumulator as the one plausible app-code patch). The ensemble's
+turn engine and prompt structure are redesigned in **ADR-0003**
+(draft, gated).

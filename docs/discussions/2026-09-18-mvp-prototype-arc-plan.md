@@ -46,6 +46,70 @@ pack-up-to-N-chars; N becomes a settings knob; test items —
 lone-"1." echo case. The uv drop-in mode applies to the fork's
 client env (entry 2026-09-17 analysis).
 
+**The reconnaissance brief (owner-ratified 2026-09-21, precedes
+the fork; branch `alfre2v/task6-recon-brief`).** Before any
+Task 6 code, a guided tour of the fork-relevant anatomy so the
+owner's own three-codebase study starts oriented and the fork's
+shape round argues from receipts. Shape rulings of 2026-09-21:
+
+- *Sections of the TalkWithMe tour:* (1) pipeline map on one
+  screen, mic to speaker, every hop a file:line · (2) the
+  server reply path and the sanitizer insertion point, incl. the
+  persistence/message model and why server-side is presumptive
+  (taxonomy C3) · (3) `static/tts.js` anatomy — the splitter,
+  the enqueue pipeline, where the vanished-response watch item
+  would be observable, where N-chars enters · (4) settings
+  plumbing, settings.yaml → config → router → UI · (5) seams for
+  the narration future, mapped against spec §5.3 and the 2024
+  entropy-terms baseline — maps only, designs nothing · (6)
+  upstreamability audit (separable commits off 7.1, upstream's
+  AGENTS.md and pytest conventions as house-style receipts,
+  strategy doc §4) · (7) explicitly out: no fork, no patch code,
+  no director design.
+- *Units (owner's division, by project):* (1) TalkWithMe, deep
+  · (2) tts-serve, scoped to what we consume — the synthesize
+  contract (text-length limits bound the accumulator's N),
+  the engine abstraction (Task 5b adds LuxTTS), voice-reference
+  handling (Task 4 samples) — widened only on evidence · (3)
+  synthesis: resolve the seam-question ledger · (4) the 2024
+  `zombie_radio_ai` integration pass. A short prologue READ of
+  the 2024 project happens before unit 1, so section 5 maps
+  against the real thing, not the spec's one-liner; the dialog
+  exploration of it stays in unit 4.
+- *Seam questions:* one ledger for the whole brief, IDs S1,
+  S2, …, each naming the unit that raised it and the unit that
+  owes the answer; resolutions land as dated notes beside the
+  question, never as rewrites.
+- *Documents:* the ratified umbrella
+  `2026-09-21-task6-reconnaissance-brief.md` (scope, method, the
+  seam ledger, synthesis, integration) + one tour doc per
+  project, dated as written. HTML derivatives live in
+  `docs/visuals/task6-reconnaissance-brief/` — the folder is
+  born here, per README's mutability table (`reports/` stays
+  for incidents; the owner had forgotten the visuals row).
+  One self-contained page per tour plus an index: inline
+  diagrams (Mermaid text single-sourced from the markdown),
+  annotated code excerpts (HTML only — the owner's favourite,
+  keeps him in reading context), `vscode://file` deep links to
+  every receipt, a reading itinerary and open questions per
+  section, a glossary of upstream's own vocabulary.
+- *Method and cadence:* read the actual 7.1 code (pristine
+  clone `~/TalkWithMe-client` ≡ the working clone, both at
+  93df6ca); the 09-18 anchors get re-verified, never copied;
+  every claim labeled measured / docs-say / believed. Section by
+  section: reconnaissance reported in chat first, back-and-forth
+  until settled or parked, THEN written; the owner reviews in
+  VS Code; commits on his word, count unplanned. Unit 1 alone
+  unblocks the fork — whether Task 6 starts before units 2–4 is
+  a decision taken at unit 1's close.
+- *Box status:* the 09-19 A6000 is gone; experiments will spin a
+  new VM. The brief needs no box.
+- *2026-09-22:* the HTML visuals were dropped by the owner ("bigger
+  fish to fry"); `docs/visuals/` is not born. The brief's design
+  mandate produced two discussion docs and two ADRs instead
+  (prompt structure, story loop; ADR-0002, ADR-0003). Unit 3's
+  synthesis is the last item before PR #6 closes.
+
 ---
 
 ## Entry 2026-09-17 — arc opened; deployment machinery designed and skeleton-built

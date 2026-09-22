@@ -19,6 +19,122 @@ reader's memory):
 
 ---
 
+## Bump the tts-serve pin from 1.1 to 1.2 at the next box deployment
+
+- **The gap:** `deploy/ansible/inventories/common_vars.yml` pins
+  `zr_tts_serve_version: "1.1"`. Upstream's latest tag is `1.2`
+  (2026-09-18; adds only the Apple-Silicon Qwen3-TTS MLX engine —
+  the shared package and our engine's server are byte-identical
+  between the two tags, verified by `git diff --stat 1.1 1.2` on
+  2026-09-21).
+- **Where flagged:** owner ruling 2026-09-21 during the Task 6
+  reconnaissance brief ([discussion 2026-09-21] tts-serve tour §1):
+  the pin is not set in stone — we track the latest tag unless a
+  release breaks the deployment or the TalkWithMe contract. Not
+  changed on the recon branch on purpose: a pin bump is a
+  deployment change and must be proven on a box.
+- **Trigger:** the next `make ans-deploy` against a fresh box
+  (first experiment evening, Task 5c or 5a).
+- **Fix shape:** edit the one line to `"1.2"`; deploy from zero;
+  re-run must be `changed=0`; `make check` three-ok; one TalkWithMe
+  synthesis through the tunnel. Then delete this entry and bank
+  the version in the arc-plan journal.
+
+## Measure TTS synthesis time against text length (tunes the accumulator's N and the director's line budget)
+
+- **The gap:** the accumulator sends chunks of up to N characters;
+  while chunk 1 plays, chunk 2 is being synthesized, and the
+  listener hears no gap only if making the next chunk takes less
+  time than playing the current one. We do not know (a) the fixed
+  cost per synthesis request — the pause paid in full by every
+  tiny fragment like "Dr." — nor (b) how the wait grows with longer
+  text. Ten requests to tts-serve with texts of 20, 50, 100, 200,
+  400 characters, recording the `time_used` and audio-duration
+  fields every response already carries, give both numbers in one
+  table, and the largest N whose next-chunk wait hides behind the
+  current chunk's playback. The same table tells the director how
+  far ahead to request the next round.
+- **Where flagged:** the Task 6 reconnaissance brief (seam question
+  S3, tts-serve tour F2/F4, question Q4); **dropped from the MVP
+  arc by the owner on 2026-09-22** — "we have already committed to
+  this path forward; this measurement will be useful later, after
+  we have something working we can tweak; I can always change the
+  TTS server."
+- **Trigger:** the show loop runs end to end in the fork and the
+  owner wants to tune pauses or prosody; or a TTS engine change
+  (Task 5b) invalidates the provisional value.
+- **Fix shape:** half an hour on a box with `tools/speak.py` or
+  curl; then adjust `tts.accumulator_max_chars` (name indicative;
+  provisional 100, tolerance ~20 %) and the director's line budget.
+
+## Mac-local TTS probe with tts-serve's MLX engine (parked post-MVP)
+
+- **The gap:** tts-serve ships a native Apple-Silicon engine
+  (Qwen3-TTS via MLX, tag 1.2) and five engines accept PyTorch's
+  `mps` device; llama.cpp runs on Metal; Whisper runs anywhere — so
+  a Mac with enough unified memory could run the whole stack
+  locally: a second emergency mode for demo day and a free
+  rehearsal setup. **The demo laptop (M1, 16 GB) cannot run it**;
+  the owner's second M1 with 64 GB could, if the speed is
+  acceptable.
+- **Where flagged:** tts-serve tour §8 Q5 (2026-09-21); parked by
+  the owner 2026-09-22 ("until after the MVP").
+- **Trigger:** after 2026-10-08, or if the cloud box becomes
+  unavailable for the demo.
+- **Fix shape:** one evening on the 64 GB machine — a venv,
+  `impl/server_qwen3TTS_mlx.py`, point TalkWithZombies' TTS URL at
+  it, read `rtf` from a few sentences; llama.cpp on Metal next.
+
+## JavaScript test for the accumulator's packing rules
+
+- **The gap:** upstream has Node test harnesses for the persona
+  form and the TTS settings section but none for `static/tts.js`;
+  the fork changes the accumulator (N = 100, ~20 % tail tolerance,
+  hard flush at line end) and adds `show.js` untested.
+- **Where flagged:** TalkWithMe tour §6 / Q11; ruled 2026-09-22: no
+  new harness inside the three-day timebox.
+- **Trigger:** the packing rules stop moving (after the timebox and
+  the first rehearsal tuning).
+- **Fix shape:** a third Node test in upstream's `vm.Context`
+  pattern (`tests/test_tts_settings.js` as the template) covering
+  the three packing rules and the line-end flush.
+
+## Bounded scratchpad before the script — test the "room to reason" hypothesis
+
+- **The gap:** the adopted prompt structure ([discussion
+  2026-09-21] prompt-structure §7.5) makes it possible to let the
+  model write ONE non-spoken line before the script (`# note: …`),
+  capped by the GBNF grammar with `{0,N}`, which the stream parser
+  drops instead of speaking — a bounded scratchpad. The hypothesis
+  (from the dottxt "Say What You Mean" finding that room to reason
+  before a constrained field helped on reasoning benchmarks; the
+  taxonomy's A3 says we amputated planning with `/no_think` for
+  speed): a few planning tokens per round improve storytelling
+  coherence at a latency cost small enough not to hear. UNPROVEN
+  for dialogue by anyone; it may equally be disproved.
+- **Where flagged:** owner, 2026-09-21, after the prompt-structure
+  discussion ("this paragraph can lead to an experiment task later
+  to try to disprove the hypothesis, or accept it… I fear we have
+  no time"). Registered here for visibility, not scheduled.
+- **Trigger:** the fork runs the shared-context structure with the
+  grammar, AND a Task 5a session is already open on a box (the
+  experiment is one extra cell in the audition, not a session of
+  its own).
+- **How to measure — the coherence problem, addressed with what the
+  taxonomy already has** ([discussion 2026-09-16] §5–§6): coherence
+  resists counting, but it has proxies — stale-question answers per
+  round, fact drift across speakers, fraction of turns that add
+  information — and the lab3 two-round protocol (report the zombie
+  count; then write a five-sentence report) is the fixed probe that
+  produced the founding specimen. Protocol-lite: same model, same
+  seed, grammar ON; scratchpad PRESENT vs ABSENT; run the two-round
+  protocol three times per arm; count the three proxies by ear;
+  read time-to-first-line off the stream. Adopt only if the
+  coherence gain is audible and the latency cost is not; otherwise
+  record the null result and delete this entry.
+- **Fix shape if adopted:** one grammar rule and one parser branch
+  in the fork; a yaml-only knob for the scratchpad's token cap.
+
 ## Add new TTS engines to tts-serve (F5-TTS, Breeze TTS 2) — soft goal
 
 - **The gap:** tts-serve wraps seven engines (Chatterbox,
