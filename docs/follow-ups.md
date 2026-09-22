@@ -19,6 +19,44 @@ reader's memory):
 
 ---
 
+## REMIND THE OWNER: discuss SSH keepalives and polling for long silent deploy tasks
+
+- **The gap:** on 2026-09-22 a deploy's SSH session dropped after
+  about 14 minutes of silence ("Data could not be sent to remote
+  host … UNREACHABLE") while the base role's apt task waited for the
+  package lock held by Ubuntu's first-boot unattended-upgrades run
+  (43 minutes, 259 packages). The cause is NOT proven. The leading
+  candidate is an idle-connection cutoff somewhere between the
+  laptop and the box: during the wait the session carries no
+  traffic, and none of our SSH settings send keepalives —
+  `deploy/ansible/inventories/common_vars.yml` `ansible_ssh_common_args`
+  sets only `IdentitiesOnly`, `StrictHostKeyChecking`,
+  `UserKnownHostsFile`; `deploy/ansible/ansible.cfg` sets only
+  `pipelining`; the Makefile's `ssh-tunnel` options (`SSH_TOFU_OPTS`)
+  carry no keepalive either, so a quiet tunnel may drop the same way.
+  Ruled out on the box: a reboot, an sshd restart at that moment, a
+  Docker restart.
+- **Where flagged:** `docs/experiments/2026-09-22-adr-0003-gate/README.md`,
+  runlog entries 3–8. The interim fix of that evening: the apt lock
+  wait became `zr_apt_lock_timeout` (300 s) with a clear error
+  message when it expires (base role, block/rescue).
+- **Trigger:** owner request 2026-09-22 — the agent RAISES this
+  discussion right after the ADR-0003 gate evening closes (before
+  that branch's PR), even if the owner does not ask.
+- **Fix shape (candidates for the discussion, none decided):**
+  (1) `-o ServerAliveInterval=30 -o ServerAliveCountMax=4` in
+  `ansible_ssh_common_args` and in the tunnel's options — keeps any
+  long task's session talking; (2) a base-role task that waits for
+  the first-boot updater with short, repeated checks
+  (`systemctl is-active apt-daily-upgrade.service` until it is no
+  longer `activating`, e.g. every 20 s for up to ~45 min), so no
+  single SSH command stays silent for long, and the operator sees a
+  retry counter instead of silence; (3) whether the base role should
+  switch the updater off on these disposable boxes (a
+  security-policy call); (4) whether to act on the
+  `/var/run/reboot-required` flag the updater leaves behind (seen
+  2026-09-22; the playbook never reboots).
+
 ## Bump the tts-serve pin from 1.1 to 1.2 at the next box deployment
 
 - **The gap:** `deploy/ansible/inventories/common_vars.yml` pins

@@ -27,6 +27,10 @@ ansible_ssh_common_args: >-
 
 zr_bind_host: 127.0.0.1
 
+# Seconds the base role's apt task waits for the package lock; a fresh Ubuntu
+# box may be running its first-boot unattended-upgrades (found live 2026-09-22).
+zr_apt_lock_timeout: 300
+
 # The single collision-free port registry (host networking: one shared port space)
 zr_llama_port: 8080
 zr_tts_port: 8001
