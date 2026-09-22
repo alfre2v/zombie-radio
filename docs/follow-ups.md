@@ -57,6 +57,55 @@ reader's memory):
   `/var/run/reboot-required` flag the updater leaves behind (seen
   2026-09-22; the playbook never reboots).
 
+## Emotion field in the screenplay grammar — measure what the richer grammar costs, then audition it
+
+- **The statement:** ADR-0003 point 3 already plans an optional
+  parenthetical stage direction from a small enum to carry each
+  line's emotional register, and the recon brief's S6 ruling makes
+  it the channel to the TTS side (mapping to reference clips or
+  engine knobs is fork work after Task 4). The owner wants to
+  evaluate it soon, as an explicit field — "emotion" or "emotional
+  tone" — drawn from a list of emotions a voice can carry
+  (happiness, sadness, fear, terror, doubt, …). Sketch discussed
+  2026-09-22 (not decided):
+
+  ```
+  root    ::= line{1,4}
+  line    ::= speaker " (" emotion "): " text "\n"
+  speaker ::= "Daniel" | "Moira" | "Ralph" | "Samantha"
+  emotion ::= "calm" | "happy" | "sad" | "afraid" | "terrified" | "doubtful" | "angry" | "urgent" | "exhausted"
+  text    ::= [^\n\[\]()]+
+  ```
+
+  Points from that discussion: the tag goes BEFORE the words (the
+  script convention `MOIRA (whispering):` — the model commits to the
+  tone first and writes words that fit it); required rather than
+  optional for the evaluation; a short list of single common words,
+  each audible in a voice; delivery (whispering, shouting) is a
+  different axis from emotion and stays out of this list;
+  parentheses leave the `text` rule so the tag cannot be spoken.
+- **Where flagged:** owner, 2026-09-22, during the ADR-0003 gate
+  evening (`docs/experiments/2026-09-22-adr-0003-gate/README.md`,
+  runlog entry 10). Deliberately NOT in that run: "first run the
+  simple grammar, measure performance, and then maybe evaluate
+  doing another run with a more complex grammar, measure again and
+  then contrast."
+- **Trigger:** the owner's call after the ADR-0003 gate verdict (its
+  D-on numbers are the baseline); at the latest before the fork's
+  grammar builder is written (Task D).
+- **Fix shape:** a new small experiment folder (the gate folder is
+  sealed after its verdict) reusing the gate's scripts: arm D-on with
+  the simple grammar versus arm D-emotion with the grammar above,
+  same prompts and seed → the per-token cost of the added complexity
+  (same quantity as gate 2b). Required changes: a cast-sheet variant
+  that describes the tag and its values (the current cast sheet and
+  persona prompts FORBID stage directions — `cast.py` lines 22, 26,
+  30, 34, 46); script lines in the history carrying tags too; the
+  line pattern in `parse_stream.py` extended with an optional
+  `(emotion)` group. Quality questions (does the model pick varied,
+  fitting emotions or collapse to one; does the tag flatten the
+  prose) belong to the Task 5a audition.
+
 ## Bump the tts-serve pin from 1.1 to 1.2 at the next box deployment
 
 - **The gap:** `deploy/ansible/inventories/common_vars.yml` pins

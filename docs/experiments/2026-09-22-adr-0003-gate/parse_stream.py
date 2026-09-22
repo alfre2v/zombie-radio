@@ -59,7 +59,7 @@ def report(label):
         first, last = content_at[0], content_at[-1]
         print(f"first content chunk at   : {first:.1f} ms")
         print(f"last content chunk at    : {last:.1f} ms")
-        print(f"spread (last-first)/last : {(last - first) / last:.2f}")
+        print(f"spread (last-first)/last : {(last - first) / last if last > 0 else 0.0:.2f}")
     print(f"finish_reason            : {finish}")
     print(f"content, verbatim        : {text!r}")
 

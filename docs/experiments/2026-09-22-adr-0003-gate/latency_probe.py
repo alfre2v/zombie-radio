@@ -40,7 +40,14 @@ class Probe:
         path = self.out / f"{name}.json"
         if path.exists():
             sys.exit(f"{path} exists; use another --out")
-        result, wall_ms = post(self.url, body)
+        cast.wire_request(name, body)
+        try:
+            result, wall_ms = post(self.url, body)
+        except Exception as exc:
+            detail = exc.read().decode(errors="replace") if hasattr(exc, "read") else ""
+            cast.wire(f"!!!!! {name} failed: {exc} {detail}\n")
+            raise
+        cast.wire_response(name, result, wall_ms)
         if "timings" not in result:
             sys.exit(f"{name}: response carries no 'timings' object; stop and rethink the endpoint")
         path.write_text(json.dumps({**meta, "wall_ms": round(wall_ms, 1),

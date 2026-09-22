@@ -1,14 +1,17 @@
-"""Shared material for the ADR-0003 gate: cast, fixed script, grammar, request builders.
+"""Shared material for the ADR-0003 gate: cast, fixed script, grammar, request builders,
+and the human-readable wire log (raw/wire.log, meant for `tail -f`).
 
 Stdlib only. `python3 cast.py stream-request --speakers Daniel,Moira,Ralph,Samantha`
 prints the gate-1 request body; `--speakers none` omits the grammar.
 """
 import argparse
+import datetime
 import json
 import pathlib
 import re
 
 HERE = pathlib.Path(__file__).resolve().parent
+WIRE_LOG = HERE / "raw" / "wire.log"
 SPEAKERS = ["Daniel", "Moira", "Ralph", "Samantha"]
 TEMPERATURE = 0.8
 MAX_TOKENS = 200
@@ -175,6 +178,63 @@ def payload(messages, *, seed, grammar_text=None, stream=False, extra=None):
     if extra:
         body.update(extra)
     return body
+
+
+def wire(text):
+    WIRE_LOG.parent.mkdir(parents=True, exist_ok=True)
+    with WIRE_LOG.open("a", encoding="utf-8") as log:
+        log.write(text)
+
+
+def wire_request(name, body):
+    grammar_text = body.get("grammar")
+    speakers = "none"
+    if grammar_text is not None:
+        rule = re.search(r"^speaker\s*::=(.*)$", grammar_text, flags=re.M).group(1)
+        speakers = "|".join(re.findall(r'"([^"]+)"', rule))
+    now = datetime.datetime.now().strftime("%H:%M:%S.%f")[:-3]
+    lines = [f"\n===== {now} {name} -> /v1/chat/completions  stream={body.get('stream')}  "
+             f"grammar={speakers}  seed={body.get('seed')}  max_tokens={body.get('max_tokens')}"]
+    lines += [f"[{m['role']}] {m['content']}" for m in body["messages"]]
+    wire("\n".join(lines) + "\n")
+
+
+def wire_counters(timings, usage=None):
+    size = (usage or {}).get("prompt_tokens")
+    return ((f"prompt_tokens={size}  " if size is not None else "")
+            + f"evaluated={timings.get('prompt_n')}  reused={timings.get('cache_n')}  "
+            f"generated={timings.get('predicted_n')}")
+
+
+def wire_response(name, result, wall_ms):
+    content = result.get("choices", [{}])[0].get("message", {}).get("content")
+    wire(f"----- {name} <- {wall_ms:.1f} ms  "
+         f"{wire_counters(result.get('timings', {}), result.get('usage'))}\n{content}\n")
+
+
+def wire_stream_line(line):
+    """Appends the content of one raw SSE line to the wire log as it arrives."""
+    if not line.startswith("data: "):
+        return
+    data = line[len("data: "):].strip()
+    if data == "[DONE]":
+        wire("----- [DONE]\n")
+        return
+    try:
+        event = json.loads(data)
+    except json.JSONDecodeError:
+        wire(f"\n(unparsed line) {data}\n")
+        return
+    if "error" in event:
+        wire(f"\n!!!!! server error: {json.dumps(event['error'])}\n")
+    choices = event.get("choices", [])
+    for choice in choices:
+        piece = (choice.get("delta") or {}).get("content")
+        if piece:
+            wire(piece)
+    if any(choice.get("finish_reason") for choice in choices):
+        finish = next(c["finish_reason"] for c in choices if c.get("finish_reason"))
+        wire(f"\n----- finish_reason={finish}  {wire_counters(event.get('timings', {}))}\n")
 
 
 def main():

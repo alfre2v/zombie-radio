@@ -86,10 +86,11 @@ The verdict criteria, the predictions, and the caveats are in
   for structure D, the fixed ten-round script, the grammar loader
   (narrows the speaker list), and the request builders for both
   structures. `python3 cast.py stream-request --speakers …` prints
-  the gate-1 request.
+  the gate-1 request. Also the wire-log helpers (below).
 - `stream_check.sh` — gate 1: one streamed request through the
   tunnel with `curl -sN`; every SSE line saved with its arrival time
-  in milliseconds to `raw/stream/<label>.sse.txt`, the request to
+  in milliseconds since just before `curl` started to
+  `raw/stream/<label>.sse.txt`, the request to
   `raw/stream/<label>.request.json`.
 - `parse_stream.py` — derives the gate-1 facts from those files.
 - `latency_probe.py` — gate 2: arms A, D-off, D-on, D-live (defined
@@ -98,7 +99,22 @@ The verdict criteria, the predictions, and the caveats are in
   wall time).
 - `summarize_timings.py` — derives every gate-2 number from
   `raw/probe/`.
+- `check_outputs.py` — derives what the model wrote in the D arms
+  (lines per round, `Name: text` shape, "Over." endings, D-off versus
+  D-on text); added after the run (runlog entry 15).
 - `raw/` — the record of truth, committed.
+- `raw/wire.log` — the human-readable view of the same traffic
+  (owner request 2026-09-22), written as it happens so it can be
+  followed with `tail -f`: for every request, a header line (laptop
+  time, request name, grammar allowlist or `none`, seed, token cap)
+  and every message in full as `[role] content`; then the answer
+  with the wall time and the server's counters (prompt tokens
+  evaluated, reused from the cache, generated). Streamed answers
+  are appended chunk by chunk as they arrive. The full history is
+  written on every request on purpose — it is what crosses the
+  wire, and A re-sending the whole script four times per round is
+  gate 2a's mechanism made visible. Not an input to any number:
+  the JSON files are the record the scripts read.
 
 ## Reproduction recipe — THE section to follow
 
@@ -136,6 +152,13 @@ ssh ubuntu@<PASTE-BOX-IP-HERE> 'docker logs llama 2>&1 | head -150' > raw/llama-
 `/app/llama-server`; corrected here if the runlog shows otherwise.)*
 
 ### 2. Gate 1 — only after `findings.md` is frozen (committed)
+
+To follow the traffic live, in a second terminal (the file appears
+with the first request):
+
+```bash
+tail -F docs/experiments/2026-09-22-adr-0003-gate/raw/wire.log
+```
 
 ```bash
 ./stream_check.sh main Daniel,Moira,Ralph,Samantha
@@ -584,3 +607,428 @@ Reading:
   (2) the advice assumes the updater even when the holder is
   something else (here `aptitude`); it could adapt to the quoted
   holder.
+
+### 2026-09-22 ~17:40 CDT — Entry 10: owner rulings before the freeze; the wire log added and tested
+
+- **Owner prediction:** declined ("I want to see the experiment");
+  recorded in `findings.md` so the slot is closed.
+- **Emotion field in the grammar:** NOT in tonight's run (owner):
+  first the simple grammar and its numbers; later, maybe, a
+  separate run with a richer grammar to contrast what the added
+  complexity costs. Parked in `docs/follow-ups.md`.
+- **Wire log** (owner request, for following the traffic live):
+  `raw/wire.log`, written by helpers in `cast.py` (`wire`,
+  `wire_request`, `wire_response`, `wire_stream_line`), called by
+  `latency_probe.py` around every request (and on a failed request,
+  with the server's error text) and by `stream_check.sh` (the
+  request before `curl` sends it, then each arriving chunk's text).
+- **Tests, in scratch copies of the folder (not against the box,
+  no port 8080):**
+  - `latency_probe.py --rounds 1 --arms A,D-on` against a fake
+    local server: the log shows the header, all messages, and the
+    answer line with the counters for each of the six requests.
+  - `stream_check.sh` end to end against a fake server that streams
+    real SSE: exit 0; `parse_stream.py` reads the result; a second
+    run with the same label refuses to overwrite (exit 2).
+  - **A flaw found and fixed by that test:** the arrival clock
+    started when the timestamping step started, not when the
+    request left, so the wait for the first token was hidden
+    (first chunk at `0.0 ms`), and a fast buffered answer could
+    even divide by zero in the spread. Now the shell records the
+    time just before `curl` launches and passes it in; the parser
+    guards the zero case. Re-test against two fake servers, both
+    waiting 200 ms before the first token, one streaming and one
+    buffering everything:
+
+```
+== stream
+chunks carrying content  : 5
+first content chunk at   : 237.2 ms
+last content chunk at    : 860.1 ms
+spread (last-first)/last : 0.72
+== lump
+chunks carrying content  : 5
+first content chunk at   : 1004.8 ms
+last content chunk at    : 1007.1 ms
+spread (last-first)/last : 0.00
+```
+
+  The gate-1 criterion (spread at least 0.50) separates the two.
+
+### 2026-09-22 17:40:18 CDT — Entry 11: deploy #3 from zero PASSES; re-run changed=0; three services ok through the tunnel
+
+The owner closed aptitude and re-wired the inventory
+(`make ans-set`; he had run `make ans-unset` before the commits).
+Pre-check that `hosts.yml` carries no sentinel, then:
+
+```bash
+make ans-deploy ENV=cloud > <scratch>/deploy-4.log 2>&1 </dev/null
+```
+
+```
+Tue Sep 22 17:40:18 CDT 2026
+exit=0
+Tue Sep 22 17:47:25 CDT 2026
+PLAY RECAP *********************************************************************
+cloud-1                    : ok=33   changed=16   unreachable=0    failed=0    skipped=0    rescued=0    ignored=0
+```
+
+About 7 minutes from zero (the handoff's figure was ~15). The log's
+`FAILED - RETRYING` lines are the health waits polling while each
+service loads (llama 5 retries, tts 2, stt 1) — expected, not
+failures. The apt task (`Install base packages, apt lock wait limit
+in seconds: 300`) went straight through: the lock was free.
+
+The converge invariant:
+
+```bash
+make ans-deploy ENV=cloud > <scratch>/deploy-5-rerun.log 2>&1 </dev/null
+```
+
+```
+Tue Sep 22 17:47:36 CDT 2026
+exit=0
+Tue Sep 22 17:48:06 CDT 2026
+PLAY RECAP *********************************************************************
+cloud-1                    : ok=31   changed=0    unreachable=0    failed=0    skipped=1    rescued=0    ignored=0
+```
+
+Through the owner's tunnel:
+
+```bash
+make check
+```
+
+```
+llama:   ok
+tts:     ok
+whisper: ok
+```
+
+Reading: the from-zero deploy works with tts-serve pinned at 1.2
+and the reshaped apt lock wait; `changed=0` holds. (The pin
+follow-up's remaining step — one TalkWithMe synthesis through the
+tunnel — is not part of this gate.)
+
+### 2026-09-22 ~17:49 CDT — Entry 12: what the server is (recipe step 1)
+
+```bash
+cd docs/experiments/2026-09-22-adr-0003-gate
+mkdir -p raw
+curl -s http://localhost:8080/props > raw/props.json                 # 6127 bytes
+curl -s http://localhost:8080/v1/models > raw/models.json            # 777 bytes
+ssh -o ConnectTimeout=15 ubuntu@<PASTE-BOX-IP-HERE> 'docker exec llama /app/llama-server --help' > raw/llama-server-help.txt 2>&1    # 729 lines
+ssh -o ConnectTimeout=15 ubuntu@<PASTE-BOX-IP-HERE> 'docker logs llama 2>&1 | head -150' > raw/llama-startup-log.txt 2>&1          # 11 lines
+```
+
+All exit 0; the binary path `/app/llama-server` was right. The
+facts that matter (from those files):
+
+- **Build** `b11096-c550d2f60` (`props.json` `build_info`); model
+  alias `bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M`;
+  `total_slots` 1; `n_ctx` 16384. Sampler defaults unchanged from
+  2026-09-19: temperature 0.8, top_k 40, top_p 0.95, min_p 0.05,
+  repeat_penalty 1.0 (off), dry 0, mirostat 0; `reasoning_format`
+  none (the server does not split thinking into
+  `reasoning_content`).
+- **Host-RAM prompt cache EXISTS and is ON by default**
+  (`llama-server-help.txt:434`): `-cram, --cache-ram N  set the
+  maximum cache size in MiB (default: 8192, -1 - no limit, 0 -
+  disable)` — caveat 5 of `findings.md` confirmed as a fact of this
+  build.
+- **Context checkpoints** (`llama-server-help.txt:427-433`): up to 32
+  per slot (`--ctx-checkpoints`), with `--checkpoint-min-step`
+  "minimum spacing between context checkpoints in tokens (default:
+  8192…)" — far larger than our prompts (hundreds to ~2 000 tokens);
+  relevant to caveat 4 (the hybrid model). `--cache-reuse` (KV
+  shifting) default 0 = off.
+- **The chat template answers the `/no_think` question**
+  (`props.json` `chat_template`, excerpts): `/no_think` in any
+  system or user message sets `enable_thinking=false` and is
+  REMOVED from the text (`.replace('/no_think', '')`); the prompt
+  then ends with `<SPECIAL_11>Assistant\n<think></think>` — an
+  empty, already-closed think block. Without it the prompt ends with
+  `<SPECIAL_11>Assistant\n<think>\n`, i.e. the model starts INSIDE a
+  think block; with a grammar on, the script would then be forced
+  into what the model takes for its thinking. Also: previous
+  assistant turns are rendered WITHOUT the `<think></think>` prefix
+  (the template drops everything up to `</think>`), so the cached
+  prompt of round k and the prompt of round k+1 part ways exactly
+  where round k's reply began.
+- Startup log (11 lines) notable lines: `load_model: initializing,
+  n_slots = 1, n_ctx_slot = 16384, kv_unified = 'false'`;
+  `W load: special_eos_id is not in special_eog_ids - the tokenizer
+  config may be incorrect`.
+
+### 2026-09-22 17:50–17:51 CDT — Entry 13: gate 1 — three streamed requests
+
+The owner followed along with `tail -F raw/wire.log`.
+
+```bash
+./stream_check.sh main Daniel,Moira,Ralph,Samantha > /dev/null      # 17:50:37, exit 0
+./stream_check.sh control Operator > /dev/null                      # 17:50:47, exit 0
+./stream_check.sh nogrammar none > /dev/null                        # 17:51:02, exit 0
+python3 parse_stream.py main control nogrammar
+```
+
+```
+== main
+grammar allowlist        : ['Daniel', 'Moira', 'Ralph', 'Samantha']
+data lines               : 75 (incl. [DONE]: True)
+errors                   : none
+chunks carrying content  : 72
+chunks carrying reasoning: 0
+first content chunk at   : 552.3 ms
+last content chunk at    : 1367.1 ms
+spread (last-first)/last : 0.60
+finish_reason            : stop
+content, verbatim        : 'Daniel: Power fluctuation detected. Systems stabilizing. Over.  \nMoira: Specimens in the east wing may have been exposed. We need to confirm. Over.  \nRalph: Counting down to evacuation. Four doors, three breaches. Over.  \nSamantha: We’re holding transmission. Stay calm, everyone. Over.\n'
+  line 1: legal   'Daniel: Power fluctuation detected. Systems stabilizing. Over.  '
+  line 2: legal   'Moira: Specimens in the east wing may have been exposed. We need to confirm. Over.  '
+  line 3: legal   'Ralph: Counting down to evacuation. Four doors, three breaches. Over.  '
+  line 4: legal   'Samantha: We’re holding transmission. Stay calm, everyone. Over.'
+complete lines           : 4
+text after last newline  : ''
+speakers used            : ['Daniel', 'Moira', 'Ralph', 'Samantha']
+final timings            : {"cache_n": 0, "prompt_n": 269, "prompt_ms": 420.045, "prompt_per_token_ms": 1.5615055762081784, "prompt_per_second": 640.4075753788285, "predicted_n": 73, "predicted_ms": 814.529, "predicted_per_token_ms": 11.312902777777778, "predicted_per_second": 88.39464279356537}
+
+== control
+grammar allowlist        : ['Operator']
+data lines               : 112 (incl. [DONE]: True)
+errors                   : none
+chunks carrying content  : 109
+chunks carrying reasoning: 0
+first content chunk at   : 290.6 ms
+last content chunk at    : 1593.8 ms
+spread (last-first)/last : 0.82
+finish_reason            : stop
+content, verbatim        : "Operator: Generator's acting up again, might be a good idea to check if it's safe to head over to it. Over.  \nOperator: East wing lights flickering—could be a power surge or something worse. Over.  \nOperator: Ralph, you're counting the shamblers, right? Need to know if they're closing in. Over.  \nOperator: Samantha, you're handling the broadcast, but we should keep the signal strong. Over.\n"
+  line 1: legal   "Operator: Generator's acting up again, might be a good idea to check if it's safe to head over to it. Over.  "
+  line 2: legal   'Operator: East wing lights flickering—could be a power surge or something worse. Over.  '
+  line 3: legal   "Operator: Ralph, you're counting the shamblers, right? Need to know if they're closing in. Over.  "
+  line 4: legal   "Operator: Samantha, you're handling the broadcast, but we should keep the signal strong. Over."
+complete lines           : 4
+text after last newline  : ''
+speakers used            : ['Operator']
+final timings            : {"cache_n": 265, "prompt_n": 4, "prompt_ms": 159.787, "prompt_per_token_ms": 39.94675, "prompt_per_second": 25.0333256147246, "predicted_n": 110, "predicted_ms": 1300.343, "predicted_per_token_ms": 11.929752293577982, "predicted_per_second": 83.82403719633973}
+
+== nogrammar
+grammar allowlist        : none (no grammar sent)
+data lines               : 75 (incl. [DONE]: True)
+errors                   : none
+chunks carrying content  : 72
+chunks carrying reasoning: 0
+first content chunk at   : 270.8 ms
+last content chunk at    : 1117.7 ms
+spread (last-first)/last : 0.76
+finish_reason            : stop
+content, verbatim        : 'Daniel: Power fluctuation detected. Systems stabilizing. Over.  \nMoira: Specimens in the east wing may have been exposed. We need to confirm. Over.  \nRalph: Counting down to evacuation. Four doors, three breaches. Over.  \nSamantha: We’re holding transmission. Stay calm, everyone. Over.\n'
+  line 1: legal   'Daniel: Power fluctuation detected. Systems stabilizing. Over.  '
+  line 2: legal   'Moira: Specimens in the east wing may have been exposed. We need to confirm. Over.  '
+  line 3: legal   'Ralph: Counting down to evacuation. Four doors, three breaches. Over.  '
+  line 4: legal   'Samantha: We’re holding transmission. Stay calm, everyone. Over.'
+complete lines           : 4
+text after last newline  : ''
+speakers used            : ['Daniel', 'Moira', 'Ralph', 'Samantha']
+final timings            : {"cache_n": 265, "prompt_n": 4, "prompt_ms": 138.848, "prompt_per_token_ms": 34.712, "prompt_per_second": 28.808481216870245, "predicted_n": 73, "predicted_ms": 813.653, "predicted_per_token_ms": 11.300736111111112, "predicted_per_second": 88.48981076699772}
+
+```
+
+Reading:
+
+- **main:** 72 content chunks, spread 0.60, four complete legal
+  lines using all four allowed speakers — criteria (a) and (b) met.
+- **control:** every line is `Operator:` although the prompt asks
+  for the four scientists; the text shows the model steering around
+  the constraint ("Ralph, you're counting the shamblers, right?") —
+  criterion (c) met. The top-level `grammar` field on
+  `/v1/chat/completions` binds.
+- **nogrammar:** the SAME four lines as main, character for
+  character (same prompt, same seed): with this cast sheet the
+  model's own output already fits the format, so the grammar masked
+  nothing — here it acted as a guarantee, not a steer. On identical
+  output the generation cost is 11.31 ms/token with the grammar
+  versus 11.30 without (an early, ungraded hint for gate 2b).
+- **Cache, first sight:** control and nogrammar sent the same prompt
+  as main; the server reused 265 of 269 prompt tokens
+  (`cache_n=265`, `prompt_n=4`) — reuse works on this hybrid model
+  for an identical prefix. The 4 re-evaluated tokens took 160 and
+  139 ms (about 35–40 ms per token versus about 1.6 ms per token for
+  main's cold 269), which suggests a fixed cost for restoring a saved
+  state — to be read against gate 2's numbers, not concluded here.
+- **For the fork's parser:** the model ends lines with two spaces
+  before the newline (`Over.  \n`, a Markdown line-break habit);
+  trim trailing whitespace per line.
+
+### 2026-09-22 17:54:21 CDT — Entry 14: gate 2 — the latency probe (71 requests), the summary, the server's log
+
+```bash
+python3 latency_probe.py > <scratch>/probe-stdout.txt 2>&1    # 17:54:21 → 17:56:20 CDT, exit 0, 71 files in raw/probe/
+cp <scratch>/probe-stdout.txt raw/latency_probe.stdout.txt     # the per-request console lines, kept
+python3 summarize_timings.py
+ssh -o ConnectTimeout=15 ubuntu@<PASTE-BOX-IP-HERE> 'docker logs llama --since 30m 2>&1' > raw/llama-log-probe.txt    # 532 lines
+```
+
+`summarize_timings.py`, verbatim:
+
+```
+== arm A
+round req  prompt  evald reused reuse% prompt_ms gen_n   gen_ms ms/tok  wall_ms
+    1   4     665    665      0      0    1515.5    59    628.5  10.65   4365.3
+    2   4    1186    660    526     44    1414.5    57    609.5  10.69   5144.2
+    3   4    1703    652   1051     62    1422.5    58    620.7  10.70   5246.1
+    4   4    2195    627   1568     71    1418.4    55    590.6  10.74   5561.4
+    5   4    2717    654   2063     76    1441.1    81    884.0  10.91   6523.7
+    6   4    3198    615   2583     81    1440.2    90    984.7  10.94   7360.4
+    7   4    3708    642   3066     83    1459.3    85    931.4  10.96   7572.0
+    8   4    4237    667   3570     84    1492.3    73    800.0  10.96   7864.9
+    9   4    4752    653   4099     86    1572.5    64    695.3  10.86   8585.7
+   10   4    5250    630   4620     88    1486.2    69    751.6  10.89   9385.4
+
+== arm D-off
+round req  prompt  evald reused reuse% prompt_ms gen_n   gen_ms ms/tok  wall_ms
+    1   1     269    269      0      0     354.1    73    813.4  11.14   2569.6
+    2   1     416    201    215     52     373.0   102   1144.9  11.22   1717.4
+    3   1     559    195    364     65     362.4   127   1430.1  11.26   2010.6
+    4   1     698    191    507     73     356.5   105   1182.2  11.26   1795.0
+    5   1     843    197    646     77     351.1   100   1121.8  11.22   1646.5
+    6   1     980    191    789     81     352.4    90   1018.4  11.32   1546.1
+    7   1    1119    191    928     83     359.8    98   1104.7  11.27   1708.5
+    8   1    1265    200   1065     84     355.8    92   1041.4  11.32   1635.3
+    9   1    1412    199   1213     86     352.8    98   1107.4  11.30   1642.0
+   10   1    1550    189   1361     88     354.6    86    968.3  11.26   1525.8
+
+== arm D-on
+round req  prompt  evald reused reuse% prompt_ms gen_n   gen_ms ms/tok  wall_ms
+    1   1     269     54    215     80     361.1    73    819.3  11.22   2657.2
+    2   1     416    201    215     52     368.6   102   1151.4  11.29   1693.3
+    3   1     559    195    364     65     362.0   127   1435.7  11.30   1969.9
+    4   1     698    191    507     73     361.0   105   1189.6  11.33   1718.5
+    5   1     843    197    646     77     355.2   100   1126.7  11.27   1772.7
+    6   1     980    191    789     81     354.4    90   1017.1  11.30   1547.4
+    7   1    1119    191    928     83     353.6    98   1108.0  11.31   1644.3
+    8   1    1265    200   1065     84     354.1    92   1041.0  11.31   1611.3
+    9   1    1412    199   1213     86     353.0    98   1106.9  11.29   1734.0
+   10   1    1550    189   1361     88     355.7    86    969.8  11.28   1537.4
+
+== arm D-live
+round req  prompt  evald reused reuse% prompt_ms gen_n   gen_ms ms/tok  wall_ms
+    1   1     269     54    215     80     364.1    73    820.9  11.24   1352.2
+    2   1     390    175    215     55     373.0    79    888.1  11.24   1463.7
+    3   1     517    179    338     65     360.8    77    869.4  11.29   1403.7
+    4   1     642    177    465     72     357.7    77    867.8  11.27   1398.2
+    5   1     769    179    590     77     358.2    74    836.7  11.31   1436.0
+    6   1     891    176    715     80     351.0    82    926.1  11.29   1529.4
+    7   1    1023    184    839     82     353.4    76    853.6  11.23   1427.4
+    8   1    1147    178    969     84     352.0    74    829.7  11.21   1368.5
+    9   1    1268    173   1095     86     352.5    75    844.1  11.25   1389.6
+   10   1    1386    169   1217     88     353.6    72    804.6  11.18   1433.6
+
+== gate 2a: R_k = D-off prompt_ms / A prompt_ms (A = sum of its four requests)
+  round  1: R = 0.234   (wall-time ratio, reported only: 0.589)
+  round  2: R = 0.264   (wall-time ratio, reported only: 0.334)
+  round  3: R = 0.255   (wall-time ratio, reported only: 0.383)
+  round  4: R = 0.251   (wall-time ratio, reported only: 0.323)
+  round  5: R = 0.244   (wall-time ratio, reported only: 0.252)
+  round  6: R = 0.245   (wall-time ratio, reported only: 0.210)
+  round  7: R = 0.247   (wall-time ratio, reported only: 0.226)
+  round  8: R = 0.238   (wall-time ratio, reported only: 0.208)
+  round  9: R = 0.224   (wall-time ratio, reported only: 0.191)
+  round 10: R = 0.239   (wall-time ratio, reported only: 0.163)
+  R_early (mean of rounds (2, 3, 4)) = 0.257
+  R_late  (mean of rounds (8, 9, 10)) = 0.234
+  thresholds: PASS R_late <= 0.50 and R_late <= R_early; PARTIAL R_late < 1.0; FAIL R_late >= 1.0
+
+== gate 2b: grammar overhead on generation, median over rounds of predicted_ms / predicted_n
+  D-off median ms/token = 11.260
+  D-on  median ms/token = 11.298
+  O = (on - off) / off  = 0.3 %
+  thresholds: PASS O <= 10 %; PARTIAL 10 % < O <= 25 %; FAIL O > 25 %
+
+== D-live (reported, not graded): share of the prompt reused from the cache, rounds >= 2
+  per round: ['55', '65', '72', '77', '80', '82', '84', '86', '88'] %
+  minimum  : 55 %
+```
+
+The server's own log (`raw/llama-log-probe.txt`), two excerpts.
+
+A late request of arm A (task 1007 = `A-r10-0-Moira`: launch 41 of 74 in the log, and its 131 prompt tokens and 13 generated match that request) —
+the slot is chosen "by LRU" (its content does not match this
+persona's prompt), and the task starts processing about 1.7 s later
+(13.40.800 → 13.42.493 in the log's minutes.seconds.milliseconds
+clock); the reported prompt evaluation is 371 ms:
+
+```
+13.40.587.044 I slot      release: id  0 | task 989 | stop processing: n_tokens = 1232, truncated = 0
+13.40.800.350 I slot get_availabl: id  0 | task -1 | selected slot by LRU, t_last = 10795759070
+13.42.493.810 I slot launch_slot_: id  0 | task 1007 | processing task, is_child = 0
+13.43.007.493 I slot print_timing: id  0 | task 1007 | prompt eval time =     371.21 ms /   131 tokens (    2.83 ms per token,   352.90 tokens per second)
+13.43.007.504 I slot print_timing: id  0 | task 1007 |        eval time =     142.43 ms /    13 tokens (   11.87 ms per token,    84.25 tokens per second)
+13.43.007.505 I slot print_timing: id  0 | task 1007 |       total time =     513.64 ms /   144 tokens
+```
+
+A late request of arm D-on (task 2610 = `D-on-r06`: launch 60 of 74; D-off-r06 has the same token counts, the position decides) —
+the slot is chosen "by LCP similarity" (it already holds this
+conversation's prefix) and the task starts 0.6 ms later:
+
+```
+14.17.616.929 I slot      release: id  0 | task 2507 | stop processing: n_tokens = 942, truncated = 0
+14.17.850.310 I slot get_availabl: id  0 | task -1 | selected slot by LCP similarity, f_sim_best = 0.855 (> 0.100 thold), f_keep = 0.890
+14.17.850.930 I slot launch_slot_: id  0 | task 2610 | processing task, is_child = 0
+14.19.222.415 I slot print_timing: id  0 | task 2610 | prompt eval time =     354.37 ms /   191 tokens (    1.86 ms per token,   538.99 tokens per second)
+```
+
+And the size of the host-RAM cache entries being moved (three
+eviction lines, the only ones in the log):
+
+```
+13.50.176.271 W srv         alloc:  - making room for prompt cache entry, removing oldest entry (size = 421.725 MiB)
+14.08.013.062 W srv         alloc:  - making room for prompt cache entry, removing oldest entry (size = 416.830 MiB)
+14.08.043.744 W srv         alloc:  - making room for prompt cache entry, removing oldest entry (size = 1824.445 MiB)
+```
+
+Reading (facts only; interpretation goes to `findings.md`):
+
+- Gate 2a quantity: `R_late = 0.234`, `R_early = 0.257`.
+- Gate 2b quantity: `O = 0.3 %`. D-off and D-on generated the same
+  number of tokens in every round (the same seed and prompt gave the
+  same text: the grammar masked nothing), so the comparison is on
+  identical output.
+- D-live: reuse share from 55 % (round 2) to 88 % (round 10).
+- Arm A's reuse share climbs from 44 % to 88 %: the host-RAM prompt
+  cache restored each persona's saved state (caveat 5). But A's
+  WALL time per round grows from 4.4 s to 9.4 s while its reported
+  prompt time stays flat (about 1.4–1.6 s per round): the log shows
+  a gap between choosing the slot and starting the task on A's
+  requests (about 1.7 s in the excerpt) that `timings` does not
+  include; D's requests show no such gap. The wall-time ratio D/A
+  (reported only) falls from 0.59 at round 1 to 0.16 at round 10.
+- Every request's prompt phase costs about 350 ms whether it
+  evaluates 130 or 270 tokens (A and D alike): a fixed floor per
+  request on this build and model.
+- The per-task gap figures above are read off two timestamps each;
+  a script over the whole log would make them a derived series
+  (proposed to the owner, not written yet).
+
+### 2026-09-22 ~18:30 CDT — Entry 15: what the model wrote in the D arms (after the run, no box)
+
+A claim of entry 14 — "D-off and D-on wrote the same text" — rested
+on equal token counts; checked on the text itself, and the line
+shape and endings counted, with a committed script (added after the
+run; it derives, it does not measure):
+
+```bash
+python3 check_outputs.py
+```
+
+```
+rounds where D-off and D-on wrote identical text: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+D-off  lines per round: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4]  not `Name: text`: 0  ending in 'Over.': 40 of 40
+D-on   lines per round: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4]  not `Name: text`: 0  ending in 'Over.': 40 of 40
+D-live lines per round: [4, 4, 4, 4, 4, 4, 4, 4, 4, 4]  not `Name: text`: 0  ending in 'Over.': 40 of 40
+```
+
+Reading: the claim holds on the text, all ten rounds. Every D reply,
+with or without the grammar and with its own output fed back, had
+exactly four well-formed lines, each ending in "Over." — the model
+always used the full "up to four lines" budget.

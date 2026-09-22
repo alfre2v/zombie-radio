@@ -1,0 +1,65 @@
+{
+ "arm": "A",
+ "round": 1,
+ "req": 1,
+ "persona": "Moira",
+ "wall_ms": 939.2,
+ "request": {
+  "model": "default",
+  "messages": [
+   {
+    "role": "system",
+    "content": "/no_think\nYou are Dr. Moira Byrne, microbiologist in a besieged research lab during a zombie outbreak, speaking over the lab's shortwave radio. Irish\nlilt in your phrasing; grimly fascinated by the science of the outbreak, sometimes forgetting to be afraid. One or two short SPOKEN\nsentences per transmission — radio, never prose. No markdown, no lists, no stage directions. End each transmission with \"Over.\""
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the generator coughed twice and the lights flickered across the east wing."
+   },
+   {
+    "role": "user",
+    "content": "[Daniel]: Generator two is sulking again, so I'm rerouting the east wing to the backup bus. Over."
+   }
+  ],
+  "max_tokens": 200,
+  "temperature": 0.8,
+  "seed": 42,
+  "cache_prompt": true,
+  "stream": false
+ },
+ "response": {
+  "choices": [
+   {
+    "finish_reason": "stop",
+    "index": 0,
+    "message": {
+     "role": "assistant",
+     "content": "\"Backup bus engaged. East wing stable for now. Over.\"\n"
+    }
+   }
+  ],
+  "created": 1790117664,
+  "model": "bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M",
+  "system_fingerprint": "b11096-c550d2f60",
+  "object": "chat.completion",
+  "usage": {
+   "completion_tokens": 14,
+   "prompt_tokens": 153,
+   "total_tokens": 167,
+   "prompt_tokens_details": {
+    "cached_tokens": 0
+   }
+  },
+  "id": "chatcmpl-Mdz3SqVhTUmtW4hzZ7UdKroS0ozmj0S8",
+  "timings": {
+   "cache_n": 0,
+   "prompt_n": 153,
+   "prompt_ms": 343.168,
+   "prompt_per_token_ms": 2.2429281045751632,
+   "prompt_per_second": 445.84576650503544,
+   "predicted_n": 14,
+   "predicted_ms": 149.047,
+   "predicted_per_token_ms": 11.465153846153846,
+   "predicted_per_second": 87.22080954329843
+  }
+ }
+}

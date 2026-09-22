@@ -1,11 +1,14 @@
 # ADR-0003 gate — findings
 
-**Status:** DRAFT — verdict criteria and predictions NOT yet frozen.
-The freeze is the commit that carries this file with both
-prediction slots filled (experiments README); no gate request
-(`stream_check.sh`, `latency_probe.py`) runs before that commit.
-Interpretation only; the evidence lives in `README.md` (recipe +
-runlog) and `raw/`.
+**Status:** verdict **PASS** on all three graded items (gates 1, 2a
+and 2b), written 2026-09-22 and awaiting the owner's review; the
+folder seals once he accepts it. The criteria below were committed in
+`9024a1f` at 16:45:59 CDT, an hour before the first gate request
+(17:50:37); the owner's decline to predict was recorded afterwards
+and changes no criterion. This file decides the experiment, not
+ADR-0003: the ADR's truth audit is a separate step that reads this
+verdict. Interpretation only; the evidence lives in `README.md`
+(recipe + runlog, entries 12–15 for the gates) and `raw/`.
 
 ## What this experiment decides
 
@@ -224,13 +227,186 @@ before Task D's director is built around it.
 - **D-live:** minimum reuse share at or above 80 %. Confidence low
   (caveat 4).
 
-**Owner (Alfredo):** *slot open — a prediction, or an explicit
-decline recorded so the slot is closed, not forgotten.*
+**Owner (Alfredo):** declined to register a prediction
+(2026-09-22: "I want to see the experiment") — noted so the slot is
+closed, not forgotten. The agent's predictions above stand alone
+for grading.
 
 ## Results
 
-*Filled only from README evidence after the runs.*
+*Everything below comes from the runlog — entries 12 to 15, which
+carry the scripts' output verbatim — and from the raw files they
+point to. Times are the laptop's (CDT).*
+
+### The evening in one paragraph
+
+The box was deployed from zero at 17:40 and answered through the
+tunnel eight minutes later. Three streamed requests went out at
+17:50 for gate 1; seventy-one plain requests ran between 17:54 and
+17:56 for gate 2. Every graded number came back on the right side of
+its threshold, most of them comfortably. The surprise was not in
+the numbers but underneath them: the reason the shared script is
+faster turned out to be different from the one ADR-0003 believed,
+and part of the cost it avoids never shows up in the server's own
+accounting.
+
+### Gate 1 — the grammar streams, and it binds
+
+- **The script was typed out, not delivered in one block.** In the
+  `main` run, 72 chunks carried text, the first arriving at 552 ms
+  and the last at 1,367 ms after the request left — a spread of
+  0.60 against a threshold of 0.50. What the browser will receive is
+  a stream of small pieces, exactly as with unconstrained text.
+- **The shape was right.** Four complete lines, every one of them
+  `Name: text` with a legal name, and all four scientists used.
+- **The grammar wins an argument with the prompt.** In the `control`
+  run the prompt asked for the four scientists while the grammar
+  allowed only `Operator`. Every line began `Operator:` — and the
+  text shows the model looking for its cast and being refused:
+  *"Operator: Ralph, you're counting the shamblers, right? Need to
+  know if they're closing in. Over."*
+- **The field that works** is the plain top-level `grammar` key on
+  `/v1/chat/completions`, the endpoint TalkWithMe already calls. No
+  fallback to `response_format` or `/completion` was needed.
+- **Without a grammar, the model wrote the very same lines.** The
+  `nogrammar` baseline — same prompt, same seed — produced the same
+  four lines character for character. With this cast sheet the model
+  already writes the format on its own; here the grammar was a
+  guarantee, never a correction.
+
+### Gate 2a — one request per round costs about a quarter of four
+
+- **The ratio is steady.** Round by round, D's prompt-evaluation time
+  was between 0.224 and 0.264 of A's; `R_early` (rounds 2–4) is
+  0.257 and `R_late` (rounds 8–10) is 0.234. D spends about a
+  quarter of A's prompt time, and the gap does not shrink as the
+  script grows.
+- **But A's cache did not collapse.** The belief behind the
+  criterion was that four different system prompts would keep
+  evicting each other from the server's single slot. They did not:
+  this build keeps a second-level prompt cache in the box's RAM
+  (`--cache-ram`, 8,192 MiB by default) and restores each persona's
+  saved state when its turn comes. A's share of reused prompt climbed
+  from 44 % in round 2 to 88 % in round 10 — much the same curve as D's (52 % to 88 %).
+- **The rescue has a price the server does not report.** Before each
+  of A's requests the server saves the slot's state to RAM and loads
+  another one. The only entries whose size the log reports — the
+  three it evicted when the RAM cache filled up — were 417 MiB,
+  422 MiB and 1.8 GB. In the excerpt of the runlog, about 1.7 s pass between
+  choosing the slot and starting the work on a round-10 request of
+  A, while the same step for D takes under a millisecond. That time
+  is not part of the `timings` the criterion reads — which is why
+  A's prompt time stays flat (about 1.4–1.6 s per round) while its
+  wall time per round doubles, from 4.4 s in round 1 to 9.4 s in
+  round 10. D's rounds take 1.5–2.0 s (D-off) and 1.35–1.53 s
+  (D-live) throughout. The wall-time ratio, reported but not graded,
+  falls from 0.59 to 0.16: in what the audience would actually wait
+  for, D is about six times faster by round 10, and the margin grows
+  with the script.
+- **Every request pays a fixed toll.** The prompt phase costs about
+  350 ms whether it evaluates 130 tokens or 270, in both structures.
+  Four requests pay it four times. Why the floor sits there is not
+  known yet; the leading suspect is how this hybrid model's recurrent
+  state is handled per request.
+
+### Gate 2b — the grammar is free here
+
+The median cost of a generated token was 11.260 ms without the
+grammar (D-off) and 11.298 ms with it (D-on): `O` = 0.3 %. And because
+D-off and D-on wrote identical text in all ten rounds
+(`check_outputs.py`), the comparison is as clean as a measurement
+gets: same tokens, with and without the mask. That same fact sets
+the limit of what was measured — this is the cost of a grammar that
+never had to change the model's mind. What a grammar costs when it
+does steer is the question of the next run.
+
+### D-live — the loop we would ship
+
+With the model's own output fed back as history, the share of the
+prompt reused from the cache rose from 55 % in round 2 to 88 % in
+round 10; each round evaluated 169–184 tokens, roughly what the round had
+added. The minimum, 55 %, is above the 50 % routing line:
+no investigation is owed before the fork. The low start is
+arithmetic, not a fault: early in a show the new lines are a large
+share of a short script.
+
+### What the model wrote
+
+In all three D arms, with or without the grammar and with its own
+output fed back, every reply had exactly four lines, every line was
+well-formed, and every one of the forty per arm ended in "Over."
+(`check_outputs.py`). The prompt said "up to four lines"; the model
+read it as "four". Two habits worth knowing for the fork: it ends
+lines with two spaces before the newline, and it writes typographic
+punctuation — curly apostrophes, em dashes, the odd ellipsis — even
+though the cast sheet and the fixed script are plain ASCII.
+
+### The caveats, revisited
+
+1. **One slot** — as expected; it is where A had to swap.
+2. **A without its router call** — stands; the router would add a
+   fifth request per round and widen D's lead.
+3. **Fixed versus live history** — did not mislead: D-live's reuse
+   tracks D-off's closely.
+4. **The hybrid model** — did not bite where feared: reuse works,
+   through the live loop too. It remains the suspect for the 350 ms
+   floor (unverified).
+5. **The RAM-side prompt cache** — materialized, and it decided the
+   mechanism: it rescued A's reuse and moved A's real cost outside
+   the server's timings.
+6. **No truncation** — confirmed: the largest prompt, 1,550 tokens
+   (D-off, round 10), is under a tenth of the 16,384-token context,
+   and every `stop processing` line in the server log reads
+   `truncated = 0`.
+7. **No A-with-grammar arm** — no consequence.
+8. **Server-side numbers** — the caveat that mattered most. The
+   criterion read `prompt_ms`, which is honest but incomplete; the
+   wall time and the server log tell the rest.
+
+### Predictions, graded
+
+**Agent:**
+
+- *Gate 1 PASS, through the top-level `grammar` field* — **survived**,
+  both halves.
+- *Gate 2a PASS, `R_late` between 0.2 and 0.4* — **survived on the
+  number** (0.234). The belief underneath did not fare as well: the
+  handoff's expectation that "the shared prefix wins by a margin that
+  grows with history length" **died for prompt time** (flat at about
+  a quarter) and survives only in wall time; and ADR-0003's premise
+  that per-persona prompts defeat the cache **died on this build** —
+  the RAM cache rescues them, at a price paid elsewhere.
+- *Gate 2b PASS, `O` under 10 %* — **survived** (0.3 %), with the
+  limit noted above: the grammar never had to steer.
+- *D-live, minimum reuse at or above 80 %* — **died** at 55 %. The
+  reason is the early rounds' arithmetic, not a cache that fails;
+  the prediction forgot how short a script is at the start of a
+  show.
+
+**Owner:** declined to predict.
 
 ## Verdict
 
-*After Results.*
+**PASS** on all three graded items. The pre-registered consequences
+follow, with one amendment the evidence demands.
+
+- **Gate 1 — PASS.** ADR-0003 point 3 stands as written. The fork
+  sends the screenplay grammar in the top-level `grammar` field of
+  `/v1/chat/completions` and streams as TalkWithMe does today.
+- **Gate 2a — PASS.** ADR-0003's latency point changes from believed
+  to measured. The truth audit must also rewrite its reason: not
+  "per-persona system prompts defeat the prompt cache", but
+  "per-persona prompts force a state swap before every request —
+  hundreds of megabytes moved between GPU and RAM, paid outside the
+  server's timings — on top of a fixed prompt cost per request; one
+  shared script per round pays neither". Prompt-structure §9 point 4
+  gets a dated annotation to the same effect.
+- **Gate 2b — PASS.** The ADR's "overhead reported 1–20 %" is
+  replaced by the measured 0.3 %, noted as the cost of a grammar that
+  did not have to intervene.
+- **D-live — above its routing line.** No TODO line for the fork.
+
+Not decided here: ADR-0003's status (its truth audit comes next and
+reads this verdict); the prose quality with and without the grammar
+(the Task 5a audition); what a richer grammar with an emotion field
+costs (the follow-up run).
