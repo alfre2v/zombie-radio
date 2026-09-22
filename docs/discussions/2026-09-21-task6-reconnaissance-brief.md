@@ -9,8 +9,8 @@ round argues from receipts rather than from memory.
 **Status:** ANSWER PASS COMPLETE (2026-09-22). Units 1 and 2 toured;
 unit 4 delivered as [discussion 2026-09-21] prompt-structure (plus
 [discussion 2026-09-21] story-loop); every seam question (§5) and
-open question (§5b) now carries the owner's ruling. **Remaining
-before PR #6 closes: unit 3, the synthesis (§9).** The HTML
+open question (§5b) now carries the owner's ruling. **Unit 3, the
+synthesis, written 2026-09-22 (§9) — the brief is COMPLETE.** The HTML
 visuals were DROPPED on 2026-09-22 (owner: "we have a bigger fish
 to fry"); `docs/visuals/` is not born.
 
@@ -746,14 +746,180 @@ overrides through TalkWithMe).
   request is not slow; LuxTTS by contrast pays about 10 seconds
   on its first request.
 
-## 9. Synthesis (unit 3)
+## 9. Synthesis (unit 3) — what the two projects give the fork, what the seams cost, what stays open
 
-*Not started. **MUST BE WRITTEN BEFORE PR #6 CLOSES** (owner
-reminder request, 2026-09-22). With the ledger closed on
-2026-09-22, this becomes a short integration text: what the two
-projects together give the fork, what the seams cost, what stays
-open for the director arc — about two hours of writing, no new
-reading.*
+*Written 2026-09-22, after the answer pass closed the ledger. This
+is the integration of units 1, 2 and 4: no new reading, no new
+findings — the settled picture, self-contained for a reader who
+has not read the tours.*
+
+### 9.1 The chassis, seen as one system
+
+TalkWithMe and tts-serve were written by one author to fit each
+other, and the reconnaissance confirmed the fit is real: the
+client discovers the engine's parameters from tts-serve's
+capabilities document and builds every synthesis payload from it,
+so an engine switch on our side is a URL change (TalkWithMe tour
+§1.2 hop 7; tts-serve tour §2). Together they give TalkWithZombies,
+on day one:
+
+- **A working audio loop end to end.** Push-to-talk recording,
+  Whisper transcription through an OpenAI-compatible proxy, a
+  streamed LLM reply rendered token by token, sentence-chunked
+  synthesis with two concurrent queues (fetch ahead, play in
+  order), Web Audio playback, and per-message audio persistence
+  staged so that audio arriving before its row is never lost. The
+  "almost natural" pauses of the 09-18 session come from that
+  pipelining, and it survives every change we plan.
+- **A browser protocol we can keep.** The page understands four
+  server-sent events — `start`, `token`, `done`, `complete`, each
+  tagged with a persona. Any generation strategy that can emit
+  those per speaker line leaves the browser, the TTS pipeline and
+  the persistence untouched. This single fact bounded the cost of
+  the ambitious prompt structure (prompt-structure §5) and is the
+  reason the fork's work is server-side.
+- **A voice contract that is stateless, strict, and instrumented.**
+  Every synthesis request carries text, the reference clip, its
+  transcript and a language code; unknown fields are refused with a
+  422 naming the field; every response returns `time_used`, `rtf`
+  and the `seed` used (tts-serve tour §2, F6). Stateless means a
+  persona may carry several clips at no cost (S2); strict means a
+  stale parameter fails loudly instead of silently; instrumented
+  means the tuning measurements we deferred (S3, S5) cost nothing
+  to take when their time comes.
+- **A per-request grammar hook in the LLM server** that we did not
+  know we had when the brief opened: llama-server constrains
+  sampling with a GBNF grammar on every token, streaming or not
+  (prompt-structure §7.1). It is what turns the 2024 "parse and
+  hope" wire format into one that cannot break.
+- **Maintainer conventions worth keeping inside the fork** even
+  though we no longer track upstream (TalkWithMe tour §6): a
+  hermetic Python test suite with one file per router, an
+  endpoint table under test, feature docs written spec-first, and
+  an agent guide that already encodes the app's invariants. They
+  are the fork's quality gates on day one.
+
+### 9.2 What the reconnaissance changed
+
+The brief opened to find two insertion points for two small
+patches. It closed having changed the plan three times, each time
+because of something read in the code:
+
+1. **The label leak is structural, not a prompt problem** (unit 1
+   F1). TalkWithMe shows every persona the other personas' lines
+   rewritten as `[Name]:` user turns, so a small model imitates
+   the format it sees; and in streaming mode speech is cut from
+   the token stream before any persist-time filter could act. The
+   sanitizer would have had to be a stream-head filter in the SSE
+   loop — bigger than planned — and the finding pointed at the
+   history rewrite itself as the thing to change.
+2. **The chat-shaped turn model is the other half of the same
+   problem** (unit 1 §5, taxonomy C2/C6/E1/E3): one request per
+   persona, followers drawn at random, a nameless director, no
+   component that owns the story, and no server-initiated channel
+   to the browser. Patching the leak would have left all of that
+   in place.
+3. **The 2024 prototype had already solved the first half** with
+   one shared context and a hidden narrator — and failed on
+   parsing, repetition, and a blocking pipeline (§7). Reading it
+   before unit 1 is why the seams section could argue from the
+   real thing.
+
+The result is [discussion 2026-09-21] prompt-structure and
+[discussion 2026-09-21] story-loop, frozen as ADR-0002 and
+ADR-0003 (draft, gated): one shared context in screenplay form, a
+code director in the server setting each round's speaker allowlist
+and line budget, one streamed request per round under a screenplay
+grammar, the existing events synthesized per parsed line; the
+browser as metronome on a separate `/show` page. Of the two
+patches the brief was opened to place, **the sanitizer is not
+built** (there is no label to strip) and **the accumulator stays**,
+with its unit bounded by the script line and its rules ruled
+(Q9). The fork itself became a new app, TalkWithZombies, in a
+sibling repository, free to diverge (ADR-0002).
+
+### 9.3 What the seams cost — the ledger, closed
+
+- **S1, the reference clip on every request:** bandwidth only, a
+  few tens of milliseconds per line on our tunnel; the engine
+  caches the encoded voice per clip. Accepted as is.
+- **S2 + S6, emotion:** tts-serve is indifferent to how many clips
+  a persona has and, for two engines, exposes explicit emotion
+  knobs; TalkWithMe had no channel for a per-line register. The
+  adopted prompt structure supplies the channel — a parenthetical
+  stage direction in the script line — and the mapping to a clip
+  or knob is fork work after Task 4's clips exist. Cost: one
+  lookup in the server, and the clips themselves.
+- **S3, text length:** no limit exists in tts-serve; the cost of
+  a chunk is latency, and the measurement that would tune it is
+  deferred to follow-ups. The fork starts at N = 100.
+- **S4, two engines on one box:** each engine is its own process
+  and venv; the Ansible role selects one. The cost is a role
+  change when 5b needs two — 5b's problem.
+- **S5, telemetry the client discards:** free to collect, unused
+  until a director wants a pacing model. Post-MVP.
+
+Two costs are not in the ledger because they are not seams but
+consequences of the chosen structure, and they are the risks
+ADR-0003 names: identity bleed across four characters in one
+context (C4), answered by the bibles and the audition; and the
+growing script against the context window (C9 in its new form),
+answered by the director's transcript curation.
+
+### 9.4 What the code surfaced that the brainstorm had not (umbrella §8, in one breath)
+
+An STT proxy that substitutes a literal "No response received"
+text which the browser then sends as the user's message; a
+microphone not gated on playback; transcripts auto-sent with no
+review; replies cut at the token cap and spoken as fragments; no
+streaming synthesis anywhere; one synthesis at a time per engine.
+And three challenges that got easier: proper names (Whisper's
+`prompt` and `language` fields, unsent today, a few lines in the
+proxy), mixing (the browser already owns a Web Audio context), and
+the sentence-chunk prosody problem (a fixed seed per reply removes
+the dice, and the accumulator removes the chunking). The show page
+inherits the fixes to the first two by construction — hold-to-talk
+enabled only in the listening state, transcripts entering as
+audience traffic through the director — and the others are
+fork-sized.
+
+### 9.5 What stays open for the director arc
+
+The brief mapped seams and did not design. What the next arc
+inherits, with its receipts already in place:
+
+- **The director's policy** — beats, cadence within the
+  configurable time window, who is addressed, when the radio
+  listens, how the 2024 escalation ("the radio smokes") is
+  reproduced as state. The mechanism is decided (code in the
+  server, allowlist into the grammar); the policy is not.
+- **Transcript curation** — how the director keeps one growing
+  script inside the context window: summarize, drop, or scaffold.
+  The taxonomy filed this under the adaptation arc; the shared
+  context makes it load-bearing sooner.
+- **Directive content** — the entropy terms, the stage directions,
+  the audience's line phrased as radio traffic; and the bounded
+  scratchpad hypothesis (follow-ups) if the audition earns it.
+- **Server-owned time** (story-loop Placement 2) — the upgrade for
+  the unattended booth, additive to what the fork builds.
+- **Emotion mapping** — register → clip or knob, once Task 4's
+  clips exist (S2/S6).
+- **Everything measured but not yet acted on** — the seed's
+  reproducibility for the canned episode, the telemetry for
+  pacing, the two-engine deployment shape for 5b.
+
+### 9.6 The brief's verdict on itself
+
+The mandate was a guided tour so that the owner's own study
+started oriented and the fork's shape round argued from receipts.
+The tours were read; the shape round became two design
+discussions and two ADRs instead of a patch plan, because the code
+said the patch plan was aimed at symptoms. Every claim in the
+tours carries a path and a line; every ruling in the ledgers
+carries a date and the owner's words. The HTML derivatives were
+dropped as unnecessary once the decisions were made. What the
+brief did not do, by design, is create the fork or write a line of
+its code: that begins when ADR-0003's gate passes on a box.
 
 ## 10. Integration pass (unit 4)
 
@@ -832,6 +998,9 @@ evening; no box.*
   at the end of §2 and in §10; TODO.md (Task 6 disposition, arc
   boundary) and the upstream-contribution strategy (§7 addendum)
   carry the full text.
+- **2026-09-22, synthesis written (unit 3)** — §9 integrates
+  units 1, 2 and 4 and closes the brief before PR #6 merges, as
+  the owner asked.
 - **2026-09-22, answer pass complete** — one ruling at a time
   with the owner: S1 resolved; S2 and S6 resolved in principle
   (fork work after Task 4); S3/Q4 dropped from the arc to
