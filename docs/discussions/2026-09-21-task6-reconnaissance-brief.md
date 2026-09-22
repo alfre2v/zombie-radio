@@ -319,7 +319,7 @@ by product.*
 |---|---|---|
 | Q1 | Does the label sanitizer become a stream-head filter in `_chat_stream`? *Moot under the adopted prompt structure — no label to strip ([discussion 2026-09-21] prompt-structure §12).* | TalkWithMe tour §1.7, §2 |
 | Q2 | Which labels to strip: own name only, any `[X]:`, bare `Name:`? *Moot, same reason.* | TalkWithMe tour §1.7, §2 |
-| Q3 | Mention detection overriding who-answers — keep it for a radio show? | TalkWithMe tour §1.7, §5 |
+| Q3 | Mention detection overriding who-answers — keep it for a radio show? *Moot on the show page (no who-answers control; the director chooses); stays as-is on the chat/rehearsal page.* | TalkWithMe tour §1.7, §5 |
 | Q4 | S3 measurement (latency vs text length) before the fork decides N, or a provisional N first? | tts-serve tour §7 |
 | Q5 | Task 4 reference material spec: ~10 s clean clips with exact transcripts? | tts-serve tour §7 |
 | Q6 | Keep the per-sentence reference upload as is (cheap per F1)? | tts-serve tour §7 |
@@ -329,7 +329,7 @@ by product.*
 | Q10 | Knob homes: N in `tts` via the health response; sanitizer toggle in `general`, yaml-only? | TalkWithMe tour §4, §8 |
 | Q11 | Add a Node test harness for `tts.js`, or ship the accumulator untested? | TalkWithMe tour §6, §8 |
 | Q12 | Director directives: user message (2024 style) or system-prompt tail? Record only. | TalkWithMe tour §5, §8 |
-| Q13 | Director placement given no server-push channel: browser, server+push, or external+polling? Record only. | TalkWithMe tour §5, §8 |
+| Q13 | Director placement given no server-push channel: browser, server+push, or external+polling? *DECIDED 2026-09-21: browser as metronome, server as director ([discussion 2026-09-21] story-loop §8).* | TalkWithMe tour §5, §8 |
 
 ## 6. Glossary
 
@@ -752,6 +752,15 @@ shrinks to one-word lines; S6 gets its channel (a parenthetical
 stage direction in the script line). Final decision gated on two
 on-box confirmations and one audition item (that document §11).*
 
+*Also written 2026-09-21: `docs/discussions/2026-09-21-story-loop.md`
+— DECIDED: Placement 1, the browser as metronome and the server as
+director (Q13 answered), on a separate `/show` page; endless loop
+with cadence-based interaction beats; half-duplex hold-to-talk;
+dead air as day-three polish. With both decisions taken, the
+reconnaissance brief's design mandate is complete; what remains of
+the brief is the answer pass over the ledgers, unit 3's synthesis,
+and the HTML visuals.*
+
 *Parked candidate raised on 2026-09-21 (tts-serve tour §8, Q5):
 **experiment 5d / question Q7** — a Mac-local TTS probe. tts-serve
 ships a native Apple-Silicon engine (Qwen3-TTS via MLX, tag 1.2)
@@ -787,6 +796,9 @@ evening; no box.*
   at the end of §2 and in §10; TODO.md (Task 6 disposition, arc
   boundary) and the upstream-contribution strategy (§7 addendum)
   carry the full text.
+- **2026-09-21, story loop decided** — the story-loop discussion
+  doc written; §10 points at it; Q13 marked decided and Q3 moot on
+  the show page in the index.
 - **2026-09-21, prompt-structure direction adopted** — the
   prompt-structure discussion doc written (unit 4 delivered as its
   own document); §10 points at it; Q1/Q2/Q8 marked moot in the

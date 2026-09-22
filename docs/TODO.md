@@ -43,8 +43,17 @@ budget), one streamed request per round, SSE events synthesized
 per parsed line; the sanitizer patch is dropped by construction.
 Gate before final: two on-box confirmations (grammar + streaming
 curl; per-round latency vs per-persona) and one audition item
-(prose quality with/without the grammar). **(2) story loop:** the
-next discussion.
+(prose quality with/without the grammar). **(2) DECIDED
+2026-09-21** — [discussion 2026-09-21] story-loop: the browser is
+the metronome (a `/show` page with `show.js` requests the next
+round when the audio queues drain), the server is the director
+(`POST /api/show/round`); endless loop with interaction beats on a
+randomized, configurable TIME window (min/max seconds of played
+audio, never a round count — owner pushback); half-duplex
+hold-to-talk mic enabled only in the listening state; prefetch is
+day-three polish; dead-air static is needed the day the cadence is
+tuned.
+Both gating decisions are now taken; the fork may be created.
 
 **Parallelism note:** Task 4 (the owner's cast work) has ZERO
 dependency on Tasks 1–3 — it is the long pole and can start
