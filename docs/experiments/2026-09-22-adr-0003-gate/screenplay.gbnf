@@ -1,0 +1,4 @@
+root    ::= line{1,4}
+line    ::= speaker ": " text "\n"
+speaker ::= "Daniel" | "Moira" | "Ralph" | "Samantha"
+text    ::= [^\n\[\]]+
