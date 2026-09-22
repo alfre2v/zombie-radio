@@ -136,6 +136,13 @@ essentials for this brief:
   instead of taking them. The tour's upstreamability audit (unit 1
   §6) remains as knowledge about how scorbo2 works, no longer as a
   constraint on our changes.
+- **Repository layout (owner decision, later the same day): two
+  sibling repositories.** This repo stays deployment + docs;
+  TalkWithZombies is its own GitHub fork cloned beside the other
+  sibling clones; the installer's `client_repo` / `client_version`
+  / `client_dir` variables are the glue, plus a proven-version pin
+  and a docs pointer section. Submodule, subtree, and file-copy
+  were considered and rejected (reasons in TODO.md, Task 6).
 
 ## 3. Method
 

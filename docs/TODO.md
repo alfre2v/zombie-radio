@@ -184,6 +184,26 @@ the agent keeps this current. These carry across arcs.*
   deferred past the deadline. Recorded in [discussion 2026-09-19]
   upstream-contribution-strategy (addendum) and [discussion
   2026-09-21] task6-reconnaissance-brief §1–§2.
+  **REPOSITORY LAYOUT (owner decision 2026-09-21): two sibling
+  repositories.** `zombie-radio` stays the deployment and
+  documentation repo (the memory of record); `TalkWithZombies` is
+  a GitHub fork of scorbo2/TalkWithMe at tag 7.1, cloned beside
+  the other sibling clones at
+  `/Users/alfredo/workspace/hackTNT_2026/TalkWithZombies`. Glue:
+  the Mac installer already takes `client_repo` /
+  `client_version` / `client_dir` as variables
+  (`deploy/ansible/client-talkwithme-mac.yml:16-18`) — flip them
+  to the fork; ADD a pin for the fork tag the deployment was
+  proven against (the `zr_tts_serve_version` pattern); add a short
+  pointer section in the docs saying where each kind of document
+  lives (design and decisions here; the app's feature docs and
+  AGENTS.md there). Rejected: a git submodule (nested detached
+  checkout, a second place recording the version, buys nothing at
+  deploy time since the installer clones from GitHub anyway); a
+  subtree merge (the app inside a docs/deployment repo, our hooks
+  and lint over its files, subtree splits to push anything back);
+  copying files without history (ruled out by the attribution
+  commitment).
   **TIMEBOX (owner proposal + agent conditions, agreed
   2026-09-21): 3 days to execute the two axes — prompt structure
   and story loop — in the fork.** Modeled on D1's 3-day box
