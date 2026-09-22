@@ -54,7 +54,7 @@ zr_llama_parallel: 1
 
 zr_tts_engine: faster_qwen3tts
 zr_tts_serve_repo: "https://github.com/scorbo2/tts-serve"
-zr_tts_serve_version: "1.1"  # pinned tag (upstream tags carry no v prefix); bump deliberately
+zr_tts_serve_version: "1.2"  # pinned tag (upstream tags carry no v prefix); bump deliberately
 
 zr_stt_image: "docker.io/heimoshuiyu/whisper-fastapi:latest"  # floating tag; digest-pin at show-freeze
 zr_stt_model: small
