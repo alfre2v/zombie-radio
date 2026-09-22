@@ -317,14 +317,14 @@ by product.*
 
 | Q | One line | Where |
 |---|---|---|
-| Q1 | Does the label sanitizer become a stream-head filter in `_chat_stream`? | TalkWithMe tour §1.7, §2 |
-| Q2 | Which labels to strip: own name only, any `[X]:`, bare `Name:`? | TalkWithMe tour §1.7, §2 |
+| Q1 | Does the label sanitizer become a stream-head filter in `_chat_stream`? *Moot under the adopted prompt structure — no label to strip ([discussion 2026-09-21] prompt-structure §12).* | TalkWithMe tour §1.7, §2 |
+| Q2 | Which labels to strip: own name only, any `[X]:`, bare `Name:`? *Moot, same reason.* | TalkWithMe tour §1.7, §2 |
 | Q3 | Mention detection overriding who-answers — keep it for a radio show? | TalkWithMe tour §1.7, §5 |
 | Q4 | S3 measurement (latency vs text length) before the fork decides N, or a provisional N first? | tts-serve tour §7 |
 | Q5 | Task 4 reference material spec: ~10 s clean clips with exact transcripts? | tts-serve tour §7 |
 | Q6 | Keep the per-sentence reference upload as is (cheap per F1)? | tts-serve tour §7 |
 | Q7 | Mac-local TTS probe with the MLX engine (candidate experiment 5d)? | tts-serve tour §8 Q5; umbrella §10 |
-| Q8 | Sanitizer reach: head filter only, or plus a persist-time sweep? | TalkWithMe tour §2, §8 |
+| Q8 | Sanitizer reach: head filter only, or plus a persist-time sweep? *Moot, same reason.* | TalkWithMe tour §2, §8 |
 | Q9 | Accumulator remnant policy for tiny trailing fragments? | TalkWithMe tour §3, §8 |
 | Q10 | Knob homes: N in `tts` via the health response; sanitizer toggle in `general`, yaml-only? | TalkWithMe tour §4, §8 |
 | Q11 | Add a Node test harness for `tts.js`, or ship the accumulator untested? | TalkWithMe tour §6, §8 |
@@ -741,6 +741,17 @@ process plus polling — against TalkWithMe's request-driven,
 one-turn design) follows in its own doc, because the loop's shape
 depends on who assembles the prompt.*
 
+*Written 2026-09-21: `docs/discussions/2026-09-21-prompt-structure.md`
+— direction ADOPTED by the owner: one shared context in screenplay
+form, a code director setting per-round speaker allowlist and line
+budget, one streamed request per round under a server-enforced GBNF
+screenplay grammar, the existing SSE events synthesized per parsed
+line. Consequences for this brief's ledgers: Q1, Q2, Q8 (the
+sanitizer) are answered by construction — no label to strip; Q9
+shrinks to one-word lines; S6 gets its channel (a parenthetical
+stage direction in the script line). Final decision gated on two
+on-box confirmations and one audition item (that document §11).*
+
 *Parked candidate raised on 2026-09-21 (tts-serve tour §8, Q5):
 **experiment 5d / question Q7** — a Mac-local TTS probe. tts-serve
 ships a native Apple-Silicon engine (Qwen3-TTS via MLX, tag 1.2)
@@ -776,6 +787,10 @@ evening; no box.*
   at the end of §2 and in §10; TODO.md (Task 6 disposition, arc
   boundary) and the upstream-contribution strategy (§7 addendum)
   carry the full text.
+- **2026-09-21, prompt-structure direction adopted** — the
+  prompt-structure discussion doc written (unit 4 delivered as its
+  own document); §10 points at it; Q1/Q2/Q8 marked moot in the
+  index; S6's channel noted.
 - **2026-09-21, unit 1 breadth pass closed** — TalkWithMe tour
   sections 2–6 written; Q8–Q13 added; the question index §5b
   created (Q1–Q13). Unit 1's breadth pass is complete; the pile is

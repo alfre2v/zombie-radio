@@ -40,6 +40,42 @@ reader's memory):
   synthesis through the tunnel. Then delete this entry and bank
   the version in the arc-plan journal.
 
+## Bounded scratchpad before the script — test the "room to reason" hypothesis
+
+- **The gap:** the adopted prompt structure ([discussion
+  2026-09-21] prompt-structure §7.5) makes it possible to let the
+  model write ONE non-spoken line before the script (`# note: …`),
+  capped by the GBNF grammar with `{0,N}`, which the stream parser
+  drops instead of speaking — a bounded scratchpad. The hypothesis
+  (from the dottxt "Say What You Mean" finding that room to reason
+  before a constrained field helped on reasoning benchmarks; the
+  taxonomy's A3 says we amputated planning with `/no_think` for
+  speed): a few planning tokens per round improve storytelling
+  coherence at a latency cost small enough not to hear. UNPROVEN
+  for dialogue by anyone; it may equally be disproved.
+- **Where flagged:** owner, 2026-09-21, after the prompt-structure
+  discussion ("this paragraph can lead to an experiment task later
+  to try to disprove the hypothesis, or accept it… I fear we have
+  no time"). Registered here for visibility, not scheduled.
+- **Trigger:** the fork runs the shared-context structure with the
+  grammar, AND a Task 5a session is already open on a box (the
+  experiment is one extra cell in the audition, not a session of
+  its own).
+- **How to measure — the coherence problem, addressed with what the
+  taxonomy already has** ([discussion 2026-09-16] §5–§6): coherence
+  resists counting, but it has proxies — stale-question answers per
+  round, fact drift across speakers, fraction of turns that add
+  information — and the lab3 two-round protocol (report the zombie
+  count; then write a five-sentence report) is the fixed probe that
+  produced the founding specimen. Protocol-lite: same model, same
+  seed, grammar ON; scratchpad PRESENT vs ABSENT; run the two-round
+  protocol three times per arm; count the three proxies by ear;
+  read time-to-first-line off the stream. Adopt only if the
+  coherence gain is audible and the latency cost is not; otherwise
+  record the null result and delete this entry.
+- **Fix shape if adopted:** one grammar rule and one parser branch
+  in the fork; a yaml-only knob for the scratchpad's token cap.
+
 ## Add new TTS engines to tts-serve (F5-TTS, Breeze TTS 2) — soft goal
 
 - **The gap:** tts-serve wraps seven engines (Chatterbox,

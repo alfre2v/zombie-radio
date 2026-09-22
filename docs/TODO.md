@@ -36,6 +36,15 @@ keep turning inside TalkWithMe's "one user message → up to four
 replies → stop" design, given the app has no server-initiated
 channel to the browser). Each gets its own discussion doc; the
 next arc BUILDS on the two decisions instead of taking them.
+**(1) DIRECTION ADOPTED 2026-09-21** — [discussion 2026-09-21]
+prompt-structure: one shared context in screenplay form, code
+director + per-round GBNF grammar (speaker allowlist, line
+budget), one streamed request per round, SSE events synthesized
+per parsed line; the sanitizer patch is dropped by construction.
+Gate before final: two on-box confirmations (grammar + streaming
+curl; per-round latency vs per-persona) and one audition item
+(prose quality with/without the grammar). **(2) story loop:** the
+next discussion.
 
 **Parallelism note:** Task 4 (the owner's cast work) has ZERO
 dependency on Tasks 1–3 — it is the long pole and can start
