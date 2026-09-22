@@ -386,10 +386,13 @@ change the narrative-health scores.
 The regex `/[^.!?]*[.!?]+/g` (`tts.js:74`) treats any run of
 `.`, `!`, `?` as a sentence end. A numbered list therefore yields
 `1.` as a complete "sentence", and `Dr.` does the same. Each such
-fragment becomes its own synthesis request — a cloned voice
-pronouncing "one" or "doctor" in isolation, which is the echo-like
-artifact heard from Moira. The accumulator's motivation is now a
-receipt, not a suspicion. *Measured.*
+fragment becomes its own synthesis request. **Two symptoms, one
+cause (owner correction 2026-09-22):** the ECHO artifact happened
+only when "1." was synthesized as a lone sentence; what "Dr.",
+"2.", "3." produced was LONG UNNATURAL PAUSES — each fragment pays
+a full request round trip plus the 80 ms inter-buffer gap. The
+accumulator's motivation is now a receipt, not a suspicion.
+*Measured (the splitter); owner-observed (the two symptoms).*
 
 #### F4 — The vanished sentence has a silent failure path
 
@@ -604,6 +607,36 @@ exactly one cut point.*
   middle. *Consequence for Q4, the latency measurement:* the
   N-infinity end can be measured tonight on any box by flipping
   `tts.streaming` to false in the Servers dialog — no code needed.
+- **RULED 2026-09-22 (answer pass, Q9 / Q4) — the accumulator's
+  rules for the fork.** The accumulator is CONFIRMED as needed: under
+  the adopted engine the server still emits `token` events per
+  script line and `tts.js` still cuts sentences from them, so a
+  line like "Dr. Byrne. 47. Microbiology. Over." would still be
+  five requests without it. N is a PACKING limit, never a
+  truncation: the regex hands whole sentences, the accumulator only
+  groups them. Provisional **N = 100 characters** (owner: 150 too
+  big), **tail tolerance ~20 %** (to 120), **tail threshold
+  ~30 characters**. Rules: (1) a sentence arrives and the chunk is
+  empty → it goes in whatever its length; a single 180-character
+  sentence is sent whole, alone, oversize — splitting mid-sentence
+  would sound worse than one longer wait; (2) a sentence arrives
+  and the chunk has content → append if chunk + sentence ≤ N;
+  else, if the sentence is under the tail threshold and the total
+  ≤ N × 1.2, append anyway (built for "Over."); else FLUSH the
+  chunk and start a new one with the sentence; (3) the LINE END is
+  a hard flush — the next line is another speaker, another voice,
+  so a chunk never crosses it. "Flush" = one call to the existing
+  `enqueueStreamingTTS(persona, chunk)`, which pushes the string
+  onto the existing `ttsRequestQueue` array and returns
+  immediately; the fetch and playback pipelines already run
+  concurrently, so the accumulator's own state is two strings (the
+  partial-sentence buffer that exists today, plus the current
+  chunk) — no new queue. Lone one-word lines ("Over.") go as is;
+  whether a lone digit still echoes on the chosen engine is an
+  audition item, not a browser rule. If the model writes
+  200-character sentences, the fix is a director instruction about
+  line length, not a splitter. The measurement that would tune N
+  (synthesis time versus text length) is deferred to follow-ups.
 - **How the browser learns TTS settings today is the pattern for
   N.** The `streaming` flag travels: `settings.yaml` → `TTSConfig`
   (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/config.py:75`)
@@ -853,14 +886,17 @@ designed in this tour.
 
 - **Q8 — OPEN. Sanitizer reach.** Head filter only, or head filter
   plus a persist-time sweep for mid-reply labels (§2).
-- **Q9 — OPEN. Accumulator remnant policy.** What to do with a
-  trailing fragment shorter than a threshold, or a reply that is
-  only "1." (§3).
-- **Q10 — OPEN. Knob homes.** N in the `tts` section via the health
-  response — UI or yaml-only; the sanitizer toggle in `general`,
-  yaml-only to start (§4).
-- **Q11 — OPEN. A Node test for `tts.js`.** Add the third harness,
-  or ship the accumulator untested like the code it replaces (§6).
+- **Q9 — RULED 2026-09-22. Accumulator remnant policy.** Soft
+  limit with ~20 % tolerance for tails under ~30 characters; lone
+  one-word lines sent as is; full rules in §3.
+- **Q10 — RULED 2026-09-22. Knob homes.** All fork knobs yaml-only
+  for the timebox: the show's cadence knobs in a new `show:`
+  section; N and its tolerance next to `streaming` in `tts:`; no
+  dialogs (§4). The sanitizer toggle no longer exists.
+- **Q11 — RULED 2026-09-22. A Node test for `tts.js`.** No new
+  harness inside the timebox; the Python suite keeps upstream's
+  green rule; a JS test for the packing rules is a follow-up once
+  the rules stop moving (§6).
 - **Q12 — OPEN, record only. Directive injection point for the
   director arc.** User message, 2024 style, versus the
   system-prompt tail (§5).
@@ -879,3 +915,7 @@ designed in this tour.
   ruling to gather questions across all products before answering.
   Questions Q8–Q13 added (§8); update trail renumbered to §9.
   Unit 1's breadth pass is complete; §7 stands as written.
+- **2026-09-22** — Answer pass: F3 corrected (echo for "1." only;
+  pauses for the other fragments); §3 gained the ruled accumulator
+  rules (N = 100, tolerance, hard flush at line end); Q9–Q11 marked
+  ruled in §8.

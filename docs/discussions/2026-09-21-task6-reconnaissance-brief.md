@@ -6,10 +6,13 @@
 about to fork, written so that the owner's own study of three
 codebases starts oriented and so that the Task 6 fork's shape
 round argues from receipts rather than from memory.
-**Status:** IN PROGRESS, breadth pass. Unit 1 (TalkWithMe) breadth
-pass complete (sections 1–7); unit 2 (tts-serve) breadth pass
-written; units 3–4 not started. Thirteen open questions (index in
-§5b) and six seam questions (§5) await the answer pass.
+**Status:** ANSWER PASS COMPLETE (2026-09-22). Units 1 and 2 toured;
+unit 4 delivered as [discussion 2026-09-21] prompt-structure (plus
+[discussion 2026-09-21] story-loop); every seam question (§5) and
+open question (§5b) now carries the owner's ruling. **Remaining
+before PR #6 closes: unit 3, the synthesis (§9).** The HTML
+visuals were DROPPED on 2026-09-22 (owner: "we have a bigger fish
+to fry"); `docs/visuals/` is not born.
 
 *Context for the cold reader.* Zombie-Radio is an interactive,
 audio-only theater play performed by four AI voice actors:
@@ -222,8 +225,11 @@ essentials for this brief:
   our role runs it, house style), the synthesize contract as our
   client experiences it, findings F1–F10, the seam-ledger
   proposals, vocabulary, itinerary, questions Q4–Q6.
-- `docs/visuals/task6-reconnaissance-brief/` — the **HTML
-  derivatives**: one self-contained page per tour plus an index.
+- ~~`docs/visuals/task6-reconnaissance-brief/`~~ — **DROPPED
+  2026-09-22** (owner: "I don't think I need the HTML visuals, we
+  have a bigger fish to fry"). The plan is kept below for the
+  record; the folder is not born. The **HTML derivatives** were to
+  be: one self-contained page per tour plus an index.
   Diagrams as inline Mermaid (single-sourced from the markdown),
   annotated code excerpts (HTML only, so the reader does not have
   to leave the page), `vscode://file/<absolute path>:<line>` deep
@@ -258,8 +264,11 @@ question, never over it.
   the engine caches the encoded voice prompt per clip+transcript,
   so the compute cost is paid once per unique clip; what repeats
   per sentence is bandwidth only, a few tens of milliseconds on
-  our tunnel. No fork work needed. Awaits the owner's ruling in
-  the answer pass.*
+  our tunnel. No fork work needed.* **RESOLVED 2026-09-22 (owner:
+  accept).** Per-request upload stays as is in the fork; Q6 closes
+  with it. If real actor clips turn out much longer than ~10 s, the
+  deferred S3 measurement (follow-ups) tells whether it ever
+  matters.
 - **S2 — Several emotional references per persona.** *Raised by
   the 2024 prologue, owed by unit 2.* The 2024 prototype realized a
   character's emotion by choosing an emotionally matching reference
@@ -275,6 +284,12 @@ question, never over it.
   TalkWithMe design question for the fork or the director.
   Alternative path noted: IndexTTS exposes explicit emotion
   control (8-component vector, emotion clip, or text), 22.05 kHz.*
+  **RESOLVED 2026-09-22 (owner confirmed the group):** the other
+  half is answered by the adopted prompt structure — the
+  parenthetical stage direction in the script line carries the
+  register; mapping a register to a clip per persona (or to an
+  engine knob) is FORK WORK that waits on Task 4's clips, not an
+  open question.
 - **S3 — Text length per synthesis request.** *Raised by unit 1,
   owed by unit 2.* The max-chars accumulator's N is bounded by
   what the engine tolerates in one request (and by how latency
@@ -286,22 +301,29 @@ question, never over it.
   not by a limit. Becomes a measurement question: the
   latency-versus-length curve on a box, using the `time_used` and
   `rtf` fields every response already carries. See Q4 in the
-  tts-serve tour.*
+  tts-serve tour.* **DROPPED FROM THIS ARC 2026-09-22 (owner):** "we
+  have already committed to this path forward; this measurement
+  will be useful later, after we have something working we can
+  tweak; I can always change the TTS server." Moved to
+  `docs/follow-ups.md` as a tuning measurement. The fork starts
+  with a provisional accumulator N of **100 characters** (owner:
+  150 was too big), tolerance ~20 % for short tails (Q9).
 - **S4 — Two engines on one box (Task 5b).** *Raised by the
   tts-serve tour, owed by the 5b planning.* Every tts-serve
   engine is one process in its own venv on its own port, and
   synthesis inside a process is serialized by a lock. Our Ansible
   role selects ONE engine by name (`zr_tts_engine`). Question:
   what is the deployment shape for two engines side by side — the
-  role run twice, or a list variable? *Status: OPEN, parked for
-  5b.*
+  role run twice, or a list variable? *Status: PARKED to 5b's
+  planning (owner confirmed 2026-09-22).*
 - **S5 — Synthesis telemetry.** *Raised by the tts-serve tour,
   owed by the director design.* Every synthesis response carries
   `time_used`, `rtf`, and the `seed` used; TalkWithMe reads only
   `audio_base64` and discards the rest. Question: should the
   client surface or log these, and where — for 5b's engine
-  comparison and for a director's pacing model? *Status: OPEN,
-  parked.*
+  comparison and for a director's pacing model? *Status: PARKED
+  post-MVP, until the director wants a pacing model (owner
+  confirmed 2026-09-22).*
 - **S6 — Per-request TTS parameter overrides through TalkWithMe.**
   *Raised by the owner's emotion questions (tts-serve tour §8, Q2
   and Q3), owed by the fork or the director design.* tts-serve has
@@ -314,7 +336,10 @@ question, never over it.
   to 59). Question: how would a per-line instruction — "this line,
   frightened" — reach the engine: a per-request parameter override
   on `/api/tts`, a per-persona choice among several reference
-  clips, or both? *Status: OPEN.*
+  clips, or both? *Status: RESOLVED in principle 2026-09-22 — the
+  channel is the parenthetical stage direction in the script line
+  (ADR-0003, point 3); the mapping to clips or knobs is fork work
+  after Task 4 (see S2).*
 
 ### 5b. Index of open questions (Q1–Q13)
 
@@ -327,14 +352,14 @@ by product.*
 | Q1 | Does the label sanitizer become a stream-head filter in `_chat_stream`? *Moot under the adopted prompt structure — no label to strip ([discussion 2026-09-21] prompt-structure §12).* | TalkWithMe tour §1.7, §2 |
 | Q2 | Which labels to strip: own name only, any `[X]:`, bare `Name:`? *Moot, same reason.* | TalkWithMe tour §1.7, §2 |
 | Q3 | Mention detection overriding who-answers — keep it for a radio show? *Moot on the show page (no who-answers control; the director chooses); stays as-is on the chat/rehearsal page.* | TalkWithMe tour §1.7, §5 |
-| Q4 | S3 measurement (latency vs text length) before the fork decides N, or a provisional N first? | tts-serve tour §7 |
-| Q5 | Task 4 reference material spec: ~10 s clean clips with exact transcripts? | tts-serve tour §7 |
-| Q6 | Keep the per-sentence reference upload as is (cheap per F1)? | tts-serve tour §7 |
-| Q7 | Mac-local TTS probe with the MLX engine (candidate experiment 5d)? | tts-serve tour §8 Q5; umbrella §10 |
+| Q4 | S3 measurement (latency vs text length) before the fork decides N, or a provisional N first? *RULED 2026-09-22: provisional N = 100 now; the measurement dropped from this arc → follow-ups.* | tts-serve tour §7 |
+| Q5 | Task 4 reference material spec: ~10 s clean clips with exact transcripts? *CONFIRMED 2026-09-22 (owner: "matches my plan"); recorded in TODO's owner action queue.* | tts-serve tour §7 |
+| Q6 | Keep the per-sentence reference upload as is (cheap per F1)? *RESOLVED with S1, 2026-09-22: yes.* | tts-serve tour §7 |
+| Q7 | Mac-local TTS probe with the MLX engine (candidate experiment 5d)? *PARKED until after the MVP (owner, 2026-09-22). The demo laptop is an M1 with 16 GB — cannot run the stack; a second M1 with 64 GB could, if the speed holds; follow-ups entry.* | tts-serve tour §8 Q5; umbrella §10 |
 | Q8 | Sanitizer reach: head filter only, or plus a persist-time sweep? *Moot, same reason.* | TalkWithMe tour §2, §8 |
-| Q9 | Accumulator remnant policy for tiny trailing fragments? | TalkWithMe tour §3, §8 |
-| Q10 | Knob homes: N in `tts` via the health response; sanitizer toggle in `general`, yaml-only? | TalkWithMe tour §4, §8 |
-| Q11 | Add a Node test harness for `tts.js`, or ship the accumulator untested? | TalkWithMe tour §6, §8 |
+| Q9 | Accumulator remnant policy for tiny trailing fragments? *RULED 2026-09-22: accumulator confirmed as needed; N = 100 packs whole sentences within a script line; the line end is a hard flush; a short tail (under a threshold, ~30 chars) may overshoot N by ~20 % (to 120); a single sentence longer than N is sent whole, alone; lone one-word lines go as is. Full rules: TalkWithMe tour §3.* | TalkWithMe tour §3, §8 |
+| Q10 | Knob homes: N in `tts` via the health response; sanitizer toggle in `general`, yaml-only? *RULED 2026-09-22: all fork knobs yaml-only for the timebox — the show's cadence knobs in a new `show:` section, N and its tolerance next to `streaming` in `tts:`; no dialogs; the sanitizer toggle no longer exists.* | TalkWithMe tour §4, §8 |
+| Q11 | Add a Node test harness for `tts.js`, or ship the accumulator untested? *RULED 2026-09-22: no new Node harness inside the timebox; the Python suite keeps upstream's green-suite rule; a JS test for the packing rules is a follow-up once the rules stop moving.* | TalkWithMe tour §6, §8 |
 | Q12 | Director directives: user message (2024 style) or system-prompt tail? Record only. | TalkWithMe tour §5, §8 |
 | Q13 | Director placement given no server-push channel: browser, server+push, or external+polling? *DECIDED 2026-09-21: browser as metronome, server as director ([discussion 2026-09-21] story-loop §8).* | TalkWithMe tour §5, §8 |
 
@@ -723,8 +748,12 @@ overrides through TalkWithMe).
 
 ## 9. Synthesis (unit 3)
 
-*Not started. Will resolve S1–S3 and any seam questions raised
-later, each with a dated resolution beside its ledger entry in §5.*
+*Not started. **MUST BE WRITTEN BEFORE PR #6 CLOSES** (owner
+reminder request, 2026-09-22). With the ledger closed on
+2026-09-22, this becomes a short integration text: what the two
+projects together give the fork, what the seams cost, what stays
+open for the director arc — about two hours of writing, no new
+reading.*
 
 ## 10. Integration pass (unit 4)
 
@@ -803,6 +832,14 @@ evening; no box.*
   at the end of §2 and in §10; TODO.md (Task 6 disposition, arc
   boundary) and the upstream-contribution strategy (§7 addendum)
   carry the full text.
+- **2026-09-22, answer pass complete** — one ruling at a time
+  with the owner: S1 resolved; S2 and S6 resolved in principle
+  (fork work after Task 4); S3/Q4 dropped from the arc to
+  follow-ups, provisional N = 100; S4 parked to 5b; S5 parked
+  post-MVP; Q5 confirmed; Q6 with S1; Q7 parked post-MVP (demo Mac
+  16 GB; a 64 GB M1 exists); Q9 packing rules ruled; Q10 all knobs
+  yaml-only; Q11 no new Node harness. HTML visuals dropped.
+  Synthesis (§9) flagged as the last item before PR #6 closes.
 - **2026-09-21, story loop decided** — the story-loop discussion
   doc written; §10 points at it; Q13 marked decided and Q3 moot on
   the show page in the index.

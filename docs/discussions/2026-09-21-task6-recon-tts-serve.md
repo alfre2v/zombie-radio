@@ -350,16 +350,23 @@ per unique voice, and which are per sentence?
 
 ## 7. Questions added to the pile (OPEN, not to be answered in the breadth pass)
 
-- **Q4 — OPEN.** The S3 measurement: do we run the
-  latency-versus-length curve before the fork decides N, or pick a
-  provisional N and measure later?
-- **Q5 — OPEN.** Task 4 reference material spec: about 10 seconds,
-  clean, with exact transcripts, one clip per actor now and
-  possibly one per emotional register later. Does that match what
-  the owner planned to collect?
-- **Q6 — OPEN.** Whether the fork should keep the per-sentence
-  reference upload as is. The agent's reading says yes, it is
-  cheap (F1).
+- **Q4 — RULED 2026-09-22.** Provisional N = 100 now; the
+  synthesis-time-versus-text-length measurement is DROPPED from this
+  arc and moved to `docs/follow-ups.md` (owner: useful later, once
+  something works and can be tweaked).
+- **Q5 — CONFIRMED 2026-09-22.** Task 4 reference material spec:
+  about 10 seconds of clean speech per actor (no music or crosstalk
+  under the voice) plus an exact transcript per clip — covers both
+  candidate engines; Whisper on the box can draft the transcripts;
+  a second clip per actor in another emotional register is optional
+  until stage directions are wired to clip selection. Owner: "that
+  matches my plan."
+- **Q7 — PARKED until after the MVP (2026-09-22).** The Mac-local
+  TTS probe: the demo laptop is an M1 with 16 GB and cannot run the
+  stack; a second M1 with 64 GB could, if the speed is acceptable.
+  Follow-ups entry.
+- **Q6 — RESOLVED 2026-09-22, with S1.** The fork keeps the
+  per-sentence reference upload as is; it is cheap (F1).
 
 ## 8. Owner questions answered after the breadth pass (2026-09-21)
 

@@ -104,6 +104,11 @@ shape round argues from receipts. Shape rulings of 2026-09-21:
   a decision taken at unit 1's close.
 - *Box status:* the 09-19 A6000 is gone; experiments will spin a
   new VM. The brief needs no box.
+- *2026-09-22:* the HTML visuals were dropped by the owner ("bigger
+  fish to fry"); `docs/visuals/` is not born. The brief's design
+  mandate produced two discussion docs and two ADRs instead
+  (prompt structure, story loop; ADR-0002, ADR-0003). Unit 3's
+  synthesis is the last item before PR #6 closes.
 
 ---
 

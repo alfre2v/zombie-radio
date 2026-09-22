@@ -78,7 +78,14 @@ the agent keeps this current. These carry across arcs.*
    Famous-actor movie clips likely → **NEVER committed to the
    repo** (gitignore before the first file; hygiene entry +
    voice-isolation-tool search in follow-ups.md). Unblocks
-   Task 5b.
+   Task 5b. **Spec confirmed 2026-09-22 (recon brief Q5):** about
+   10 seconds of clean speech per actor — no music or crosstalk
+   under the voice — plus an EXACT transcript per clip (covers both
+   candidate engines: ours requires the transcript and ≥2 s;
+   LuxTTS needs no transcript, ≥3 s, ~10 s clones best). Whisper on
+   the box can draft the transcripts. A second clip per actor in
+   another emotional register is optional until stage directions
+   are wired to clip selection.
 2. **Seed the character bibles** — EXECUTING SOON. Names,
    personalities, quirks, voice descriptions; rough is fine;
    model-neutral (guardrail 2). Unblocks Task 5a.
@@ -253,7 +260,11 @@ the agent keeps this current. These carry across arcs.*
     excerpts, VS Code deep links) under
     `visuals/task6-reconnaissance-brief/`. Unit 1 alone unblocks
     the fork. Shape, method, cadence: [discussion 2026-09-18]
-    arc-plan Task notes.
+    arc-plan Task notes. **State 2026-09-22:** units 1–2 toured;
+    unit 4 delivered as the prompt-structure + story-loop
+    discussions; answer pass complete (every S and Q ruled); HTML
+    visuals DROPPED (owner). **Remaining: unit 3, the synthesis —
+    must land before PR #6 closes** (owner reminder request).
 - [ ] **Task 7 — The canned episode (owner MUST) + demo-day
   protocol runbook.** Recorded from the working prototype; the
   runbook promotion deferred from the last arc lands here.

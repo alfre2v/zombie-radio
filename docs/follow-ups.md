@@ -40,6 +40,65 @@ reader's memory):
   synthesis through the tunnel. Then delete this entry and bank
   the version in the arc-plan journal.
 
+## Measure TTS synthesis time against text length (tunes the accumulator's N and the director's line budget)
+
+- **The gap:** the accumulator sends chunks of up to N characters;
+  while chunk 1 plays, chunk 2 is being synthesized, and the
+  listener hears no gap only if making the next chunk takes less
+  time than playing the current one. We do not know (a) the fixed
+  cost per synthesis request — the pause paid in full by every
+  tiny fragment like "Dr." — nor (b) how the wait grows with longer
+  text. Ten requests to tts-serve with texts of 20, 50, 100, 200,
+  400 characters, recording the `time_used` and audio-duration
+  fields every response already carries, give both numbers in one
+  table, and the largest N whose next-chunk wait hides behind the
+  current chunk's playback. The same table tells the director how
+  far ahead to request the next round.
+- **Where flagged:** the Task 6 reconnaissance brief (seam question
+  S3, tts-serve tour F2/F4, question Q4); **dropped from the MVP
+  arc by the owner on 2026-09-22** — "we have already committed to
+  this path forward; this measurement will be useful later, after
+  we have something working we can tweak; I can always change the
+  TTS server."
+- **Trigger:** the show loop runs end to end in the fork and the
+  owner wants to tune pauses or prosody; or a TTS engine change
+  (Task 5b) invalidates the provisional value.
+- **Fix shape:** half an hour on a box with `tools/speak.py` or
+  curl; then adjust `tts.accumulator_max_chars` (name indicative;
+  provisional 100, tolerance ~20 %) and the director's line budget.
+
+## Mac-local TTS probe with tts-serve's MLX engine (parked post-MVP)
+
+- **The gap:** tts-serve ships a native Apple-Silicon engine
+  (Qwen3-TTS via MLX, tag 1.2) and five engines accept PyTorch's
+  `mps` device; llama.cpp runs on Metal; Whisper runs anywhere — so
+  a Mac with enough unified memory could run the whole stack
+  locally: a second emergency mode for demo day and a free
+  rehearsal setup. **The demo laptop (M1, 16 GB) cannot run it**;
+  the owner's second M1 with 64 GB could, if the speed is
+  acceptable.
+- **Where flagged:** tts-serve tour §8 Q5 (2026-09-21); parked by
+  the owner 2026-09-22 ("until after the MVP").
+- **Trigger:** after 2026-10-08, or if the cloud box becomes
+  unavailable for the demo.
+- **Fix shape:** one evening on the 64 GB machine — a venv,
+  `impl/server_qwen3TTS_mlx.py`, point TalkWithZombies' TTS URL at
+  it, read `rtf` from a few sentences; llama.cpp on Metal next.
+
+## JavaScript test for the accumulator's packing rules
+
+- **The gap:** upstream has Node test harnesses for the persona
+  form and the TTS settings section but none for `static/tts.js`;
+  the fork changes the accumulator (N = 100, ~20 % tail tolerance,
+  hard flush at line end) and adds `show.js` untested.
+- **Where flagged:** TalkWithMe tour §6 / Q11; ruled 2026-09-22: no
+  new harness inside the three-day timebox.
+- **Trigger:** the packing rules stop moving (after the timebox and
+  the first rehearsal tuning).
+- **Fix shape:** a third Node test in upstream's `vm.Context`
+  pattern (`tests/test_tts_settings.js` as the template) covering
+  the three packing rules and the line-end flush.
+
 ## Bounded scratchpad before the script — test the "room to reason" hypothesis
 
 - **The gap:** the adopted prompt structure ([discussion
