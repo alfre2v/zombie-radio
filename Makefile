@@ -36,7 +36,7 @@ help:
 	@echo "  ans-set ENV=x IP=y  wire env x's hosts.yml to box IP y (replaces the sentinel)"
 	@echo "  ans-unset ENV=x     restore env x's hosts.yml to the committed sentinel"
 	@echo "  ssh-tunnel ENV=x    open the SSH tunnel to env x's box (IP from its inventory)"
-	@echo "  client-mac          install the TalkWithMe client on this Mac (standalone, inventory-free)"
+	@echo "  client-mac          install the TalkWithZombies client on this Mac (standalone, inventory-free)"
 
 install:
 	uv sync

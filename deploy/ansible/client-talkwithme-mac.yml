@@ -1,5 +1,7 @@
 ---
-# Standalone installer: the TalkWithMe client (director + web UI) on THIS Mac.
+# Standalone installer: the TalkWithZombies client (director + web UI) on THIS Mac.
+# TalkWithZombies is our fork of TalkWithMe (ADR-0002); repo, version and dir
+# below are plain vars, so pointing it back at upstream is a three-line change.
 # Deliberately inventory-free (reserved-slots pattern): run with NO -i —
 #   make client-mac        (or: ansible-playbook deploy/ansible/client-talkwithme-mac.yml)
 # It never reads the deployment inventories: the client is laptop-side and
@@ -8,14 +10,14 @@
 # offerable to the upstream project and must not impose our tooling.
 # Polite about user state: settings.yaml and each Personas/<Name>/ are
 # created only when absent, never overwritten.
-- name: Install the TalkWithMe client on this Mac
+- name: Install the TalkWithZombies client on this Mac
   hosts: localhost
   connection: local
   gather_facts: true
   vars:
-    client_repo: "https://github.com/scorbo2/TalkWithMe"
-    client_version: "7.1"  # pinned tag (upstream tags carry no v prefix); bump deliberately
-    client_dir: "{{ ansible_facts['user_dir'] }}/TalkWithMe-client"
+    client_repo: "https://github.com/alfre2v/TalkWithZombies"
+    client_version: "tz-0.1"  # pinned fork tag (tz- prefix, never upstream's bare numbers); bump deliberately
+    client_dir: "{{ ansible_facts['user_dir'] }}/TalkWithZombies-client"
     client_python: python3
     client_venv: "{{ client_dir }}/.venv"
     # Reserved for the real cast's never-committed voice samples (manual for
@@ -108,7 +110,7 @@
 
     # force: false means a locally MODIFIED clone fails loudly instead of
     # being clobbered — user code edits are user state too.
-    - name: Clone TalkWithMe at the pinned version
+    - name: Clone TalkWithZombies at the pinned version
       ansible.builtin.git:
         repo: "{{ client_repo }}"
         dest: "{{ client_dir }}"
@@ -154,7 +156,7 @@
             max_persona_replies: 4
             max_turns_for_context: 50
             show_tool_calls: true
-            enable_persona_memories: true
+            enable_persona_memories: false
             global_system_prompt: ''
             personas_directory: null
           mcp:
@@ -247,7 +249,7 @@
     - name: How to run it
       ansible.builtin.debug:
         msg:
-          - "Installed: {{ client_dir }} at TalkWithMe {{ client_version }}."
+          - "Installed: {{ client_dir }} at TalkWithZombies {{ client_version }}."
           - "1. Open the tunnel to the box:  make ssh-tunnel ENV=cloud"
           - "2. cd {{ client_dir }} && source .venv/bin/activate"
           - "3. uvicorn app.main:app --host 127.0.0.1 --port 8000"

@@ -46,6 +46,28 @@ Division of labor among READMEs: each subfolder's short README
 explains the format expected INSIDE it; this file explains the
 RELATIONSHIPS between the pieces — the workflow.
 
+## Where things live — two sibling repositories
+
+Since 2026-09-23 the project spans two repositories ([ADR-0002]):
+
+- **This repository, `alfre2v/zombie-radio`** — the memory of
+  record and the deployment: the spec, the decisions, the
+  discussions, the experiments, the TODO and roadmap, the Ansible
+  deployment of the model services, and the Mac client installer.
+- **The app, [`alfre2v/TalkWithZombies`](https://github.com/alfre2v/TalkWithZombies)**
+  — our fork of scorbo2's TalkWithMe (at tag 7.1), cloned beside
+  this one at `/Users/alfredo/workspace/hackTNT_2026/TalkWithZombies`.
+  It holds the app's code, its tests, its feature docs, and its
+  `AGENTS.md` (upstream's agent instructions with our house rules on
+  top; its `CLAUDE.md` imports that file).
+
+The glue is one pin: the installer's `client_version` in
+`deploy/ansible/client-talkwithme-mac.yml` names the fork tag the
+deployment was proven against. Fork tags carry a `tz-` prefix
+(`tz-0.1`, …) so they never collide with upstream's bare version
+numbers. A design question is answered here even when the code lives
+there; the fork's docs describe features, not decisions.
+
 ## The cross-reference legend (use everywhere)
 
 - `[spec §X.Y]` — a spec section (topic-organized, so stable)
@@ -263,4 +285,6 @@ get there* → the discussion; *what did we try first* → the experiment.
   never sub-agents of the lead for build work; its knobs
   (acceptance checks, delegable-later marks) placed in `TODO.md`.
   Same day: "What crosses over" added — the work order versus a
-  session handoff, and the work order's skeleton.
+  session handoff, and the work order's skeleton. Also the same
+  day: "Where things live — two sibling repositories", when the
+  fork TalkWithZombies was created (Task 6a).

@@ -336,7 +336,24 @@ reader's memory):
   sentences packed up to about 100 characters instead of one TTS
   request per sentence — fixes "Dr. Byrne" becoming four requests,
   the short-sentence pauses, and the echo on a lone "1."), once
-  proven in TalkWithZombies. **No longer candidates:** the `[Name]:`
+  proven in TalkWithZombies. Two **bug reports** joined the list on
+  2026-09-23: (3) **thinking models break the router and some
+  personas silently** — the "LLM decides" router asks for a name
+  with `max_tokens=16` and no `/no_think`
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/chat.py:117`),
+  so Nemotron spends the budget thinking, the name comes back empty
+  and the code falls back to `random.choice`; a persona prompt
+  without `/no_think` can spend the whole `max_tokens` thinking, and
+  since llama.cpp returns the thinking in `reasoning_content` while
+  the app reads only `content`, the reply is an empty bubble (seen
+  live 2026-09-23 with the stock Alex and Luna: 200 of 200 tokens,
+  `content: ''`); (4) **the STT upload name for `audio/webm`** —
+  `mimetypes.guess_extension` answers `.weba` on newer Pythons, so
+  recordings go out as `audio.weba`; OpenAI's transcription API
+  checks the extension and lists `webm` but not `weba` (our Whisper
+  ignores the name — tested live); two upstream tests fail on those
+  Pythons; our fix is TalkWithZombies commit `c46c3bf`.
+  **No longer candidates:** the `[Name]:`
   output sanitizer (moot under [ADR-0003] — [spec §9]) and the
   `max_turns_for_context` raise (done in our config, 6 → 50, on
   2026-09-18 — a setting, not a patch).
@@ -349,7 +366,8 @@ reader's memory):
 - **Fix shape:** (1) as a pull request or a README pointer to the
   deployment repo; (2) a focused pull request against upstream's
   `static/tts.js`, with the packing rules' Node test (entry above)
-  as its proof.
+  as its proof; (3) and (4) as GitHub issues with the receipts
+  above, (4) with our commit as the proposed fix.
 
 ## LuxTTS landed upstream — presumptive §7.2 candidate
 
