@@ -56,7 +56,8 @@ hold-to-talk mic enabled only in the listening state; prefetch is
 day-three polish; dead-air static is needed the day the cadence is
 tuned.
 Both gating decisions are taken and the gate passed
-(2026-09-22); the fork is next (Task 6a).
+(2026-09-22); the fork exists (Task 6a, done 2026-09-23); the show
+engine is next (Task 6b).
 
 **Parallelism note:** Task 4 (the owner's cast work) has ZERO
 dependency on Tasks 1–3 — it is the long pole and can start
@@ -106,10 +107,14 @@ the agent keeps this current. These carry across arcs.*
    used eight of nine emotions). The agent's lean: a yaml switch,
    default on, the parser stripping the tag before the TTS. Needed
    before Task 6b's grammar builder (follow-ups entry).
-6. **The hibernated Hyperstack VM** (2026-09-22; its IP kept for a
-   few cents an hour) — wake it for the next box session (`make
-   ans-set ENV=cloud IP=…`, then the tunnel) or destroy it; a
-   from-zero deploy takes about 7 minutes.
+6. **The Hyperstack VM is awake and stays up** — woken from
+   hibernation 2026-09-23 on the same IP; hibernation is a full
+   shutdown with the disk kept, so the box booted cold and every
+   service came back by itself (the TTS warms up on first use).
+   Kept running through Task 6b for quick live tests (owner,
+   2026-09-23). Decide after the timebox: hibernate (its IP kept for
+   a few cents an hour) or destroy; a from-zero deploy takes about
+   7 minutes.
 
 ## Sub-steps
 
@@ -197,7 +202,7 @@ the agent keeps this current. These carry across arcs.*
     phrasing, long-form escape hatch) become director settings to
     try. Runs after Task 6b, alongside 5a.
 - [ ] **Task 6 — The fork and the show engine: TalkWithZombies
-  ([ADR-0002], [ADR-0003]).** *How it got here, in four steps:*
+  ([ADR-0002], [ADR-0003]).** *How it got here, in five steps:*
   - **2026-09-18 — the trigger fired:** labels were back in the
     show's output and SPOKEN (no Global System Prompt per lab3), so
     the first patch was required and the fork moment arrived. First
@@ -221,7 +226,10 @@ the agent keeps this current. These carry across arcs.*
     `[Name]:` label left to strip); the accumulator is built in the
     fork.
   - **2026-09-22/23 — the gate passed and ADR-0003 was accepted**
-    (sub-item below). The fork (6a) is next.
+    (sub-item below).
+  - **2026-09-23 — the fork exists** (6a below):
+    `alfre2v/TalkWithZombies`, first tag `tz-0.1`, installed by
+    `make client-mac`. The show engine (6b) is next.
   **REPOSITORY LAYOUT (owner decision 2026-09-21): two sibling
   repositories.** `zombie-radio` stays the deployment and
   documentation repo (the memory of record); `TalkWithZombies` is
@@ -235,7 +243,8 @@ the agent keeps this current. These carry across arcs.*
   proven against (the `zr_tts_serve_version` pattern); add a short
   pointer section in the docs saying where each kind of document
   lives (design and decisions here; the app's feature docs and
-  AGENTS.md there). Rejected: a git submodule (nested detached
+  AGENTS.md there). *(Done 2026-09-23 — see 6a; the pointer
+  section is `docs/README.md` "Where things live".)* Rejected: a git submodule (nested detached
   checkout, a second place recording the version, buys nothing at
   deploy time since the installer clones from GitHub anyway); a
   subtree merge (the app inside a docs/deployment repo, our hooks
@@ -253,7 +262,10 @@ the agent keeps this current. These carry across arcs.*
     Realistic fork date ≈ 2026-09-24 → checkpoint ≈ 2026-09-27,
     leaving ~11 days for 5a/5b/5c, Task 7, and Task 8, with
     Task 4 (owner) in parallel throughout — no slack for a second
-    attempt.
+    attempt. **Actual (owner ruling 2026-09-23, the rule as first
+    agreed):** the fork was created 2026-09-23 at 14:46 CDT and the
+    clock started then — checkpoint (day 1.5) 2026-09-25 at 02:46
+    CDT, end 2026-09-26 at 14:46 CDT.
   - **Exit criterion, judged on MECHANISM, not narrative
     quality:** TalkWithZombies runs an unattended loop of at least
     ten turns with the four placeholder personas; speakers chosen
@@ -317,49 +329,58 @@ the agent keeps this current. These carry across arcs.*
     [discussion 2026-09-22] grammar-and-prompt-cache-lessons.
     Deployment by-products: tts-serve pin 1.2 proven; the base
     role's apt lock wait bounded with a clear error (`9fbbeb3`).
-  - [ ] **6a — Fork TalkWithZombies ([ADR-0002]), about an hour.
-    NEXT.**
-    - *Why:* the engine is built in our own app, free to diverge;
-      the 3-day timebox starts the moment the fork exists.
-    - *Steps:*
-      1. Fork scorbo2/TalkWithMe on GitHub as
-         **TalkWithZombies** (the owner's account — an outward-facing
-         action, done by the owner or with his explicit go), based
-         at tag 7.1.
-      2. README: a prominent "forked from TalkWithMe by Steve
-         Corbett (scorbo2)" section; the MIT notice kept (owner: "I
-         will always pay respect and attribution to upstream").
-      3. Clone to `/Users/alfredo/workspace/hackTNT_2026/TalkWithZombies`.
-      4. In this repository: point the Mac installer's
-         `client_repo` / `client_version` / `client_dir` at the fork
-         (`deploy/ansible/client-talkwithme-mac.yml:16-18`); add a
-         pin variable for the fork tag the deployment was proven
-         against (the `zr_tts_serve_version` pattern); add the docs
-         pointer section (design and decisions here; the app's
-         feature docs and AGENTS.md there). Installer proof: fresh
-         install, re-run `changed=0`, the app boots.
-      5. Disable, do not delete: `allow_tool_calls` false on every
-         persona, `enable_persona_memories` false.
-      6. The fork's `AGENTS.md` (upstream ships one) gains our house
-         rules — no AI attribution anywhere, minimal code comments,
-         absolute paths for files in sibling clones, the suite green
-         before review, review before every commit. Any agent that
-         opens the fork in a harness that reads `AGENTS.md` gets
-         them — a fresh session of the lead first of all, and any
-         parallel harness if delegation is ever switched on.
-    - *Done when:* the fork exists with its provenance labeled, the
-      installer installs it (proven), and the timebox clock is
-      running.
-    - *Acceptance:* `gh repo view alfre2v/TalkWithZombies` names
-      scorbo2/TalkWithMe as its parent; the README's "forked from"
-      section and the unchanged MIT `LICENSE` are on the default
-      branch; `make client-mac` from a clean state installs the fork
-      at its pinned tag, a re-run reports `changed=0`, and the app
-      answers HTTP 200. *Delegable later:* the installer variables
-      and the pin (step 4) — yes; the fork itself and its README —
-      no (outward-facing, the owner's).
-  - [ ] **6b — Build the show engine (the 3-day timebox; the clock
-    starts when 6a is done).** Design: [spec §5.3], [ADR-0003] and
+  - [x] **6a — Fork TalkWithZombies ([ADR-0002]) — done
+    2026-09-23** (fork: PR alfre2v/TalkWithZombies#1, merge
+    `1d41bab`, tag `tz-0.1`; this repository: branch
+    `alfre2v/talkwithzombies-fork`).
+    - **The fork:** `alfre2v/TalkWithZombies`, public, parent
+      scorbo2/TalkWithMe, created with `gh repo fork
+      --default-branch-only` (only `master`, which was exactly tag
+      7.1 = `93df6ca`; upstream's `7.2-dev-branch` and issue branch
+      not copied). A master-only fork copies no tags, so upstream's
+      `7.1` tag was pushed to the fork as the fork-point marker.
+    - **The clone:** `/Users/alfredo/workspace/hackTNT_2026/TalkWithZombies`;
+      remotes `origin` (the fork) and `upstream` (scorbo2, fetch
+      only — its push URL is set to `NO_PUSH_TO_UPSTREAM`); its own
+      `.venv` on Python 3.12.14.
+    - **Provenance and house rules** (`00eaf85`): the README's new
+      top section ("Forked from TalkWithMe" by Steve Corbett, tag
+      7.1, MIT `LICENSE` byte-identical to upstream's, where things
+      live); `AGENTS.md` gains the house rules above upstream's
+      text; a one-line `CLAUDE.md` (`@AGENTS.md`) — step 6's
+      assumption corrected: Claude Code reads `CLAUDE.md`, not
+      `AGENTS.md`, so the import is what makes a fresh session of
+      the lead see the rules.
+    - **Suite green from the start** (`c46c3bf`): 2 of 781 upstream
+      tests failed on the untouched 7.1 code — `mimetypes` answers
+      `.weba` for `audio/webm` on newer Pythons. Pinned to `webm`
+      (OpenAI's transcription API rejects `weba`; our Whisper ignores
+      the name — tested live). Now 781 passed, both Node tests pass.
+      Upstream bug report candidate (follow-ups).
+    - **Fork tags:** own version line with a `tz-` prefix, never
+      upstream's bare numbers (upstream's next release will be `7.2`,
+      with different code). `tz-0.1` = the merged setup PR.
+    - **The installer** (`deploy/ansible/client-talkwithme-mac.yml`,
+      filename kept): `client_repo` → the fork, `client_version` →
+      `tz-0.1`, `client_dir` → `~/TalkWithZombies-client` (the old
+      `~/TalkWithMe-client` stays as the 7.1 fallback). The pin
+      lives in the playbook, not in `common_vars.yml`: the client
+      playbook is inventory-free by design. Step 5: `allow_tool_calls`
+      was already false (the code's default and our seeded personas);
+      `enable_persona_memories: false` added to the seeded
+      `settings.yaml`.
+    - **Proof:** lint clean (`production`); fresh install
+      `changed=8` in 21 s; re-run `changed=0`; the installed app at
+      `tz-0.1` answers HTTP 200 on a test port and lists exactly the
+      four cast personas.
+    - *Acceptance:* all met — `gh repo view` names
+      scorbo2/TalkWithMe as parent; the "forked from" section and
+      the unchanged `LICENSE` are on `master`; `make client-mac`
+      installs the fork at its pinned tag, re-run `changed=0`,
+      HTTP 200.
+  - [ ] **6b — Build the show engine (the 3-day timebox: clock
+    started 2026-09-23 14:46 CDT, checkpoint 2026-09-25 02:46, end
+    2026-09-26 14:46). NEXT.** Design: [spec §5.3], [ADR-0003] and
     its Validation section; the lessons behind the rules marked
     (L): [discussion 2026-09-22] grammar-and-prompt-cache-lessons.
     **Delegation: OFF** (owner ruling 2026-09-23 — this work stays
@@ -540,7 +561,8 @@ the agent keeps this current. These carry across arcs.*
 
 ## Standing cross-arc notes
 
-- Hard deadline **2026-10-08** (hackTNT 2026): ~3 weeks out at
+- Hard deadline **2026-10-08** (the talk at the Austin Python Meetup
+  is in October 2026): ~3 weeks out at
   arc open; the prototype is the critical path, and D1's 3-day
   timebox is its first checkpoint.
 - Keep the last 2–3 branches, local and remote (owner rule,

@@ -18,12 +18,22 @@ Two principles shape everything:
 
 ## Status
 
-**In definition** (September 2026). MVP targeted for
-**2026-10-08** (hackTNT 2026). Current direction: adapt
-[TalkWithMe](https://github.com/scorbo2/TalkWithMe) and
-[tts-serve](https://github.com/scorbo2/tts-serve) as the
-foundation, with llama.cpp serving the dialogue LLM and Whisper
-for speech recognition.
+**Building the MVP prototype** (since 2026-09-17). MVP targeted
+for **2026-10-08**; the project will be presented in a talk at the
+Austin Python Meetup in October 2026.
+
+- **Foundation (validated):**
+  [TalkWithMe](https://github.com/scorbo2/TalkWithMe) and
+  [tts-serve](https://github.com/scorbo2/tts-serve), with llama.cpp
+  serving the dialogue LLM and Whisper for speech recognition.
+- **The app:** [TalkWithZombies](https://github.com/alfre2v/TalkWithZombies),
+  our fork of TalkWithMe, where the show engine is being built: one
+  shared script, a director in code, a screenplay grammar, and the
+  browser as the show's clock.
+- **The deployment:** Ansible + Docker stand up the model services
+  on a rented cloud GPU box (or a local GPU machine) in about seven
+  minutes; the app runs on a Mac laptop and reaches them through an
+  SSH tunnel.
 
 ## Documentation
 

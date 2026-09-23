@@ -2,7 +2,10 @@
 
 Interactive audio-only theater play performed by 4 AI voice actors:
 scientists trapped in a lab during a zombie breakout. Hard deadline:
-2026-10-08 (hackTNT 2026).
+2026-10-08. The project will be presented in a talk at the Austin
+Python Meetup in October 2026. "hackTNT 2026" (as in the folder name)
+is the owner's internal name for projects built hackathon-style in
+2026, not an event.
 
 ## When picking up cold
 

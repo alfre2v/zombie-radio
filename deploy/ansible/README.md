@@ -46,15 +46,18 @@ make check        # three ok lines = stack reachable from the laptop
 
 ## The Mac client installer (standalone)
 
-`client-talkwithme-mac.yml` installs the TalkWithMe CLIENT on the
-Mac laptop — deliberately outside site.yml and the inventories
-(run it with no `-i`): `make client-mac`. Upstream-vanilla (plain
-venv + pip), pinned to an upstream tag via `client_version`,
-polite about user state (settings.yaml and existing
-`Personas/<Name>/` are never overwritten), and it ships the
-four-scientist placeholder cast with `say`-generated reference
-voices. The fork, when it lands, is one `client_repo` flip away.
-No supervisor: uvicorn by hand (the playbook's final message
+`client-talkwithme-mac.yml` installs the CLIENT on the Mac laptop —
+deliberately outside site.yml and the inventories (run it with no
+`-i`): `make client-mac`. Since 2026-09-23 the client is our fork,
+[TalkWithZombies](https://github.com/alfre2v/TalkWithZombies),
+pinned to a fork tag via `client_version` (`tz-` prefix, so it never
+collides with upstream's bare version numbers) and installed into
+`~/TalkWithZombies-client`; the earlier `~/TalkWithMe-client`
+(TalkWithMe 7.1) is left in place as the fallback. Upstream-vanilla
+tooling (plain venv + pip), polite about user state (settings.yaml
+and existing `Personas/<Name>/` are never overwritten), and it ships
+the four-scientist placeholder cast with `say`-generated reference
+voices. No supervisor: uvicorn by hand (the playbook's final message
 prints the liturgy).
 
 ## Conventions that bite if unknown

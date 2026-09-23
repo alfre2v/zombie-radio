@@ -45,8 +45,9 @@ them):
 - **"Theatrical live improvisation with LLMs."** Dialogue is
   improvised at broadcast time, not scripted.
 
-**Deadline:** 2026-10-08 (hackTNT 2026). Standing rule: MVP
-first; adventurous things only if time remains.
+**Deadline:** 2026-10-08; the project is presented in a talk at the
+Austin Python Meetup in October 2026. Standing rule: MVP first;
+adventurous things only if time remains.
 
 ## §2. Scope
 
@@ -475,12 +476,15 @@ hibernation era created.
   latency profile reflects (§5.3). One conversation per slot: the
   chat UI and the show should not use the same server at the same
   time.
-- **The client side (as-built 2026-09-19):** `make client-mac`
-  installs the client on the Mac from a standalone, inventory-free
-  playbook (`deploy/ansible/client-talkwithme-mac.yml`: clone,
-  venv, settings for the tunnel ports, the placeholder voices) —
-  TalkWithMe 7.1 today, repointed at TalkWithZombies by [ADR-0002]
-  with a pin for the fork tag the deployment was proven against.
+- **The client side (as-built 2026-09-19; repointed 2026-09-23):**
+  `make client-mac` installs the client on the Mac from a
+  standalone, inventory-free playbook
+  (`deploy/ansible/client-talkwithme-mac.yml`: clone, venv, settings
+  for the tunnel ports, the placeholder voices). Since 2026-09-23 it
+  installs our fork TalkWithZombies ([ADR-0002]) at the pinned fork
+  tag `tz-0.1` into `~/TalkWithZombies-client`, with persona
+  memories switched off in the seeded settings; the TalkWithMe 7.1
+  install in `~/TalkWithMe-client` stays as the fallback.
 - Providers (per provider survey): **Hyperstack** primary,
   **Scaleway** EU alternate, **Vast.ai** dev workhorse; hedge =
   provider-agnostic inventory + smoke-test on two providers.

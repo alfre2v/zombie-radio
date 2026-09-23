@@ -108,7 +108,9 @@ trust them. The non-negotiables, with this session's additions:
 **Zombie-Radio**: an interactive audio-only radio play — four AI
 scientists trapped in a lab during a zombie outbreak, broadcasting
 on shortwave; listeners talk back with hold-to-talk. **Hard deadline
-2026-10-08 (hackTNT 2026) — 15 days from 2026-09-23.**
+2026-10-08 — 15 days from 2026-09-23;** presented in a talk at the
+Austin Python Meetup in October 2026 ("hackTNT 2026" is only the
+owner's internal label for 2026 projects — there is no hackathon).
 
 Architecture ([spec §3.1]): the app runs on the demo laptop (a Mac,
 M1 16 GB — cannot run the models); a rented Hyperstack A6000 box
