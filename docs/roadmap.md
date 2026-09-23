@@ -8,7 +8,10 @@ position. See [docs/README.md](README.md) for conventions.*
 **Zombie-Radio**: an interactive audio-only theater play performed by
 4 AI voice actors — scientists trapped in a lab during a zombie
 breakout. A Halloween project with a hard deadline: **2026-10-08**
-(hackTNT 2026, ~3 weeks from project start).
+(~3 weeks from project start), to be presented in a talk at the
+Austin Python Meetup in October 2026. "hackTNT 2026" is the owner's
+internal name for projects built hackathon-style in 2026, not an
+event.
 
 The MVP is defined in `specs/product-definition.md` — written by the
 **Product definition** arc and kept since as a living ledger of what

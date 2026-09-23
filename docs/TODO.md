@@ -540,7 +540,8 @@ the agent keeps this current. These carry across arcs.*
 
 ## Standing cross-arc notes
 
-- Hard deadline **2026-10-08** (hackTNT 2026): ~3 weeks out at
+- Hard deadline **2026-10-08** (the talk at the Austin Python Meetup
+  is in October 2026): ~3 weeks out at
   arc open; the prototype is the critical path, and D1's 3-day
   timebox is its first checkpoint.
 - Keep the last 2–3 branches, local and remote (owner rule,

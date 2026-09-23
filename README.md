@@ -19,7 +19,8 @@ Two principles shape everything:
 ## Status
 
 **In definition** (September 2026). MVP targeted for
-**2026-10-08** (hackTNT 2026). Current direction: adapt
+**2026-10-08**; the project will be presented in a talk at the
+Austin Python Meetup in October 2026. Current direction: adapt
 [TalkWithMe](https://github.com/scorbo2/TalkWithMe) and
 [tts-serve](https://github.com/scorbo2/tts-serve) as the
 foundation, with llama.cpp serving the dialogue LLM and Whisper

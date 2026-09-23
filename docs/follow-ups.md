@@ -435,7 +435,7 @@ reader's memory):
   brainstorm §5.
 - **Trigger:** the project goes well — concretely: the MVP works
   and the deploy/ playbook is proven; then this feeds (a) the
-  hackTNT presentation's motivation section, and (b) a possible
+  Austin Python Meetup talk's motivation section, and (b) a possible
   standalone write-up/README section aimed at the community.
 - **Fix shape:** a short "why cloud deployment matters for
   self-hosters" narrative — the agent helps draft it from this

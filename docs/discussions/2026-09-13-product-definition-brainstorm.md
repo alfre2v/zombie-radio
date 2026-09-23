@@ -42,7 +42,10 @@ Two identity phrases have crystallized, worth preserving verbatim:
 Two stagings, decided 2026-09-13:
 
 - **First release (Oct 8 demo)**: the client runs on a simple
-  laptop (probably a Mac) at the hackTNT event; the server runs on
+  laptop (probably a Mac) at the hackTNT event [note 2026-09-23:
+  there is no hackTNT event — "hackTNT 2026" is the owner's internal
+  name for 2026 projects; the project is presented in a talk at the
+  Austin Python Meetup in October 2026]; the server runs on
   a cloud instance with an Nvidia GPU. Interaction via
   **push-to-talk**.
 - **Future vision**: a visually cool unattended booth — the radio

@@ -45,8 +45,9 @@ them):
 - **"Theatrical live improvisation with LLMs."** Dialogue is
   improvised at broadcast time, not scripted.
 
-**Deadline:** 2026-10-08 (hackTNT 2026). Standing rule: MVP
-first; adventurous things only if time remains.
+**Deadline:** 2026-10-08; the project is presented in a talk at the
+Austin Python Meetup in October 2026. Standing rule: MVP first;
+adventurous things only if time remains.
 
 ## §2. Scope
 
