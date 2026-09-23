@@ -1,0 +1,5 @@
+root    ::= line{1,4}
+line    ::= speaker " (" emotion "): " text "\n"
+speaker ::= "Daniel" | "Moira" | "Ralph" | "Samantha"
+emotion ::= "calm" | "happy" | "sad" | "afraid" | "terrified" | "doubtful" | "angry" | "urgent" | "exhausted"
+text    ::= [^\n\[\]()]+

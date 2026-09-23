@@ -1,0 +1,56 @@
+{
+ "arm": "warmup",
+ "round": 0,
+ "req": 0,
+ "wall_ms": 1030.3,
+ "request": {
+  "model": "default",
+  "messages": [
+   {
+    "role": "user",
+    "content": "/no_think Say: ready. Over."
+   }
+  ],
+  "max_tokens": 200,
+  "temperature": 0.8,
+  "seed": 42,
+  "cache_prompt": true,
+  "stream": false
+ },
+ "response": {
+  "choices": [
+   {
+    "finish_reason": "stop",
+    "index": 0,
+    "message": {
+     "role": "assistant",
+     "content": "Understood. Ready. Over.\n"
+    }
+   }
+  ],
+  "created": 1790117662,
+  "model": "bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M",
+  "system_fingerprint": "b11096-c550d2f60",
+  "object": "chat.completion",
+  "usage": {
+   "completion_tokens": 8,
+   "prompt_tokens": 21,
+   "total_tokens": 29,
+   "prompt_tokens_details": {
+    "cached_tokens": 0
+   }
+  },
+  "id": "chatcmpl-0BUxmoj0bHRdqoG04SJ857SzJR3y0pyB",
+  "timings": {
+   "cache_n": 0,
+   "prompt_n": 21,
+   "prompt_ms": 243.065,
+   "prompt_per_token_ms": 11.574523809523809,
+   "prompt_per_second": 86.3966428733055,
+   "predicted_n": 8,
+   "predicted_ms": 83.088,
+   "predicted_per_token_ms": 11.869714285714284,
+   "predicted_per_second": 84.24802618910071
+  }
+ }
+}

@@ -1,0 +1,77 @@
+{
+ "arm": "D-aligned",
+ "round": 3,
+ "req": 0,
+ "wall_ms": 1778.3,
+ "request": {
+  "model": "default",
+  "messages": [
+   {
+    "role": "system",
+    "content": "/no_think\nYou write a live radio play. Four scientists are trapped in a besieged research lab during a zombie outbreak, speaking over the lab's shortwave radio.\n\nThe cast:\n- Daniel: Dr. Daniel Hayworth, systems engineer. Dry British understatement; competent, tired, quietly heroic.\n- Moira: Dr. Moira Byrne, microbiologist. Irish lilt in her phrasing; grimly fascinated by the science of the outbreak, sometimes forgetting to be afraid.\n- Ralph: Dr. Ralph Okafor, security officer. Deep, deliberate, a little paranoid; counts things (doors, cans, shamblers) because counting keeps him calm.\n- Samantha: Dr. Samantha Reyes, communications lead running the broadcast. Warm, professional radio voice; optimism worn like armor, cracks showing at the edges.\n\nFormat: write the next lines of the script, one line per transmission, as `Name (emotion): spoken words`. The emotion in parentheses is the one the listener should hear in the speaker's voice, exactly one of: calm, happy, sad, afraid, terrified, doubtful, angry, urgent, exhausted. Each transmission is one or two short spoken sentences ending with \"Over.\" No narration, no markdown, and nothing else in parentheses."
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the generator coughed twice and the lights flickered across the east wing. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel (calm): Generator two is sulking again, so I'm rerouting the east wing to the backup bus. Over.\nMoira (urgent): If the lights go, the incubators go with them, and I lose three days of cultures. Over.\nRalph (doubtful): East wing has four doors and two windows, all bolted, I checked each one twice. Over.\nSamantha (happy): To everyone listening, we are still here, still on air, and the lights are holding. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: a listener in Tulsa reports the highway north is blocked by abandoned trucks. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   },
+   {
+    "role": "assistant",
+    "content": "Moira (sad): Blocked highways mean nobody is coming for the samples, so we keep them cold ourselves. Over.\nRalph (afraid): Trucks on the highway are cover for whatever walks between them, I counted eleven. Over.\nSamantha (calm): Tulsa, thank you, stay off that road and stay inside, we will relay what we hear. Over.\nDaniel (exhausted): Tell Tulsa the long way round costs fuel we do not have, but it beats the trucks. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: something is scratching at the loading dock door, slow and rhythmic. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   }
+  ],
+  "max_tokens": 200,
+  "temperature": 0.8,
+  "seed": 42,
+  "cache_prompt": true,
+  "stream": false,
+  "grammar": "root    ::= line{1,4}\nline    ::= speaker \" (\" emotion \"): \" text \"\\n\"\nspeaker ::= \"Daniel\" | \"Moira\" | \"Ralph\" | \"Samantha\"\nemotion ::= \"calm\" | \"happy\" | \"sad\" | \"afraid\" | \"terrified\" | \"doubtful\" | \"angry\" | \"urgent\" | \"exhausted\"\ntext    ::= [^\\n\\[\\]()]+\n"
+ },
+ "response": {
+  "choices": [
+   {
+    "finish_reason": "stop",
+    "index": 0,
+    "message": {
+     "role": "assistant",
+     "content": "Ralph (terrified): It’s not a shambler—the rhythm’s too deliberate, like it knows what it wants. Over.  \nMoira (afraid): If it’s intelligent, it might be adapting to our defenses. Over.  \nDaniel (doubtful): Could be a rodent, or worse—something using the door’s mechanism. Over.  \nSamantha (urgent): Ralph, stay behind me—don’t open the door. We need to know what’s out there. Over.\n"
+    }
+   }
+  ],
+  "created": 1790122616,
+  "model": "bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M",
+  "system_fingerprint": "b11096-c550d2f60",
+  "object": "chat.completion",
+  "usage": {
+   "completion_tokens": 110,
+   "prompt_tokens": 653,
+   "total_tokens": 763,
+   "prompt_tokens_details": {
+    "cached_tokens": 429
+   }
+  },
+  "id": "chatcmpl-MSGoc0VWDNZJTK22PfIkKMVXNsDuDDqv",
+  "timings": {
+   "cache_n": 429,
+   "prompt_n": 224,
+   "prompt_ms": 369.824,
+   "prompt_per_token_ms": 1.651,
+   "prompt_per_second": 605.6935190793458,
+   "predicted_n": 110,
+   "predicted_ms": 1237.557,
+   "predicted_per_token_ms": 11.35373394495413,
+   "predicted_per_second": 88.0767512122674
+  }
+ }
+}

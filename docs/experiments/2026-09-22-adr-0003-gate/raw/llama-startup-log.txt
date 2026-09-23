@@ -1,0 +1,11 @@
+0.00.000.513 I srv  llama_server: initializing ...
+warn: LLAMA_ARG_HOST environment variable is set, but will be overwritten by command line argument --host
+0.00.354.169 I cmn  common_param: common_params_print_info: verbosity = 3 (adjust with the `-lv N` CLI arg)
+0.00.354.562 W srv  llama_server: security: no API key is set and CORS allows all origins (see https://github.com/ggml-org/llama.cpp/pull/25655)
+1.21.797.173 I srv    load_model: loading model 'bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M'
+1.22.429.296 W load: special_eos_id is not in special_eog_ids - the tokenizer config may be incorrect
+1.23.769.079 I cmn          init: llama threadpool init, n_threads = 28
+1.23.844.649 I srv    load_model: initializing, n_slots = 1, n_ctx_slot = 16384, kv_unified = 'false'
+1.23.851.703 I srv  llama_server: model loaded
+1.23.851.717 I srv  llama_server: listening on http://127.0.0.1:8080
+1.23.851.718 W srv  llama_server: notice: server default port will be changed to :9931 in a future release (ref: https://github.com/ggml-org/llama.cpp/pull/26508)

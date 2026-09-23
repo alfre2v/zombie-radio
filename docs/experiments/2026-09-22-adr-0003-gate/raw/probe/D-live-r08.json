@@ -1,0 +1,117 @@
+{
+ "arm": "D-live",
+ "round": 8,
+ "req": 0,
+ "wall_ms": 1368.5,
+ "request": {
+  "model": "default",
+  "messages": [
+   {
+    "role": "system",
+    "content": "/no_think\nYou write a live radio play. Four scientists are trapped in a besieged research lab during a zombie outbreak, speaking over the lab's shortwave radio.\n\nThe cast:\n- Daniel: Dr. Daniel Hayworth, systems engineer. Dry British understatement; competent, tired, quietly heroic.\n- Moira: Dr. Moira Byrne, microbiologist. Irish lilt in her phrasing; grimly fascinated by the science of the outbreak, sometimes forgetting to be afraid.\n- Ralph: Dr. Ralph Okafor, security officer. Deep, deliberate, a little paranoid; counts things (doors, cans, shamblers) because counting keeps him calm.\n- Samantha: Dr. Samantha Reyes, communications lead running the broadcast. Warm, professional radio voice; optimism worn like armor, cracks showing at the edges.\n\nFormat: write the next lines of the script, one line per transmission, as `Name: spoken words`. Each transmission is one or two short spoken sentences ending with \"Over.\" No narration, no markdown, no stage directions."
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the generator coughed twice and the lights flickered across the east wing. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel: Power fluctuation detected. Systems stabilizing. Over.  \nMoira: Specimens in the east wing may have been exposed. We need to confirm. Over.  \nRalph: Counting down to evacuation. Four doors, three breaches. Over.  \nSamantha: We’re holding transmission. Stay calm, everyone. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: a listener in Tulsa reports the highway north is blocked by abandoned trucks. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel: Secure the east wing. Prioritize containment. Over.  \nMoira: The virus strain's mutation rate is accelerating—we must isolate samples now. Over.  \nRalph: Four breaches, now five. Trucks blocking the north. Over.  \nSamantha: Listener reports confirm roadblocks. We’ll reroute supplies south. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: something is scratching at the loading dock door, slow and rhythmic. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel: No movement detected inside. Locks are intact. Over.  \nMoira: The rhythmic pattern matches the gait of a medium-sized infected. Over.  \nRalph: Counting the strikes—three per second. It’s close. Over.  \nSamantha: Someone’s at the door. We need to decide: fight or flee. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: sample twelve in the cold room has started moving inside its sealed jar. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel: Quarantine protocol engaged. Jar integrity compromised. Over.  \nMoira: The sample’s viral load is higher than predicted. It’s adapting. Over.  \nRalph: Counting the jar’s seal failures—two now. Over.  \nSamantha: We need to decide if we contain it or evacuate the cold room. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the military frequency repeats one word, 'Evacuate', then goes silent. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel: Military order received. Evacuation protocol initiated. Over.  \nMoira: We need to act fast—the virus may be spreading through sound waves. Over.  \nRalph: Counting exits—two secure, one compromised. Over.  \nSamantha: Repeating the order. Everyone, move to the west wing. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the water pressure dropped and the showers on level two ran brown. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel: Water contamination detected. Possible breach in the east wing supply lines. Over.  \nMoira: Brown residue in the showers suggests organic material—could be viral or bacterial. Over.  \nRalph: Counting the affected showers—three out of five. Over.  \nSamantha: We need to isolate level two. Contamination could spread through plumbing. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: a child's voice on channel nine asks if anyone is still at the lab. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel: Secure the comms. Don’t respond. Over.  \nMoira: A child? Likely a survivor or a prank. Either way, it’s a distraction. Over.  \nRalph: Counting channels—nine is clear. Over.  \nSamantha: We’re broadcasting on all frequencies. Someone’s listening. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the roof hatch alarm tripped, but the camera shows only rain. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   }
+  ],
+  "max_tokens": 200,
+  "temperature": 0.8,
+  "seed": 42,
+  "cache_prompt": true,
+  "stream": false,
+  "grammar": "root    ::= line{1,4}\nline    ::= speaker \": \" text \"\\n\"\nspeaker ::= \"Daniel\" | \"Moira\" | \"Ralph\" | \"Samantha\"\ntext    ::= [^\\n\\[\\]]+\n"
+ },
+ "response": {
+  "choices": [
+   {
+    "finish_reason": "stop",
+    "index": 0,
+    "message": {
+     "role": "assistant",
+     "content": "Daniel: Roof seal intact. No breach detected. Over.  \nMoira: Rain could be masking an external threat. We can’t assume safety. Over.  \nRalph: Counting security cameras—three operational. Over.  \nSamantha: Repeating the alert. Stay vigilant—something’s trying to get in. Over.\n"
+    }
+   }
+  ],
+  "created": 1790117777,
+  "model": "bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M",
+  "system_fingerprint": "b11096-c550d2f60",
+  "object": "chat.completion",
+  "usage": {
+   "completion_tokens": 74,
+   "prompt_tokens": 1147,
+   "total_tokens": 1221,
+   "prompt_tokens_details": {
+    "cached_tokens": 969
+   }
+  },
+  "id": "chatcmpl-PwIxV43GAv1iQo60YydxV9rnOQKLokRT",
+  "timings": {
+   "cache_n": 969,
+   "prompt_n": 178,
+   "prompt_ms": 351.991,
+   "prompt_per_token_ms": 1.9774775280898875,
+   "prompt_per_second": 505.6947478770764,
+   "predicted_n": 74,
+   "predicted_ms": 829.743,
+   "predicted_per_token_ms": 11.366342465753425,
+   "predicted_per_second": 87.97904893442909
+  }
+ }
+}

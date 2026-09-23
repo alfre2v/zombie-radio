@@ -536,3 +536,104 @@ verifications produced:
 - `make client-mac` added (inventory-free by design — no ENV,
   no -i; logs to the usual place). Upstream outreach stays
   DEFERRED: the playbook is now offerable, nobody is contacted.
+
+## Entry 2026-09-22 — the ADR-0003 gate on a live A6000; a first-boot updater, two dropped SSH sessions, tts-serve 1.2 banked; ADR-0003 accepted 2026-09-23
+
+Provenance: a fresh session opened on the handoff of 2026-09-22 and
+ran Task 6's gate on a Hyperstack A6000 with the "Ubuntu Server 22.04
+LTS R550 CUDA 12.4 with Docker" image — the 09-19 proof run's image.
+The branch is `alfre2v/adr-0003-gate`; the records are two experiment
+folders and a discussion (pointers at the end).
+
+**The deployment science of the evening.**
+
+- **A fresh box spends its first hour in Ubuntu's own updater.** At
+  46 minutes after boot, `apt-daily-upgrade.service` started
+  `unattended-upgrade` on two years of pending security updates (259
+  packages, 43 minutes in all; it skips the kernel and NVIDIA
+  packages by its own blacklist, so the driver was never at risk).
+  Our deploy reached `base : Install base packages` three minutes
+  into it and failed after the apt module's default 60-second lock
+  wait — with an error that named the lock's holder
+  (`unattended-upgr`) only inside a long JSON dump. Nothing on the
+  box changed (`changed=0`). Why the 09-19 run on the same image did
+  not hit it is not known (believed: timing luck).
+- **A long silent wait is fragile on this network path.** With the
+  wait raised to 900 seconds, the next deploy waited as designed —
+  then lost its SSH session after about 14 minutes of silence
+  (`UNREACHABLE … Data could not be sent to remote host`). Ruled out
+  on the box: a reboot, an sshd restart at that moment, a Docker
+  restart. The owner's tunnel later died too, after about 70 idle
+  minutes. The owner's explanation (2026-09-23): public library
+  Wi-Fi, and a laptop lid closed during breaks without closing the
+  tunnel — not a significant worry. Kept as a low-priority
+  follow-up (SSH keepalives), with one note for demo day: a tunnel
+  that reconnects by itself is cheap insurance for a live show.
+- **The fix that shipped (`9fbbeb3`):** the apt lock wait is now
+  `zr_apt_lock_timeout` (common_vars, 300 s), announced in the task's
+  name before the wait begins; on a lock timeout a rescue stops with
+  a plain explanation quoting apt's own "held by process …" line, the
+  command to check the updater, and how to wait longer. Proven live
+  with the owner holding the lock in `sudo aptitude`: a 10-second
+  wait, the explanation printed, `changed=0`.
+- **From zero in 7 minutes.** Once the updater had finished, the
+  from-zero deploy took 7 minutes (`ok=33 changed=16`), the re-run
+  reported `changed=0` in 30 seconds, and `make check` printed three
+  ok lines.
+- **Banked: tts-serve 1.2** (`33cc5c6`). Deployed from zero with the
+  converge invariant intact, and synthesizing through the tunnel (six
+  clips in the emotion run's side quest, called on tts-serve
+  directly rather than through TalkWithMe). The owner ruled the pin
+  proven on 2026-09-23; its follow-up entry is deleted.
+- **What the server is** (build `b11096-c550d2f60`, from `/props` and
+  the server's help): a host-RAM prompt cache is on by default
+  (`--cache-ram` 8,192 MiB); recurrent-state checkpoints up to 32 per
+  slot, at least 8,192 tokens apart; and the chat template removes
+  `/no_think` from the text and ends the prompt with an empty
+  `<think></think>` — without `/no_think` it would end with an open
+  `<think>`.
+- **After the evening** the owner hibernated the VM, keeping its IP
+  (a few cents an hour); the standing rule "never hibernate a show
+  box" applies to demo day.
+
+**The gate, in one paragraph.** Both on-box items passed against
+pre-registered criteria: the screenplay grammar streams and binds
+through the top-level `grammar` field; one shared script per round
+costs about a quarter of the per-persona structure's prompt time, and
+the grammar 0.3 % per token. The latency win's reason was not the one
+believed — a host-RAM cache rescues per-persona prompts, which pay
+instead in state swaps before each request and a fixed prompt toll
+per request. A second run the same evening measured an `(emotion)`
+tag in the grammar: 0.5 % per token when the prompt teaches it,
+10.4 % when forced on a prompt that does not mention it. With the
+same prompt and seed, the model wrote the same text with and without
+the grammar in 20 of 20 rounds, which answered the gate's audition
+item for this model. **ADR-0003 accepted 2026-09-23.**
+
+**Process notes.** At the owner's request the probes wrote a live,
+readable wire log for `tail -F`; it proved its worth at once — its
+tests caught a timing flaw in the streaming instrument before the
+box saw it — and it has a documented blind spot (it does not show
+which grammar was sent). The owner declined to predict in both runs.
+
+Records: `docs/experiments/2026-09-22-adr-0003-gate/`,
+`docs/experiments/2026-09-22-emotion-grammar-cost/`, and
+[discussion 2026-09-22] grammar-and-prompt-cache-lessons (the
+owner's questions and the lessons for the fork). **Next: the fork
+(TalkWithZombies, ADR-0002); the 3-day timebox starts when it
+exists.**
+
+*Open at this point (snapshot, 2026-09-23).* What the gate left
+unexplained about the server, all on llama.cpp `b11096` with the
+hybrid Nemotron: a fixed prompt cost of about 350 ms per request;
+host-RAM cache entries of 417 MiB to 1.8 GB; the unmeasured cost of
+editing the script's history on a model whose recurrent-state
+checkpoints sit at least 8,192 tokens apart — which the director's
+transcript curation depends on; why a grammar is nearly free when
+the model agrees and ~10 % dearer when it must overrule it (believed:
+check-first sampling); and whether the build has an
+`/apply-template` endpoint. On the engine's side: the cost of the
+director's per-round constraints, single-line beats, the bounded
+scratchpad. The lasting list, with when each matters and where it is
+tracked: [discussion 2026-09-22] grammar-and-prompt-cache-lessons
+§4.10.

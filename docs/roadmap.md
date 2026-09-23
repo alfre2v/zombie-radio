@@ -10,8 +10,9 @@ position. See [docs/README.md](README.md) for conventions.*
 breakout. A Halloween project with a hard deadline: **2026-10-08**
 (hackTNT 2026, ~3 weeks from project start).
 
-The MVP definition is deliberately not written yet: producing it is
-the job of the **Product definition** arc (first in the build order).
+The MVP is defined in `specs/product-definition.md` — written by the
+**Product definition** arc and kept since as a living ledger of what
+the prototype settles.
 
 ### Context and prior art
 
@@ -32,7 +33,11 @@ the job of the **Product definition** arc (first in the build order).
   survey) and not adopted — the Pipecat flip trigger expired
   unfired, and the survey marks two framework-independent
   borrowings (smart-turn model, SmallWebRTC pattern) for
-  post-MVP.
+  post-MVP. Sharpened on 2026-09-21: the app becomes our own fork,
+  **TalkWithZombies**, free to diverge ([ADR-0002]), and its show
+  engine is redesigned around one shared script, a director in
+  code, a GBNF screenplay grammar and the browser as the clock
+  ([ADR-0003], accepted 2026-09-23 after its gate).
 
 ## Features Shipped
 
@@ -66,17 +71,25 @@ the job of the **Product definition** arc (first in the build order).
    automation standing up the full model-service stack
    identically on a cloud GPU VM and on a local GPU machine
    (`delegate_to: localhost`) — "deployment is 50% of the MVP"
-   (owner). Then: the spike's configuration as a running
-   prototype with the real cast, used as the experiment platform
-   — in-prototype experiments (LLM audition [spec §7.3] · TTS
-   comparison + VRAM budget [spec §7.2], LuxTTS in the pool ·
-   the narrative-health probe battery [discussion 2026-09-16])
-   and the follow-ups backlog (label sanitizer · max-chars
-   accumulator · `max_turns_for_context` lever). Guardrails
-   riding along: experiments keep the protocol skeleton; prompt
-   work stays disposable until the audition; the spec is updated
-   as a ledger during the build.
-3. *(further arcs emerge as the prototype teaches us)*
+   (owner) — delivered and proven live on 2026-09-18. Then the
+   arc's boundary moved (2026-09-21): the show engine's design,
+   first meant for a later arc, was pulled in because no patch
+   could be shaped without it — so the prototype becomes
+   **TalkWithZombies** ([ADR-0002]) running the new engine
+   ([ADR-0003]; its gate passed 2026-09-22), built under a 3-day
+   timebox. Then the prototype as the experiment platform, with
+   the real cast: in-prototype experiments in the new engine (LLM
+   audition [spec §7.3] · TTS comparison + VRAM budget [spec
+   §7.2], LuxTTS in the pool · the narrative-health probes
+   [discussion 2026-09-16]) and the canned episode, a MUST for
+   demo day. Guardrails riding along: experiments keep the
+   protocol skeleton; prompt work stays disposable until the
+   audition; the spec is updated as a ledger during the build.
+3. *(further arcs emerge as the prototype teaches us)* — the
+   **show arc** was named at this one's opening: story and episode
+   authoring (the trajectory scaffolds, [spec §5.2]) and the full
+   demo rehearsal. Its director-design half moved into the MVP
+   prototype on 2026-09-21.
 
 ## Ideas / parking lot
 

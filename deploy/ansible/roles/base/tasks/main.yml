@@ -55,8 +55,27 @@
     state: started
 
 - name: Install base packages
-  ansible.builtin.apt:
-    name: "{{ base_packages }}"
-    state: present
-    update_cache: true
-    cache_valid_time: 3600
+  block:
+    - name: "Install base packages, apt lock wait limit in seconds: {{ base_apt_lock_timeout }}"
+      ansible.builtin.apt:
+        name: "{{ base_packages }}"
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+        lock_timeout: "{{ base_apt_lock_timeout }}"
+  rescue:
+    - name: Explain an apt lock timeout
+      when: ansible_failed_result.msg | default('') is search('Could not get lock|Unable to acquire the dpkg frontend lock')
+      ansible.builtin.fail:
+        msg: >-
+          Waited {{ base_apt_lock_timeout }} s for the apt package lock and gave up;
+          another process holds it: "{{ ansible_failed_result.stdout_lines | default(['(holder not reported)'], true) | last }}".
+          On a fresh Ubuntu box this is usually the first-boot unattended-upgrades run,
+          which can take 30+ minutes. Nothing was installed. Check it with
+          ssh {{ ansible_user }}@{{ ansible_host }} 'systemctl is-active apt-daily-upgrade.service'
+          (activating = still running) and re-run make ans-deploy once it reports inactive.
+          To wait longer, raise zr_apt_lock_timeout.
+
+    - name: Re-raise any other apt failure unchanged
+      ansible.builtin.fail:
+        msg: "{{ ansible_failed_result.msg | default('the apt task failed without a message') }}"

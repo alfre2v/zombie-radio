@@ -19,26 +19,121 @@ reader's memory):
 
 ---
 
-## Bump the tts-serve pin from 1.1 to 1.2 at the next box deployment
+## SSH keepalives and polling for long silent deploy tasks — low priority (owner, 2026-09-23)
 
-- **The gap:** `deploy/ansible/inventories/common_vars.yml` pins
-  `zr_tts_serve_version: "1.1"`. Upstream's latest tag is `1.2`
-  (2026-09-18; adds only the Apple-Silicon Qwen3-TTS MLX engine —
-  the shared package and our engine's server are byte-identical
-  between the two tags, verified by `git diff --stat 1.1 1.2` on
-  2026-09-21).
-- **Where flagged:** owner ruling 2026-09-21 during the Task 6
-  reconnaissance brief ([discussion 2026-09-21] tts-serve tour §1):
-  the pin is not set in stone — we track the latest tag unless a
-  release breaks the deployment or the TalkWithMe contract. Not
-  changed on the recon branch on purpose: a pin bump is a
-  deployment change and must be proven on a box.
-- **Trigger:** the next `make ans-deploy` against a fresh box
-  (first experiment evening, Task 5c or 5a).
-- **Fix shape:** edit the one line to `"1.2"`; deploy from zero;
-  re-run must be `changed=0`; `make check` three-ok; one TalkWithMe
-  synthesis through the tunnel. Then delete this entry and bank
-  the version in the arc-plan journal.
+- **Status 2026-09-23 — explained, not a significant worry (owner):**
+  the owner works on public library Wi-Fi and closes the laptop's lid
+  during breaks, probably without closing the tunnel first — which
+  accounts for the drops below better than an idle cutoff. The
+  pre-PR reminder is withdrawn. One note kept for demo day (owner
+  action queue item 4, logistics radar): a live show over a venue's
+  Wi-Fi is where a dropped tunnel would stop the show, so a tunnel
+  that reconnects by itself (`ServerAliveInterval` keepalives, or
+  `autossh`) is cheap insurance to weigh then. The original entry
+  follows unchanged.
+
+- **The gap:** on 2026-09-22 a deploy's SSH session dropped after
+  about 14 minutes of silence ("Data could not be sent to remote
+  host … UNREACHABLE") while the base role's apt task waited for the
+  package lock held by Ubuntu's first-boot unattended-upgrades run
+  (43 minutes, 259 packages). The cause is NOT proven. The leading
+  candidate is an idle-connection cutoff somewhere between the
+  laptop and the box: during the wait the session carries no
+  traffic, and none of our SSH settings send keepalives —
+  `deploy/ansible/inventories/common_vars.yml` `ansible_ssh_common_args`
+  sets only `IdentitiesOnly`, `StrictHostKeyChecking`,
+  `UserKnownHostsFile`; `deploy/ansible/ansible.cfg` sets only
+  `pipelining`; the Makefile's `ssh-tunnel` options (`SSH_TOFU_OPTS`)
+  carry no keepalive either, so a quiet tunnel may drop the same way.
+  Ruled out on the box: a reboot, an sshd restart at that moment, a
+  Docker restart.
+  Second datum, same evening: the owner's own tunnel was found dead
+  at 19:05 CDT after about 70 idle minutes, the box and its services
+  healthy (`docs/experiments/2026-09-22-emotion-grammar-cost/README.md`,
+  runlog entry 1).
+- **Where flagged:** `docs/experiments/2026-09-22-adr-0003-gate/README.md`,
+  runlog entries 3–8. The interim fix of that evening: the apt lock
+  wait became `zr_apt_lock_timeout` (300 s) with a clear error
+  message when it expires (base role, block/rescue).
+- **Trigger:** owner request 2026-09-22 — the agent RAISES this
+  discussion right after the ADR-0003 gate evening closes (before
+  that branch's PR), even if the owner does not ask.
+- **Fix shape (candidates for the discussion, none decided):**
+  (1) `-o ServerAliveInterval=30 -o ServerAliveCountMax=4` in
+  `ansible_ssh_common_args` and in the tunnel's options — keeps any
+  long task's session talking; (2) a base-role task that waits for
+  the first-boot updater with short, repeated checks
+  (`systemctl is-active apt-daily-upgrade.service` until it is no
+  longer `activating`, e.g. every 20 s for up to ~45 min), so no
+  single SSH command stays silent for long, and the operator sees a
+  retry counter instead of silence; (3) whether the base role should
+  switch the updater off on these disposable boxes (a
+  security-policy call); (4) whether to act on the
+  `/var/run/reboot-required` flag the updater leaves behind (seen
+  2026-09-22; the playbook never reboots).
+
+## Emotion field in the screenplay grammar — MEASURED 2026-09-22; adoption is the owner's call
+
+- **Status 2026-09-23:** the measurement this entry asked for ran on
+  2026-09-22 (`docs/experiments/2026-09-22-emotion-grammar-cost/`):
+  with the tags taught in the cast sheet and carried in the history,
+  the emotion grammar costs 0.5 % per token (E1 PASS), the model tags
+  40 of 40 lines on its own and uses eight of the nine emotions;
+  forced on a prompt that does not mention them, 10.4 %. What
+  remains: the owner's decision to adopt the field in the fork (the
+  agent's lean: a yaml switch from day one, default on, the parser
+  stripping the tag before the TTS — [discussion 2026-09-22]
+  grammar-and-prompt-cache-lessons §4.7), and the quality questions
+  below for the Task 5a audition. Trigger for the decision: before
+  the fork's grammar builder is written (Task D). The original entry
+  follows unchanged.
+
+- **The statement:** ADR-0003 point 3 already plans an optional
+  parenthetical stage direction from a small enum to carry each
+  line's emotional register, and the recon brief's S6 ruling makes
+  it the channel to the TTS side (mapping to reference clips or
+  engine knobs is fork work after Task 4). The owner wants to
+  evaluate it soon, as an explicit field — "emotion" or "emotional
+  tone" — drawn from a list of emotions a voice can carry
+  (happiness, sadness, fear, terror, doubt, …). Sketch discussed
+  2026-09-22 (not decided):
+
+  ```
+  root    ::= line{1,4}
+  line    ::= speaker " (" emotion "): " text "\n"
+  speaker ::= "Daniel" | "Moira" | "Ralph" | "Samantha"
+  emotion ::= "calm" | "happy" | "sad" | "afraid" | "terrified" | "doubtful" | "angry" | "urgent" | "exhausted"
+  text    ::= [^\n\[\]()]+
+  ```
+
+  Points from that discussion: the tag goes BEFORE the words (the
+  script convention `MOIRA (whispering):` — the model commits to the
+  tone first and writes words that fit it); required rather than
+  optional for the evaluation; a short list of single common words,
+  each audible in a voice; delivery (whispering, shouting) is a
+  different axis from emotion and stays out of this list;
+  parentheses leave the `text` rule so the tag cannot be spoken.
+- **Where flagged:** owner, 2026-09-22, during the ADR-0003 gate
+  evening (`docs/experiments/2026-09-22-adr-0003-gate/README.md`,
+  runlog entry 10). Deliberately NOT in that run: "first run the
+  simple grammar, measure performance, and then maybe evaluate
+  doing another run with a more complex grammar, measure again and
+  then contrast."
+- **Trigger:** the owner's call after the ADR-0003 gate verdict (its
+  D-on numbers are the baseline); at the latest before the fork's
+  grammar builder is written (Task D).
+- **Fix shape:** a new small experiment folder (the gate folder is
+  sealed after its verdict) reusing the gate's scripts: arm D-on with
+  the simple grammar versus arm D-emotion with the grammar above,
+  same prompts and seed → the per-token cost of the added complexity
+  (same quantity as gate 2b). Required changes: a cast-sheet variant
+  that describes the tag and its values (the current cast sheet and
+  persona prompts FORBID stage directions — `cast.py` lines 22, 26,
+  30, 34, 46); script lines in the history carrying tags too; the
+  line pattern in `parse_stream.py` extended with an optional
+  `(emotion)` group. Quality questions (does the model pick varied,
+  fitting emotions or collapse to one; does the tag flatten the
+  prose) belong to the Task 5a audition.
 
 ## Measure TTS synthesis time against text length (tunes the accumulator's N and the director's line budget)
 
@@ -66,6 +161,43 @@ reader's memory):
 - **Fix shape:** half an hour on a box with `tools/speak.py` or
   curl; then adjust `tts.accumulator_max_chars` (name indicative;
   provisional 100, tolerance ~20 %) and the director's line budget.
+
+## llama.cpp unknowns the ADR-0003 gate left open
+
+- **The gap:** four things measured or believed on 2026-09-22 that
+  we cannot yet explain, all on llama.cpp build `b11096` with the
+  hybrid Nemotron Nano 9B v2 (Mamba-2 plus attention layers):
+  (1) **a fixed prompt cost of about 350 ms per request**, whether
+  it evaluates 130 or 270 tokens — slow for an A6000, and the
+  reason one request per round beats one per line; (2) **the host-RAM
+  prompt cache's entries are large** — 417 MiB to 1.8 GB for prompts
+  of a few hundred to ~1,600 tokens; (3) **what a history edit costs
+  on this hybrid model**: trimming the script breaks the cached
+  prefix from the edit point on, and with recurrent-state
+  checkpoints at least 8,192 tokens apart by default the server may
+  re-evaluate from much further back — unmeasured; (4) **the
+  believed reason a grammar is nearly free when the model agrees and
+  ~10 % dearer when it must overrule it**: the sampler checks the
+  chosen token first and applies the grammar to the whole
+  vocabulary only on rejection — from memory, not read in the
+  source.
+- **Where flagged:** [discussion 2026-09-22]
+  grammar-and-prompt-cache-lessons §3 and §4.3/§4.8;
+  `docs/experiments/2026-09-22-adr-0003-gate/` (runlog entries
+  12–14).
+- **Trigger:** (3) before Task 6b's director gets transcript
+  curation (the design depends on it); (1) and (2) when show
+  latency is tuned, or the Task 5a audition swaps the model; (4)
+  whenever a grammar change is weighed on cost.
+- **Fix shape:** a small probe reusing the gate's scripts, one
+  server flag changed at a time through the playbook
+  (`--ctx-checkpoints 0`, a smaller `--checkpoint-min-step`,
+  `--cache-ram 0`), plus one history-trim arm; for (4), read the
+  sampler in llama.cpp's `common/sampling.cpp` at the build we
+  serve.
+- **When an item resolves:** write the answer back as a dated note
+  in [discussion 2026-09-22] grammar-and-prompt-cache-lessons §4.10
+  (the lasting home of these questions), then delete the item here.
 
 ## Mac-local TTS probe with tts-serve's MLX engine (parked post-MVP)
 
@@ -134,6 +266,14 @@ reader's memory):
   record the null result and delete this entry.
 - **Fix shape if adopted:** one grammar rule and one parser branch
   in the fork; a yaml-only knob for the scratchpad's token cap.
+- **Lesson from the ADR-0003 gate (2026-09-22) that shapes the
+  test:** the cast sheet must TEACH the note line — say that one
+  `# note:` line may come first and is never spoken. A grammar rule
+  the prompt does not describe is a forced grammar: about 10 % more
+  per token and a changed writing style in the emotion-field run
+  ([discussion 2026-09-22] grammar-and-prompt-cache-lessons §4.2–§4.4).
+  Test the scratchpad taught, or the arm measures the fight, not
+  the idea.
 
 ## Add new TTS engines to tts-serve (F5-TTS, Breeze TTS 2) — soft goal
 
@@ -184,33 +324,32 @@ reader's memory):
   code coverage at deploy, `docker run --gpus all`, and port
   reachability; if all pass, promote to dev-workhorse candidate.
 
-## TalkWithMe upstream-contribution candidates — two designated patches
+## Upstream contributions to scorbo2 — deferred past the deadline
 
-- **The gap:** the remote-split spike closed with zero forks and
-  two small, fully-scoped patches designated but NOT built
-  (deliberate scope guard): (1) a one-line output sanitizer
-  stripping leading `[Name]:` labels before display/TTS — the
-  firebreak for label mimicry, and the fork-vs-upstream decision
-  point per the fork strategy ("defer until the first patch");
-  (2) a max-chars sentence accumulator replacing per-sentence
-  chunking in `static/tts.js` — fixes the naive splitter
-  ("Dr. Byrne" → four requests), the short-sentence economics
-  (effective RTF > 1; quantified in the spike's TTFA data), AND
-  ultra-short-input audio artifacts (field-observed 2026-09-18:
-  an echo on a lone "1." — also a §7.2 per-engine test item). A third config-only lever rides along: raise
-  `max_turns_for_context` from 6 (amnesia-by-design in a
-  4-persona room — taxonomy C9).
-- **Where flagged:** remote-split runlog + findings (2026-09-16);
-  mechanisms C1/C9 and the economics receipts in
-  [discussion 2026-09-16] (narrative health).
-- **Trigger:** the adaptation arc opens (these are its first
-  backlog items); the sanitizer fires EARLY if a show room gets
-  label-contaminated and fresh-room hygiene stops sufficing.
-- **Fix shape:** sanitizer = one line in the reply path (or
-  client-side before TTS enqueue); accumulator = replace the
-  sentence-split loop in `static/tts.js` with
-  pack-up-to-N-chars; both are candidate PRs to scorbo2 once
-  proven in our fork.
+- **The statement:** two things we built may be worth offering to
+  the author of TalkWithMe and tts-serve, in this order ([ADR-0002]
+  contribution ledger): (1) **the deployment machinery** — `site.yml`
+  standing up the model services on a rented GPU box in one command,
+  and the standalone Mac client installer (`make client-mac`) —
+  the part scorbo2 may want to adopt or advertise; (2) **the
+  max-chars sentence accumulator** in `static/tts.js` (whole
+  sentences packed up to about 100 characters instead of one TTS
+  request per sentence — fixes "Dr. Byrne" becoming four requests,
+  the short-sentence pauses, and the echo on a lone "1."), once
+  proven in TalkWithZombies. **No longer candidates:** the `[Name]:`
+  output sanitizer (moot under [ADR-0003] — [spec §9]) and the
+  `max_turns_for_context` raise (done in our config, 6 → 50, on
+  2026-09-18 — a setting, not a patch).
+- **Where flagged:** the remote-split spike (2026-09-16) designated
+  the first patches; re-ranked 2026-09-21 ([discussion 2026-09-19]
+  upstream-contribution-strategy, addendum; [discussion 2026-09-21]
+  task6-reconnaissance-brief §1–§2; [ADR-0002]).
+- **Trigger:** after 2026-10-08 — outreach deferred past the
+  deadline by the owner ("build offerable, contact nobody yet").
+- **Fix shape:** (1) as a pull request or a README pointer to the
+  deployment repo; (2) a focused pull request against upstream's
+  `static/tts.js`, with the packing rules' Node test (entry above)
+  as its proof.
 
 ## LuxTTS landed upstream — presumptive §7.2 candidate
 
@@ -302,4 +441,5 @@ reader's memory):
   self-hosters" narrative — the agent helps draft it from this
   entry + the deployment-first discussion + real playbook usage
   numbers (deploy time, cost per session — we already have
-  $2.97/experiment as a datum).
+  $2.97/experiment as a datum, and a from-zero deploy of the whole
+  model stack in 7 minutes on an A6000, measured 2026-09-22).

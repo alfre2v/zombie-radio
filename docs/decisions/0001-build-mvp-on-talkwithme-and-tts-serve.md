@@ -135,3 +135,7 @@ ledger re-ranked — deployment machinery first, the sentence
 accumulator as the one plausible app-code patch). The ensemble's
 turn engine and prompt structure are redesigned in **ADR-0003**
 (draft, gated).
+
+*Annotation 2026-09-23 (dated note; the text above is frozen):*
+**ADR-0003** is now accepted — its gate passed on 2026-09-22 (see
+its Validation section).
