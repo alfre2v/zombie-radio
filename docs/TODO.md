@@ -93,7 +93,10 @@ the agent keeps this current. These carry across arcs.*
 2. **Seed the character bibles** — EXECUTING SOON. Names,
    personalities, quirks, voice descriptions; rough is fine;
    model-neutral (guardrail 2). They become the sections of the
-   show's cast sheet ([spec §5.3]). Unblocks Task 5a.
+   show's cast sheet ([spec §5.3]) — concretely, each character's
+   entry under "The cast:" in the fork's
+   `stories/lab-outbreak/cast_sheet.md`, arriving as a pull request
+   ([discussion 2026-09-23] show-engine-design §4). Unblocks Task 5a.
 3. **Check the home 3090 box's NVIDIA driver** — DEPRIORITIZED
    (cloud-only demo), but note: it partially revives the day we
    test the playbook's localhost target ([discussion 2026-09-17]
@@ -152,8 +155,9 @@ the agent keeps this current. These carry across arcs.*
     defaults).
 - [ ] **Task 4 — Real cast replaces placeholders.** Character
   bibles → the sections of TalkWithZombies' cast sheet ([spec
-  §5.3]; where they live in the fork — the persona files or one
-  cast file — is a Task 6b design choice), keeping `/no_think`
+  §5.3]; where they live in the fork — decided 2026-09-23: the
+  cast entries of `stories/<story>/cast_sheet.md`, not the persona
+  files — [discussion 2026-09-23] show-engine-design §4), keeping `/no_think`
   while on Nemotron (the chat template needs it even under the
   grammar — [spec §4]); no heavy prompt tuning yet — guardrail 2 ·
   voice samples → isolation tool first (follow-ups) → gitignore →
@@ -427,11 +431,27 @@ the agent keeps this current. These carry across arcs.*
       - **The show's record (decision 3, owner ruling 2026-09-23 —
         [discussion 2026-09-23] show-engine-design §3):** one show,
         decoupled from the chat rooms; a folder per run,
-        `shows/<run-id>/` (gitignored), holding `script.json` (the
-        rounds: instruction, listener's words, lines with speaker,
-        mood and text, a `trimmed` flag), `debug/`, and later
-        `audio/`; the trim sets flags, the assembler skips flagged
-        rounds, the file keeps the whole show.
+        `runs/<run-id>/` (gitignored; renamed from `shows/` by
+        decision 4), holding `script.json` (the story, the rounds:
+        instruction, listener's words, lines with speaker, mood and
+        text, a `trimmed` flag, each round's episode, the rendered
+        system text per episode), `debug/`, and later `audio/`; the
+        trim sets flags, the assembler skips flagged rounds, the
+        file keeps the whole show.
+      - **The cast sheet (decision 4, owner ruling 2026-09-23 —
+        [discussion 2026-09-23] show-engine-design §4):** a Jinja
+        template (strict mode; `jinja2` already pinned) at
+        `stories/<story>/cast_sheet.md`, tracked in the fork — front
+        matter for the code (`title`, `cast`, each name checked
+        against `Personas/<Name>/` for its voice); the body is what
+        the model reads, with three placeholders: `{{ model_prefix }}`
+        (a setting, today `/no_think`), `{{ format_rules }}` (one of
+        two fixed snippets chosen by the emotion switch, kept next to
+        the grammar), `{{ episode }}` (empty until episode files
+        exist). Only whole-run facts live there; per-round
+        constraints go in the director's instruction. Episodes
+        (`stories/<story>/episodes/NN-name.md`: director front
+        matter, model-facing body) are decision 2's stretch.
       - **`POST /api/show/start`** opens a new run; **`POST
         /api/show/round`**, a sibling of `_chat_stream`
         (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/chat.py:208`),
@@ -466,9 +486,10 @@ the agent keeps this current. These carry across arcs.*
         (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/chat.js:135-159`)
         into a shared function.
     - *Configuration:* all knobs yaml-only — a `show:` section
-      (the cast, `context_budget`, the emotion switch, `debug`,
-      cadence minimum and maximum in played seconds, the listening
-      window); the accumulator's limit and
+      (`story` and optionally `episode`, `model_prefix`,
+      `context_budget`, the emotion switch, `debug`, cadence minimum
+      and maximum in played seconds, the listening window — the cast
+      lives in the story, not here); the accumulator's limit and
       tolerance next to `tts.streaming`. No dialogs.
     - *Operating notes (measured 2026-09-22):* one conversation per
       server slot — keep the chat UI off the show's server during

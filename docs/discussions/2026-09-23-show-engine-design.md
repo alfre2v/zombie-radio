@@ -6,9 +6,9 @@
 decided one question at a time before the code: the agent's agenda of
 seven decisions (§1), then one section per decision as the owner
 rules on it.
-**Status:** OPEN — decisions 2 (the show's growing script) and 3
-(where the show's record lives) ruled 2026-09-23; decisions 1 and 4–7
-pending.
+**Status:** OPEN — decisions 2 (the show's growing script), 3 (where
+the show's record lives) and 4 (where the cast sheet comes from)
+ruled 2026-09-23; decisions 1 and 5–7 pending.
 
 *Context for the cold reader.* [ADR-0003] (accepted 2026-09-23) fixes
 the engine's shape: one shared script as the model's context (the
@@ -303,6 +303,274 @@ The owner, 2026-09-23 (verbatim):
   for new globals).
 - **Left to the code:** whether `mood` is absent or empty when the
   emotion switch is off.
+- *[note 2026-09-23, decision 4: the run folder is renamed
+  `runs/<run-id>/`, and the cast moves out of the `show:` settings
+  into the story's front matter — §4.4.]*
+
+## 4. Decision 4 — where the cast sheet comes from
+
+### 4.1 The owner's opening question (verbatim)
+
+> Them let's open "#4, where the cast sheet comes from".
+>
+> Let me start by saying I do not understand this "the character bibles become its sections".
+> I think this was written in the style before we decided to adopt the 2024 style story prompt, instead of the TalkWithMe changing prompt for each persona.
+>
+> Ok, give me a more expanded explanation here.
+
+### 4.2 The owner's follow-up: a template, and many files (verbatim)
+
+> Ok, I think we are getting close. And you are right, I misinterpreted the word bible for the context of character play.
+>
+> I agree with you that the writing style of `Personas/<Name>/prompt.md` do not fit what we need for the show. I agree we need a separate file. And I feel that your recommendation "Hybrid: hand-written where a writer writes, generated where the grammar decides" is the right thing, so I am not pushing back, I just want to clarify my understanding...
+>
+> The example that you showed in "Our cast sheet is the same thing" is clear, this is what you refer as "the world and the portraits sit in one file you edit".  However, I do not know where in that example file we would place "The format-rules paragraph is written by code", the grammar I get it it can be written by code (or it can be a fixed string from a comment in the grammar file itself, we won't have so many grammars that we need to compose programmatically a description for each). 
+> In any case, I would expect to see a placeholder for inserting this text in the human readable file (possibly a jinja var to substitute) so we can see the place where these generated text will be inserted and make the whole file a template of sorts.
+>
+> So, I guess what I am asking is, show me an example of how this file would look like, and if you agree to make it a template of sorts with  jinja (or other templating lang) placeholders to mark where inserted section go.
+>
+> ### Another angle: how to handle multiple files (for starting different shows)
+>
+> Then, another angle that you might not have considered: We may need not just one file, but many such files, for example we may want to have many show stories templates, so we can start different stories by pointing at a different file... And that entangles with the idea of running multiple episodes in a single show (as we discussed before)... So we need to give another thought to the multiplicity factor in these files.
+
+### 4.3 The agent's answer (the two answers, condensed into one)
+
+*Editorial note.* The owner asked for the two answers of this
+exchange to be condensed into one entry without losing clarity. The
+text below keeps every example and receipt of the two; it is not
+verbatim.
+
+#### "Bible" and "sections" — the 2024 style, not before it
+
+The phrase comes from [ADR-0003] decision point 1, drafted on
+2026-09-21 in the same breath as the switch away from TalkWithMe's
+one-prompt-per-persona: "`system` = the cast sheet (one section per
+character, the bibles) plus the show's rules and format". So it
+describes the 2024 style. The confusion was the jargon:
+
+- A **character bible** is a writer's term for everything known about
+  a character — role, age, personality, quirks, how they talk, what
+  they want, what they hide, who they clash with. The owner action
+  queue asks the owner to write one per scientist ("rough is fine").
+- **"Become its sections"** means only this: each bible, condensed to
+  a short paragraph, replaces that character's one-line entry in the
+  cast sheet.
+
+The owner's 2024 prototype already had a cast sheet
+(`/Users/alfredo/workspace/hackTNT_2026/zombie_radio_ai/zradio_local/zradio_local.py`):
+one prompt for the whole play (lines 511–539) — the setting, the
+rules of the game (`"Character Name: Dialog Line."`), the Narrator —
+with the four characters enumerated inside it
+(`__enumerated_characters_description__`), each filled from a small
+record (lines 470–509):
+
+```python
+'name': 'Dr. Hanna Brie', 'gender': 'female', 'emotion': 'fearful',
+'description': "A woman in her late 30s, research biologist specialized in exotic viruses.",
+'ref_audio_orig': ..., 'ref_text': ...   # the voice clip, used only by the TTS
+```
+
+Our cast sheet is the same thing. The system message run 2 sent
+(`CAST_SHEET_TAUGHT` in
+`docs/experiments/2026-09-22-emotion-grammar-cost/cast.py`) has three
+parts: **the world** ("You write a live radio play. Four scientists
+are trapped…"), **the cast** (one entry per character, one-line
+placeholders today), and **the format rules** (the line shape and,
+with the switch on, the mood list). The bibles land in the second
+part — the 2024 `description` field, richer.
+
+What we left behind is TalkWithMe's style: each persona has its own
+prompt file (`Personas/Moira/prompt.md`: `/no_think You are Dr. Moira
+Byrne … End each transmission with "Over."`), and each request sends
+one of them — the model plays one character at a time and never sees
+the others. In the show, one request writes lines for any of the
+four, so the model needs all four portraits in one system message.
+
+#### Where the text lives: three options, the hybrid chosen
+
+1. **Assembled from the persona files** — rejected: those bodies are
+   written TalkWithMe-style (second person, one character, format
+   rules inside); side by side they would tell one model "You are
+   Daniel… You are Moira…". And after decision 3, the reuse argument
+   fails the same way the room did.
+2. **One hand-written file**, world, cast and rules together — simple,
+   but hand-written rules can drift from what the grammar enforces.
+3. **Hybrid: hand-written where a writer writes, generated where the
+   grammar decides** — chosen. The world and the portraits sit in one
+   file the owner edits; the format-rules paragraph comes from the
+   code, so words and grammar never disagree (lesson §4.2) and the
+   emotion switch changes both at once.
+
+What still comes from `Personas/<Name>/` is only the **voice** — the
+reference clip and its transcript, which the TTS needs.
+
+#### The file is a template
+
+The owner asked to see where the generated text goes; the answer is a
+Jinja template with visible placeholders. Jinja costs nothing new —
+the fork already pins `jinja2==3.1.6` (`requirements.txt`) and uses
+it for its pages (`app/main.py:148`); it is rendered in strict mode,
+so a misspelled placeholder raises an error instead of printing
+nothing. The owner's simplification holds: the rules paragraph has
+only two versions (moods on or off), so they are two fixed snippets
+kept next to the grammar, not text composed by code.
+
+`stories/lab-outbreak/cast_sheet.md`:
+
+```markdown
+---
+title: The Lab at the End of the Frequency
+cast: [Daniel, Moira, Ralph, Samantha]
+---
+{{ model_prefix }}
+You write a live radio play. Four scientists are trapped in a besieged research lab during a zombie outbreak, speaking over the lab's shortwave radio.
+
+The cast:
+- Daniel: Dr. Daniel Hayworth, systems engineer. Dry British understatement; competent, tired, quietly heroic.
+- Moira: Dr. Moira Byrne, microbiologist. Irish lilt in her phrasing; grimly fascinated by the science of the outbreak, sometimes forgetting to be afraid.
+- Ralph: Dr. Ralph Okafor, security officer. Deep, deliberate, a little paranoid; counts things because counting keeps him calm.
+- Samantha: Dr. Samantha Reyes, communications lead running the broadcast. Warm radio voice; optimism worn like armor.
+
+Style: each transmission is one or two short spoken sentences ending with "Over." This is radio: no narration, no stage directions.
+
+{{ format_rules }}
+
+{{ episode }}
+```
+
+**The front matter** (between the `---` lines) is for the code — the
+model never reads it; the same convention TalkWithMe uses in
+`prompt.md`. `cast` names the speakers; each name must match a
+`Personas/<Name>/` folder, where the voice clip lives. **Everything
+below it is what the model reads**, except the three placeholders:
+
+| Placeholder | Filled from | Why it is not hand-written in the story |
+|---|---|---|
+| `{{ model_prefix }}` | settings (today `/no_think`) | A quirk of the model, not of the story: auditioning another model (Task 5a) changes a setting, not every story. |
+| `{{ format_rules }}` | one of the two fixed snippets, chosen by the emotion switch | It must say exactly what the grammar enforces (lesson §4.2). |
+| `{{ episode }}` | the current episode file's text, or empty | Episodes, below. |
+
+The two snippets. Moods off: "Format: write the next lines of the
+script, one line per transmission, as `Name: spoken words`." Moods on:
+"Format: … as `Name (emotion): spoken words`. The emotion in
+parentheses is the one the listener should hear in the speaker's
+voice, exactly one of: calm, happy, sad, afraid, terrified, doubtful,
+angry, urgent, exhausted. Nothing else in parentheses."
+
+**The boundary that matters.** The cast sheet holds only what is true
+for the whole run: the world, the people, the line format. Everything
+that changes per round — who may speak, how many lines, what just
+happened — goes in the director's instruction for that round, never
+in the cast sheet. That keeps the system message identical round
+after round, so the prompt cache keeps working. "Over." sits in the
+hand-written Style line: the grammar does not enforce it, so it is a
+writer's choice, not a format rule.
+
+#### Many files: stories, episodes, runs
+
+The owner's angle: not one file but many — several stories to start
+from, entangled with episodes within a show. Three things, kept apart:
+
+- **A story** is authored content, like a series: a folder tracked in
+  the fork, with its own cast (voices must exist in `Personas/`):
+
+  ```
+  stories/
+    lab-outbreak/
+      cast_sheet.md          ← the world and the people
+      episodes/
+        01-supplies.md
+        02-pharmacy-run.md
+    another-story/
+      cast_sheet.md
+  ```
+
+- **An episode** is a chapter. Its front matter is for the
+  **director**; its body is for the **model** (it fills
+  `{{ episode }}`):
+
+  ```markdown
+  ---
+  title: Supplies
+  max_rounds: 30
+  beats:
+    - The generator fails for a minute and the lights go out.
+    - Moira notices Ralph hiding a bite on his hand.
+    - Samantha catches a stranger's voice on the frequency.
+  ending: they agree to make a run for the pharmacy
+  ---
+  Previously: this is the first night of the siege.
+
+  Tonight: the lab is running out of antibiotics and food. The pharmacy is two floors up, past the east stairwell, and nobody has been up there since the doors sealed.
+  ```
+
+  The director feeds the beats as radio traffic in its instructions
+  and steers toward the ending; the model only ever sees the
+  "Previously / Tonight" text. The owner's harvested outlines land
+  here, one file per episode, the recap written in advance.
+
+- **A run** is one performance of one story, starting at one episode
+  (decision 3's folder). Its `script.json` records which story and
+  episode each round belonged to, plus the exact system text each
+  episode rendered — reproducibility, and the flight recorder. When a
+  run moves to the next episode (decision 2's stretch), the script
+  turns reset and the system message is re-rendered with the new
+  episode's text.
+
+- **Choosing:** `show.story: lab-outbreak` (optionally `show.episode`)
+  in `settings.yaml`; `POST /api/show/start` may take a story and an
+  episode to override it, so the page can offer a picker later.
+
+Two knock-on changes to decision 3: the cast moves out of the
+`show:` settings into the story's front matter (different stories,
+different casts); and the run folder is renamed from `shows/` to
+`runs/`, so that "show" does not mean three things beside `stories/`.
+
+**For the timebox:** one story (the placeholder cast proven in
+run 2), the three placeholders, front-matter parsing, the two rule
+snippets; `{{ episode }}` renders empty until episode files exist.
+Episode files and moving between them stay a stretch, as decision 2
+ruled.
+
+### 4.4 The ruling
+
+The owner, 2026-09-23 (verbatim):
+
+> Adopt all of it. Love it.
+
+- **Adopted:** the hybrid cast sheet — a Jinja template (strict mode,
+  `jinja2` already pinned) with front matter for the code and three
+  placeholders, `{{ model_prefix }}`, `{{ format_rules }}` (two fixed
+  snippets chosen by the emotion switch) and `{{ episode }}`;
+  `stories/<story>/cast_sheet.md` plus `episodes/`, tracked in the
+  fork (the installer's pinned tag pins the stories too; the owner's
+  bibles and episode outlines arrive as pull requests); runs renamed
+  to `runs/<run-id>/`; the cast moved into the story's front matter.
+- **A note for newcomers:** "bible" and "section" in [ADR-0003] are
+  writers' jargon; read as TalkWithMe-era per-persona prompt pieces,
+  they mislead. §4.3's first part is the explanation to point to.
+
+### 4.5 What it means for the build
+
+- **Files in the fork:** `stories/lab-outbreak/cast_sheet.md` (the
+  placeholder cast of run 2, turned into the template above); the two
+  rule snippets beside the grammar templates in `app/show/`.
+- **Loading a story:** parse the front matter (the persona-store code
+  already parses `prompt.md` front matter — reuse its approach),
+  check every `cast` name has a `Personas/<Name>/` folder with a
+  voice, render the body with `model_prefix`, `format_rules` and
+  `episode`.
+- **Configuration:** `show.story` (and optionally `show.episode`)
+  select what to play; `model_prefix` is a setting (today
+  `/no_think`); the cast is no longer a setting.
+- **Runs:** `runs/<run-id>/` (gitignored) instead of `shows/`;
+  `script.json` gains the story, each round's episode, and the
+  rendered system text per episode.
+- **Tests:** rendering with the switch on and off (the snippet
+  changes, nothing else does); a missing placeholder variable fails
+  loudly; an unknown cast name fails at load, before any request.
+- **Stretch (decision 2):** episode files, their beats fed by the
+  director, moving from one episode to the next.
 
 ## Update trail
 
@@ -319,3 +587,12 @@ The owner, 2026-09-23 (verbatim):
   decoupled from the chat rooms, a folder per run, the trim as a
   flag; it supersedes the server-side half of the story-loop Q6
   ruling.
+- **2026-09-23 (later still)** — §4 added: decision 4, where the cast
+  sheet comes from — the owner's two messages verbatim (what "the
+  bibles become its sections" means; then a template with visible
+  placeholders, and many files for many stories), the agent's two
+  answers condensed into one at the owner's request, and the ruling:
+  a Jinja template with front matter and three placeholders,
+  `stories/<story>/` with `episodes/` tracked in the fork, runs
+  renamed to `runs/`, the cast moved into the story. §3.4 gets a
+  dated note for the two knock-on changes.
