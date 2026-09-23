@@ -523,3 +523,9 @@ the full grammar text and are the record to trust. What the model
 actually reads — the messages rendered through the chat template —
 is explained in
 `docs/discussions/2026-09-22-grammar-and-prompt-cache-lessons.md` §4.9.
+
+### 2026-09-23 — Entry 8: the owner's explanation of the dead tunnel (entry 1)
+
+Public library Wi-Fi, and a laptop lid closed during breaks without
+closing the tunnel first — the owner's explanation for the tunnel
+found dead in entry 1. Not a significant worry (owner).

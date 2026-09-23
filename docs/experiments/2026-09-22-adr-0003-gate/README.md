@@ -1046,3 +1046,11 @@ of `raw/probe/<name>.json` and `raw/stream/<label>.request.json` carry
 the full grammar text. What the model actually reads — the messages
 rendered through the chat template — is explained in
 `docs/discussions/2026-09-22-grammar-and-prompt-cache-lessons.md` §4.9.
+
+### 2026-09-23 — Entry 17: the owner's explanation of the dropped SSH session (entry 7)
+
+The laptop was on public library Wi-Fi, and its lid was closed during
+breaks — the owner's explanation for the dropped connections of the
+evening, a better one than the idle-cutoff candidate of entry 7. Not
+a significant worry (owner); the keepalive follow-up is downgraded
+accordingly.

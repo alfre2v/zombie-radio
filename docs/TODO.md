@@ -43,7 +43,9 @@ budget), one streamed request per round, SSE events synthesized
 per parsed line; the sanitizer patch is dropped by construction.
 Gate before final: two on-box confirmations (grammar + streaming
 curl; per-round latency vs per-persona) and one audition item
-(prose quality with/without the grammar). **(2) DECIDED
+(prose quality with/without the grammar). **GATE PASSED
+2026-09-22; ADR-0003 ACCEPTED 2026-09-23** — see Task 6's gate
+sub-item below. **(2) DECIDED
 2026-09-21** — [discussion 2026-09-21] story-loop: the browser is
 the metronome (a `/show` page with `show.js` requests the next
 round when the audio queues drain), the server is the director
@@ -245,7 +247,7 @@ the agent keeps this current. These carry across arcs.*
     external process + polling in between) — the story-loop
     discussion ranks the placements by BUILD COST as well as fit,
     so the box is set knowing what it contains.
-  - [ ] **Reconnaissance brief FIRST** (owner-ratified
+  - [x] **Reconnaissance brief FIRST** (`cfeed4d`, PR #6) (owner-ratified
     2026-09-21; branch `alfre2v/task6-recon-brief`): a guided
     tour of the fork-relevant anatomy of TalkWithMe (tag 7.1),
     the tts-serve seam (tag 1.2), and the 2024 `zombie_radio_ai`
@@ -263,8 +265,29 @@ the agent keeps this current. These carry across arcs.*
     arc-plan Task notes. **State 2026-09-22:** units 1–2 toured;
     unit 4 delivered as the prompt-structure + story-loop
     discussions; answer pass complete (every S and Q ruled); HTML
-    visuals DROPPED (owner). **Remaining: unit 3, the synthesis —
-    must land before PR #6 closes** (owner reminder request).
+    visuals DROPPED (owner). Unit 3, the synthesis, landed as the
+    umbrella's §9 before PR #6 closed — the brief is complete.
+  - [x] **ADR-0003 gate on a live box** (branch
+    `alfre2v/adr-0003-gate`, 2026-09-22, Hyperstack A6000): **PASS**
+    on both on-box items — the screenplay grammar streams and binds
+    through the top-level `grammar` field of `/v1/chat/completions`;
+    one shared script per round costs about a quarter of the
+    per-persona structure's prompt time (reason corrected: a
+    host-RAM prompt cache rescues per-persona prompts, which pay
+    instead in state swaps and a per-request toll); the grammar costs
+    0.3 % per token. The audition item was answered for this model by
+    identity (same prompt and seed → the same text with and without
+    the grammar, 20 of 20 rounds). A second run measured an
+    `(emotion)` tag: 0.5 % per token when taught, 10.4 % when forced
+    (E1 PASS; adoption is the owner's call, follow-ups). **ADR-0003
+    accepted 2026-09-23** (Validation section). Records:
+    `experiments/2026-09-22-adr-0003-gate/`,
+    `experiments/2026-09-22-emotion-grammar-cost/`; lessons:
+    [discussion 2026-09-22] grammar-and-prompt-cache-lessons.
+    Deployment by-products: tts-serve pin 1.2 proven; the base
+    role's apt lock wait bounded with a clear error (`9fbbeb3`).
+    **NEXT: the fork (TalkWithZombies, ADR-0002) — the 3-day
+    timebox starts the moment it exists.**
 - [ ] **Task 7 — The canned episode (owner MUST) + demo-day
   protocol runbook.** Recorded from the working prototype; the
   runbook promotion deferred from the last arc lands here.
@@ -317,6 +340,10 @@ the agent keeps this current. These carry across arcs.*
   timebox is its first checkpoint.
 - Keep the last 2–3 branches, local and remote (owner rule,
   2026-09-16).
-- Ops rules that carry over: never hibernate a show box · pinned
-  image `R570 CUDA 12.8 with Docker`, Ubuntu 24.04 · on-demand,
+- Ops rules that carry over: never hibernate a show box · proven
+  images: `R570 CUDA 12.8 with Docker` (Ubuntu 24.04, 2026-09-18)
+  and `Ubuntu Server 22.04 LTS R550 CUDA 12.4 with Docker`
+  (2026-09-19 and 2026-09-22) · a fresh box may spend its first
+  hour in Ubuntu's own updater (the deploy now waits 5 minutes for
+  the apt lock, then stops with a clear message) · on-demand,
   never spot · destroy-vs-keep is a per-evening cost call.

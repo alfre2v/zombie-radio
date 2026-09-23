@@ -19,7 +19,18 @@ reader's memory):
 
 ---
 
-## REMIND THE OWNER: discuss SSH keepalives and polling for long silent deploy tasks
+## SSH keepalives and polling for long silent deploy tasks — low priority (owner, 2026-09-23)
+
+- **Status 2026-09-23 — explained, not a significant worry (owner):**
+  the owner works on public library Wi-Fi and closes the laptop's lid
+  during breaks, probably without closing the tunnel first — which
+  accounts for the drops below better than an idle cutoff. The
+  pre-PR reminder is withdrawn. One note kept for demo day (owner
+  action queue item 4, logistics radar): a live show over a venue's
+  Wi-Fi is where a dropped tunnel would stop the show, so a tunnel
+  that reconnects by itself (`ServerAliveInterval` keepalives, or
+  `autossh`) is cheap insurance to weigh then. The original entry
+  follows unchanged.
 
 - **The gap:** on 2026-09-22 a deploy's SSH session dropped after
   about 14 minutes of silence ("Data could not be sent to remote
@@ -36,6 +47,10 @@ reader's memory):
   carry no keepalive either, so a quiet tunnel may drop the same way.
   Ruled out on the box: a reboot, an sshd restart at that moment, a
   Docker restart.
+  Second datum, same evening: the owner's own tunnel was found dead
+  at 19:05 CDT after about 70 idle minutes, the box and its services
+  healthy (`docs/experiments/2026-09-22-emotion-grammar-cost/README.md`,
+  runlog entry 1).
 - **Where flagged:** `docs/experiments/2026-09-22-adr-0003-gate/README.md`,
   runlog entries 3–8. The interim fix of that evening: the apt lock
   wait became `zr_apt_lock_timeout` (300 s) with a clear error
@@ -57,7 +72,21 @@ reader's memory):
   `/var/run/reboot-required` flag the updater leaves behind (seen
   2026-09-22; the playbook never reboots).
 
-## Emotion field in the screenplay grammar — measure what the richer grammar costs, then audition it
+## Emotion field in the screenplay grammar — MEASURED 2026-09-22; adoption is the owner's call
+
+- **Status 2026-09-23:** the measurement this entry asked for ran on
+  2026-09-22 (`docs/experiments/2026-09-22-emotion-grammar-cost/`):
+  with the tags taught in the cast sheet and carried in the history,
+  the emotion grammar costs 0.5 % per token (E1 PASS), the model tags
+  40 of 40 lines on its own and uses eight of the nine emotions;
+  forced on a prompt that does not mention them, 10.4 %. What
+  remains: the owner's decision to adopt the field in the fork (the
+  agent's lean: a yaml switch from day one, default on, the parser
+  stripping the tag before the TTS — [discussion 2026-09-22]
+  grammar-and-prompt-cache-lessons §4.7), and the quality questions
+  below for the Task 5a audition. Trigger for the decision: before
+  the fork's grammar builder is written (Task D). The original entry
+  follows unchanged.
 
 - **The statement:** ADR-0003 point 3 already plans an optional
   parenthetical stage direction from a small enum to carry each
@@ -105,27 +134,6 @@ reader's memory):
   `(emotion)` group. Quality questions (does the model pick varied,
   fitting emotions or collapse to one; does the tag flatten the
   prose) belong to the Task 5a audition.
-
-## Bump the tts-serve pin from 1.1 to 1.2 at the next box deployment
-
-- **The gap:** `deploy/ansible/inventories/common_vars.yml` pins
-  `zr_tts_serve_version: "1.1"`. Upstream's latest tag is `1.2`
-  (2026-09-18; adds only the Apple-Silicon Qwen3-TTS MLX engine —
-  the shared package and our engine's server are byte-identical
-  between the two tags, verified by `git diff --stat 1.1 1.2` on
-  2026-09-21).
-- **Where flagged:** owner ruling 2026-09-21 during the Task 6
-  reconnaissance brief ([discussion 2026-09-21] tts-serve tour §1):
-  the pin is not set in stone — we track the latest tag unless a
-  release breaks the deployment or the TalkWithMe contract. Not
-  changed on the recon branch on purpose: a pin bump is a
-  deployment change and must be proven on a box.
-- **Trigger:** the next `make ans-deploy` against a fresh box
-  (first experiment evening, Task 5c or 5a).
-- **Fix shape:** edit the one line to `"1.2"`; deploy from zero;
-  re-run must be `changed=0`; `make check` three-ok; one TalkWithMe
-  synthesis through the tunnel. Then delete this entry and bank
-  the version in the arc-plan journal.
 
 ## Measure TTS synthesis time against text length (tunes the accumulator's N and the director's line budget)
 
