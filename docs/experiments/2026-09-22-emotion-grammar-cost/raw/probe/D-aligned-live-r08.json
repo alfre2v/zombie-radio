@@ -1,0 +1,117 @@
+{
+ "arm": "D-aligned-live",
+ "round": 8,
+ "req": 0,
+ "wall_ms": 1538.6,
+ "request": {
+  "model": "default",
+  "messages": [
+   {
+    "role": "system",
+    "content": "/no_think\nYou write a live radio play. Four scientists are trapped in a besieged research lab during a zombie outbreak, speaking over the lab's shortwave radio.\n\nThe cast:\n- Daniel: Dr. Daniel Hayworth, systems engineer. Dry British understatement; competent, tired, quietly heroic.\n- Moira: Dr. Moira Byrne, microbiologist. Irish lilt in her phrasing; grimly fascinated by the science of the outbreak, sometimes forgetting to be afraid.\n- Ralph: Dr. Ralph Okafor, security officer. Deep, deliberate, a little paranoid; counts things (doors, cans, shamblers) because counting keeps him calm.\n- Samantha: Dr. Samantha Reyes, communications lead running the broadcast. Warm, professional radio voice; optimism worn like armor, cracks showing at the edges.\n\nFormat: write the next lines of the script, one line per transmission, as `Name (emotion): spoken words`. The emotion in parentheses is the one the listener should hear in the speaker's voice, exactly one of: calm, happy, sad, afraid, terrified, doubtful, angry, urgent, exhausted. Each transmission is one or two short spoken sentences ending with \"Over.\" No narration, no markdown, and nothing else in parentheses."
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the generator coughed twice and the lights flickered across the east wing. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel (calm): The generator's failing again. We might need to move. Over.  \nMoira (afraid): Those flickers... they’re not random. Something’s reacting to the power loss. Over.  \nRalph (urgent): Count the exits. Now. We don’t know how long this’ll last. Over.  \nSamantha (exhausted): We’re running on borrowed time. If we can’t fix this, we’ll be trapped here. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: a listener in Tulsa reports the highway north is blocked by abandoned trucks. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel (doubtful): Tulsa’s blocked? That’s three hours south. We’d need a vehicle. Over.  \nMoira (sad): Abandoned trucks… maybe they’re contaminated. Or worse—zombies repurposed as barricades. Over.  \nRalph (terrified): Count the supplies. We can’t risk scavenging. Over.  \nSamantha (urgent): We need to decide now. Stay here or try moving south? Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: something is scratching at the loading dock door, slow and rhythmic. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel (afraid): That rhythm… it’s not random. Something’s outside. Over.  \nMoira (terrified): It’s too deliberate. If it’s a shambler, it’s smart. Over.  \nRalph (angry): Open the door now. We can’t hide forever. Over.  \nSamantha (calm): Breathe. We’ll reinforce it. We have time. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: sample twelve in the cold room has started moving inside its sealed jar. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel (terrified): It’s alive. The sample—it’s breaking through. Over.  \nMoira (sad): The containment failed. We need to destroy the jar before it spreads. Over.  \nRalph (angry): Someone grab the thermal lance. We burn it. Now. Over.  \nSamantha (exhausted): We can’t all be there. Prioritize safety—someone fetch the launcher. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the military frequency repeats one word, 'Evacuate', then goes silent. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel (doubtful): Evacuate? Where? They didn’t specify. Over.  \nMoira (angry): This is no drill. They’d have given coordinates. Over.  \nRalph (terrified): Silent. That’s how it ends. Over.  \nSamantha (exhausted): We need a plan. Now. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the water pressure dropped and the showers on level two ran brown. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel (terrified): Brown water? That’s not contamination—it’s something alive in the pipes. Over.  \nMoira (sad): The outbreak’s spreading through the plumbing. We can’t stay here. Over.  \nRalph (angry): Lock the stairwell. We need a clean exit. Over.  \nSamantha (urgent): Everyone, move fast. We’re not safe anywhere in this lab. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: a child's voice on channel nine asks if anyone is still at the lab. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel (sad): A child? They shouldn’t be out there. Over.  \nMoira (afraid): If they’re near, we need to warn them. Over.  \nRalph (angry): Silence! Don’t attract attention. Over.  \nSamantha (exhausted): We’ll respond. Someone stay on that channel. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the roof hatch alarm tripped, but the camera shows only rain. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   }
+  ],
+  "max_tokens": 200,
+  "temperature": 0.8,
+  "seed": 42,
+  "cache_prompt": true,
+  "stream": false,
+  "grammar": "root    ::= line{1,4}\nline    ::= speaker \" (\" emotion \"): \" text \"\\n\"\nspeaker ::= \"Daniel\" | \"Moira\" | \"Ralph\" | \"Samantha\"\nemotion ::= \"calm\" | \"happy\" | \"sad\" | \"afraid\" | \"terrified\" | \"doubtful\" | \"angry\" | \"urgent\" | \"exhausted\"\ntext    ::= [^\\n\\[\\]()]+\n"
+ },
+ "response": {
+  "choices": [
+   {
+    "finish_reason": "stop",
+    "index": 0,
+    "message": {
+     "role": "assistant",
+     "content": "Daniel (doubtful): Rain? The alarm’s malfunctioning. Or something’s triggering it. Over.  \nMoira (sad): Either way, we can’t rely on it. Over.  \nRalph (terrified): If it’s not rain, we’re exposed. Over.  \nSamantha (urgent): Secure the hatch manually. Now. Over.\n"
+    }
+   }
+  ],
+  "created": 1790122641,
+  "model": "bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M",
+  "system_fingerprint": "b11096-c550d2f60",
+  "object": "chat.completion",
+  "usage": {
+   "completion_tokens": 82,
+   "prompt_tokens": 1368,
+   "total_tokens": 1450,
+   "prompt_tokens_details": {
+    "cached_tokens": 1172
+   }
+  },
+  "id": "chatcmpl-SgHbb4MTHboJ3pZ8EaCyJYskzV3AoR3h",
+  "timings": {
+   "cache_n": 1172,
+   "prompt_n": 196,
+   "prompt_ms": 360.931,
+   "prompt_per_token_ms": 1.8414846938775509,
+   "prompt_per_second": 543.040082453433,
+   "predicted_n": 82,
+   "predicted_ms": 932.61,
+   "predicted_per_token_ms": 11.513703703703705,
+   "predicted_per_second": 86.85302538038408
+  }
+ }
+}

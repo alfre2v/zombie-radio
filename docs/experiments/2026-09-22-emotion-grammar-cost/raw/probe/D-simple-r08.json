@@ -1,0 +1,117 @@
+{
+ "arm": "D-simple",
+ "round": 8,
+ "req": 0,
+ "wall_ms": 1572.4,
+ "request": {
+  "model": "default",
+  "messages": [
+   {
+    "role": "system",
+    "content": "/no_think\nYou write a live radio play. Four scientists are trapped in a besieged research lab during a zombie outbreak, speaking over the lab's shortwave radio.\n\nThe cast:\n- Daniel: Dr. Daniel Hayworth, systems engineer. Dry British understatement; competent, tired, quietly heroic.\n- Moira: Dr. Moira Byrne, microbiologist. Irish lilt in her phrasing; grimly fascinated by the science of the outbreak, sometimes forgetting to be afraid.\n- Ralph: Dr. Ralph Okafor, security officer. Deep, deliberate, a little paranoid; counts things (doors, cans, shamblers) because counting keeps him calm.\n- Samantha: Dr. Samantha Reyes, communications lead running the broadcast. Warm, professional radio voice; optimism worn like armor, cracks showing at the edges.\n\nFormat: write the next lines of the script, one line per transmission, as `Name: spoken words`. Each transmission is one or two short spoken sentences ending with \"Over.\" No narration, no markdown, no stage directions."
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the generator coughed twice and the lights flickered across the east wing. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel: Generator two is sulking again, so I'm rerouting the east wing to the backup bus. Over.\nMoira: If the lights go, the incubators go with them, and I lose three days of cultures. Over.\nRalph: East wing has four doors and two windows, all bolted, I checked each one twice. Over.\nSamantha: To everyone listening, we are still here, still on air, and the lights are holding. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: a listener in Tulsa reports the highway north is blocked by abandoned trucks. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Moira: Blocked highways mean nobody is coming for the samples, so we keep them cold ourselves. Over.\nRalph: Trucks on the highway are cover for whatever walks between them, I counted eleven. Over.\nSamantha: Tulsa, thank you, stay off that road and stay inside, we will relay what we hear. Over.\nDaniel: Tell Tulsa the long way round costs fuel we do not have, but it beats the trucks. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: something is scratching at the loading dock door, slow and rhythmic. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Ralph: Loading dock, three scratches, a pause, three more, like it is keeping time. Over.\nSamantha: Nobody opens that door, and nobody answers it, not even to be polite. Over.\nDaniel: The dock shutter is rated for a forklift, so it will outlast our nerves at least. Over.\nMoira: Rhythm suggests residual motor memory, which is fascinating and deeply unwelcome. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: sample twelve in the cold room has started moving inside its sealed jar. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Samantha: Moira, please tell me the jar in the cold room is just condensation settling. Over.\nDaniel: I can drop the cold room two more degrees if that slows it down at all. Over.\nMoira: It is not condensation, the tissue is contracting, and the seal is holding for now. Over.\nRalph: One jar, one lid, one cold room door with two locks, I am standing next to it. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the military frequency repeats one word, 'Evacuate', then goes silent. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel: Evacuate is a fine word when you own a helicopter, we own a forklift. Over.\nMoira: If they are evacuating, then the infection curve outside is worse than our models. Over.\nRalph: Silence after an order means nobody stayed to give the next one, count on that. Over.\nSamantha: We will keep this channel open for anyone the military left behind tonight. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the water pressure dropped and the showers on level two ran brown. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Moira: Brown water means the filters upstream failed, so nobody drinks from the taps. Over.\nRalph: We have forty two bottles in storage, I counted them this morning and again now. Over.\nSamantha: Listeners, boil your water or do not drink it at all, that is our best advice. Over.\nDaniel: I will isolate level two and run the pumps from the clean tank until morning. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: a child's voice on channel nine asks if anyone is still at the lab. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   },
+   {
+    "role": "assistant",
+    "content": "Ralph: Channel nine is two miles out at most, a child alone out there will not last long. Over.\nSamantha: Sweetheart, we hear you, stay where you are and keep talking to me on nine. Over.\nDaniel: I can boost the transmitter so she hears us clearly, it costs us an hour of fuel. Over.\nMoira: Ask her if anyone near her is coughing or feverish, gently, it matters a lot. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the roof hatch alarm tripped, but the camera shows only rain. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha."
+   }
+  ],
+  "max_tokens": 200,
+  "temperature": 0.8,
+  "seed": 42,
+  "cache_prompt": true,
+  "stream": false,
+  "grammar": "root    ::= line{1,4}\nline    ::= speaker \": \" text \"\\n\"\nspeaker ::= \"Daniel\" | \"Moira\" | \"Ralph\" | \"Samantha\"\ntext    ::= [^\\n\\[\\]]+\n"
+ },
+ "response": {
+  "choices": [
+   {
+    "finish_reason": "stop",
+    "index": 0,
+    "message": {
+     "role": "assistant",
+     "content": "Daniel: The alarm is faulty, or the hatch is a lie. Let's check it manually. Over.  \nMoira: If it’s not rain, maybe something’s using the roof as a bridge. Over.  \nRalph: Counting cracks in the roof plating—ten now, one new since last check. Over.  \nSamantha: Tell the crowd on nine to stay low, don’t draw attention. Over.\n"
+    }
+   }
+  ],
+  "created": 1790122568,
+  "model": "bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M",
+  "system_fingerprint": "b11096-c550d2f60",
+  "object": "chat.completion",
+  "usage": {
+   "completion_tokens": 92,
+   "prompt_tokens": 1265,
+   "total_tokens": 1357,
+   "prompt_tokens_details": {
+    "cached_tokens": 1065
+   }
+  },
+  "id": "chatcmpl-3e94Q9bcDy5DbEDv0jzQcANdMhSmoxSx",
+  "timings": {
+   "cache_n": 1065,
+   "prompt_n": 200,
+   "prompt_ms": 357.074,
+   "prompt_per_token_ms": 1.7853700000000001,
+   "prompt_per_second": 560.1079888202445,
+   "predicted_n": 92,
+   "predicted_ms": 1034.104,
+   "predicted_per_token_ms": 11.363780219780221,
+   "predicted_per_second": 87.99888599212457
+  }
+ }
+}

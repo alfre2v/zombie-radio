@@ -1,0 +1,77 @@
+{
+ "arm": "D-aligned-live",
+ "round": 3,
+ "req": 0,
+ "wall_ms": 1609.3,
+ "request": {
+  "model": "default",
+  "messages": [
+   {
+    "role": "system",
+    "content": "/no_think\nYou write a live radio play. Four scientists are trapped in a besieged research lab during a zombie outbreak, speaking over the lab's shortwave radio.\n\nThe cast:\n- Daniel: Dr. Daniel Hayworth, systems engineer. Dry British understatement; competent, tired, quietly heroic.\n- Moira: Dr. Moira Byrne, microbiologist. Irish lilt in her phrasing; grimly fascinated by the science of the outbreak, sometimes forgetting to be afraid.\n- Ralph: Dr. Ralph Okafor, security officer. Deep, deliberate, a little paranoid; counts things (doors, cans, shamblers) because counting keeps him calm.\n- Samantha: Dr. Samantha Reyes, communications lead running the broadcast. Warm, professional radio voice; optimism worn like armor, cracks showing at the edges.\n\nFormat: write the next lines of the script, one line per transmission, as `Name (emotion): spoken words`. The emotion in parentheses is the one the listener should hear in the speaker's voice, exactly one of: calm, happy, sad, afraid, terrified, doubtful, angry, urgent, exhausted. Each transmission is one or two short spoken sentences ending with \"Over.\" No narration, no markdown, and nothing else in parentheses."
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: the generator coughed twice and the lights flickered across the east wing. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel (calm): The generator's failing again. We might need to move. Over.  \nMoira (afraid): Those flickers... they’re not random. Something’s reacting to the power loss. Over.  \nRalph (urgent): Count the exits. Now. We don’t know how long this’ll last. Over.  \nSamantha (exhausted): We’re running on borrowed time. If we can’t fix this, we’ll be trapped here. Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: a listener in Tulsa reports the highway north is blocked by abandoned trucks. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   },
+   {
+    "role": "assistant",
+    "content": "Daniel (doubtful): Tulsa’s blocked? That’s three hours south. We’d need a vehicle. Over.  \nMoira (sad): Abandoned trucks… maybe they’re contaminated. Or worse—zombies repurposed as barricades. Over.  \nRalph (terrified): Count the supplies. We can’t risk scavenging. Over.  \nSamantha (urgent): We need to decide now. Stay here or try moving south? Over.\n"
+   },
+   {
+    "role": "user",
+    "content": "Radio traffic: something is scratching at the loading dock door, slow and rhythmic. Write the next lines of the script: up to four lines, speakers from Daniel, Moira, Ralph, Samantha, each with the emotion in its voice."
+   }
+  ],
+  "max_tokens": 200,
+  "temperature": 0.8,
+  "seed": 42,
+  "cache_prompt": true,
+  "stream": false,
+  "grammar": "root    ::= line{1,4}\nline    ::= speaker \" (\" emotion \"): \" text \"\\n\"\nspeaker ::= \"Daniel\" | \"Moira\" | \"Ralph\" | \"Samantha\"\nemotion ::= \"calm\" | \"happy\" | \"sad\" | \"afraid\" | \"terrified\" | \"doubtful\" | \"angry\" | \"urgent\" | \"exhausted\"\ntext    ::= [^\\n\\[\\]()]+\n"
+ },
+ "response": {
+  "choices": [
+   {
+    "finish_reason": "stop",
+    "index": 0,
+    "message": {
+     "role": "assistant",
+     "content": "Daniel (afraid): That rhythm… it’s not random. Something’s outside. Over.  \nMoira (terrified): It’s too deliberate. If it’s a shambler, it’s smart. Over.  \nRalph (angry): Open the door now. We can’t hide forever. Over.  \nSamantha (calm): Breathe. We’ll reinforce it. We have time. Over.\n"
+    }
+   }
+  ],
+  "created": 1790122634,
+  "model": "bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M",
+  "system_fingerprint": "b11096-c550d2f60",
+  "object": "chat.completion",
+  "usage": {
+   "completion_tokens": 93,
+   "prompt_tokens": 642,
+   "total_tokens": 735,
+   "prompt_tokens_details": {
+    "cached_tokens": 422
+   }
+  },
+  "id": "chatcmpl-lH3vUNT2JelyH4mBndDBpYk6SJ8RAdjT",
+  "timings": {
+   "cache_n": 422,
+   "prompt_n": 220,
+   "prompt_ms": 378.709,
+   "prompt_per_token_ms": 1.7214045454545455,
+   "prompt_per_second": 580.9209709829975,
+   "predicted_n": 93,
+   "predicted_ms": 1052.282,
+   "predicted_per_token_ms": 11.437847826086955,
+   "predicted_per_second": 87.42903518258414
+  }
+ }
+}

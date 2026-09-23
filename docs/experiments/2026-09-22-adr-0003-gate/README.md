@@ -1032,3 +1032,17 @@ Reading: the claim holds on the text, all ten rounds. Every D reply,
 with or without the grammar and with its own output fed back, had
 exactly four well-formed lines, each ending in "Over." — the model
 always used the full "up to four lines" budget.
+
+### 2026-09-23 — Entry 16: a note on `raw/wire.log` (no box)
+
+`raw/wire.log` is a readable transcription of the HTTP requests, not
+what the model reads, and its header has a flaw: it summarizes the
+grammar by the speaker list alone (`grammar=Daniel|Moira|Ralph|Samantha`),
+so it does not show which grammar was sent. In this folder that hides
+nothing — every grammar here is the simple one, with only the speaker
+list varying (`control` shows `grammar=Operator`) — but no reader
+should trust that header for a grammar's content: the `request` field
+of `raw/probe/<name>.json` and `raw/stream/<label>.request.json` carry
+the full grammar text. What the model actually reads — the messages
+rendered through the chat template — is explained in
+`docs/discussions/2026-09-22-grammar-and-prompt-cache-lessons.md` §4.9.

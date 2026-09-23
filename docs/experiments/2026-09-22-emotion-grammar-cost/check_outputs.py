@@ -1,9 +1,11 @@
 """What the model wrote in each arm of raw/probe/ (stdlib only).
 
 Per arm: lines per round; lines carrying a legal emotion tag, a tag outside the list,
-no tag, or neither shape; lines ending in "Over."; which emotions were used, how many
+no tag, or neither shape; lines ending in "Over." (the others listed verbatim); lines
+whose words sit in quotation marks; which emotions were used, how many
 distinct, and the share of the most frequent one. Also: does D-simple reproduce the
-text of the ADR-0003 gate's D-on (same prompt, grammar and seed)?
+text of the ADR-0003 gate's D-on (same prompt, grammar and seed), and did the emotion
+grammar change a single word of D-aligned-off's text?
 """
 import collections
 import json
@@ -34,11 +36,16 @@ def main():
             continue
         counts, legal, other_tag, untagged, malformed, over = [], 0, 0, 0, 0, 0
         used = collections.Counter()
-        for text in texts:
+        quoted_rounds, not_over = [], []
+        for k, text in enumerate(texts, 1):
             lines = [line.rstrip() for line in (text or "").split("\n") if line.strip()]
             counts.append(len(lines))
             for line in lines:
                 over += line.endswith("Over.")
+                if not line.endswith("Over."):
+                    not_over.append((k, line))
+                if line.split(": ", 1)[-1].startswith('"'):
+                    quoted_rounds.append(k)
                 tagged = TAGGED.match(line)
                 if tagged and tagged.group(2) in EMOTIONS:
                     legal += 1
@@ -55,15 +62,22 @@ def main():
         print(f"  lines per round : {counts}")
         print(f"  legal tag {legal} · tag outside the list {other_tag} · no tag {untagged} · "
               f"neither shape {malformed} · ending in 'Over.' {over}   (of {total})")
+        print(f"  words in quotation marks: {len(quoted_rounds)} lines, rounds {sorted(set(quoted_rounds))}")
+        for k, line in not_over:
+            print(f"  not ending in 'Over.' (round {k}): {line!r}")
         print(f"  emotions used   : {dict(used.most_common())}")
         if top:
             print(f"  distinct {len(used)} · most frequent '{top[0][0]}' = "
                   f"{top[0][1] / legal * 100:.0f} % of tagged lines")
 
-    same = [k for k in range(1, 11)
-            if content(PROBE, f"D-simple-r{k:02d}") is not None
-            and content(PROBE, f"D-simple-r{k:02d}") == content(GATE_PROBE, f"D-on-r{k:02d}")]
-    print(f"== rounds where D-simple wrote the same text as the gate's D-on: {same}")
+    for label, (folder_a, arm_a), (folder_b, arm_b) in [
+        ("D-simple here and the gate's D-on", (PROBE, "D-simple"), (GATE_PROBE, "D-on")),
+        ("D-aligned-off and D-aligned", (PROBE, "D-aligned-off"), (PROBE, "D-aligned")),
+    ]:
+        same = [k for k in range(1, 11)
+                if content(folder_a, f"{arm_a}-r{k:02d}") is not None
+                and content(folder_a, f"{arm_a}-r{k:02d}") == content(folder_b, f"{arm_b}-r{k:02d}")]
+        print(f"== rounds where {label} wrote identical text: {same}")
 
 
 if __name__ == "__main__":
