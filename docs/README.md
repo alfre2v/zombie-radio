@@ -127,6 +127,115 @@ The PR's merge IS the arc's end.
 - **The close ritual scheduled post-merge**: janitorial work after
   the merge gets forgotten. Fix: ritual commits ride the closing PR.
 
+## Delegating a unit of work to another agent — an option, NOT in use
+
+*Recorded 2026-09-23 as a method for later. **Ruling (owner,
+2026-09-23): no delegation during the fork's first steps** — the
+work stays in a tight learning loop between the owner and the lead
+agent. Revisit only on the owner's word.*
+
+**What delegation means here.** A unit of build work executed by
+another model **in another harness, in parallel** with the lead
+agent: the owner opens a separate clone of the repository, starts a
+new branch, runs the unit there with whatever harness he chooses,
+and the delegate submits its own pull request. The owner sees the
+execution and can converse with the delegate throughout. It does
+**not** mean sub-agents launched by the lead inside its own harness:
+those are fine for online research or for summarizing a large
+codebase, but not for units of build work — their execution is
+invisible to the owner and they cannot be talked to.
+
+The lead agent keeps the dialog with the owner, the discussions, the
+experiments and every load-bearing design question. A unit can be
+delegated only when three things hold: its design is settled, its
+change is contained, and a **check proves it done** — a test or a
+command, never a paragraph. The method, if it is ever switched on:
+
+- **Contract-first.** Before hand-off, the lead lands the unit's
+  interface (stubs, signatures) and its tests — failing, or precise
+  test cases in the work order — on the main branch. The delegate
+  implements to green. A weaker model does well against a failing
+  test and badly against prose; and a frozen interface is what lets
+  two branches move in parallel without colliding.
+- **A work order the owner can carry to any harness.** One
+  self-contained markdown file, harness-agnostic: the goal in two
+  sentences; the commit to branch from; the files the unit may
+  touch and the ones it must not (disjoint from the lead's current
+  work); the contract; the acceptance check; the branch name and
+  pull-request title; what to report back. It is handed over by
+  the owner (pasted, or committed at the branch's start) and dies
+  with the unit's pull request, like a session handoff.
+- **House rules where every harness looks.** The work order does not
+  repeat them. In TalkWithZombies they live in `AGENTS.md` (a
+  convention many harnesses read); in this repository they live in
+  `CLAUDE.md`, which Claude Code reads — so switching the method on
+  here means adding an `AGENTS.md` that carries or points to the
+  same rules.
+- **Review on the delegate's pull request.** The owner reviews and
+  merges it as any other — his review rule is unchanged; the lead
+  can make a review pass on the pull request when asked, and
+  rebases its own branch after the merge.
+- **What stays with the lead:** anything on a live box (the
+  drill rules), experiments, the design itself.
+- **When it pays:** units of more than about an hour of work that
+  come with a real check. Below that, writing the work order costs
+  more than the work.
+- **The knobs, already in place:** build items in `TODO.md` carry an
+  *Acceptance* check and a *delegable later* mark (first applied to
+  Task 6 of the MVP-prototype arc). The acceptance checks serve the
+  lead's own work now; the marks wait for the owner's word.
+
+### What crosses over: a work order, not a handoff
+
+When a unit is delegated, three things cross to the other harness:
+**the work order**; **the repository clone**, which already holds the
+house rules (`AGENTS.md`) and the interface and tests the lead landed
+first; and **the owner**, who answers the delegate's questions. The
+clone and the tests carry most of the weight; the work order is the
+map that ties them together.
+
+A work order is not a session handoff. Both are throwaway documents
+that carry context across a boundary, but for different readers
+doing different jobs. A session handoff (written before a new
+session or a compaction) carries the LEAD across a context boundary:
+its reader takes over the whole role — converse with the owner,
+weigh designs, decide what comes next — so it must carry everything
+that must not be lost, and is deliberately long and over-complete. A
+work order carries ONE CLOSED JOB to an implementer who must not
+design:
+
+| | Session handoff (for the lead) | Work order (for a delegate) |
+|---|---|---|
+| **Reader** | the lead, in a fresh context | another model, possibly weaker, in another harness |
+| **Reader's role** | continue the whole project: converse, design, decide | execute one bounded unit; decide nothing beyond it |
+| **Content** | everything that must survive: the owner, the way of working, history, state, nuances, the task board | only what the unit needs: the goal, the starting commit, the files, the contract, the check |
+| **Size** | long on purpose (the 2026-09-22 handoff ran about 800 lines) | a page or two |
+| **Design context** | points to the docs, with a reading order | **copies in** the few design facts the unit needs, so the delegate never has to read the spec |
+| **When something is unclear** | the reader proposes and discusses with the owner | the reader **stops and asks the owner**, and never redesigns |
+| **Finished when** | never; the reader keeps going | the acceptance check passes and a pull request exists |
+| **Lifetime** | until the session it serves ends (deleted with the owner's permission) | until the unit's pull request merges |
+
+**The work order's skeleton:**
+
+```
+# Work order — <unit>
+Issued <date> by the lead, carried by the owner to <harness>.
+Start from: <branch> at <commit>. Your branch: <name>. Pull request into <branch>, titled "<…>".
+
+## The job                — two sentences
+## What you need to know  — the few design facts, copied in (not links to read)
+## The contract           — interfaces already on the start commit (file:line); do not change them
+## Files                  — you may change: …   you must not touch: …
+## Done when              — `pytest tests/test_<unit>.py` green; the whole suite green; no new dependencies
+## Rules                  — AGENTS.md at the repository root; plus: if anything is ambiguous or the
+                            contract looks wrong, STOP and ask the owner — do not redesign
+## Report back            — in the pull request: what changed, the test output, anything you were unsure of
+```
+
+The load-bearing line is "stop and ask; do not redesign": it keeps
+the design with the owner and the lead even when the typing happens
+elsewhere.
+
 ## Cold-start navigation
 
 Picking up cold, read in order:
@@ -146,3 +255,12 @@ get there* → the discussion; *what did we try first* → the experiment.
   the chronology-vs-synthesis principle (per-arc Q&A logs hold
   the round-by-round record; all other docs get the integrated
   outcome) and TODO's Owner action queue.
+- **2026-09-23** — "Delegating a unit of work to another agent"
+  recorded as an option NOT in use (owner ruling: no delegation
+  during the fork's first steps — tight learning loop): units run
+  by other models in other harnesses, in parallel, in separate
+  clones and branches, each submitting its own pull request —
+  never sub-agents of the lead for build work; its knobs
+  (acceptance checks, delegable-later marks) placed in `TODO.md`.
+  Same day: "What crosses over" added — the work order versus a
+  session handoff, and the work order's skeleton.
