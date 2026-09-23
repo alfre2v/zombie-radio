@@ -796,6 +796,69 @@ useful for debugging" (docs-say, `raw/llama-server-help.txt:209`),
 which would have to be switched on through the playbook. Listed in
 §4.7.
 
+### 4.10 Where the open questions stand (2026-09-23)
+
+*This section is the lasting home of the open questions of this
+stage of the build. Their to-do copies live in `docs/follow-ups.md`
+and in `docs/TODO.md`, and are deleted when done; when one is
+answered, the answer comes back here as a dated note, so the record
+never goes quiet.*
+
+**Answered since §3 was written:**
+
+- *What a grammar costs when it steers* — 10.4 % per token when it
+  must overrule the model (4.3), and a changed writing style when
+  the history has no examples to follow (4.4).
+- *Whether our TTS minds typographic punctuation* — it does: a `’`
+  or `—` anywhere in a line makes the voice drop the pause before
+  "Over." (4.6).
+
+**Still open — llama.cpp and the model** (build `b11096`, the
+hybrid Nemotron Nano 9B v2; tracked in the follow-up "llama.cpp
+unknowns the ADR-0003 gate left open"):
+
+1. **The fixed prompt cost of about 350 ms per request**, the same
+   for 130 tokens as for 270 — slow for an A6000. Suspects: the
+   handling of the recurrent (Mamba) state per request, checkpoint
+   creation, a fixed setup cost. It is why one request per round
+   beats one per line (§2.5). *When:* show-latency tuning, or when
+   the audition swaps the model.
+2. **Why the host-RAM cache entries are so large** — 417 MiB to
+   1.8 GB for prompts of a few hundred to about 1,600 tokens.
+   *When:* the same.
+3. **What a history edit costs on this hybrid model.** Trimming the
+   script breaks the cached prefix from the edit point on; with
+   recurrent-state checkpoints at least 8,192 tokens apart by
+   default, the server may re-read far more than the edited part.
+   *When:* before the director's transcript curation is designed
+   (TODO Task 6b) — the design depends on it.
+4. **Why agreement is nearly free and disagreement costs ~10 %** —
+   believed: the sampler checks the chosen token first and applies
+   the grammar to the whole vocabulary only when that token is
+   rejected (4.3). *When:* the next time a grammar change is
+   weighed on cost; answered by reading `common/sampling.cpp` at
+   the build we serve.
+5. **Whether this build has an `/apply-template` endpoint** —
+   believed (4.9). *When:* before the fork's debug switch (TODO Task
+   6b).
+
+**Still open — the show engine** (answered by building and running
+the fork):
+
+6. **The cost of the director's per-round constraints in practice**
+   — a narrowed speaker list and a line budget, said in words and
+   enforced by the grammar, should stay in the cheap regime (4.2,
+   4.8). *When:* the fork's first runs.
+7. **Single-line beats** — how the model behaves when the grammar
+   bounds a round to one line (`line{1,1}`), and whether the prose
+   suffers when it must stop there. *When:* the first interaction
+   beat in the fork; the audition.
+8. **The bounded scratchpad** — whether one non-spoken note line
+   before the script improves coherence at an inaudible latency
+   cost; it must be taught in the cast sheet, or the test measures
+   a forced grammar (4.2). *When:* the Task 5a audition (follow-up
+   "Bounded scratchpad before the script").
+
 ## 5. Update trail
 
 - **2026-09-22** — Document created after the ADR-0003 gate run: the
@@ -817,3 +880,7 @@ which would have to be switched on through the playbook. Listed in
   the model, the evening's last request rendered through the server's
   chat template (reconstructed offline), six differences from
   `wire.log`, and a debugging note for the fork (also in §4.7).
+- **2026-09-23 (later)** — §4.10 added at the owner's request: the
+  lasting home of this stage's open questions — two answered since
+  §3, eight still open, each with when it matters and where it is
+  tracked; answers return here as dated notes.

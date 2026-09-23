@@ -622,3 +622,18 @@ Records: `docs/experiments/2026-09-22-adr-0003-gate/`,
 owner's questions and the lessons for the fork). **Next: the fork
 (TalkWithZombies, ADR-0002); the 3-day timebox starts when it
 exists.**
+
+*Open at this point (snapshot, 2026-09-23).* What the gate left
+unexplained about the server, all on llama.cpp `b11096` with the
+hybrid Nemotron: a fixed prompt cost of about 350 ms per request;
+host-RAM cache entries of 417 MiB to 1.8 GB; the unmeasured cost of
+editing the script's history on a model whose recurrent-state
+checkpoints sit at least 8,192 tokens apart — which the director's
+transcript curation depends on; why a grammar is nearly free when
+the model agrees and ~10 % dearer when it must overrule it (believed:
+check-first sampling); and whether the build has an
+`/apply-template` endpoint. On the engine's side: the cost of the
+director's per-round constraints, single-line beats, the bounded
+scratchpad. The lasting list, with when each matters and where it is
+tracked: [discussion 2026-09-22] grammar-and-prompt-cache-lessons
+§4.10.

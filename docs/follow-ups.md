@@ -162,6 +162,43 @@ reader's memory):
   curl; then adjust `tts.accumulator_max_chars` (name indicative;
   provisional 100, tolerance ~20 %) and the director's line budget.
 
+## llama.cpp unknowns the ADR-0003 gate left open
+
+- **The gap:** four things measured or believed on 2026-09-22 that
+  we cannot yet explain, all on llama.cpp build `b11096` with the
+  hybrid Nemotron Nano 9B v2 (Mamba-2 plus attention layers):
+  (1) **a fixed prompt cost of about 350 ms per request**, whether
+  it evaluates 130 or 270 tokens — slow for an A6000, and the
+  reason one request per round beats one per line; (2) **the host-RAM
+  prompt cache's entries are large** — 417 MiB to 1.8 GB for prompts
+  of a few hundred to ~1,600 tokens; (3) **what a history edit costs
+  on this hybrid model**: trimming the script breaks the cached
+  prefix from the edit point on, and with recurrent-state
+  checkpoints at least 8,192 tokens apart by default the server may
+  re-evaluate from much further back — unmeasured; (4) **the
+  believed reason a grammar is nearly free when the model agrees and
+  ~10 % dearer when it must overrule it**: the sampler checks the
+  chosen token first and applies the grammar to the whole
+  vocabulary only on rejection — from memory, not read in the
+  source.
+- **Where flagged:** [discussion 2026-09-22]
+  grammar-and-prompt-cache-lessons §3 and §4.3/§4.8;
+  `docs/experiments/2026-09-22-adr-0003-gate/` (runlog entries
+  12–14).
+- **Trigger:** (3) before Task 6b's director gets transcript
+  curation (the design depends on it); (1) and (2) when show
+  latency is tuned, or the Task 5a audition swaps the model; (4)
+  whenever a grammar change is weighed on cost.
+- **Fix shape:** a small probe reusing the gate's scripts, one
+  server flag changed at a time through the playbook
+  (`--ctx-checkpoints 0`, a smaller `--checkpoint-min-step`,
+  `--cache-ram 0`), plus one history-trim arm; for (4), read the
+  sampler in llama.cpp's `common/sampling.cpp` at the build we
+  serve.
+- **When an item resolves:** write the answer back as a dated note
+  in [discussion 2026-09-22] grammar-and-prompt-cache-lessons §4.10
+  (the lasting home of these questions), then delete the item here.
+
 ## Mac-local TTS probe with tts-serve's MLX engine (parked post-MVP)
 
 - **The gap:** tts-serve ships a native Apple-Silicon engine
@@ -229,6 +266,14 @@ reader's memory):
   record the null result and delete this entry.
 - **Fix shape if adopted:** one grammar rule and one parser branch
   in the fork; a yaml-only knob for the scratchpad's token cap.
+- **Lesson from the ADR-0003 gate (2026-09-22) that shapes the
+  test:** the cast sheet must TEACH the note line — say that one
+  `# note:` line may come first and is never spoken. A grammar rule
+  the prompt does not describe is a forced grammar: about 10 % more
+  per token and a changed writing style in the emotion-field run
+  ([discussion 2026-09-22] grammar-and-prompt-cache-lessons §4.2–§4.4).
+  Test the scratchpad taught, or the arm measures the fight, not
+  the idea.
 
 ## Add new TTS engines to tts-serve (F5-TTS, Breeze TTS 2) — soft goal
 
@@ -279,33 +324,32 @@ reader's memory):
   code coverage at deploy, `docker run --gpus all`, and port
   reachability; if all pass, promote to dev-workhorse candidate.
 
-## TalkWithMe upstream-contribution candidates — two designated patches
+## Upstream contributions to scorbo2 — deferred past the deadline
 
-- **The gap:** the remote-split spike closed with zero forks and
-  two small, fully-scoped patches designated but NOT built
-  (deliberate scope guard): (1) a one-line output sanitizer
-  stripping leading `[Name]:` labels before display/TTS — the
-  firebreak for label mimicry, and the fork-vs-upstream decision
-  point per the fork strategy ("defer until the first patch");
-  (2) a max-chars sentence accumulator replacing per-sentence
-  chunking in `static/tts.js` — fixes the naive splitter
-  ("Dr. Byrne" → four requests), the short-sentence economics
-  (effective RTF > 1; quantified in the spike's TTFA data), AND
-  ultra-short-input audio artifacts (field-observed 2026-09-18:
-  an echo on a lone "1." — also a §7.2 per-engine test item). A third config-only lever rides along: raise
-  `max_turns_for_context` from 6 (amnesia-by-design in a
-  4-persona room — taxonomy C9).
-- **Where flagged:** remote-split runlog + findings (2026-09-16);
-  mechanisms C1/C9 and the economics receipts in
-  [discussion 2026-09-16] (narrative health).
-- **Trigger:** the adaptation arc opens (these are its first
-  backlog items); the sanitizer fires EARLY if a show room gets
-  label-contaminated and fresh-room hygiene stops sufficing.
-- **Fix shape:** sanitizer = one line in the reply path (or
-  client-side before TTS enqueue); accumulator = replace the
-  sentence-split loop in `static/tts.js` with
-  pack-up-to-N-chars; both are candidate PRs to scorbo2 once
-  proven in our fork.
+- **The statement:** two things we built may be worth offering to
+  the author of TalkWithMe and tts-serve, in this order ([ADR-0002]
+  contribution ledger): (1) **the deployment machinery** — `site.yml`
+  standing up the model services on a rented GPU box in one command,
+  and the standalone Mac client installer (`make client-mac`) —
+  the part scorbo2 may want to adopt or advertise; (2) **the
+  max-chars sentence accumulator** in `static/tts.js` (whole
+  sentences packed up to about 100 characters instead of one TTS
+  request per sentence — fixes "Dr. Byrne" becoming four requests,
+  the short-sentence pauses, and the echo on a lone "1."), once
+  proven in TalkWithZombies. **No longer candidates:** the `[Name]:`
+  output sanitizer (moot under [ADR-0003] — [spec §9]) and the
+  `max_turns_for_context` raise (done in our config, 6 → 50, on
+  2026-09-18 — a setting, not a patch).
+- **Where flagged:** the remote-split spike (2026-09-16) designated
+  the first patches; re-ranked 2026-09-21 ([discussion 2026-09-19]
+  upstream-contribution-strategy, addendum; [discussion 2026-09-21]
+  task6-reconnaissance-brief §1–§2; [ADR-0002]).
+- **Trigger:** after 2026-10-08 — outreach deferred past the
+  deadline by the owner ("build offerable, contact nobody yet").
+- **Fix shape:** (1) as a pull request or a README pointer to the
+  deployment repo; (2) a focused pull request against upstream's
+  `static/tts.js`, with the packing rules' Node test (entry above)
+  as its proof.
 
 ## LuxTTS landed upstream — presumptive §7.2 candidate
 
@@ -397,4 +441,5 @@ reader's memory):
   self-hosters" narrative — the agent helps draft it from this
   entry + the deployment-first discussion + real playbook usage
   numbers (deploy time, cost per session — we already have
-  $2.97/experiment as a datum).
+  $2.97/experiment as a datum, and a from-zero deploy of the whole
+  model stack in 7 minutes on an A6000, measured 2026-09-22).
