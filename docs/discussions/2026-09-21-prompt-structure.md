@@ -538,6 +538,17 @@ objection. The owner adopted the direction the same day.
    prompt cache works for us. The first spoken line of a round
    arrives after one evaluation, not two calls. *Believed on the
    cache point until measured; the direction is not in doubt.*
+
+   *Annotation 2026-09-23 (the gate measured it):* the outcome held,
+   the reason did not. The shared script spent about a quarter of the
+   per-persona structure's prompt time and was about six times faster
+   in wall time by round 10 — but not because per-persona prompts
+   defeat the cache: this llama.cpp build keeps each persona's state
+   in host RAM and restores it, reaching the same 88 % reuse. The
+   per-persona structure pays instead in state swaps before each
+   request (outside the server's timings) and in a fixed prompt cost
+   paid four times per round. Details: ADR-0003, Validation;
+   `docs/experiments/2026-09-22-adr-0003-gate/findings.md`.
 5. **The build is bounded, and the browser is untouched.** The
    change is server-side: a script assembler replaces
    `build_llm_messages`, a stream parser sits where the token loop
@@ -633,6 +644,20 @@ Still open, for the story-loop discussion and the fork:
   director runs in the server, because that is where the request
   is assembled and the stream parsed.
 
+*Gate outcome, 2026-09-22 (dated note):* item 1 PASS — the grammar
+streams and binds, through the top-level `grammar` field; item 2 PASS
+— the shared script costs about a quarter of the per-persona
+structure's prompt time (for a different reason than §5 believed; see
+the annotation under §9 point 4), and the grammar 0.3 % per token;
+item 3 answered for this model by identity — same prompt and seed,
+the same text with and without the grammar in 20 of 20 rounds; item
+4 (the scratchpad) not run. A second run measured the emotional
+register as a required `(emotion)` tag: 0.5 % per token when the
+prompt teaches it, 10.4 % when forced. ADR-0003 accepted 2026-09-23.
+Experiments: `docs/experiments/2026-09-22-adr-0003-gate/`,
+`docs/experiments/2026-09-22-emotion-grammar-cost/`; lessons:
+[discussion 2026-09-22] grammar-and-prompt-cache-lessons.
+
 ## 12. Consequences for the fork and the reconnaissance ledgers
 
 - **The sanitizer patch is not built.** Open questions Q1, Q2, Q8
@@ -703,3 +728,6 @@ Still open, for the story-loop discussion and the fork:
   Same day, after the draft: §7.5 added — the "room to reason"
   finding assessed fairly and registered as a bounded-scratchpad
   hypothesis with its audition item (§11, item 4).
+- **2026-09-23** — Dated notes after the ADR-0003 gate: an
+  annotation under §9 point 4 (the latency outcome held, its reason
+  did not) and the gate outcome at the end of §11.
