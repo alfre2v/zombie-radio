@@ -6,8 +6,9 @@
 decided one question at a time before the code: the agent's agenda of
 seven decisions (§1), then one section per decision as the owner
 rules on it.
-**Status:** OPEN — decision 2 (the show's growing script) ruled
-2026-09-23; decisions 1 and 3–7 pending.
+**Status:** OPEN — decisions 2 (the show's growing script) and 3
+(where the show's record lives) ruled 2026-09-23; decisions 1 and 4–7
+pending.
 
 *Context for the cold reader.* [ADR-0003] (accepted 2026-09-23) fixes
 the engine's shape: one shared script as the model's context (the
@@ -190,6 +191,119 @@ The owner, 2026-09-23 (verbatim):
   goal, beats the director feeds as events, an ending condition, a
   recap written in advance) is show-arc work.
 
+## 3. Decision 3 — where the show's record lives
+
+### 3.1 The owner's question (verbatim)
+
+> Then let's pivot to "#3, where the show's record lives"
+>
+> Give me a brief recap of this point, but I think I like your "I'd give each room its own show file, next to the existing chat, rather than bend the chat format".
+>
+> Let me remind you, that we chose to create our own page(/view/controller?) for our show (instead of trying to bend the chat view of the app)... Maybe this contradicts a bit your previous statement, as in: why does each room needs its own show? Why not just one show, separated from the app chatrooms, which we will leave as an option, but not the meat of our "show"?
+
+### 3.2 The agent's answer (verbatim)
+
+**Recap of #3.** The show needs a record of its rounds, and three things read it:
+1. **the script assembler**, which rebuilds the model's messages from it every round: cast sheet, then instruction, lines, instruction, lines…;
+2. **the trim**, which removes whole rounds from it;
+3. **people, later:** the debug flight recorder, the canned episode (Task 7 records a run so it can be replayed on demo day), and the talk itself.
+
+The question is where that record lives and what shape it has.
+
+**Where "per room" came from.** It's mine, from the story-loop discussion (09-21, Q6). There I recommended the separate `/show` page, which was adopted, and added one line: "The room concept still serves server-side: the show runs in a room and its script persists there like any chat." That was a **reuse argument, not a design need**. Rooms already name a group of personas and already have save code.
+
+**You're right, and the reuse doesn't survive a closer look:**
+- **The cast:** a room gives us a list of names, which one line of show config gives just as well.
+- **Saving:** a room's `history.json` is a flat list of (sender, text). The show's record has rounds, instructions, moods and listener input. We'd write new save code anyway, or bend the chat format, which we already rejected.
+- **What a room drags along:** its settings (who answers, echo chamber, max replies) mean nothing to the show. The chat UI could even open the show's room and write into it.
+
+**So: one show, with its own home, and one refinement.** One show, but **each performance is its own run, in its own folder**, created when you press start. That buys:
+- retakes and the canned episode for free, since a finished run is a recording;
+- a natural place for the flight recorder's files;
+- somewhere for episodes to live later (decision 2's stretch).
+
+A sketch:
+- **Config:** a `show:` section in `settings.yaml` holding the cast (persona names), `context_budget`, the emotion switch, `debug`, and the mic cadence. Voices still come from `Personas/<Name>/`.
+- **Record:** `shows/<run-id>/`, gitignored like `chatrooms/`, with the run id a timestamp. Inside:
+  - `script.json`, the rounds;
+  - `debug/`, one file per round when the switch is on;
+  - later, `audio/` for the canned episode.
+- **`script.json`:**
+
+  ```json
+  {
+    "run": "2026-09-24T10-15-03",
+    "cast": ["Daniel", "Moira", "Ralph", "Samantha"],
+    "rounds": [
+      {"n": 1,
+       "instruction": "Radio traffic: the generator coughed twice. Daniel, then Moira; two lines.",
+       "listener": null,
+       "lines": [{"speaker": "Daniel", "mood": "calm", "text": "Generator two is sulking again. Over."}],
+       "trimmed": false}
+    ]
+  }
+  ```
+
+- **A useful consequence:** the trim becomes a **flag, not a deletion**. The assembler skips rounds marked `trimmed`, while the file keeps the complete show for replay and the record.
+- **API:**
+  - `POST /api/show/start` opens a new run;
+  - `POST /api/show/round` plays the next round of the current run, with the listener's words when there are any.
+
+  No room parameter, and one active run at a time, which the single server slot requires anyway.
+- **Chat rooms stay untouched,** still a TalkWithMe feature. Just not at the same time as a show, on the same server.
+
+Because this changes a point adopted on 09-21, the story-loop discussion gets a dated note, and the TODO's endpoint line (which says "takes the room") gets updated.
+
+Do you adopt it: one show, a folder per run, the trim as a flag?
+
+### 3.3 The ruling
+
+The owner, 2026-09-23 (verbatim):
+
+> Adopt it? I love it: one show, a folder per run, the trim as a flag.
+
+- **Adopted:** one show, decoupled from the chat rooms; a folder per
+  run; the trim as a flag.
+- **What it supersedes:** the server-side half of the story-loop
+  ruling of 2026-09-21 (Q6: "the show runs in a room and its script
+  persists there like any chat"). The other half stands: the show
+  runs on its own page, not a room flag ([ADR-0003] point 9). The
+  story-loop discussion carries a dated note pointing here.
+
+### 3.4 What it means for the build
+
+- **Configuration:** a `show:` section in the app's `settings.yaml` —
+  the cast (persona names; the voices still come from
+  `Personas/<Name>/`), `context_budget` (decision 2), the emotion
+  switch, `debug`, and the microphone cadence (minimum and maximum
+  seconds of played audio, the listening window).
+- **The record:** `shows/<run-id>/`, one folder per performance,
+  created by a start action; the run id is the start time. The
+  fork's `.gitignore` gains `shows/`, like upstream's `chatrooms/`.
+  Inside:
+  - `script.json` — the run id, the cast, and the rounds, each with
+    its number, the director's instruction, the listener's words (or
+    none), the lines (speaker, mood, text), and a `trimmed` flag;
+  - `debug/` — one file per round while `show.debug` is on;
+  - `audio/` — later, for the canned episode (Task 7).
+- **The trim as a flag:** the trim marks whole rounds `trimmed`; the
+  script assembler skips them; the file keeps the complete show, so a
+  finished run is a full recording.
+- **The API:** `POST /api/show/start` opens a new run;
+  `POST /api/show/round` plays the next round of the current run,
+  with the listener's words when there are any. No room parameter;
+  one active run at a time (the single server slot requires it
+  anyway).
+- **The chat rooms stay untouched** — a TalkWithMe feature, used
+  apart from the show (not against the same server at the same
+  time).
+- **Tests:** upstream's isolation fixture (`tests/conftest.py` in the
+  fork) points every module-level global at per-test temporary state
+  — the new root folder for `shows/` joins it (upstream's own rule
+  for new globals).
+- **Left to the code:** whether `mood` is absent or empty when the
+  emotion switch is off.
+
 ## Update trail
 
 - **2026-09-23** — Document created on the owner's request after
@@ -199,3 +313,9 @@ The owner, 2026-09-23 (verbatim):
   what it holds (all seven decisions, one section each) rather than
   as an agenda; a topic that grows into its own work spins off into
   its own document.
+- **2026-09-23 (later)** — §3 added: decision 3, where the show's
+  record lives — the owner's question (why per room, when the show
+  has its own page?), the agent's answer, and the ruling: one show
+  decoupled from the chat rooms, a folder per run, the trim as a
+  flag; it supersedes the server-side half of the story-loop Q6
+  ruling.

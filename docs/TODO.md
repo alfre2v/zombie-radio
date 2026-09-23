@@ -424,9 +424,19 @@ the agent keeps this current. These carry across arcs.*
         **normalizes typographic punctuation before the TTS**
         (`’‘` → `'`, `“”` → `"`, `—` → `, `, `…` → `...` — required,
         L §4.6); tolerates a line wrapped in quotation marks.
-      - **`POST /api/show/round`**, a sibling of `_chat_stream`
-        (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/chat.py:208`):
-        takes the room and an optional audience transcript, which
+      - **The show's record (decision 3, owner ruling 2026-09-23 —
+        [discussion 2026-09-23] show-engine-design §3):** one show,
+        decoupled from the chat rooms; a folder per run,
+        `shows/<run-id>/` (gitignored), holding `script.json` (the
+        rounds: instruction, listener's words, lines with speaker,
+        mood and text, a `trimmed` flag), `debug/`, and later
+        `audio/`; the trim sets flags, the assembler skips flagged
+        rounds, the file keeps the whole show.
+      - **`POST /api/show/start`** opens a new run; **`POST
+        /api/show/round`**, a sibling of `_chat_stream`
+        (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/chat.py:208`),
+        plays the next round of the current run — no room
+        parameter — and takes an optional audience transcript, which
         enters the directive as in-fiction radio traffic; empty or
         low-confidence transcripts are dropped at the STT proxy
         (the "No response received from STT server" pitfall —
@@ -456,8 +466,9 @@ the agent keeps this current. These carry across arcs.*
         (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/chat.js:135-159`)
         into a shared function.
     - *Configuration:* all knobs yaml-only — a `show:` section
-      (cadence minimum and maximum in played seconds, the listening
-      window, the emotion switch); the accumulator's limit and
+      (the cast, `context_budget`, the emotion switch, `debug`,
+      cadence minimum and maximum in played seconds, the listening
+      window); the accumulator's limit and
       tolerance next to `tts.streaming`. No dialogs.
     - *Operating notes (measured 2026-09-22):* one conversation per
       server slot — keep the chat UI off the show's server during
@@ -469,9 +480,10 @@ the agent keeps this current. These carry across arcs.*
       round is in flight; the 1930s radio look.
     - *Acceptance checks, item by item* (with the "delegable later"
       mark — a knob for the future, not in use):
-      - **Script assembler** — a unit test: for a room's history,
-        the messages are the cast sheet, then alternating directive
-        and script turns, and no `[Name]:` appears anywhere.
+      - **Script assembler** — a unit test: for a run's
+        `script.json`, the messages are the cast sheet, then
+        alternating directive and script turns, rounds flagged
+        `trimmed` are skipped, and no `[Name]:` appears anywhere.
         *Delegable later: yes.*
       - **Code director** — unit tests: the round's allowlist and
         line budget appear both in the directive's words and in the
