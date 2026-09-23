@@ -6,8 +6,10 @@
 run and the agent's answers, kept verbatim (§1), followed by the
 agent's further observations (§2) and the questions the run leaves
 open (§3).
-**Status:** OPEN — lessons collected, no decision taken here (§4, a
-dated addendum, adds the emotion-field run of the same evening). It
+**Status:** OPEN — lessons collected (§4, a dated addendum, adds the
+emotion-field run of the same evening; §5, a second addendum on
+2026-09-23, records the owner's ruling on the emotion field and
+explains how one round's request carries the grammar). It
 feeds the ADR-0003 truth audit, the fork's stream parser and text
 normalizer, and the follow-up run with an emotion field in the
 grammar.
@@ -831,7 +833,11 @@ unknowns the ADR-0003 gate left open"):
    recurrent-state checkpoints at least 8,192 tokens apart by
    default, the server may re-read far more than the edited part.
    *When:* before the director's transcript curation is designed
-   (TODO Task 6b) — the design depends on it.
+   (TODO Task 6b) — the design depends on it. *Reframed 2026-09-23:
+   the owner ruled for a midpoint trim ([discussion 2026-09-23]
+   show-engine-design §2), so the design no longer waits on this; what
+   remains is how long the pause after a trim lasts, measured on the
+   box during Task 6b with a low `show.context_budget`.*
 4. **Why agreement is nearly free and disagreement costs ~10 %** —
    believed: the sampler checks the chosen token first and applies
    the grammar to the whole vocabulary only when that token is
@@ -840,7 +846,10 @@ unknowns the ADR-0003 gate left open"):
    the build we serve.
 5. **Whether this build has an `/apply-template` endpoint** —
    believed (4.9). *When:* before the fork's debug switch (TODO Task
-   6b).
+   6b). *Answered 2026-09-23 (measured): yes — it returns the
+   rendered prompt in about 120 ms without generating and without
+   occupying the slot, and its output matches the offline
+   reconstruction of 4.9 (§5.1).*
 
 **Still open — the show engine** (answered by building and running
 the fork):
@@ -859,7 +868,227 @@ the fork):
    a forced grammar (4.2). *When:* the Task 5a audition (follow-up
    "Bounded scratchpad before the script").
 
-## 5. Update trail
+## 5. Addendum, 2026-09-23 — one round's request: the grammar, the emotion switch, and the flight recorder
+
+*Context.* Written the day the fork TalkWithZombies was created
+(TODO Task 6a) and before the show engine's design (Task 6b). The
+agent brought two small items to settle first: whether the fork
+adopts the emotion field of §4, and whether this llama.cpp build has
+the `/apply-template` endpoint the fork's debug switch would use
+(§4.10, question 5). The owner ruled on the first and asked how the
+pieces fit together; the agent's answer is kept verbatim at the
+owner's request (§5.3), after the ruling and the evidence behind it
+(§5.1) and the owner's questions (§5.2).
+
+### 5.1 The ruling, and what it rests on
+
+- **Ruling (owner, 2026-09-23): the emotion field is built behind a
+  yaml switch, default ON.** The options weighed: (1) a switch,
+  default on; (2) the same switch, default off, dormant until
+  something consumes the tag; (3) left out of the timebox. If the
+  timebox runs tight at its day-1.5 checkpoint, flipping the switch
+  falls back to (2) without touching code.
+- **The measured case** (§4, run 2): taught in the cast sheet, the
+  model writes the tag on 40 of 40 lines with no grammar at all;
+  with the grammar on, the text is identical, character for
+  character, for ten rounds, at 0.5 % per token. Forced on a cast
+  sheet that does not describe it, the grammar costs 10.4 % and
+  round 1 drifts into quoted dialogue. Each arm used eight of the
+  nine emotions.
+- **New finding: our TTS engine takes no emotion input** (measured
+  2026-09-23, tts-serve's `/capabilities` through the tunnel). The
+  engine, faster-qwen3-tts, advertises exactly these parameters:
+  `text`, `audio_base64` (the reference clip), `reference_text` (its
+  transcript), `language`, `seed`, `temperature`, `top_p`,
+  `repetition_penalty`. It copies the delivery of the reference
+  clip. So the tag can reach the voice only through **clip
+  selection**: a second reference clip per actor in another
+  register, chosen by the tag — the owner's optional second voice
+  sample (TODO owner action queue) and Task 5b's territory, not the
+  timebox's.
+- **What the tag does before then:** it rides in the history the
+  model reads (whether that steadies the tone across rounds is
+  believed, not measured); it can show as a caption on the `/show`
+  page; and it is a pacing signal the director could read later (the
+  show arc).
+- **What it costs in the timebox:** one grammar rule, one paragraph
+  in the cast sheet (the teaching — §4.2), the parser removing
+  `(mood)` before the text reaches the TTS while keeping it in the
+  history (its own test: a failure would make the voice say
+  "terrified"), and tests for both switch positions.
+- **`/apply-template` verified** (measured 2026-09-23, through the
+  tunnel): the endpoint exists on build `b11096`, answers in about
+  120 ms without generating and without occupying the slot, and
+  renders a two-round script exactly as §4.9 reconstructed it
+  offline — `/no_think` removed, the `<SPECIAL_1x>` turn markers,
+  `<think></think>` at the end. One new detail: earlier assistant
+  turns are rendered plainly, with no think block, so the model
+  reads back exactly the lines we wrote into the history.
+
+### 5.2 The owner's questions (2026-09-23, verbatim)
+
+*One typo corrected ("fell" → "feel").*
+
+> #### 2a. The emotion field: should the script lines carry a mood tag?
+>
+> Very good presentation of the topic.
+>
+> I agree with you, I like Option: "(1) Build it behind a yaml
+> switch, default ON" .
+>
+> However, for my education: how would you build "(2) Build it
+> behind a switch, default OFF", I do not see how you can put this in
+> a switch in the app? Can you change the llama response grammar
+> on/off like that?
+>
+> How do you actually tell llama.cpp you want to use the grammar?
+> Adding a (tag? section? fragment?) somewhere at the top of the
+> system prompt declaring the grammar, right? Show me an example how
+> it's actually done.
+> I assume this grammar has to be added in each and every request to
+> llama.cpp, correct?
+>
+> #### 2b. /apply-template: resolved, it exists
+>
+> I have to admit I do not follow, what is this `/apply-template`
+> route? Is this a llama.cpp service route?
+> What check did you do? Why is this useful to us?
+>
+> What is this: "the debug switch is off by default;"... What is this
+> debug switch you are talking about here?
+>
+> Ok, I am reading your "Proposed design:"... So, this apply-template
+> route is related to a debug capability you want to add? Correct?
+>
+> I like what I see, I just have trouble connecting all the pieces
+> into a coherent narrative about what you are proposing... I see
+> good fragments, without a proper introduction... But I feel it's
+> all what I want... Please give me a bit more to connect the pieces.
+
+### 5.3 The agent's answer (2026-09-23, verbatim)
+
+*Editorial note.* The transcript's text, verbatim; only its headings
+are demoted one level to fit this document. Nothing was removed.
+
+I jumped into the middle of this with neither topic introduced. Here's the whole picture first, then each piece.
+
+#### The picture in one paragraph
+
+Every round of the show, our app (the director) sends **one HTTP request** to llama.cpp, and that request has **two separate parts**:
+- **`messages`:** what the model **reads**. That's the cast sheet, the director's instructions, and the script lines so far.
+- **`grammar`:** a rulebook the model **never reads**. llama.cpp uses it to block any next word that would break the format while the model writes.
+
+Our code builds both parts fresh for every round. Two small 6b features come from that:
+- the **emotion switch** changes what our code puts into both parts;
+- the **debug switch** saves both parts to disk, plus the exact text the model read, so we can inspect a round afterwards.
+
+#### 1. How we tell llama.cpp to use a grammar
+
+It isn't in the system prompt. It's **its own field in the request body**, next to `messages`. Here's a real request from run 2 (round 2 of arm D-aligned), with the messages shortened:
+
+```json
+{
+  "model": "default",
+  "messages": [
+    {"role": "system",    "content": "/no_think\nYou write a live radio play. Four scientists are trapped …"},
+    {"role": "user",      "content": "Radio traffic: the generator coughed twice and the lights flickered …"},
+    {"role": "assistant", "content": "Daniel (calm): Generator two is sulking again, so I'm rerouting …"},
+    "… 1 more message"
+  ],
+  "max_tokens": 200,
+  "temperature": 0.8,
+  "seed": 42,
+  "cache_prompt": true,
+  "stream": false,
+  "grammar": "root    ::= line{1,4}\nline    ::= speaker \" (\" emotion \"): \" text \"\\n\"\nspeaker ::= \"Daniel\" | \"Moira\" | \"Ralph\" | \"Samantha\"\nemotion ::= \"calm\" | \"happy\" | … | \"exhausted\"\ntext    ::= [^\\n\\[\\]()]+\n"
+}
+```
+
+What llama.cpp does with the two parts:
+1. **The chat template** turns `messages` into one long text. That text is all the model ever reads.
+2. **The model** scores every possible next token.
+3. **The grammar filter** removes every token that would break the rules. For example, right after `Daniel (`, only tokens that start one of the nine moods survive.
+4. **The sampler** picks among the survivors, and the loop repeats for the next token.
+
+The model never sees the rules, which is why the cast sheet has to describe them in words. Without that description, the model's favourite next words keep getting blocked. That's where run 2's 10.4 % cost and the drift into quoted dialogue came from.
+
+**Yes, every request carries its own grammar.** The server remembers none between requests. That's what we want: the director changes the rules every round. Round 7 might allow only Ralph and Samantha, with at most two lines:
+
+```
+root    ::= line{1,2}
+speaker ::= "Ralph" | "Samantha"
+```
+
+#### 2. What "the switch" is
+
+It's a setting in the app's own `settings.yaml`, for example:
+
+```yaml
+show:
+  emotion_tags: true
+```
+
+llama.cpp never knows it exists. Our code reads it every round and uses it in three places:
+1. **The grammar builder** writes one of two rule sets:
+   - off: `line ::= speaker ": " text "\n"`
+   - on: `line ::= speaker " (" emotion "): " text "\n"`, plus the `emotion ::=` rule.
+2. **The cast sheet** includes, or leaves out, the paragraph that explains the tag. That keeps the words and the grammar in agreement, per lesson §4.2.
+3. **The parser** expects either `Name (mood): text` or `Name: text`.
+
+So on and off is a choice our code makes while writing each request. Option 2 would be the same code with `false` in the yaml.
+
+#### 3. `/apply-template` and the debug switch
+
+**The problem it solves.** When the show misbehaves, the first question is always "what exactly did the model get?" Today's empty Luna bubble shows how costly the answer can be: it took SSH, box logs and a reproduction. During 6b, and later when auditioning other models (Task 5a), that question will come up constantly.
+
+**The answer has three layers** (lessons §4.9):
+1. **What our code sends:** the JSON above. Easy for us to log.
+2. **What the model actually reads:** the long text the chat template produces from `messages`. This happens inside llama.cpp, and it changes things. It removes `/no_think`, adds special markers, and ends with `<think></think>`.
+3. **The grammar**, which steers word choice but is in no text at all.
+
+We can't see layer 2 unless llama.cpp shows it to us.
+
+**`/apply-template` is llama.cpp's own route for that.** It's a URL on the same server as `/v1/chat/completions`, `/health` and `/slots`. You send it the same `messages`, and it answers with the text it would feed the model, without running the model.
+
+**The check I ran** sent it a tiny two-round script. In 120 ms it answered with this (shown with real line breaks):
+
+```
+<SPECIAL_10>System
+CAST SHEET: Moira, Ralph.
+<SPECIAL_11>User
+DIRECTOR: round 1, Moira then Ralph.
+<SPECIAL_11>Assistant
+Moira: Samples ready. Over.
+Ralph: Doors holding. Over.
+<SPECIAL_12>
+<SPECIAL_11>User
+DIRECTOR: round 2, Ralph only.
+<SPECIAL_11>Assistant
+<think></think>
+```
+
+That settled three things:
+- our llama.cpp build has the route (the TODO said "verify first");
+- the output matches what I reconstructed offline on 09-22: my `/no_think` was removed, and the prompt ends with `<think></think>`;
+- it doesn't occupy the model's single slot.
+
+**The debug switch** is item "Debug switch" in the TODO's 6b plan: a second yaml setting, e.g. `show.debug: false`. When it's `true`, each round also writes one file next to the room's saved chat, holding:
+- the messages we sent (layer 1);
+- the grammar, in full (layer 3);
+- the text the model read, from `/apply-template` (layer 2);
+- the raw reply.
+
+It's off by default because it costs one extra request per round (about 0.1 s) and the files pile up. You turn it on when diagnosing something or during the audition.
+
+**In short, it's a flight recorder for the show.** With it on today, the Luna diagnosis would have been one file to open.
+
+#### How it fits together
+
+Both switches are knobs on the same machine, the code that builds each round's request. `emotion_tags` changes **what goes in**. `debug` **records what went in**, including the one layer only llama.cpp can show us.
+
+Is anything still disconnected? If not, we can move to item 3, the phases of 6b.
+
+## 6. Update trail
 
 - **2026-09-22** — Document created after the ADR-0003 gate run: the
   owner's five questions and the agent's answers kept verbatim (§1,
@@ -884,3 +1113,16 @@ the fork):
   lasting home of this stage's open questions — two answered since
   §3, eight still open, each with when it matters and where it is
   tracked; answers return here as dated notes.
+- **2026-09-23 (evening)** — §5 added, a second dated addendum,
+  after the fork was created and before the show engine's design:
+  the owner's ruling on the emotion field (a yaml switch, default
+  on) with the evidence behind it, including the new finding that
+  our TTS engine takes no emotion input (§5.1); the owner's
+  questions (§5.2) and the agent's answer (§5.3) kept verbatim at the
+  owner's request — how one round's request carries the grammar,
+  what the emotion switch is, and `/apply-template` with the debug
+  switch as a flight recorder. §4.10's question 5 answered with a
+  dated note. The update trail renumbered from §5 to §6. Same
+  evening: §4.10's question 3 reframed with a dated note, after the
+  owner ruled for a midpoint trim ([discussion 2026-09-23]
+  show-engine-design §2).

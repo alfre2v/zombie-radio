@@ -102,12 +102,7 @@ the agent keeps this current. These carry across arcs.*
    Pre-decided: the **"canned episode" emergency mode is a
    MUST** (Task 7). Candidate on the radar: a tunnel that reconnects by
    itself (follow-ups, SSH keepalives — low priority).
-5. **Decide on the emotion field for the fork** — measured
-   2026-09-22 (0.5 % per token when taught, E1 PASS; the model
-   used eight of nine emotions). The agent's lean: a yaml switch,
-   default on, the parser stripping the tag before the TTS. Needed
-   before Task 6b's grammar builder (follow-ups entry).
-6. **The Hyperstack VM is awake and stays up** — woken from
+5. **The Hyperstack VM is awake and stays up** — woken from
    hibernation 2026-09-23 on the same IP; hibernation is a full
    shutdown with the disk kept, so the box booted cold and every
    service came back by itself (the TTS warms up on first use).
@@ -393,6 +388,17 @@ the agent keeps this current. These carry across arcs.*
         `system` = the cast sheet; history = alternating director
         directives and script lines; the model's lines written back
         as parsed and normalized (costs no cache — L §2.8).
+      - **Context growth (decision 2, owner ruling 2026-09-23 —
+        [discussion 2026-09-23] show-engine-design §2):** the
+        midpoint trim as the always-on safety net — at 90 % of the
+        yaml `show.context_budget` (measured from the server's
+        reported prompt size, no estimate) whole rounds leave from
+        the middle until 50 %, keeping the cast sheet, the opening
+        and the recent rounds; the trim's pause measured once on the
+        box with a low budget; the server stays at 16k. Minimal
+        episodes (one hand-written episode, a recap written in
+        advance) only after the trim works and the checkpoint is
+        green — a stretch, not the critical path.
       - **The code director:** beat, speaker allowlist, line
         budget, stage direction, entropy terms, and the
         interaction-beat cadence measured in played seconds. **It
@@ -403,8 +409,12 @@ the agent keeps this current. These carry across arcs.*
         N (L §2.6).
       - **Grammar builder:** allowlist → `speaker` alternatives;
         budget → `line{1,N}`; square brackets out of `text`; the
-        optional `(emotion)` rule behind a yaml switch (the owner
-        decides adoption — action queue).
+        `(emotion)` rule behind a yaml switch, **default ON (owner
+        ruling 2026-09-23)** — the tag before the words, run 2's nine
+        values, parentheses out of `text`, and the cast sheet's
+        teaching paragraph switched together with the rule (why and
+        evidence: [discussion 2026-09-22]
+        grammar-and-prompt-cache-lessons §5.1).
       - **One streamed request per round** with the grammar in the
         top-level `grammar` field, one more key in `_base_payload`
         (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/services/llm.py:69`).
@@ -422,9 +432,10 @@ the agent keeps this current. These carry across arcs.*
         (the "No response received from STT server" pitfall —
         [discussion 2026-09-21] story-loop §6).
       - **Debug switch:** save the rendered prompt next to each
-        round's messages — `/apply-template` if this llama.cpp
-        build has it (verify first), otherwise the server's verbose
-        log — and log the grammar in full, not a summary (L §4.9).
+        round's messages — through `/apply-template` (**verified
+        2026-09-23:** it exists on `b11096`, ~120 ms, no generation,
+        no slot) — and log the grammar in full, not a summary, plus
+        the raw reply (L §4.9, §5).
       - **Tests in upstream's style:** a test class feeding a
         scripted token stream, asserting the events, the persisted
         lines and the normalizer's mapping.
