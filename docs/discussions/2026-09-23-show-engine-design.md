@@ -7,8 +7,9 @@ decided one question at a time before the code: the agent's agenda of
 seven decisions (§1), then one section per decision as the owner
 rules on it.
 **Status:** OPEN — decisions 2 (the show's growing script), 3 (where
-the show's record lives), 4 (where the cast sheet comes from) and 5
-(the director) ruled 2026-09-23; decisions 1, 6 and 7 pending.
+the show's record lives), 4 (where the cast sheet comes from), 5 (the
+director) and 6 (the listener's turn) ruled 2026-09-23; decisions 1
+and 7 pending.
 
 *Context for the cold reader.* [ADR-0003] (accepted 2026-09-23) fixes
 the engine's shape: one shared script as the model's context (the
@@ -815,6 +816,172 @@ The owner, 2026-09-23 (verbatim):
   exact cast name in a transcript narrows the answer round to that
   name; a silent window yields the static round.
 
+## 6. Decision 6 — the listener's turn
+
+*The exchange in order, every message verbatim: the agent's proposal, the owner's question and gauge idea, the agent's answer (the check could not run: the tunnel was down), the owner's request to run it, the agent's checks and results, and the ruling. One two-sentence bridge the agent wrote between its two checks is not in the session transcript and is not reproduced; its facts are restated in the results and in §6.7.*
+
+### 6.1 The agent's proposal (verbatim)
+
+**#6, the listener's turn, briefly.** Most of it was settled in #5: hold-to-talk, the three timers, who answers. What's left is the path from the button to the director, and how to throw away bad transcripts.
+
+**Today's path** (the fork's code): the browser records WebM, sends it to `POST /api/stt` (`app/routers/stt.py:30`), which passes it to Whisper, and the text comes back. Two things in it are wrong for the show:
+1. **An empty transcript becomes words.** `stt_client.py:85` substitutes the literal text "No response received from STT server", which the show would read as a listener speaking.
+2. **Whisper's confidence is thrown away.** The client returns only text and language. Your live test earlier showed Whisper's reply carries per-segment `no_speech_prob` (0.068) and `avg_logprob` (−0.62), plus its own default cut-offs: `no_speech_threshold` 0.6 and `log_prob_threshold` −1.0.
+
+**Proposal:**
+- **One path to Whisper, made honest.** `transcribe_audio` returns empty text instead of the placeholder, plus two confidence numbers: the highest `no_speech_prob` and the average `avg_logprob`. The chat UI can show its own message for an empty result.
+- **A filter in the show's round endpoint.** A transcript counts as **silence** if any of these is true:
+  - it's empty or a single character;
+  - no-speech is above 0.6, or confidence is below −1.0 (Whisper's own defaults, as yaml knobs);
+  - it matches a short list of Whisper's classic hallucinations ("Thank you for watching.", "Subtitles by…").
+
+  Silence leads to the static round from #5.
+- **The browser flow:**
+  1. listening;
+  2. hold-to-talk;
+  3. on release, upload to `/api/stt`;
+  4. the page shows a small caption, "Heard: …", which is cheap and helps both the demo and debugging;
+  5. `POST /api/show/round` with the text and the played seconds.
+- **Names** (challenge C6, Whisper and proper names): the model-decides answer rule from #5 already tolerates misspellings. There's one possible cheap improvement: pass the cast names to Whisper as a hint (OpenAI's API has a `prompt` field for this, and our Whisper's options show `initial_prompt`/`hotwords` slots). I believe our endpoint accepts it; that's one request on the box to check.
+
+**Your picks** (my lean in bold):
+- **a.** **filter in the round endpoint, with Whisper's thresholds as knobs, plus a small hallucination list;**
+- **b.** **unusable transcripts count as silence;**
+- **c.** **"Heard: …" caption on the page;**
+- **d.** **cast names as a Whisper hint, if the one-minute check passes.**
+
+Adopt as is? Or do you want the name-hint check run first?
+
+### 6.2 The owner's question, and the gauge idea (verbatim)
+
+> I like it. I agree with almost everything.
+> I do not understand: d. cast names as a Whisper hint, if the one-minute check passes.
+>
+> Small side quest UI idea: Instead of the dry "heard" caption on the page, add to the page a small gauge that goes up or down if speech is detected, similar to an old radio gauge.
+
+### 6.3 The agent's answer (verbatim)
+
+**(d) in plain words.** Whisper often mangles unusual names: "Moira" can come out as "Myra", and "Okafor" as "Oh, Kafer". Whisper accepts an optional **text hint**: a short piece of text it treats as "what was said just before this recording". If that hint contains "Daniel, Moira, Ralph, Samantha, Dr. Byrne, Dr. Okafor", Whisper becomes more likely to spell those names that way when it hears them. It's a nudge, not a rule.
+- **Why it matters:** decision 5's guarantee (an exact cast name narrows the answer to that character) only kicks in if the name is spelled right. The fallback, where the model picks, still works when it isn't. The hint just makes the guarantee apply more often.
+- **Why "if the check passes":** our Whisper server may call this field `prompt` (OpenAI's name) or something else, and I haven't seen it accept one. Its earlier reply listed an `initial_prompt` option set to `null`, which is suggestive but not proof.
+
+The check is cheap. I'll send your 09-19 recording again, this time with the cast names as the hint, and see whether Whisper's reply echoes them back as its `initial_prompt`. First I need to see whether your tunnel is up.
+
+*[The agent ran the check here; the tunnel was down.]*
+
+Your tunnel is down again: the Whisper port answered nothing (HTTP 000). So the check **did not run**, and the two tracebacks are only my script failing on empty replies. I should have stopped after the tunnel probe instead of chaining the requests. The check waits until you bring the tunnel back; it takes one command.
+
+**Your gauge: yes, and it's a better idea than my caption.** It's also period-true. Radios from the mid-1930s had a **"magic eye"** tuning tube, a green glow that narrowed as the signal got stronger. Later studio gear used a VU needle. Either one fits the 1930s look.
+- **How it works:** the browser can measure loudness live from the microphone (Web Audio's analyser, read many times a second) and drive a needle or a glowing eye from it. No server involved.
+- **A bonus:** the same meter can follow **the actors' voices** during playback, reading the TTS audio instead of the mic. The gauge then moves whenever anyone is on the air, and while you hold the button it shows "we hear you".
+- **What happens to the caption:** the gauge shows that you're being heard, but not what Whisper understood. So I'd keep the "Heard: …" text **only when `show.debug` is on**, for us, and give the audience the gauge.
+- **When:** it belongs with the day-three polish and the 1930s look. By my estimate it's about an hour for a simple version, so outside the exit criterion.
+
+So #6 would be adopted with:
+- the filter, silence handling and names hint as proposed (the hint pending the one-minute check);
+- the caption kept for debug only;
+- the gauge added to the day-three polish list.
+
+Adopt that?
+
+### 6.4 The owner: run the check now (verbatim)
+
+> Wait, before adopting, the VM is there wasting money for your to test things... Tunnel is up now. Check that our whisper support what we need for feature d.
+
+### 6.5 The agent's checks and results (verbatim)
+
+The tunnel is up. Two checks:
+1. **The Whisper server's own API description** (`/openapi.json`): which form fields `/v1/audio/transcriptions` accepts.
+2. **The live test:** the same recording three times (no hint, the hint as `prompt`, the hint as `initial_prompt`), printing only the transcript and the `initial_prompt` Whisper reports having used.
+
+*[The two checks ran here — §6.7 has the field list.]*
+
+**(d) works.** Our Whisper takes the hint in a field called `prompt`, and actually uses it.
+
+| Request | Transcript | Hint Whisper reports using | Language (certainty) | Audio kept as speech |
+|---|---|---|---|---|
+| 1. no hint | "I said hello, Daniel." | none | en (0.795) | 4.44 s |
+| 2. `prompt` = cast names | "I said hello, Daniel." | "Daniel, Moira, Ralph, Samantha. Dr. Byrne, Dr. Okafor." | en (0.795) | 4.44 s |
+| 3. + `language=en` + `vad_filter=true` | "I said hello, Daniel." | same | **en (1)** | **3.144 s** |
+
+What that proves and what it doesn't:
+- **The hint is accepted and applied:** Whisper echoes it back as the `initial_prompt` it decoded with.
+- **The benefit on hard names is not shown by this recording.** It only says "Daniel", which Whisper already gets right. A recording that says "Okafor" or "Byrne" would show it, and any hold-to-talk test in 6b will do.
+
+**Two bonus findings from the server's field list, both cheap to use:**
+- **`language=en`:** the show is in English. Without it, Whisper was only 79.5 % sure and gave Latin 6 %. Forcing it removes one way to get garbage.
+- **`vad_filter=true`:** Whisper's built-in voice-activity filter cuts the non-speech parts before decoding (4.44 s went down to 3.14 s). That's a direct help against challenge C1, Whisper inventing text from noise, and it works before our confidence filter even runs.
+
+So #6, updated:
+- **a.** the filter in the round endpoint: Whisper's thresholds as knobs, plus a short hallucination list;
+- **b.** unusable transcripts count as silence;
+- **c.** "Heard: …" only when `show.debug` is on, and the radio gauge (magic eye or VU needle) on the day-three polish list;
+- **d.** the cast names sent as `prompt` (confirmed);
+- **e.** every show transcription also sends `language=en` and `vad_filter=true`.
+
+Adopt? And about the box: that was the last check I need tonight, so if you're done for the evening, hibernating it now saves the idle hours. Your call, as always.
+
+### 6.6 The ruling
+
+The owner, 2026-09-23 (verbatim):
+
+> Beautiful. Adopt this last version.
+
+- **Adopted:** the last version of §6.5 — (a) the filter in the round
+  endpoint, Whisper's thresholds as knobs plus a short hallucination
+  list; (b) unusable transcripts count as silence; (c) the "Heard: …"
+  text only while `show.debug` is on, and the owner's radio gauge on
+  the day-three polish list; (d) the cast names sent to Whisper as
+  `prompt`; (e) every show transcription also sends `language=en` and
+  `vad_filter=true`.
+
+### 6.7 What it means for the build
+
+- **Measured 2026-09-23** (the box, through the tunnel): the Whisper
+  server's API description lists, for `/v1/audio/transcriptions`,
+  the form fields `file, prompt, response_format, task, language,
+  vad_filter, vad_threshold, vad_neg_threshold,
+  vad_min_speech_duration_ms, vad_max_speech_duration_s,
+  vad_min_silence_duration_ms, vad_speech_pad_ms,
+  repetition_penalty, gpt_refine` — `prompt` yes, `initial_prompt`
+  and `hotwords` no. With `prompt` set, the reply reports it as the
+  `initial_prompt` it decoded with; `language=en` raised the
+  language certainty from 0.795 to 1; `vad_filter=true` kept 3.144 s
+  of the 4.44 s recording as speech. The benefit of the name hint on
+  hard names (Okafor, Byrne) is believed, not yet shown: the test
+  recording says only "Daniel".
+- **The STT client** (`app/services/stt_client.py` in the fork):
+  `transcribe_audio` returns empty text instead of the placeholder
+  "No response received from STT server" (line 85), plus two
+  confidence numbers from Whisper's segments — the highest
+  `no_speech_prob` and the average `avg_logprob`; it passes
+  `prompt`, `language` and `vad_filter` when the caller gives them.
+  The chat UI shows its own message for an empty result.
+- **The show's transcription** sends `prompt` = the story's cast
+  names (and the surnames the cast sheet uses), `language` (a knob,
+  `en`), `vad_filter=true`. Whether the show page reaches Whisper
+  through `/api/stt` with these optional fields or through a
+  show-specific route is settled in code; the filter lives on the
+  server either way.
+- **The filter** (in the round endpoint): a transcript counts as
+  silence if it is empty or one character, if `no_speech_prob` is
+  above 0.6, if `avg_logprob` is below −1.0 (Whisper's own defaults,
+  yaml knobs), or if it matches a short list of Whisper's known
+  hallucinations. Silence leads to the static round of decision 5.
+- **The page:** listening → hold-to-talk → on release, the audio to
+  Whisper → `POST /api/show/round` with the text and the played
+  seconds. "Heard: …" appears only while `show.debug` is on.
+- **The radio gauge** (day-three polish, with the 1930s look): a
+  "magic eye" tuning tube or a VU needle, driven in the browser by
+  Web Audio's analyser — the microphone's level while the button is
+  held, the actors' TTS audio while it plays; about an hour for a
+  simple version (estimate).
+- **Tests:** fake Whisper replies — empty, high no-speech, low
+  confidence, a known hallucination — each yield the static round;
+  the placeholder text can never reach the director; the show's
+  transcription request carries `prompt`, `language` and
+  `vad_filter`.
+
 ## Update trail
 
 - **2026-09-23** — Document created on the owner's request after
@@ -847,3 +1014,10 @@ The owner, 2026-09-23 (verbatim):
   three separate timers; the announcer voice parked in the roadmap.
   §5.7 turns it into build notes; the story's front matter gains
   `operator`.
+- **2026-09-23 (night, later)** — §6 added: decision 6, the listener's
+  turn — the whole exchange verbatim (one bridging remark absent from
+  the transcript, noted), including two checks against the Whisper
+  server through the tunnel; the ruling: the transcript filter,
+  silence as the static round, the debug-only "Heard" text, the
+  owner's radio-gauge idea for the polish list, the cast names as
+  Whisper's `prompt`, `language=en` and `vad_filter=true`.

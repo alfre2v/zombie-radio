@@ -470,10 +470,22 @@ the agent keeps this current. These carry across arcs.*
         parameter — and takes the seconds of audio played since the
         last request (the director's cadence clock; only the browser
         knows) and an optional audience transcript, which enters the
-        directive as "A voice on the frequency says: …"; empty or
-        low-confidence transcripts are dropped at the STT proxy
-        (the "No response received from STT server" pitfall —
-        [discussion 2026-09-21] story-loop §6).
+        directive as "A voice on the frequency says: …". **The
+        transcript filter (decision 6, owner ruling 2026-09-23 —
+        [discussion 2026-09-23] show-engine-design §6.7):** a
+        transcript counts as silence — the static round — if it is
+        empty or one character, if `no_speech_prob` > 0.6, if
+        `avg_logprob` < −1.0 (Whisper's defaults, yaml knobs), or if
+        it matches a short list of Whisper's known hallucinations.
+      - **The STT client** (`app/services/stt_client.py`): empty text
+        instead of the "No response received from STT server"
+        placeholder (line 85); returns the highest `no_speech_prob`
+        and the average `avg_logprob`; passes `prompt`, `language`,
+        `vad_filter` when given. The show's transcriptions send
+        `prompt` = the story's cast names, `language=en`,
+        `vad_filter=true` (all three verified on the box
+        2026-09-23). "Heard: …" on the page only while `show.debug`
+        is on.
       - **Debug switch:** save the rendered prompt next to each
         round's messages — through `/apply-template` (**verified
         2026-09-23:** it exists on `b11096`, ~120 ms, no generation,
@@ -503,7 +515,8 @@ the agent keeps this current. These carry across arcs.*
       `context_budget`, the emotion switch, `debug`, the three timers
       — `interaction_min_s` / `interaction_max_s` in played seconds,
       `listen_window_s` (stops counting on a press), and a safety cap
-      on one press — the cast lives in the story, not here); the
+      on one press; the transcript filter's two thresholds and the
+      STT `language` — the cast lives in the story, not here); the
       accumulator's limit and
       tolerance next to `tts.streaming`. No dialogs.
     - *Operating notes (measured 2026-09-22):* one conversation per
@@ -513,7 +526,11 @@ the agent keeps this current. These carry across arcs.*
     - *Day-three polish, only if the midpoint checkpoint is green:*
       prefetch round N+1 when the last line of N starts playing;
       dead-air static through a second AudioContext source while a
-      round is in flight; the 1930s radio look.
+      round is in flight; the 1930s radio look, with the owner's
+      radio gauge — a "magic eye" tuning tube or a VU needle driven
+      by Web Audio's analyser, following the microphone while the
+      button is held and the actors' audio while it plays
+      (decision 6).
     - *Acceptance checks, item by item* (with the "delegable later"
       mark — a knob for the future, not in use):
       - **Script assembler** — a unit test: for a run's
@@ -545,9 +562,11 @@ the agent keeps this current. These carry across arcs.*
         in quotation marks handled. *Delegable later: yes* — the
         best first candidate.
       - **`POST /api/show/round`** — an API test with the LLM stream
-        mocked: the expected SSE events; an empty or placeholder STT
-        transcript dropped. *Delegable later: yes*, once the director
-        exists.
+        mocked: the expected SSE events; fake Whisper replies —
+        empty, high no-speech, low confidence, a known hallucination
+        — each yield the static round, and the placeholder text never
+        reaches the director. *Delegable later: yes*, once the
+        director exists.
       - **Debug switch** — switched on, each round leaves its rendered
         prompt (or the verbose log's) and the full grammar next to
         its messages. *Delegable later: yes.*
