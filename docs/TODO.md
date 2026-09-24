@@ -40,9 +40,9 @@ below it is detail.*
   `alfre2v/show-slice-2-rules` and this repository's
   `alfre2v/show-slice-2`: **2.1, director v1** (`ce8bd71`) **and
   2.1b, the pacing knobs** (`2f76b34`), **are done**, both proven on
-  the box. **Next:** the tone-repeat guard (small, in progress), then
-  2.2 to 2.5 and the checkpoint. How to drive the show yourself: the
-  fork's `docs/runbooks/show-driver.md`.
+  the box; tone words no longer repeat within a run (`35f34e0`).
+  **Next:** 2.2, the trim, then 2.3 to 2.5 and the checkpoint. How to
+  drive the show yourself: the fork's `docs/runbooks/show-driver.md`.
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
   samples) → Task 7, the canned episode (a MUST for the talk) →
@@ -423,10 +423,11 @@ the agent keeps this current. These carry across arcs.*
         now "Only static answers; the broadcast goes on." — re-driven
         with the same seed (rounds 1–8 identical,
         `runs/2026-09-24T16-05-03/`): "We'll keep broadcasting." and a
-        station identification instead. Next, uncommitted: the
-        tone-repeat guard (the owner's go, 2026-09-24): no tone word
-        again until the list is used up, the events' rule shared; a
-        show repeats a word in 78 % of runs without it (simulated). —
+        station identification instead. **The tone-repeat guard**
+        followed (`35f34e0`, the owner's go, 2026-09-24): no tone word
+        again until the list is used up, the events' rule shared
+        (`_fresh`); without it 78 % of simulated 40-minute shows
+        repeated a word, with it none of 300. —
         The owner, 2026-09-24, reviewing 2.1: "Keep in mind to execute
         these two changes at the first opportunity we have. Remind me
         about them if we do not execute them soon." The worry: events
