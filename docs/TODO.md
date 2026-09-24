@@ -35,12 +35,14 @@ below it is detail.*
   that morning) · end 2026-09-26 14:46. Its design is fully decided
   ([discussion 2026-09-23] show-engine-design); its ordered checklist
   is the next section but one.
-- **Next:**
-  1. this repository's pull request for `alfre2v/show-engine` (the
-     design docs) — the owner reviews and merges;
-  2. cut `alfre2v/show-slice-1-skeleton` from the fork's up-to-date
-     `master`;
-  3. step **1.1** of the checklist.
+- **Next:** close **slice 1** — push the fork's
+  `alfre2v/show-slice-1-skeleton` and open its pull request; push this
+  repository's `alfre2v/show-slice-1` and open its pull request (the
+  owner's call and review) — then slice 2 on a fresh branch from the
+  fork's `master`. **Slice 1's steps are all done** (2026-09-23
+  evening to 2026-09-24 ~02:30, well ahead of its end-of-day target):
+  ten real rounds ran on the box through the app (1.9). How to drive
+  the show yourself: the fork's `docs/runbooks/show-driver.md`.
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
   samples) → Task 7, the canned episode (a MUST for the talk) →
@@ -186,7 +188,10 @@ the agent keeps this current. These carry across arcs.*
       `alfre2v/show-slice-1-skeleton`. **Target: end of day
       2026-09-24.** Every piece in its simplest form, tested offline,
       then ten rounds on the box — no microphone, no browser.
-      - [ ] **1.1 The `show:` settings** — `app/config.py`, a show
+      - [x] **1.1 The `show:` settings** (`b538828`; the section also
+        survives saves from the chat's Settings dialog — carried over
+        in the settings router like `mcp`, tested in memory and on
+        disk) — `app/config.py`, a show
         settings model beside the existing ones; yaml-only, defaults
         when absent: `story`, `episode` (optional), `model_prefix`
         (`/no_think`), `context_budget`, the emotion switch (default
@@ -197,7 +202,10 @@ the agent keeps this current. These carry across arcs.*
         The cast is NOT here — it lives in the story. (SED §3.4,
         §4.5, §5.7, §6.7.) *Done when:* a unit test reads every key,
         with defaults when absent. *Delegable later: yes.*
-      - [ ] **1.2 The story** — `stories/lab-outbreak/cast_sheet.md`
+      - [x] **1.2 The story** (`4444aa4`; the shipped story renders
+        run 1's and run 2's proven system prompts byte for byte; the
+        mood list filled from `MOODS`; the voice check goes through
+        the persona list) — `stories/lab-outbreak/cast_sheet.md`
         (run 2's placeholder cast turned into the template: front
         matter `title`, `cast`, `operator: Samantha`; the body with
         `{{ model_prefix }}`, `{{ format_rules }}`, `{{ episode }}`);
@@ -209,7 +217,8 @@ the agent keeps this current. These carry across arcs.*
         *Done when:* the cast sheet renders with the switch on and off
         and only the snippet changes; a missing variable fails
         loudly; an unknown cast name fails at load.
-      - [ ] **1.3 The grammar builder** — `app/show/grammar.py`:
+      - [x] **1.3 The grammar builder** (`a268bcd`; byte-identical to
+        both grammars proven on the box) — `app/show/grammar.py`:
         allowlist → `speaker` alternatives; budget → `line{1,N}`;
         square brackets out of `text`; with the switch on, the
         `(emotion)` rule before the words, run 2's nine values, and
@@ -217,18 +226,37 @@ the agent keeps this current. These carry across arcs.*
         unit tests assert the exact GBNF text for a given allowlist
         and budget, with the switch on and off. *Delegable later:
         yes* (the box step, 1.9, stays with the lead).
-      - [ ] **1.4 The stream parser and normalizer** —
-        `app/show/parser.py`: `start` / `token` / `done` /
-        `complete` per script line; trailing whitespace trimmed; the
-        mood tag stripped from what goes to the TTS and kept in the
-        history; typographic punctuation normalized before the TTS
-        (`’‘` → `'`, `“”` → `"`, `—` → `, `, `…` → `...` — required,
-        L §4.6); a line wrapped in quotation marks tolerated.
-        (L §4.7.) *Done when:* tests feeding scripted token streams
-        assert the events, the stripping, and the mapping character
-        by character. *Delegable later: yes — the best first
-        candidate.*
-      - [ ] **1.5 The run record and the assembler** (append only) —
+      - [x] **1.4 The stream parser and normalizer** (`d30d7ab`;
+        character by character, so chunking cannot matter; the real
+        recording's `raw` byte-identical to the model's output; also
+        `b64e5b4`, `show.max_tokens` 300 → 512 — a whole round's
+        guard, not a line's) —
+        `app/show/parser.py`: `start` (with the mood) / `token` /
+        `done` per script line — the endpoint adds the ids and
+        `complete`. Two texts per line (owner ruling 2026-09-23):
+        **`raw`**, exactly as the model wrote it, for the history;
+        **`spoken`**, for the voice — mood tag stripped, typographic
+        punctuation normalized (`’‘` → `'`, `“”` → `"`, `—` → `, `,
+        `…` → `...` — required, L §4.6), trailing whitespace trimmed,
+        wrapping quotation marks removed. Every event the browser
+        receives carries only spoken text: with streaming TTS on, the
+        voice is fed from the `token` events (`static/chat.js:230-235`),
+        so trailing spaces and a closing quote are held back until
+        something follows. A line cut short (the stream ends
+        mid-line; `finish_reason: "length"`) gets no `done`, is
+        flagged, and stays out of the history. (L §4.6–§4.7.) *Done
+        when:* the probe's real 42-token recording (2026-09-23)
+        parses into both lines with `raw` byte-identical to the
+        model's output and clean events; chunking makes no
+        difference; the mapping character by character; quotes;
+        moods off; a cut line. *Delegable later: yes — the best
+        first candidate.*
+      - [x] **1.5 The run record and the assembler** (`8b39b17`; one
+        file per run, written at the start and atomically once per
+        round; the cast sheet stored per episode, so episodes will not
+        change the file's shape; the reply byte-identical to the
+        model's output; a round with no lines stays out of the
+        history) (append only) —
         `app/show/script.py`; `runs/` added to the fork's
         `.gitignore`. `script.json` holds the story, the cast, the
         seed, and the rounds (instruction, listener's words, lines
@@ -237,12 +265,18 @@ the agent keeps this current. These carry across arcs.*
         (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/session.py:123`):
         `system` = the rendered cast sheet, then alternating
         instruction and script turns, the model's lines written back
-        as parsed and normalized (costs no cache — L §2.8). (SED
+        **exactly as the model wrote them** (`raw` from 1.4 — owner
+        ruling 2026-09-23: normalization is for the voice only, so the
+        history keeps the model's own distribution; either way costs
+        the same cache — L §2.8), cut lines left out. (SED
         §3.4.) *Done when:* for a given `script.json`, the messages
         are the cast sheet then alternating turns, and no `[Name]:`
         appears anywhere; the record round-trips. *Delegable later:
         yes.*
-      - [ ] **1.6 Director v0** — `app/show/director.py`, seeded: 2–3
+      - [x] **1.6 Director v0** (`ac0de25`; a pure function — the
+        generator seeded by the run's seed and the round number, so
+        nothing extra is stored; `Round` gains `event`, which the
+        no-repeat rule reads) — `app/show/director.py`, seeded: 2–3
         random names, 2–3 lines, an "Offstage:" event from the pool
         every other round, no microphone; the constraint said in
         plain words ("Ralph and Moira speak next: the next two
@@ -250,24 +284,51 @@ the agent keeps this current. These carry across arcs.*
         (SED §5.7, the subset.) *Done when:* the allowlist and the
         budget appear both in the instruction's words and in the
         grammar; the same seed gives the same rounds.
-      - [ ] **1.7 The request with the grammar** — one more key,
+      - [x] **1.7 The request with the grammar** (`cf6f8e7`; in 1.8
+        the keys moved into `stream_round`, the show's own request,
+        and `stream_chat` went back to upstream's exact code)
+        — one more key,
         `grammar`, at the top level of the payload
         (`_base_payload`,
         `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/services/llm.py:69`);
         the chat path unchanged. ([ADR-0003].) *Done when:* a unit
         test shows the key in the show's payload and its absence in
         the chat's. *Delegable later: yes.*
-      - [ ] **1.8 The endpoints** — `app/routers/show.py`:
+      - [x] **1.8 The endpoints** (`9ae374a`; no show state on the
+        server — the caller sends the run id; `stream_round` in
+        `llm.py` over a split SSE iterator; an error or a disconnect
+        mid-round records nothing; the disconnect path is not
+        covered by a test) — `app/routers/show.py`:
         `POST /api/show/start` opens a run (a new `runs/<run-id>/`,
         returns the cast); `POST /api/show/round` runs the director,
         streams the SSE events, and appends the round — a sibling of
         `_chat_stream`
         (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/chat.py:208`);
         no room parameter; it already accepts the played seconds and
-        an optional transcript, used from slice 2. (SED §3.4.) *Done
-        when:* an API test with the LLM stream mocked sees the
-        expected events and the round in `script.json`.
-      - [ ] **1.9 The driver, and ten rounds on the box** —
+        an optional transcript, used from slice 2. It needs a small
+        stream reader of its own: upstream's hands over only
+        `choices[0]` (`app/services/llm.py:101`), and the final
+        ("stop") chunk's `timings` — the script's size, for the trim
+        — sit beside `choices`; keep them and store them with the
+        round (measured 2026-09-23; SED §2.4's note). (SED §3.4.)
+        *Done when:* an API test with the LLM stream mocked sees the
+        expected events, and the round with its `timings` in
+        `script.json`.
+      - [x] **1.9 The driver, and ten rounds on the box** (`4f1d908`;
+        the runbook `78cfee7` — the fork's
+        `docs/runbooks/show-driver.md`, a new folder for the fork's
+        procedures, the owner's proposal). **The first real run,
+        2026-09-24 ~02:19, on the box through the app (seed 42):** 10
+        rounds, 24 lines, 0 dropped, every round `stop`; every round
+        within its speakers and filling its line budget exactly; first
+        line ~0.8 s, average round 1.16 s; the script 1,164 tokens
+        after the last round (each round re-reads only ~115–150
+        tokens — the prompt cache works); `raw` keeps the model's
+        curly punctuation (21 lines) and trailing spaces (14),
+        `spoken` none; the characters react to the events. Control:
+        PASS (only `Operator` allowed → every line Operator's). The
+        app's startup reads the Personas folder without writing into
+        it. —
         `scripts/drive_show.py` (standard library only): start a
         run, then ten rounds through the tunnel, printing each line,
         simulating the played seconds. *Done when:* ten rounds on the
@@ -299,8 +360,10 @@ the agent keeps this current. These carry across arcs.*
         answer round; a silent window yields the static round.
         *Delegable later: no* (design-heavy).
       - [ ] **2.2 The trim** — in `app/show/script.py`: before a
-        round, the script's size from the last response
-        (`usage.prompt_tokens` plus the tokens generated); at 90 % of
+        round, the script's size from the last response's final
+        ("stop") chunk — `timings.prompt_n + timings.cache_n +
+        timings.predicted_n` (a stream carries no `usage` by default;
+        measured 2026-09-23, SED §2.4's note); at 90 % of
         `context_budget`, whole rounds from the middle flagged
         `trimmed` until 50 %, keeping the cast sheet, the opening
         rounds and the recent rounds; the assembler skips flagged

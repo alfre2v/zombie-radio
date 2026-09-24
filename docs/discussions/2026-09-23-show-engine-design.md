@@ -171,7 +171,18 @@ The owner, 2026-09-23 (verbatim):
   listener input it carried) from the middle, until the script is
   back to 50 %. It keeps the cast sheet, the opening rounds, and the
   most recent rounds; how many opening rounds to keep is settled in
-  code. A unit test covers it.
+  code. A unit test covers it. *[note 2026-09-23, measured on the
+  box: a streamed reply carries no `usage` unless the request asks
+  for it (`stream_options: {"include_usage": true}`), and then it
+  arrives in an extra chunk with empty `choices`, which upstream's
+  stream reader rejects. What llama.cpp sends by default is its own
+  `timings` on the final ("stop") chunk: the prompt size is
+  `timings.prompt_n + timings.cache_n` (4 + 303 = 307 in the probe —
+  `prompt_n` alone counts only the tokens read fresh), and the script
+  after the round adds `timings.predicted_n` (43 → 350). The trim
+  reads those; `include_usage` stays unused, close to upstream — it
+  would matter only if the show ever ran on a server other than
+  llama.cpp.]*
 - **The knob.** `show.context_budget` is a yaml number, kept at or
   below the server's context (16,384 tokens today). A low value
   (about 3,000) makes the trim fire within a few rounds, for tests on

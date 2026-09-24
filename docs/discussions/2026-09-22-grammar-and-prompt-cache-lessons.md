@@ -465,6 +465,17 @@ also show the model plain punctuation in its own past lines, which
 may gently wean it off the typographic habit. Worth a line in the
 fork's design notes; cheap to verify when the fork runs.
 
+*[note 2026-09-23, owner ruling: the history is NOT normalized. It
+keeps exactly what the model wrote; normalization, trimming and quote
+removal apply only to the text heading for the voice (every event the
+browser receives — with streaming TTS the voice is fed from the
+`token` events). The reason: rewriting the model's own past lines in
+a style it would not produce steers it (§4.4 — what it reads, it
+imitates), the same kind of interference Topic 2 rejected for the
+grammar; and the cost argument above cuts both ways — the reply is
+re-read whether raw or normalized. This suggestion had drifted into
+the TODO as if decided; it was never ruled on until now.]*
+
 ### 2.9 The model's punctuation comes from training, not from us
 
 The cast sheet and the fixed script are plain ASCII, and still the
