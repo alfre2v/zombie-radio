@@ -972,6 +972,15 @@ The owner, 2026-09-23 (verbatim):
   `no_speech_prob` and the average `avg_logprob`; it passes
   `prompt`, `language` and `vad_filter` when the caller gives them.
   The chat UI shows its own message for an empty result.
+  *[note 2026-09-24, as built in step 2.4 with the owner's picks:
+  upstream's `transcribe_audio` stays untouched (stay close to
+  upstream); the show calls a new `transcribe_for_show` instead, so
+  the placeholder cannot reach the director — and it is on the
+  filter's list of noise besides. The show reaches Whisper through
+  its own route, `POST /api/show/listen`; the prompt is the cast's
+  first names (surnames later if Whisper mangles them). The deployed
+  Whisper server rejects `verbose_json` and carries the segments in
+  plain `json` (found by the live check).]*
 - **The show's transcription** sends `prompt` = the story's cast
   names (and the surnames the cast sheet uses), `language` (a knob,
   `en`), `vad_filter=true`. Whether the show page reaches Whisper
@@ -1282,3 +1291,6 @@ held, `.` a round with no tone word.
 - **2026-09-24 (later)** — §5.7 gains a dated note: the static round's
   sentence became "Only static answers; the broadcast goes on." in
   step 2.1b, after the operator signed off in both live drives.
+- **2026-09-24 (evening)** — §6.7 gains a dated note: as built in step
+  2.4, the show reaches Whisper through its own route and a new client
+  function, leaving upstream's `transcribe_audio` untouched.

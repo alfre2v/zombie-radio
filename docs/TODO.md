@@ -42,8 +42,9 @@ below it is detail.*
   2.1b, the pacing knobs** (`2f76b34`), **are done**, both proven on
   the box; tone words no longer repeat within a run (`35f34e0`);
   **2.2, the trim** (`57a08c9`), is done and measured (about 1.5 s
-  once per trim); **2.3, the debug switch** (`129d3de`), is done.
-  **Next:** 2.4 and 2.5, then the checkpoint. How to
+  once per trim); **2.3, the debug switch** (`129d3de`), and **2.4,
+  the listener's turn on the server** (`d6ab1b9`), are done.
+  **Next:** 2.5, then the checkpoint. How to
   drive the show yourself: the fork's `docs/runbooks/show-driver.md`.
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
@@ -498,7 +499,25 @@ the agent keeps this current. These carry across arcs.*
         (verified 2026-09-23: ~120 ms, no generation, no slot), and
         the raw reply. (L §4.9, §5.) *Done when:* switched on, every
         round leaves its file. *Delegable later: yes.*
-      - [ ] **2.4 The STT client and the transcript filter** —
+      - [x] **2.4 The STT client and the transcript filter**
+        (`d6ab1b9`; suite 980 passed). As built, with the owner's
+        picks of 2026-09-24: the show's own route, `POST
+        /api/show/listen`, transcribes with the cast's first names as
+        Whisper's prompt, `language` and `vad_filter`, and returns the
+        text with the highest `no_speech_prob` and the average
+        `avg_logprob`; the round request carries them and the round
+        runs the filter (`app/show/listen.py`) before planning;
+        `Round.heard` records what was heard and the verdict; a new
+        `transcribe_for_show` beside upstream's `transcribe_audio`,
+        which stays untouched (SED §6.7's dated note). The deployed
+        Whisper rejects `verbose_json` and carries the segments in
+        plain `json` — the live check found it. **Live, no browser**
+        (the fork's `runs/2026-09-24T18-01-23/`): TTS spoke "Moira, is
+        the virus airborne?" in Samantha's voice → heard "Moira is the
+        virus airborne" (no_speech_prob 0.01, avg_logprob −0.30) →
+        Moira answered; two seconds of silence → heard nothing → the
+        static round. The cast-names prompt made Whisper surer of the
+        same clip (no_speech_prob 0.018 → 0.005). — The STT client:
         `app/services/stt_client.py`: empty text instead of the "No
         response received from STT server" placeholder (line 85),
         the highest `no_speech_prob` and the average `avg_logprob`
