@@ -38,11 +38,11 @@ below it is detail.*
 - **Slice 1 is done and merged** (2026-09-24; ten real rounds ran on
   the box through the app). **Slice 2 is under way** on the fork's
   `alfre2v/show-slice-2-rules` and this repository's
-  `alfre2v/show-slice-2`: **2.1, director v1, is done** (`ce8bd71`).
-  **Next: 2.1b, the pacing knobs for events and tone words** — the
-  owner asked for them "at the first opportunity", with a reminder
-  if they wait — then 2.2 to 2.5 and the checkpoint. How to drive
-  the show yourself: the fork's `docs/runbooks/show-driver.md`.
+  `alfre2v/show-slice-2`: **2.1, director v1** (`ce8bd71`) **and
+  2.1b, the pacing knobs** (`2f76b34`), **are done**, both proven on
+  the box. **Next:** the tone-repeat guard (small, in progress), then
+  2.2 to 2.5 and the checkpoint. How to drive the show yourself: the
+  fork's `docs/runbooks/show-driver.md`.
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
   samples) → Task 7, the canned episode (a MUST for the talk) →
@@ -405,8 +405,29 @@ the agent keeps this current. These carry across arcs.*
         and always one by the maximum; an exact cast name narrows the
         answer round; a silent window yields the static round.
         *Delegable later: no* (design-heavy).
-      - [ ] **2.1b Pacing knobs for events and tone words** — the
-        owner, 2026-09-24, reviewing 2.1: "Keep in mind to execute
+      - [x] **2.1b Pacing knobs for events and tone words**
+        (`2f76b34`; suite 927 passed). As built, with the owner's
+        picks of 2026-09-24: `show.event_every` 2 / `event_jitter` 1
+        (the gap, in free rounds) and `show.tone_hold` 3 /
+        `tone_jitter` 1 (the hold: one tone word kept for a few
+        rounds, the owner's pick over spacing it out); each gap and
+        hold drawn once, seeded; the run's first free round opens with
+        an event; 0 turns either off. The terms (gap, hold, jitter)
+        and a timeline: SED §8. **On the box** (seed 42, 14 rounds,
+        the fork's `runs/2026-09-24T15-57-21/`): gaps of 1, 3, 2, 2
+        free rounds and holds of 2, 4, 3, 4 rounds, within bounds; the
+        churn gone — "homesick" held four rounds gave one coherent
+        nostalgic stretch; the tone word steers the emotion tags too.
+        **The static round** read as a sign-off in both live drives
+        ("This is a dead end.", "Farewell, dear listeners…"); worded
+        now "Only static answers; the broadcast goes on." — re-driven
+        with the same seed (rounds 1–8 identical,
+        `runs/2026-09-24T16-05-03/`): "We'll keep broadcasting." and a
+        station identification instead. Next, uncommitted: the
+        tone-repeat guard (the owner's go, 2026-09-24): no tone word
+        again until the list is used up, the events' rule shared; a
+        show repeats a word in 78 % of runs without it (simulated). —
+        The owner, 2026-09-24, reviewing 2.1: "Keep in mind to execute
         these two changes at the first opportunity we have. Remind me
         about them if we do not execute them soon." The worry: events
         and tone words switch the conversation's topic and color too

@@ -789,6 +789,10 @@ The owner, 2026-09-23 (verbatim):
     match in the transcript narrows the grammar to that name;
   - **silence** — the waiting window closed without a usable
     transcript: "Only static answers.", then free rounds resume.
+    *[note 2026-09-24: worded "Only static answers; the broadcast
+    goes on." in step 2.1b — with the bare sentence, the operator
+    signed off in both live drives ("This is a dead end.",
+    "Farewell, dear listeners…"); see the TODO's 2.1b.]*
 - **The instruction** (the `user` turn) is plain sentences with no
   label: "Offstage: …" for an event, "A voice on the frequency says:
   …" for a listener, then the constraint in words ("Ralph and Moira
@@ -1146,6 +1150,88 @@ The owner, 2026-09-23 (verbatim):
   repository, the design's branch of the same name goes up as a pull
   request when the owner is happy with the design.
 
+## 8. Terms for a show's timeline (agreed 2026-09-24)
+
+*While shaping step 2.1b (the pacing knobs), the agent called a run of
+rounds sharing a tone word, or lying between two events, "a stretch".
+Asked by the owner whether that was an abstraction or casual language,
+the agent answered it was casual and proposed two precise names
+instead — gap and hold. The owner adopted them and asked that the
+terms for a show's timeline be written down, so both sides speak of
+timelines the same way. "Stretch" is retired.*
+
+### 8.1 The terms
+
+- **Run** — one performance: one `runs/<run-id>/script.json` in the
+  fork, from Start to the last round.
+- **Round** — one request to the model and the lines it returns,
+  numbered from 1 within a run.
+- **Kind** — every round has one (§5.7; built in step 2.1):
+  - **free** — the cast talks;
+  - **invitation** — the story's operator asks anyone listening to
+    answer; the page listens next;
+  - **answer** — after an invitation, the character the listener
+    addressed answers;
+  - **static** — after an invitation that heard nothing, the operator
+    reacts to the silence.
+- **Line budget** — the most lines a round may have: 1-4 in a free
+  round (weighted to 2-3), 1 in the other kinds; said in the
+  instruction ("the next two lines") and enforced by the grammar.
+- **Event** — something that happens offstage, drawn from the story's
+  pool (`events.yaml`) and given in a free round's instruction as
+  "Offstage: ..."; never spoken — the characters react to it.
+- **Gap** — how many free rounds pass from one event to the next:
+  `show.event_every` (default 2) plus or minus `show.event_jitter`
+  (default 1), never below 1. Only free rounds count; the other kinds
+  neither count nor carry events. The run's first free round opens
+  with an event. `event_every: 0` turns events off.
+- **Tone word** — one word from the story's list (`tones.yaml`), given
+  as "Let the tone be: brittle."; it colors *what* the characters say,
+  while the emotion tag colors *how* they sound. Free, invitation and
+  static rounds carry one; answer rounds carry none (the listener's
+  words set their content).
+- **Hold** — how many rounds one tone word is kept: `show.tone_hold`
+  (default 3) plus or minus `show.tone_jitter` (default 1), never
+  below 1. Only the rounds that carry a tone word count; the next word
+  is always a different one. `tone_hold: 0` turns tone words off.
+- **Jitter** — the plus-or-minus around a gap or a hold. Each gap and
+  each hold is drawn once, when it begins, from a generator seeded by
+  the run's seed and the round where it began: listeners cannot hear
+  a fixed beat, and a seed still replays the run.
+- **Played seconds** — the running total of show audio the page has
+  played since the run started, sent with every round request
+  (`played_s`).
+- **Cadence** — when the radio invites the listeners, in played
+  seconds since the last invitation: never before
+  `show.interaction_min_s`, always by `show.interaction_max_s`, a
+  linearly rising chance in between (§5.7).
+- **Listening window** — after an invitation, how long the page waits
+  for a press (`show.listen_window_s`); the **press** is hold-to-talk,
+  capped by `show.press_cap_s` (§5.5).
+
+### 8.2 A timeline with the defaults
+
+```
+round  1        2        3        4        5        6        7        8        9        10
+kind   free     free     free     free     free     invite   answer   free     free     free
+tone   brittle  -------- -------- wry      -------- funereal .        -------- -------- --------
+event  *                 *                                            *                 *
+```
+
+`*` an event; a word where a tone word begins, `--------` while it is
+held, `.` a round with no tone word.
+
+- **Events** at rounds 1, 3, 8 and 10: the opening event, then gaps of
+  2 (rounds 2 and 3), 3 (rounds 4, 5 and 8 — the invitation and the
+  answer do not count) and 2 (rounds 9 and 10).
+- **Tone words:** "brittle" held 3 rounds (1-3), "wry" held 2 (4-5),
+  "funereal" held 4 (6, 8, 9 and 10). The answer at round 7 carries
+  no tone word and does not count toward the hold; the invitation at
+  round 6 carries one like a free round (a static round would too).
+- Built by script from the 2.1b rules with these draws (gaps 2, 3, 2;
+  holds 3, 2, 4), not by hand — an earlier hand-drawn version in chat
+  mislabeled a hold.
+
 ## Update trail
 
 - **2026-09-23** — Document created on the owner's request after
@@ -1190,3 +1276,9 @@ The owner, 2026-09-23 (verbatim):
   end-to-end skeleton first, then the rules, then the browser; what
   the checkpoint judges; the module layout; one pull request per
   slice) and the ruling. All seven decided; status DECIDED.
+- **2026-09-24** — §8 added: the terms for a show's timeline, agreed
+  while shaping step 2.1b — gap and hold replace the agent's casual
+  "stretch" — with a timeline built by script from the 2.1b rules.
+- **2026-09-24 (later)** — §5.7 gains a dated note: the static round's
+  sentence became "Only static answers; the broadcast goes on." in
+  step 2.1b, after the operator signed off in both live drives.
