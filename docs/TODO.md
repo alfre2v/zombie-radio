@@ -130,10 +130,11 @@ the agent keeps this current. These carry across arcs.*
    `deploy/ansible/inventories/common_vars.yml`: llama.cpp to the
    tag `server-cuda-b11096`, Whisper by digest to the `latest` of
    2025-12-28 (it has no version tag) — both the exact images the
-   box was running (same digests). **The next deploy is their first
-   live test** — the owner asked to be reminded: after it, `/props`
-   must report build `b11096`, and `docker inspect whisper` must
-   show the pinned digest.
+   box was running (same digests). **Proven live the same day**
+   (`b36c28c`): a deploy on the A6000 changed only the llama and
+   Whisper containers (their image names), and the box then reported
+   llama.cpp build `b11096-c550d2f60` and the pinned Whisper digest;
+   a second run changed nothing (`changed=0`).
 
 ## The critical path — Task 6b
 

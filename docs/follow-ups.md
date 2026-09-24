@@ -340,6 +340,56 @@ reader's memory):
   F5-TTS first (known quantity), Breeze TTS 2 second (newer,
   unproven locally). Consider upstreaming as PRs to scorbo2.
 
+## Markdown emphasis in spoken lines — kept for now; re-test with any new TTS engine
+
+- **The finding (2026-09-24):** the model sometimes marks emphasis
+  the way chat text does. In the first live drive of director v1
+  (the fork's `runs/2026-09-24T14-43-54/`, round 7, tone word
+  "impish"), Moira's line came back as `How *charming*.` Nothing
+  stops the marks on their way to the voice: the grammar's text rule
+  (`[^\n\[\]()]+`) allows `*` and `_`; the format rules forbid
+  markdown only in words; the parser's voice-only replacements
+  (the fork's `app/show/parser.py`, `_SPOKEN`) cover curly quotes,
+  dashes and the ellipsis; upstream's browser and server TTS code do
+  no text cleanup (checked 2026-09-24).
+- **The listening test (the owner, by ear, 2026-09-24):** the same
+  line three times in Moira's voice through the fork's `/api/tts` —
+  plain, with `*charming*`, with `_charming_` — on tts-serve 1.2 with
+  Faster Qwen3-TTS and the `say`-made reference voice. All three
+  sounded poor, believed to be the artificial reference voice; but
+  the ranking was clear: the asterisks most natural, then the
+  underscores, the plain line least natural. The engine seems to
+  read the marks as emphasis and inflect the word.
+- **Ruling (the owner, 2026-09-24):** keep the marks; no action for
+  now.
+- **The risk:** another TTS engine — on the owner's wishlist (this
+  file: "Add new TTS engines", "LuxTTS landed upstream") — may react
+  differently: read the marks aloud, pause on them, or ignore them.
+- **Trigger:** any TTS engine change, or the real reference voices
+  (Task 5b): re-run the three-line test and listen.
+- **The test, to repeat it:** with the fork's app serving (the
+  runbook `docs/runbooks/show-driver.md`), three
+  `POST /api/tts` calls with `{"text": …, "persona_name": "Moira"}`;
+  each reply's `audio_base64` decodes to a WAV file.
+- **Fix shape if an engine mishandles them:** strip `*` and `_` from
+  the spoken text only; the history keeps the model's raw text.
+  Forbidding them in the grammar instead would break the
+  byte-identical anchor and force the model.
+- **The replacements must be per TTS engine** (the owner,
+  2026-09-24): a single table changed for each new engine would
+  leave the previous engine misconfigured, since engines react
+  differently to the same characters (this test: Faster Qwen3-TTS
+  inflects on `*` and `_`). The shape, refined in discussion: a
+  shared base table (the replacements every engine takes, today's
+  `_SPOKEN`) plus per-engine exceptions, each engine's re-checked by
+  ear with the three-line test; the table chosen by the engine the
+  TTS server reports — `engine` in tts-serve's `/capabilities` (the
+  box, 2026-09-24: `faster-qwen3-tts`, model
+  `Qwen/Qwen3-TTS-12Hz-1.7B-Base`), a document the app already
+  caches — never by a setting to keep in sync, so an engine switch
+  in Settings brings its table along, and an engine without one gets
+  the base table.
+
 ## MassedCompute 50% code verification — parked
 
 - **The gap:** MassedCompute sits on the provider shortlist only

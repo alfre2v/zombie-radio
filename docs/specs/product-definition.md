@@ -474,12 +474,14 @@ hibernation era created.
   *[ledger 2026-09-24: pinned to the tag `server-cuda-b11096`, at
   the owner's call, so a fresh box runs the build every measurement
   came from; its digest, `sha256:0192ab2545ef…`, is the image the
-  box was already running, checked that day; not yet proven by a
-  deploy — the next one is its live test; the same day the Whisper
-  image, `whisper-fastapi:latest` until then, was pinned by digest
-  to the `latest` the box runs (`sha256:e6ea4a5ca181…`, built
+  box was already running, checked that day; the same day the
+  Whisper image, `whisper-fastapi:latest` until then, was pinned by
+  digest to the `latest` the box runs (`sha256:e6ea4a5ca181…`, built
   2025-12-28 — the image has no version tag for it, only an older
-  `v1.0.3`), with the same live test pending]*, run
+  `v1.0.3`); both pins proven live that day by a deploy on the
+  A6000 (`b36c28c`): only the two containers changed, and the box
+  reported build `b11096-c550d2f60` and the pinned digest; a second
+  run changed nothing]*, run
   with one slot (`--parallel 1`) and its defaults — among them a
   host-RAM prompt cache (`--cache-ram`, 8,192 MiB) that the show's
   latency profile reflects (§5.3). One conversation per slot: the
