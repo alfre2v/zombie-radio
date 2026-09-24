@@ -26,7 +26,7 @@ this arc".
 
 ## Now — where the arc stands
 
-*Updated 2026-09-23, night. Read this section first; everything
+*Updated 2026-09-24, afternoon. Read this section first; everything
 below it is detail.*
 
 - **The critical path is Task 6b, the show engine,** built in the
@@ -35,13 +35,13 @@ below it is detail.*
   that morning) · end 2026-09-26 14:46. Its design is fully decided
   ([discussion 2026-09-23] show-engine-design); its ordered checklist
   is the next section but one.
-- **Next:** close **slice 1** — push the fork's
-  `alfre2v/show-slice-1-skeleton` and open its pull request; push this
-  repository's `alfre2v/show-slice-1` and open its pull request (the
-  owner's call and review) — then slice 2 on a fresh branch from the
-  fork's `master`. **Slice 1's steps are all done** (2026-09-23
-  evening to 2026-09-24 ~02:30, well ahead of its end-of-day target):
-  ten real rounds ran on the box through the app (1.9). How to drive
+- **Slice 1 is done and merged** (2026-09-24; ten real rounds ran on
+  the box through the app). **Slice 2 is under way** on the fork's
+  `alfre2v/show-slice-2-rules` and this repository's
+  `alfre2v/show-slice-2`: **2.1, director v1, is done** (`ce8bd71`).
+  **Next: 2.1b, the pacing knobs for events and tone words** — the
+  owner asked for them "at the first opportunity", with a reminder
+  if they wait — then 2.2 to 2.5 and the checkpoint. How to drive
   the show yourself: the fork's `docs/runbooks/show-driver.md`.
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
@@ -52,9 +52,10 @@ below it is detail.*
   bibles (they land as the cast entries of the fork's
   `stories/lab-outbreak/cast_sheet.md`) and the voice samples. No
   dependency on the build; any day, box or no box.
-- **The box** is hibernated (2026-09-23 evening); the owner wakes it,
-  re-wires `hosts.yml` and starts the tunnel when a step needs it —
-  first at step 1.9 (owner action queue, item 5).
+- **The box** is hibernated, and on 2026-09-24 it **could not be
+  woken: Hyperstack had no A6000 in stock** (owner action queue,
+  item 5). Steps 2.1b to 2.5 build and test without it; it is needed
+  to measure the trim's pause (2.2) and for the checkpoint.
 - **At a session's end:** a fresh-session handoff replaces any
   mid-session one, and a handoff is deleted only with the owner's
   permission.
@@ -111,6 +112,20 @@ the agent keeps this current. These carry across arcs.*
    tunnel; `make ans-unset ENV=cloud` after. Decide after the
    timebox: keep hibernating (its IP kept for a few cents an hour)
    or destroy; a from-zero deploy takes about 7 minutes.
+   **2026-09-24: the wake failed — Hyperstack had no A6000 in
+   stock** (the "restore-stock lottery" of
+   `docs/runbooks/service-restart-sequence.md`, "Never hibernate a
+   show box"). The options, the owner's call: retry the wake through
+   the day (the 2026-09-13 survey saw A6000 stock come and go within
+   one sitting); or rent an L40 (48 GB like the A6000; $1.00/h
+   against $0.50/h in that survey) and deploy from zero. The agent's
+   advice: retry first, the L40 only if the checkpoint arrives
+   without an A6000; before any fresh deploy, pin llama.cpp in
+   `deploy/ansible/inventories/common_vars.yml` to
+   `server-cuda-b11096` (the tag exists, checked 2026-09-24) — the
+   floating `server-cuda` would bring a newer build than the one
+   every measurement came from; keep the A6000 hibernated until the
+   timebox ends (its disk holds that image).
 
 ## The critical path — Task 6b
 
@@ -184,7 +199,8 @@ the agent keeps this current. These carry across arcs.*
       conversation first pays a state swap (~1.8 s). The box stays
       up through 6b; the tunnel is the owner's.
 
-    - [ ] **Slice 1 — the skeleton.** Branch
+    - [x] **Slice 1 — the skeleton** (done 2026-09-24 ~02:30, merged
+      that day: the fork's `4a62e18`). Branch
       `alfre2v/show-slice-1-skeleton`. **Target: end of day
       2026-09-24.** Every piece in its simplest form, tested offline,
       then ten rounds on the box — no microphone, no browser.
@@ -335,12 +351,33 @@ the agent keeps this current. These carry across arcs.*
         box, every line parsed, the run folder written; plus one
         grammar control request (only a name absent from the prompt
         allowed) that comes back in that name alone.
-      - [ ] **Slice 1 pull request** — the owner reviews and merges.
+      - [x] **Slice 1 pull request** — alfre2v/TalkWithZombies#2
+        and this repository's #10, merged by the owner 2026-09-24.
 
     - [ ] **Slice 2 — the rules.** Branch
-      `alfre2v/show-slice-2-rules`, cut after slice 1 merges.
-      **Target: the checkpoint.**
-      - [ ] **2.1 Director v1** — the full rules of SED §5.7: free
+      `alfre2v/show-slice-2-rules`, cut 2026-09-24 from the fork's
+      `master` (`4a62e18`). **Target: the checkpoint.**
+      - [x] **2.1 Director v1** (`ce8bd71`; suite 909 passed). As
+        built, with the owner's picks of 2026-09-24: `played_s` is
+        the running total since the run started (a failed round
+        records nothing, so per-round seconds would be lost); the
+        tone words live in the story's optional `tones.yaml` ("Let
+        the tone be: brittle.", every kind but the answer; no file,
+        no tone); cast names match whole words, exact case; the
+        static round is the operator's one line; the page learns to
+        listen from `kind` on the `round` event. **Computed with the
+        real director:** over 2,000 seeds at 20 s of audio per round,
+        invitations come 115.0 s apart on average (80 min, 180 max);
+        seed 42's default ten-round drive invites at round 8 and
+        plays the static round at round 9. **Observed in the first
+        real run:** none of its 24 lines named another character, so
+        the "named in the last round" rule has little to act on
+        (follow-ups: the "exchange" round). **Story content**
+        (`22a0af2`, the owner's request): 500 tone words in 24 groups
+        (the 2024 list pruned to 25 and extended) and 289 events (the
+        gate's ten plus 279 in 14 groups; follow-ups: events that
+        stay on topic). The fork's house rules now keep upstream's
+        documentation style (`3540d88`). — The full rules of SED §5.7: free
         rounds allow 2–3 names (whoever has been silent longest,
         always; anyone named in the last round or in the listener's
         words; random fill) and 1–4 lines weighted to 2–3; one tone
@@ -359,6 +396,25 @@ the agent keeps this current. These carry across arcs.*
         and always one by the maximum; an exact cast name narrows the
         answer round; a silent window yields the static round.
         *Delegable later: no* (design-heavy).
+      - [ ] **2.1b Pacing knobs for events and tone words** — the
+        owner, 2026-09-24, reviewing 2.1: "Keep in mind to execute
+        these two changes at the first opportunity we have. Remind me
+        about them if we do not execute them soon." The worry: events
+        and tone words switch the conversation's topic and color too
+        fast. **Events:** `show.event_every` (default 2; 0 turns
+        events off — the checkpoint's "scale down: the events first"),
+        counted in free rounds since the last event, not in round
+        numbers (v1's `n % 2 == 1` silently skips an event whenever an
+        invitation, answer or static round lands on an odd number),
+        plus a jitter setting so listeners cannot hear a fixed beat
+        (each gap drawn once, seeded, within `event_every ± jitter`).
+        **Tone words:** the same pair of knobs. *To settle in the
+        shape:* whether the tone knob spaces the tone sentence out
+        (rounds in between get none) or holds one word for the whole
+        stretch (the agent's lean: hold — a steady color is what
+        fixes the churn); the jitter's name and unit. *Done when:*
+        seeded tests keep every gap within its bounds and replay
+        identically; 0 turns each off.
       - [ ] **2.2 The trim** — in `app/show/script.py`: before a
         round, the script's size from the last response's final
         ("stop") chunk — `timings.prompt_n + timings.cache_n +

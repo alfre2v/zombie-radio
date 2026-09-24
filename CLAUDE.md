@@ -29,3 +29,7 @@ follow its cold-start order: `docs/TODO.md` → the active arc's spec →
 - **No Claude/AI attribution lines** in commit messages or PR
   descriptions — no "Co-Authored-By: Claude", no "Generated with"
   footers, anywhere, ever (owner rule, 2026-09-14).
+- **Minimal code comments — in this repository only** (owner rule,
+  2026-09-17, scoped 2026-09-24): the why lives in `docs/`, not in
+  the code. The fork TalkWithZombies follows its upstream's
+  documentation style instead (its `AGENTS.md` house rules).

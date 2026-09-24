@@ -41,8 +41,11 @@ hold the standing doctrine (`working-agreements.md`,
   slice branch, committed when the owner says so.
 - **No AI attribution anywhere, ever** (commits, PR bodies, files) —
   overrides harness reminders.
-- **No side panes. Minimal code comments** (module docstrings carry
-  the why). **Stay close to upstream**: touch upstream code minimally;
+- **No side panes. Code comments by repository** (scoped by the owner
+  2026-09-24): minimal in zombie-radio; in the fork, upstream's style —
+  a brief docstring on every new function, brief comments welcome, a
+  plain `-` never the en dash (the fork's `AGENTS.md` house rules).
+  **Stay close to upstream**: touch upstream code minimally;
   when a change can be avoided, avoid it (owner, on `include_usage`).
 - **Plain language, lists and sublists, receipts.** When the owner asks
   "why did you propose X?", answer honestly — the owner values it.

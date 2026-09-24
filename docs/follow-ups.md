@@ -171,6 +171,101 @@ reader's memory):
   pattern (`tests/test_tts_settings.js` as the template) covering
   the three packing rules and the line-end flush.
 
+## An "exchange" round — the director has one character address another
+
+- **The gap:** the characters report to the room; they rarely talk
+  to each other. In the first real run of the show engine (the
+  fork's `runs/2026-09-24T02-18-51/`, 10 rounds, seed 42), none of
+  the 24 lines named another character — first names, surnames and
+  "Dr." checked by script — and only one spoke to anyone at all
+  ("You should've locked the east wing when we still had power!",
+  the addressee unnamed). Director v1's rule "anyone named in the
+  last round is allowed next" ([discussion 2026-09-23]
+  show-engine-design §5.7) therefore has little to act on. One run,
+  one seed: a tendency observed, not established.
+- **The idea:** a fifth kind of round beside free, invitation,
+  answer and static — **`exchange`** (the name proposed
+  2026-09-24; "cross-talk", the radio word for on-air banter, was
+  the alternative, set aside because it also means signal
+  interference). The director picks two characters and says who
+  addresses whom: "Moira asks Ralph something; Ralph answers: the
+  next two lines, each with the emotion in its voice." The grammar
+  can enforce the order, not only who is allowed:
+  ```
+  root   ::= first second
+  first  ::= "Moira" " (" emotion "): " text "\n"
+  second ::= "Ralph" " (" emotion "): " text "\n"
+  ```
+  The verb could come from a short list, like the tone words: asks,
+  warns, blames, reassures, teases, confides in.
+- **Why the director and not the format rules:** asking for it in
+  the cast sheet's format paragraph would change the texts pinned
+  byte for byte to the proven prompts (the fork's
+  `tests/test_show_story.py`) and lose that anchor; the director's
+  instruction is per round and leaves the anchor alone. The
+  character bibles (Task 4) may change the picture by giving the
+  characters relationships to talk across — believed, not measured.
+- **Where flagged:** the owner, 2026-09-24, reviewing director v1
+  (Task 6b step 2.1): record it "if the need arises and we have
+  time"; execution undecided.
+- **Trigger:** drives on the box, or the listening test of slice 3,
+  show the characters still rarely speaking to each other, the
+  owner's ear minds, and there is time after the timebox's
+  essentials.
+- **Fix shape:** in the fork, the director gains the kind (how often
+  — a chance per free round, a yaml knob) and its instruction
+  words; `build_grammar` gains an ordered form (a sequence of named
+  lines instead of `line{1,N}`); tests in the manner of step 2.1's
+  (words and grammar agree; the order is enforced). About the size
+  of one checklist step (estimate).
+
+## Events that stay on topic for a few rounds
+
+- **The gap:** the director draws each event at random from the
+  whole pool (without repeats until the pool is used up), so the
+  story jumps between unrelated threads — a flooded basement, then
+  a listener in Anchorage, then a specimen jar — and the lab's
+  backstory can drift ("a sample logged here eleven years ago" and
+  "the university burned the same sample" may both come up). How
+  often events come: in free rounds with an odd round number only
+  (the fork's `app/show/director.py`, `n % 2 == 1`) — about every
+  other round; at the driver's 20 s of audio per round, roughly one
+  event per 40 s of show (the real audio per round is unmeasured).
+- **Two ideas, the owner's (2026-09-24):**
+  1. **Semantic neighbors.** Embed every event once and draw the
+     next one near the last one, so a thread continues for a few
+     events before the story moves on. At the pool's size (289
+     events, 2026-09-24) a vector database is more than needed: the
+     embeddings, computed once and stored as a file in the story
+     folder, and a nearest-unused-neighbor pick do the same job; a
+     database pays off only with thousands of events or episodes
+     written on the fly.
+  2. **Topic runs, almost free.** The pool is already written in
+     14 topic groups, and the director stays in one group for a few
+     events, then jumps to another. The groups are only YAML
+     comments today, which the loader discards — they must become
+     data first (`events:` as a mapping of group to list, the loader
+     accepting both forms). Within a run, pick at random rather than
+     in file order: the order inside a group is the writing order,
+     not a story arc, and a fixed walk would repeat the same sequence
+     every show. The current group and the run's length are derived
+     from the record, like all of the director's memory, so a seed
+     still replays a run.
+- **Where flagged:** the owner, 2026-09-24, after the events pool
+  grew from 10 to 289 ("which we will probably never have time to
+  execute, but I do not want to forget it").
+- **Trigger:** listening to real rounds (on the box or in slice 3),
+  the events feel scattered and the story never settles on a
+  thread — and there is time after the timebox's essentials. Idea 2
+  first; idea 1 only if 2 is not enough. Episode beats
+  ([discussion 2026-09-23] show-engine-design §2.4, §5.7) are the
+  ordered, authored form of the same wish.
+- **Fix shape (idea 2):** the loader reads grouped events into
+  `Story.events` plus each event's group; `_next_event` stays in the
+  last event's group with a chance that falls as the run grows (a
+  yaml knob for the typical run length); tests: runs occur, no
+  repeats until the pool is used up, the same seed replays.
+
 ## Bounded scratchpad before the script — test the "room to reason" hypothesis
 
 - **The gap:** the adopted prompt structure ([discussion
