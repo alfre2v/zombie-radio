@@ -72,69 +72,6 @@ reader's memory):
   `/var/run/reboot-required` flag the updater leaves behind (seen
   2026-09-22; the playbook never reboots).
 
-## Emotion field in the screenplay grammar — MEASURED 2026-09-22; adoption is the owner's call
-
-- **Status 2026-09-23:** the measurement this entry asked for ran on
-  2026-09-22 (`docs/experiments/2026-09-22-emotion-grammar-cost/`):
-  with the tags taught in the cast sheet and carried in the history,
-  the emotion grammar costs 0.5 % per token (E1 PASS), the model tags
-  40 of 40 lines on its own and uses eight of the nine emotions;
-  forced on a prompt that does not mention them, 10.4 %. What
-  remains: the owner's decision to adopt the field in the fork (the
-  agent's lean: a yaml switch from day one, default on, the parser
-  stripping the tag before the TTS — [discussion 2026-09-22]
-  grammar-and-prompt-cache-lessons §4.7), and the quality questions
-  below for the Task 5a audition. Trigger for the decision: before
-  the fork's grammar builder is written (Task D). The original entry
-  follows unchanged.
-
-- **The statement:** ADR-0003 point 3 already plans an optional
-  parenthetical stage direction from a small enum to carry each
-  line's emotional register, and the recon brief's S6 ruling makes
-  it the channel to the TTS side (mapping to reference clips or
-  engine knobs is fork work after Task 4). The owner wants to
-  evaluate it soon, as an explicit field — "emotion" or "emotional
-  tone" — drawn from a list of emotions a voice can carry
-  (happiness, sadness, fear, terror, doubt, …). Sketch discussed
-  2026-09-22 (not decided):
-
-  ```
-  root    ::= line{1,4}
-  line    ::= speaker " (" emotion "): " text "\n"
-  speaker ::= "Daniel" | "Moira" | "Ralph" | "Samantha"
-  emotion ::= "calm" | "happy" | "sad" | "afraid" | "terrified" | "doubtful" | "angry" | "urgent" | "exhausted"
-  text    ::= [^\n\[\]()]+
-  ```
-
-  Points from that discussion: the tag goes BEFORE the words (the
-  script convention `MOIRA (whispering):` — the model commits to the
-  tone first and writes words that fit it); required rather than
-  optional for the evaluation; a short list of single common words,
-  each audible in a voice; delivery (whispering, shouting) is a
-  different axis from emotion and stays out of this list;
-  parentheses leave the `text` rule so the tag cannot be spoken.
-- **Where flagged:** owner, 2026-09-22, during the ADR-0003 gate
-  evening (`docs/experiments/2026-09-22-adr-0003-gate/README.md`,
-  runlog entry 10). Deliberately NOT in that run: "first run the
-  simple grammar, measure performance, and then maybe evaluate
-  doing another run with a more complex grammar, measure again and
-  then contrast."
-- **Trigger:** the owner's call after the ADR-0003 gate verdict (its
-  D-on numbers are the baseline); at the latest before the fork's
-  grammar builder is written (Task D).
-- **Fix shape:** a new small experiment folder (the gate folder is
-  sealed after its verdict) reusing the gate's scripts: arm D-on with
-  the simple grammar versus arm D-emotion with the grammar above,
-  same prompts and seed → the per-token cost of the added complexity
-  (same quantity as gate 2b). Required changes: a cast-sheet variant
-  that describes the tag and its values (the current cast sheet and
-  persona prompts FORBID stage directions — `cast.py` lines 22, 26,
-  30, 34, 46); script lines in the history carrying tags too; the
-  line pattern in `parse_stream.py` extended with an optional
-  `(emotion)` group. Quality questions (does the model pick varied,
-  fitting emotions or collapse to one; does the tag flatten the
-  prose) belong to the Task 5a audition.
-
 ## Measure TTS synthesis time against text length (tunes the accumulator's N and the director's line budget)
 
 - **The gap:** the accumulator sends chunks of up to N characters;
@@ -185,8 +122,11 @@ reader's memory):
   grammar-and-prompt-cache-lessons §3 and §4.3/§4.8;
   `docs/experiments/2026-09-22-adr-0003-gate/` (runlog entries
   12–14).
-- **Trigger:** (3) before Task 6b's director gets transcript
-  curation (the design depends on it); (1) and (2) when show
+- **Trigger:** (3) during Task 6b, once the midpoint trim exists —
+  its pause measured with a low `show.context_budget` (reframed
+  2026-09-23: the owner ruled for the trim, so the design no longer
+  waits on it — [discussion 2026-09-23] show-engine-design §2); (1)
+  and (2) when show
   latency is tuned, or the Task 5a audition swaps the model; (4)
   whenever a grammar change is weighed on cost.
 - **Fix shape:** a small probe reusing the gate's scripts, one

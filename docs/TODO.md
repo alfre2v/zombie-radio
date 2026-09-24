@@ -18,50 +18,44 @@ up ENTIRELY by the playbook — machinery proven end-to-end, not
 curl-deep · **D3** — the in-prototype experiment verdicts (LLM
 default, two TTS engines, Whisper size, VRAM budget).
 
-**NOT in this arc (deliberate boundary, 2026-09-17):** the
-ensemble-director design ([spec §5.3]), story/episode authoring,
-and the full demo rehearsal — that is the next arc's material
-("the show arc"), shaped by what this prototype teaches. This
-arc builds the platform, picks the components, and patches the
-worst rough edges.
-**Boundary shifted (owner ruling 2026-09-21, after the Task 6
-reconnaissance):** two design decisions that belong to the
-director's design are pulled INTO this arc because no source
-patch can be shaped without them — (1) the **prompt structure**
-sent to the LLM each turn (TalkWithMe's one-request-per-persona
-with `[Name]:` history rewrite, versus a 2024-style single shared
-context with a hidden narrator, versus a third structure not yet
-thought of), and (2) the **story loop** (how to make the show
-keep turning inside TalkWithMe's "one user message → up to four
-replies → stop" design, given the app has no server-initiated
-channel to the browser). Each gets its own discussion doc; the
-next arc BUILDS on the two decisions instead of taking them.
-**(1) DIRECTION ADOPTED 2026-09-21** — [discussion 2026-09-21]
-prompt-structure: one shared context in screenplay form, code
-director + per-round GBNF grammar (speaker allowlist, line
-budget), one streamed request per round, SSE events synthesized
-per parsed line; the sanitizer patch is dropped by construction.
-Gate before final: two on-box confirmations (grammar + streaming
-curl; per-round latency vs per-persona) and one audition item
-(prose quality with/without the grammar). **GATE PASSED
-2026-09-22; ADR-0003 ACCEPTED 2026-09-23** — see Task 6's gate
-sub-item below. **(2) DECIDED
-2026-09-21** — [discussion 2026-09-21] story-loop: the browser is
-the metronome (a `/show` page with `show.js` requests the next
-round when the audio queues drain), the server is the director
-(`POST /api/show/round`); endless loop with interaction beats on a
-randomized, configurable TIME window (min/max seconds of played
-audio, never a round count — owner pushback); half-duplex
-hold-to-talk mic enabled only in the listening state; prefetch is
-day-three polish; dead-air static is needed the day the cadence is
-tuned.
-Both gating decisions are taken and the gate passed
-(2026-09-22); the fork exists (Task 6a, done 2026-09-23); the show
-engine is next (Task 6b).
+**Arc boundary, in one line:** the show engine's design was pulled
+into this arc on 2026-09-21 and is now decided; story and episode
+authoring and the full demo rehearsal stay with the next arc, "the
+show arc". The full story of the boundary shift is under "Done in
+this arc".
 
-**Parallelism note:** Task 4 (the owner's cast work) has ZERO
-dependency on Tasks 1–3 — it is the long pole and can start
-immediately, any day, box or no box.
+## Now — where the arc stands
+
+*Updated 2026-09-23, night. Read this section first; everything
+below it is detail.*
+
+- **The critical path is Task 6b, the show engine,** built in the
+  fork TalkWithZombies under a 3-day timebox — clock started
+  2026-09-23 14:46 CDT · checkpoint 2026-09-25 02:46 (in practice
+  that morning) · end 2026-09-26 14:46. Its design is fully decided
+  ([discussion 2026-09-23] show-engine-design); its ordered checklist
+  is the next section but one.
+- **Next:**
+  1. this repository's pull request for `alfre2v/show-engine` (the
+     design docs) — the owner reviews and merges;
+  2. cut `alfre2v/show-slice-1-skeleton` from the fork's up-to-date
+     `master`;
+  3. step **1.1** of the checklist.
+- **The order after the timebox:** Tasks 5a / 5b / 5c in the new
+  engine (5a needs the owner's character bibles, 5b the voice
+  samples) → Task 7, the canned episode (a MUST for the talk) →
+  Task 8, the close ritual. Hard deadline 2026-10-08; the talk at
+  the Austin Python Meetup is in October 2026.
+- **In parallel, the owner's long pole — Task 4:** the character
+  bibles (they land as the cast entries of the fork's
+  `stories/lab-outbreak/cast_sheet.md`) and the voice samples. No
+  dependency on the build; any day, box or no box.
+- **The box** is hibernated (2026-09-23 evening); the owner wakes it,
+  re-wires `hosts.yml` and starts the tunnel when a step needs it —
+  first at step 1.9 (owner action queue, item 5).
+- **At a session's end:** a fresh-session handoff replaces any
+  mid-session one, and a handoff is deleted only with the owner's
+  permission.
 
 **Notation recap** (full conventions in [docs/README.md](README.md)):
 `[ ]` open · `[x]` done (with commit SHA in parentheses) · `[~]`
@@ -93,7 +87,10 @@ the agent keeps this current. These carry across arcs.*
 2. **Seed the character bibles** — EXECUTING SOON. Names,
    personalities, quirks, voice descriptions; rough is fine;
    model-neutral (guardrail 2). They become the sections of the
-   show's cast sheet ([spec §5.3]). Unblocks Task 5a.
+   show's cast sheet ([spec §5.3]) — concretely, each character's
+   entry under "The cast:" in the fork's
+   `stories/lab-outbreak/cast_sheet.md`, arriving as a pull request
+   ([discussion 2026-09-23] show-engine-design §4). Unblocks Task 5a.
 3. **Check the home 3090 box's NVIDIA driver** — DEPRIORITIZED
    (cloud-only demo), but note: it partially revives the day we
    test the playbook's localhost target ([discussion 2026-09-17]
@@ -102,63 +99,312 @@ the agent keeps this current. These carry across arcs.*
    Pre-decided: the **"canned episode" emergency mode is a
    MUST** (Task 7). Candidate on the radar: a tunnel that reconnects by
    itself (follow-ups, SSH keepalives — low priority).
-5. **Decide on the emotion field for the fork** — measured
-   2026-09-22 (0.5 % per token when taught, E1 PASS; the model
-   used eight of nine emotions). The agent's lean: a yaml switch,
-   default on, the parser stripping the tag before the TTS. Needed
-   before Task 6b's grammar builder (follow-ups entry).
-6. **The Hyperstack VM is awake and stays up** — woken from
-   hibernation 2026-09-23 on the same IP; hibernation is a full
-   shutdown with the disk kept, so the box booted cold and every
-   service came back by itself (the TTS warms up on first use).
-   Kept running through Task 6b for quick live tests (owner,
-   2026-09-23). Decide after the timebox: hibernate (its IP kept for
-   a few cents an hour) or destroy; a from-zero deploy takes about
-   7 minutes.
+5. **The Hyperstack VM — hibernated, woken per box session.** Woken
+   from hibernation 2026-09-23 on the same IP; hibernation is a full
+   shutdown with the disk kept, so the box boots cold and every
+   service comes back by itself (the TTS warms up on first use).
+   Kept up during the day for quick live tests, hibernated again
+   that evening (owner, 2026-09-23). For each box step of Task 6b
+   (first 1.9): wake it, `make ans-set ENV=cloud IP=…`, start the
+   tunnel; `make ans-unset ENV=cloud` after. Decide after the
+   timebox: keep hibernating (its IP kept for a few cents an hour)
+   or destroy; a from-zero deploy takes about 7 minutes.
 
-## Sub-steps
+## The critical path — Task 6b
 
-- [x] **Task 1 — Deployment machinery v1 (deliverable D1).**
-  DONE (2026-09-18, ~1.5 days of the 3-day timebox): all four
-  roles written; **proven live on a fresh A6000/R570 box** — full
-  stack from zero, one command, idempotent (changed=0); potholes
-  fixed in-role and journaled ([discussion 2026-09-18] arc-plan);
-  NEVER_COMMIT tripwire armed. **D2 acceptance MET the same day**
-  (4 distinct voices + mic loop on the deployed stack; 58 ms
-  CANADA-1 RTT, "almost natural" pauses). Remaining to close:
-  - [x] Reboot test PASSED (2026-09-18): full unattended
-    auto-rise in under a minute; client reconnected on a fresh
-    tunnel alone.
-  - [x] `runbooks/service-restart-sequence.md` rewritten around
-    the playbook (ruling-2 executed, 2026-09-18).
-  - [x] `deploy/ansible/README.md` written (2026-09-18).
-  - [x] Owner call RESOLVED (2026-09-18): destroying soon —
-    boxes are disposable now; rebuild is a proven ~15-min
-    command. (When destroyed: restore the hosts.yml sentinel —
-    the working tree goes clean by itself.)
-- [x] **Task 2 — Laptop client wiring + smoke gate.** DONE
-  2026-09-18: tunnel to the new box, `make check` three-ok,
-  TalkWithMe smoke passed, saved server config carried over
-  unchanged (same localhost ports as the experiment).
-- [x] **Task 3 — Cheap config wins, BEFORE experimenting.** DONE
-  (2026-09-18):
-  - [x] `max_turns_for_context` raised 6→50 (owner, 2026-09-18)
-    — and the C9 retest PASSED with it: keyword recall works;
-    coherence otherwise unchanged (see taxonomy evidence ledger).
-  - [x] Fresh rooms, Global System Prompt cleared — standing
-    practice since lab3.
-  - [x] Sampler params read (taxonomy D1, source audit — no box
-    needed): persona requests send ONLY max_tokens (live: 200, UI-editable) +
-    temperature (live: 0.8); everything else is llama-server
-    defaults; router uses temp 0.1. Residual RESOLVED
-    (2026-09-19, /props on the R550 box): `repeat_penalty: 1.0`
-    = off — the penalty-vs-"Over." worry is moot without a fork
-    ([discussion 2026-09-18] arc-plan journal has the full
-    defaults).
+- [ ] **Task 6 — The fork and the show engine: TalkWithZombies
+  ([ADR-0002], [ADR-0003]).** 6a (the fork) is done — its record and
+  the road here are under "Done in this arc". The timebox's terms
+  follow, then 6b's checklist.
+  **TIMEBOX (owner proposal + agent conditions, agreed
+  2026-09-21): 3 days to execute the two axes — prompt structure
+  and story loop — in the fork.** Modeled on D1's 3-day box
+  (finished in ~1.5). Terms:
+  - **Start trigger:** the moment TalkWithZombies is actually
+    forked. Deliberation is NOT timed: both discussion docs
+    (prompt structure, story loop) are finished and ruled on
+    BEFORE the fork exists, so day one is not spent talking.
+    Realistic fork date ≈ 2026-09-24 → checkpoint ≈ 2026-09-27,
+    leaving ~11 days for 5a/5b/5c, Task 7, and Task 8, with
+    Task 4 (owner) in parallel throughout — no slack for a second
+    attempt. **Actual (owner ruling 2026-09-23, the rule as first
+    agreed):** the fork was created 2026-09-23 at 14:46 CDT and the
+    clock started then — checkpoint (day 1.5) 2026-09-25 at 02:46
+    CDT, end 2026-09-26 at 14:46 CDT.
+  - **Exit criterion, judged on MECHANISM, not narrative
+    quality:** TalkWithZombies runs an unattended loop of at least
+    ten turns with the four placeholder personas; speakers chosen
+    by the new structure, not at random; one audience interaction
+    beat that opens the microphone and absorbs the reply;
+    sentences accumulated, not split; on the deployed stack
+    through the tunnel. Placeholder voices, dumb dialogue, and
+    yaml-only knobs are acceptable. Whether the story is GOOD is
+    Task 5a's question (a small model's behavior under the chosen
+    prompt structure is an audition matter, not an engineering
+    one).
+  - **Midpoint checkpoint at day 1.5:** continue, scale down, or
+    stop — decided explicitly, as in D1.
+  - **Fallback if the box is missed:** TalkWithMe 7.1 as it stands
+    plus the canned episode (Task 7) is still a demo; the failure
+    mode is a less ambitious show, not no show.
+  - **Caution recorded:** the story-loop decision may be the
+    arc's largest single build depending on which placement wins
+    (browser-side timer ≈ a day; a server push channel is more;
+    external process + polling in between) — the story-loop
+    discussion ranks the placements by BUILD COST as well as fit,
+    so the box is set knowing what it contains. *Resolved
+    2026-09-21: Placement 1, the browser as the clock — the
+    cheapest, about a day ([ADR-0003]).*
+  - [ ] **6b — Build the show engine, as three slices. NEXT.**
+    **Read this first.** The design is decided and lives in
+    [discussion 2026-09-23] show-engine-design — cited below as
+    **SED §n** — with its roots in [ADR-0003], [spec §5.3], and the
+    lessons of
+    [discussion 2026-09-22] grammar-and-prompt-cache-lessons (cited
+    as **L §n**). This list is the ORDER and the STATE: each step
+    says what to build, where, where it was decided, and when it is
+    done. Tick a step with its commit hash; move "Next" in the Now
+    section as you go.
+    - **Branches:** one feature branch per slice in the fork, each
+      cut from the fork's up-to-date `master` after the previous
+      slice's pull request is merged (SED §7.3).
+    - **Standing rules for every step:** the fork's pytest suite
+      green before review, plus the Node tests when their files are
+      touched; review before every commit; delegation OFF (owner
+      ruling 2026-09-23 — the "delegable later" marks below are a
+      knob for the future, not in use); tests in upstream's style
+      (`tests/test_show_*.py`, one per module; upstream's isolation
+      fixture in `tests/conftest.py` gains the `runs/` and `stories/`
+      roots).
+    - **Operating notes (measured 2026-09-22):** one conversation
+      per server slot — keep the chat UI off the show's server
+      during show runs; a round that meets a slot holding another
+      conversation first pays a state swap (~1.8 s). The box stays
+      up through 6b; the tunnel is the owner's.
+
+    - [ ] **Slice 1 — the skeleton.** Branch
+      `alfre2v/show-slice-1-skeleton`. **Target: end of day
+      2026-09-24.** Every piece in its simplest form, tested offline,
+      then ten rounds on the box — no microphone, no browser.
+      - [ ] **1.1 The `show:` settings** — `app/config.py`, a show
+        settings model beside the existing ones; yaml-only, defaults
+        when absent: `story`, `episode` (optional), `model_prefix`
+        (`/no_think`), `context_budget`, the emotion switch (default
+        on), `debug`, the three timers (`interaction_min_s`,
+        `interaction_max_s`, `listen_window_s`) and the press cap, the
+        transcript filter's two thresholds, the STT `language`; the
+        accumulator's limit and tolerance next to `tts.streaming`.
+        The cast is NOT here — it lives in the story. (SED §3.4,
+        §4.5, §5.7, §6.7.) *Done when:* a unit test reads every key,
+        with defaults when absent. *Delegable later: yes.*
+      - [ ] **1.2 The story** — `stories/lab-outbreak/cast_sheet.md`
+        (run 2's placeholder cast turned into the template: front
+        matter `title`, `cast`, `operator: Samantha`; the body with
+        `{{ model_prefix }}`, `{{ format_rules }}`, `{{ episode }}`);
+        `stories/lab-outbreak/events.yaml` (the gate's ten events as
+        the first pool, phrased "Offstage: …"); `app/show/rules/`
+        (the two format snippets, moods off and on); `app/show/story.py`
+        (front matter, Jinja in strict mode, each cast name checked
+        against `Personas/<Name>/` for its voice). (SED §4.3–§4.5.)
+        *Done when:* the cast sheet renders with the switch on and off
+        and only the snippet changes; a missing variable fails
+        loudly; an unknown cast name fails at load.
+      - [ ] **1.3 The grammar builder** — `app/show/grammar.py`:
+        allowlist → `speaker` alternatives; budget → `line{1,N}`;
+        square brackets out of `text`; with the switch on, the
+        `(emotion)` rule before the words, run 2's nine values, and
+        parentheses out of `text`. (SED §5.7; L §5.1.) *Done when:*
+        unit tests assert the exact GBNF text for a given allowlist
+        and budget, with the switch on and off. *Delegable later:
+        yes* (the box step, 1.9, stays with the lead).
+      - [ ] **1.4 The stream parser and normalizer** —
+        `app/show/parser.py`: `start` / `token` / `done` /
+        `complete` per script line; trailing whitespace trimmed; the
+        mood tag stripped from what goes to the TTS and kept in the
+        history; typographic punctuation normalized before the TTS
+        (`’‘` → `'`, `“”` → `"`, `—` → `, `, `…` → `...` — required,
+        L §4.6); a line wrapped in quotation marks tolerated.
+        (L §4.7.) *Done when:* tests feeding scripted token streams
+        assert the events, the stripping, and the mapping character
+        by character. *Delegable later: yes — the best first
+        candidate.*
+      - [ ] **1.5 The run record and the assembler** (append only) —
+        `app/show/script.py`; `runs/` added to the fork's
+        `.gitignore`. `script.json` holds the story, the cast, the
+        seed, and the rounds (instruction, listener's words, lines
+        with speaker, mood and text, a `trimmed` flag, the episode).
+        The assembler replaces what `build_llm_messages` did
+        (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/session.py:123`):
+        `system` = the rendered cast sheet, then alternating
+        instruction and script turns, the model's lines written back
+        as parsed and normalized (costs no cache — L §2.8). (SED
+        §3.4.) *Done when:* for a given `script.json`, the messages
+        are the cast sheet then alternating turns, and no `[Name]:`
+        appears anywhere; the record round-trips. *Delegable later:
+        yes.*
+      - [ ] **1.6 Director v0** — `app/show/director.py`, seeded: 2–3
+        random names, 2–3 lines, an "Offstage:" event from the pool
+        every other round, no microphone; the constraint said in
+        plain words ("Ralph and Moira speak next: the next two
+        lines, each with the emotion in its voice."), no label.
+        (SED §5.7, the subset.) *Done when:* the allowlist and the
+        budget appear both in the instruction's words and in the
+        grammar; the same seed gives the same rounds.
+      - [ ] **1.7 The request with the grammar** — one more key,
+        `grammar`, at the top level of the payload
+        (`_base_payload`,
+        `/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/services/llm.py:69`);
+        the chat path unchanged. ([ADR-0003].) *Done when:* a unit
+        test shows the key in the show's payload and its absence in
+        the chat's. *Delegable later: yes.*
+      - [ ] **1.8 The endpoints** — `app/routers/show.py`:
+        `POST /api/show/start` opens a run (a new `runs/<run-id>/`,
+        returns the cast); `POST /api/show/round` runs the director,
+        streams the SSE events, and appends the round — a sibling of
+        `_chat_stream`
+        (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/chat.py:208`);
+        no room parameter; it already accepts the played seconds and
+        an optional transcript, used from slice 2. (SED §3.4.) *Done
+        when:* an API test with the LLM stream mocked sees the
+        expected events and the round in `script.json`.
+      - [ ] **1.9 The driver, and ten rounds on the box** —
+        `scripts/drive_show.py` (standard library only): start a
+        run, then ten rounds through the tunnel, printing each line,
+        simulating the played seconds. *Done when:* ten rounds on the
+        box, every line parsed, the run folder written; plus one
+        grammar control request (only a name absent from the prompt
+        allowed) that comes back in that name alone.
+      - [ ] **Slice 1 pull request** — the owner reviews and merges.
+
+    - [ ] **Slice 2 — the rules.** Branch
+      `alfre2v/show-slice-2-rules`, cut after slice 1 merges.
+      **Target: the checkpoint.**
+      - [ ] **2.1 Director v1** — the full rules of SED §5.7: free
+        rounds allow 2–3 names (whoever has been silent longest,
+        always; anyone named in the last round or in the listener's
+        words; random fill) and 1–4 lines weighted to 2–3; one tone
+        word per round; the round kinds — invitation (the story's
+        `operator`, one line), answer (the whole cast allowed, one
+        line, "the character the voice addressed answers; if it
+        addressed no one, whoever fits best answers", narrowed to an
+        exact cast-name match), static ("Only static answers."); the
+        cadence on played seconds (never below `interaction_min_s`,
+        a rising chance between, always at `interaction_max_s`); the
+        listener's words as "A voice on the frequency says: …";
+        memory derived from `script.json`, the seed stored in the
+        run. *Done when:* the allowlist and budget in words and
+        grammar; the silent-longest name always allowed in a free
+        round; with a seeded source, no invitation before the minimum
+        and always one by the maximum; an exact cast name narrows the
+        answer round; a silent window yields the static round.
+        *Delegable later: no* (design-heavy).
+      - [ ] **2.2 The trim** — in `app/show/script.py`: before a
+        round, the script's size from the last response
+        (`usage.prompt_tokens` plus the tokens generated); at 90 % of
+        `context_budget`, whole rounds from the middle flagged
+        `trimmed` until 50 %, keeping the cast sheet, the opening
+        rounds and the recent rounds; the assembler skips flagged
+        rounds. (SED §2.4, §3.4.) *Done when:* a unit test with token
+        counts; on the box, with `context_budget` near 3,000, the trim
+        fires within a few rounds and its pause is measured — the
+        number goes to L §4.10 question 3 as a dated note.
+      - [ ] **2.3 The debug switch** — with `show.debug` on, each
+        round writes `runs/<run-id>/debug/`: the messages sent, the
+        grammar in full, the rendered prompt from `/apply-template`
+        (verified 2026-09-23: ~120 ms, no generation, no slot), and
+        the raw reply. (L §4.9, §5.) *Done when:* switched on, every
+        round leaves its file. *Delegable later: yes.*
+      - [ ] **2.4 The STT client and the transcript filter** —
+        `app/services/stt_client.py`: empty text instead of the "No
+        response received from STT server" placeholder (line 85),
+        the highest `no_speech_prob` and the average `avg_logprob`
+        returned, `prompt` / `language` / `vad_filter` passed when
+        given; the show's transcriptions send the cast names as
+        `prompt`, `language=en`, `vad_filter=true`.
+        `app/show/listen.py`: silence if empty or one character,
+        `no_speech_prob` > 0.6, `avg_logprob` < −1.0, or a known
+        Whisper hallucination. (SED §6.7.) *Done when:* fake Whisper
+        replies — empty, high no-speech, low confidence, a known
+        hallucination — each yield the static round, and the
+        placeholder text never reaches the director. *Delegable
+        later: yes.*
+      - [ ] **2.5 The driver, extended** — fake transcripts at the
+        invitations (one naming a character, one not), a silent
+        window, the played seconds simulated. *Done when:* it can
+        run the checkpoint below.
+      - [ ] **Slice 2 pull request** — the owner reviews and merges.
+
+    - [ ] **Checkpoint — 2026-09-25, in practice that morning (clock
+      02:46).** Judged on the box, no browser (SED §7.3): ten
+      unattended rounds; speakers and line counts obey the director;
+      an invitation, then an answer from an injected transcript; a
+      silent window giving the static round; the trim firing; the
+      debug files written. **Verdict, recorded here:** continue ·
+      scale down (the tone word and the events first, then the
+      cadence rules — keep the microphone, simplify when it opens) ·
+      stop (the fallback: TalkWithMe 7.1 plus the canned episode).
+
+    - [ ] **Slice 3 — the browser.** Branch
+      `alfre2v/show-slice-3-browser`, cut after slice 2 merges.
+      **Target: the end of the timebox, 2026-09-26 14:46.**
+      - [ ] **3.1 The SSE reader, extracted** — from `sendMessage`
+        (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/chat.js:135-159`)
+        into `static/sse.js`, shared by the chat and the show. *Done
+        when:* the chat UI still works end to end and upstream's Node
+        tests stay green. *Delegable later: yes* (a mechanical
+        refactor).
+      - [ ] **3.2 The `/show` page and `show.js`** —
+        `templates/show.html` including `state.js`, `tts.js`,
+        `stt.js`, `persistence.js` and the new `sse.js`; `show.js`:
+        idle → generating → playing → listening; the next round
+        requested when the audio queues drain, with the played
+        seconds; listening only when the director asked.
+        ([discussion 2026-09-21] story-loop §5.) *Done when:* by hand,
+        the states cycle and the next round is requested on drain
+        (visible in the console). *Delegable later: no.*
+      - [ ] **3.3 The accumulator** in `static/tts.js` — about 100
+        characters, whole sentences, ~20 % tail tolerance, a hard
+        flush at each line end ([discussion 2026-09-21]
+        task6-recon-talkwithme, around line 617). *Done when:* "Dr.
+        Byrne. 47. Microbiology. Over." leaves as one chunk; a
+        180-character sentence goes whole and alone; the line end
+        always flushes. *Delegable later: yes*, once the follow-up's
+        Node test exists.
+      - [ ] **3.4 Hold-to-talk and the listener's path** —
+        `static/stt.js`: press to record, release to end, enabled
+        only while listening; the waiting window stops counting on a
+        press; the press cap; the upload with the show's Whisper
+        parameters; the transcript sent with the next round; "Heard:
+        …" only while `show.debug` is on. (SED §5.7, §6.7.) *Done
+        when:* by hand — the button works only while listening, and
+        an answer follows a spoken question. *Delegable later: no.*
+      - [ ] **3.5 The exit criterion, by ear** — on the deployed
+        stack through the tunnel, per the timebox terms above: at
+        least ten unattended turns with the four placeholder
+        personas; speakers chosen by the director; one interaction
+        beat that opens the microphone and absorbs the reply;
+        sentences accumulated, not split.
+      - [ ] **3.6 Close the timebox** — slice 3's pull request merged;
+        tag `tz-0.2`; the installer's `client_version` bumped to it
+        and re-proven (fresh install, re-run `changed=0`, HTTP 200);
+        the spec's as-built entries for the engine.
+
+    - [ ] **Polish — only if the checkpoint was green**, in this
+      order: dead-air static through a second AudioContext source
+      while a round is in flight; the 1930s radio look with the
+      owner's gauge (a "magic eye" or a VU needle driven by Web
+      Audio's analyser — the microphone while the button is held,
+      the actors' audio while it plays — SED §6.7); prefetch round
+      N+1 when the last line of N starts playing; episodes (SED §2,
+      the stretch).
+
+## Other open tasks
+
 - [ ] **Task 4 — Real cast replaces placeholders.** Character
   bibles → the sections of TalkWithZombies' cast sheet ([spec
-  §5.3]; where they live in the fork — the persona files or one
-  cast file — is a Task 6b design choice), keeping `/no_think`
+  §5.3]; where they live in the fork — decided 2026-09-23: the
+  cast entries of `stories/<story>/cast_sheet.md`, not the persona
+  files — [discussion 2026-09-23] show-engine-design §4), keeping `/no_think`
   while on Nemotron (the chat template needs it even under the
   grammar — [spec §4]); no heavy prompt tuning yet — guardrail 2 ·
   voice samples → isolation tool first (follow-ups) → gitignore →
@@ -201,8 +447,62 @@ the agent keeps this current. These carry across arcs.*
     speakers), and the others (named addressee, in-fiction
     phrasing, long-form escape hatch) become director settings to
     try. Runs after Task 6b, alongside 5a.
-- [ ] **Task 6 — The fork and the show engine: TalkWithZombies
-  ([ADR-0002], [ADR-0003]).** *How it got here, in five steps:*
+- [ ] **Task 7 — The canned episode (owner MUST) + demo-day
+  protocol runbook.** Recorded from the working prototype; the
+  runbook promotion deferred from the last arc lands here. The
+  seed makes retakes reproducible: on one server slot, the same
+  request and seed gave the same words 80 minutes apart
+  (2026-09-22) — record with the settings it will be replayed
+  with.
+- [ ] **Task 8 — Close ritual in the closing PR.** Features
+  Shipped entry · task_history migration · TODO reset ·
+  staleness sweep (CLAUDE.md included) · spec ledger audit
+  (every settled decision has its as-built entry).
+
+## Done in this arc
+
+*Kept whole — each block moved here unchanged — for the close
+ritual's migration to `task_history.md`.*
+
+- [x] **Task 1 — Deployment machinery v1 (deliverable D1).**
+  DONE (2026-09-18, ~1.5 days of the 3-day timebox): all four
+  roles written; **proven live on a fresh A6000/R570 box** — full
+  stack from zero, one command, idempotent (changed=0); potholes
+  fixed in-role and journaled ([discussion 2026-09-18] arc-plan);
+  NEVER_COMMIT tripwire armed. **D2 acceptance MET the same day**
+  (4 distinct voices + mic loop on the deployed stack; 58 ms
+  CANADA-1 RTT, "almost natural" pauses). Remaining to close:
+  - [x] Reboot test PASSED (2026-09-18): full unattended
+    auto-rise in under a minute; client reconnected on a fresh
+    tunnel alone.
+  - [x] `runbooks/service-restart-sequence.md` rewritten around
+    the playbook (ruling-2 executed, 2026-09-18).
+  - [x] `deploy/ansible/README.md` written (2026-09-18).
+  - [x] Owner call RESOLVED (2026-09-18): destroying soon —
+    boxes are disposable now; rebuild is a proven ~15-min
+    command. (When destroyed: restore the hosts.yml sentinel —
+    the working tree goes clean by itself.)
+- [x] **Task 2 — Laptop client wiring + smoke gate.** DONE
+  2026-09-18: tunnel to the new box, `make check` three-ok,
+  TalkWithMe smoke passed, saved server config carried over
+  unchanged (same localhost ports as the experiment).
+- [x] **Task 3 — Cheap config wins, BEFORE experimenting.** DONE
+  (2026-09-18):
+  - [x] `max_turns_for_context` raised 6→50 (owner, 2026-09-18)
+    — and the C9 retest PASSED with it: keyword recall works;
+    coherence otherwise unchanged (see taxonomy evidence ledger).
+  - [x] Fresh rooms, Global System Prompt cleared — standing
+    practice since lab3.
+  - [x] Sampler params read (taxonomy D1, source audit — no box
+    needed): persona requests send ONLY max_tokens (live: 200, UI-editable) +
+    temperature (live: 0.8); everything else is llama-server
+    defaults; router uses temp 0.1. Residual RESOLVED
+    (2026-09-19, /props on the R550 box): `repeat_penalty: 1.0`
+    = off — the penalty-vs-"Over." worry is moot without a fork
+    ([discussion 2026-09-18] arc-plan journal has the full
+    defaults).
+- **Task 6, the parts already done** ([ADR-0002], [ADR-0003]).
+  *How it got here, in five steps:*
   - **2026-09-18 — the trigger fired:** labels were back in the
     show's output and SPOKEN (no Global System Prompt per lab3), so
     the first patch was required and the fork moment arrived. First
@@ -251,45 +551,6 @@ the agent keeps this current. These carry across arcs.*
   and lint over its files, subtree splits to push anything back);
   copying files without history (ruled out by the attribution
   commitment).
-  **TIMEBOX (owner proposal + agent conditions, agreed
-  2026-09-21): 3 days to execute the two axes — prompt structure
-  and story loop — in the fork.** Modeled on D1's 3-day box
-  (finished in ~1.5). Terms:
-  - **Start trigger:** the moment TalkWithZombies is actually
-    forked. Deliberation is NOT timed: both discussion docs
-    (prompt structure, story loop) are finished and ruled on
-    BEFORE the fork exists, so day one is not spent talking.
-    Realistic fork date ≈ 2026-09-24 → checkpoint ≈ 2026-09-27,
-    leaving ~11 days for 5a/5b/5c, Task 7, and Task 8, with
-    Task 4 (owner) in parallel throughout — no slack for a second
-    attempt. **Actual (owner ruling 2026-09-23, the rule as first
-    agreed):** the fork was created 2026-09-23 at 14:46 CDT and the
-    clock started then — checkpoint (day 1.5) 2026-09-25 at 02:46
-    CDT, end 2026-09-26 at 14:46 CDT.
-  - **Exit criterion, judged on MECHANISM, not narrative
-    quality:** TalkWithZombies runs an unattended loop of at least
-    ten turns with the four placeholder personas; speakers chosen
-    by the new structure, not at random; one audience interaction
-    beat that opens the microphone and absorbs the reply;
-    sentences accumulated, not split; on the deployed stack
-    through the tunnel. Placeholder voices, dumb dialogue, and
-    yaml-only knobs are acceptable. Whether the story is GOOD is
-    Task 5a's question (a small model's behavior under the chosen
-    prompt structure is an audition matter, not an engineering
-    one).
-  - **Midpoint checkpoint at day 1.5:** continue, scale down, or
-    stop — decided explicitly, as in D1.
-  - **Fallback if the box is missed:** TalkWithMe 7.1 as it stands
-    plus the canned episode (Task 7) is still a demo; the failure
-    mode is a less ambitious show, not no show.
-  - **Caution recorded:** the story-loop decision may be the
-    arc's largest single build depending on which placement wins
-    (browser-side timer ≈ a day; a server push channel is more;
-    external process + polling in between) — the story-loop
-    discussion ranks the placements by BUILD COST as well as fit,
-    so the box is set knowing what it contains. *Resolved
-    2026-09-21: Placement 1, the browser as the clock — the
-    cheapest, about a day ([ADR-0003]).*
   - [x] **Reconnaissance brief FIRST** (`cfeed4d`, PR #6) (owner-ratified
     2026-09-21; branch `alfre2v/task6-recon-brief`): a guided
     tour of the fork-relevant anatomy of TalkWithMe (tag 7.1),
@@ -378,145 +639,6 @@ the agent keeps this current. These carry across arcs.*
       the unchanged `LICENSE` are on `master`; `make client-mac`
       installs the fork at its pinned tag, re-run `changed=0`,
       HTTP 200.
-  - [ ] **6b — Build the show engine (the 3-day timebox: clock
-    started 2026-09-23 14:46 CDT, checkpoint 2026-09-25 02:46, end
-    2026-09-26 14:46). NEXT.** Design: [spec §5.3], [ADR-0003] and
-    its Validation section; the lessons behind the rules marked
-    (L): [discussion 2026-09-22] grammar-and-prompt-cache-lessons.
-    **Delegation: OFF** (owner ruling 2026-09-23 — this work stays
-    in the tight learning loop; the method is recorded in
-    `docs/README.md` for later). The acceptance checks at the end
-    serve our own work now.
-    - *Server side (Python, in the fork):*
-      - **Script assembler** replacing `build_llm_messages`
-        (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/session.py:123`):
-        `system` = the cast sheet; history = alternating director
-        directives and script lines; the model's lines written back
-        as parsed and normalized (costs no cache — L §2.8).
-      - **The code director:** beat, speaker allowlist, line
-        budget, stage direction, entropy terms, and the
-        interaction-beat cadence measured in played seconds. **It
-        states in words every constraint it puts in the grammar**
-        (L §4.2 — a grammar that disagrees with its prompt costs
-        ~10 % per token and drifts the style); the line budget is
-        enforced by the grammar's bound, since "up to N" is read as
-        N (L §2.6).
-      - **Grammar builder:** allowlist → `speaker` alternatives;
-        budget → `line{1,N}`; square brackets out of `text`; the
-        optional `(emotion)` rule behind a yaml switch (the owner
-        decides adoption — action queue).
-      - **One streamed request per round** with the grammar in the
-        top-level `grammar` field, one more key in `_base_payload`
-        (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/services/llm.py:69`).
-      - **Stream parser:** `start` / `token` / `done` / `complete`
-        per script line; trims trailing whitespace; strips the
-        emotion tag before the TTS but keeps it in the history;
-        **normalizes typographic punctuation before the TTS**
-        (`’‘` → `'`, `“”` → `"`, `—` → `, `, `…` → `...` — required,
-        L §4.6); tolerates a line wrapped in quotation marks.
-      - **`POST /api/show/round`**, a sibling of `_chat_stream`
-        (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/chat.py:208`):
-        takes the room and an optional audience transcript, which
-        enters the directive as in-fiction radio traffic; empty or
-        low-confidence transcripts are dropped at the STT proxy
-        (the "No response received from STT server" pitfall —
-        [discussion 2026-09-21] story-loop §6).
-      - **Debug switch:** save the rendered prompt next to each
-        round's messages — `/apply-template` if this llama.cpp
-        build has it (verify first), otherwise the server's verbose
-        log — and log the grammar in full, not a summary (L §4.9).
-      - **Tests in upstream's style:** a test class feeding a
-        scripted token stream, asserting the events, the persisted
-        lines and the normalizer's mapping.
-    - *Browser side (JavaScript, in the fork):*
-      - A new `/show` page with its own template including
-        `state.js`, `tts.js`, `stt.js`, `persistence.js`, plus a new
-        `show.js`: idle → generating → playing → listening; the
-        next round requested when the audio queues drain
-        ([discussion 2026-09-21] story-loop §5); listening only
-        when the director asked.
-      - **Hold-to-talk** replacing the toggle, enabled only in the
-        listening state.
-      - **The accumulator** in `tts.js` with the ruled rules (about
-        100 characters, whole sentences, ~20 % tail tolerance, a
-        hard flush at each line end — [discussion 2026-09-21]
-        task6-recon-talkwithme, around line 617).
-      - The SSE reader extracted from `sendMessage`
-        (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/chat.js:135-159`)
-        into a shared function.
-    - *Configuration:* all knobs yaml-only — a `show:` section
-      (cadence minimum and maximum in played seconds, the listening
-      window, the emotion switch); the accumulator's limit and
-      tolerance next to `tts.streaming`. No dialogs.
-    - *Operating notes (measured 2026-09-22):* one conversation per
-      server slot — keep the chat UI off the show's server during
-      show runs; a round that meets a slot holding another
-      conversation first pays a state swap (~1.8 s).
-    - *Day-three polish, only if the midpoint checkpoint is green:*
-      prefetch round N+1 when the last line of N starts playing;
-      dead-air static through a second AudioContext source while a
-      round is in flight; the 1930s radio look.
-    - *Acceptance checks, item by item* (with the "delegable later"
-      mark — a knob for the future, not in use):
-      - **Script assembler** — a unit test: for a room's history,
-        the messages are the cast sheet, then alternating directive
-        and script turns, and no `[Name]:` appears anywhere.
-        *Delegable later: yes.*
-      - **Code director** — unit tests: the round's allowlist and
-        line budget appear both in the directive's words and in the
-        grammar; with a seeded random source, no interaction beat
-        before the minimum played seconds and always one after the
-        maximum. *Delegable later: no* (design-heavy).
-      - **Grammar builder** — unit tests: the exact GBNF text for a
-        given allowlist and budget, with the emotion switch on and
-        off; then, on a box, one control request (only a name absent
-        from the prompt allowed) that must come back in that name
-        alone. *Delegable later: yes* (the box step stays with the
-        lead).
-      - **Streamed request** — a unit test: the payload carries the
-        grammar as a top-level `grammar` key. *Delegable later: yes.*
-      - **Stream parser and normalizer** — tests feeding scripted
-        token streams: `start` / `token` / `done` / `complete` per
-        line; trailing whitespace trimmed; the emotion tag stripped
-        from what goes to the TTS and kept in the history; the
-        punctuation mapping, character by character; a line wrapped
-        in quotation marks handled. *Delegable later: yes* — the
-        best first candidate.
-      - **`POST /api/show/round`** — an API test with the LLM stream
-        mocked: the expected SSE events; an empty or placeholder STT
-        transcript dropped. *Delegable later: yes*, once the director
-        exists.
-      - **Debug switch** — switched on, each round leaves its rendered
-        prompt (or the verbose log's) and the full grammar next to
-        its messages. *Delegable later: yes.*
-      - **`/show` page and `show.js`** — by hand in the browser: the
-        states cycle, the next round is requested when the audio
-        queues drain (visible in the console), listening only when
-        the director asked. *Delegable later: no* (integration,
-        judged by ear).
-      - **Hold-to-talk** — by hand: the control is enabled only in
-        the listening state. *Delegable later: no.*
-      - **Accumulator** — "Dr. Byrne. 47. Microbiology. Over." leaves
-        as one chunk; a 180-character sentence goes whole and alone;
-        the line end always flushes; later the Node test of the
-        follow-up "JavaScript test for the accumulator's packing
-        rules". *Delegable later: yes*, once that test exists.
-      - **SSE reader extraction** — the chat UI still works end to
-        end, and upstream's Node tests stay green. *Delegable later:
-        yes* (a mechanical refactor).
-      - **yaml configuration** — the `show:` keys and the
-        accumulator's limits are read, with defaults when absent (a
-        unit test). *Delegable later: yes.*
-      - **Every item:** the fork's pytest suite green before review.
-    - *Done when:* the timebox's exit criterion above holds, on the
-      deployed stack through the tunnel.
-- [ ] **Task 7 — The canned episode (owner MUST) + demo-day
-  protocol runbook.** Recorded from the working prototype; the
-  runbook promotion deferred from the last arc lands here. The
-  seed makes retakes reproducible: on one server slot, the same
-  request and seed gave the same words 80 minutes apart
-  (2026-09-22) — record with the settings it will be replayed
-  with.
 - [x] **Task 7b — `client-talkwithme-mac.yml`: standalone Mac client-install
   playbook (tangential nice-to-have; NOT MVP).** DONE 2026-09-19
   (branch `alfre2v/client-talkwithme-mac`): built to every
@@ -554,10 +676,50 @@ the agent keeps this current. These carry across arcs.*
   (create-if-absent), clone dir is a variable so upstream and the
   future fork can coexist. ([discussion 2026-09-18] arc-plan Q3 +
   Task-notes.)
-- [ ] **Task 8 — Close ritual in the closing PR.** Features
-  Shipped entry · task_history migration · TODO reset ·
-  staleness sweep (CLAUDE.md included) · spec ledger audit
-  (every settled decision has its as-built entry).
+- **How the arc's boundary shifted** (moved from the top of this
+  file, unchanged):
+
+**NOT in this arc (deliberate boundary, 2026-09-17):** the
+ensemble-director design ([spec §5.3]), story/episode authoring,
+and the full demo rehearsal — that is the next arc's material
+("the show arc"), shaped by what this prototype teaches. This
+arc builds the platform, picks the components, and patches the
+worst rough edges.
+**Boundary shifted (owner ruling 2026-09-21, after the Task 6
+reconnaissance):** two design decisions that belong to the
+director's design are pulled INTO this arc because no source
+patch can be shaped without them — (1) the **prompt structure**
+sent to the LLM each turn (TalkWithMe's one-request-per-persona
+with `[Name]:` history rewrite, versus a 2024-style single shared
+context with a hidden narrator, versus a third structure not yet
+thought of), and (2) the **story loop** (how to make the show
+keep turning inside TalkWithMe's "one user message → up to four
+replies → stop" design, given the app has no server-initiated
+channel to the browser). Each gets its own discussion doc; the
+next arc BUILDS on the two decisions instead of taking them.
+**(1) DIRECTION ADOPTED 2026-09-21** — [discussion 2026-09-21]
+prompt-structure: one shared context in screenplay form, code
+director + per-round GBNF grammar (speaker allowlist, line
+budget), one streamed request per round, SSE events synthesized
+per parsed line; the sanitizer patch is dropped by construction.
+Gate before final: two on-box confirmations (grammar + streaming
+curl; per-round latency vs per-persona) and one audition item
+(prose quality with/without the grammar). **GATE PASSED
+2026-09-22; ADR-0003 ACCEPTED 2026-09-23** — see Task 6's gate
+sub-item below. **(2) DECIDED
+2026-09-21** — [discussion 2026-09-21] story-loop: the browser is
+the metronome (a `/show` page with `show.js` requests the next
+round when the audio queues drain), the server is the director
+(`POST /api/show/round`); endless loop with interaction beats on a
+randomized, configurable TIME window (min/max seconds of played
+audio, never a round count — owner pushback); half-duplex
+hold-to-talk mic enabled only in the listening state; prefetch is
+day-three polish; dead-air static is needed the day the cadence is
+tuned.
+Both gating decisions are taken and the gate passed
+(2026-09-22); the fork exists (Task 6a, done 2026-09-23); the show
+engine is next (Task 6b).
+
 
 ## Standing cross-arc notes
 

@@ -392,7 +392,11 @@ Placement 1, browser as metronome, server as director."**
   persists there like any chat. The room-flag route (the
   echo-chamber precedent, `chat.py:234` to 250) would be fewer new
   files but would tangle show behavior into code built for
-  something else. **Adopted.**
+  something else. **Adopted.** *[note 2026-09-23: the server-side
+  half is superseded — the show is one show decoupled from the chat
+  rooms, with a folder per run under `shows/` and the trim as a flag
+  ([discussion 2026-09-23] show-engine-design §3); the separate page
+  stands.]*
 
 ## 10. What the fork builds (the loop's share of the timebox)
 
