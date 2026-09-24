@@ -1241,6 +1241,320 @@ held, `.` a round with no tone word.
   holds 3, 2, 4), not by hand — an earlier hand-drawn version in chat
   mislabeled a hold.
 
+## 9. Building slice 2 — why it was built this way (2026-09-24)
+
+*The load-bearing exchanges of the day slice 2 was built, step by step:
+the owner's questions, pushback and rulings, and what they changed. The
+owner's words are verbatim, extracted from the session transcript by
+script and checked against it (a message whole, or an exact excerpt
+marked as such); the agent's shapes and answers are condensed, not
+verbatim. What was built and measured, with commit hashes and receipts,
+is in the TODO's slice 2 ticks; this section keeps the why. Where else
+the day's decisions live: §9.7.*
+
+### 9.1 Director v1 (step 2.1)
+
+**The agent's shape (condensed).** Four kinds of round, the kind picked
+from the record, the played seconds and the transcript: after an
+invitation, words give an **answer**, none a **static** round; otherwise
+the cadence picks an **invitation** or a **free** round. Five choices,
+the agent's picks:
+
+- **a. `played_s` is the running total since the run started,** not the
+  seconds since the last request: a failed round records nothing, so
+  seconds reported with it would be lost; a total survives a failure
+  and a retry.
+- **b. Tone words live in the story's optional `tones.yaml`,** like
+  `events.yaml`: they are story content, and a missing file (no tone
+  words) is the checkpoint's "drop the tone word first" switch.
+- **c. "Let the tone be: brittle.",** not SED §5.7's "Let the mood be:
+  …": the tag in parentheses is the line's emotion, and "tone" keeps the
+  two apart.
+- **d. Cast names match as whole words, exact case:** a future cast
+  member named Will or Hope would otherwise match "will you help us?".
+- **e. The static round is the operator's one line** (the one at the
+  microphone). And the page learns to listen from `kind` on the `round`
+  event.
+
+**The ruling** (the owner, verbatim, excerpt):
+
+> Go with picks a–e
+
+**An observation, questioned.** Reading the first real run, the agent
+noted that none of its 24 lines named another character, "so that rule
+will rarely trigger until the bibles are in place". The owner:
+
+> Explain in detail "I noticed none of last night's 24 lines had characters naming each other, so that rule will rarely trigger until the bibles are in place".
+
+The agent's answer (condensed): 0 of 24 lines named anyone (first
+names, surnames and "Dr." checked by script); only one spoke to anyone
+at all, unnamed; the characters report to the room. So director v1's
+"anyone named in the last round is allowed next" has little to act on —
+but the listener's words still feed it. And "until the bibles" was the
+agent's guess, not a measurement: the format rules ask for short radio
+transmissions, the instruction says who speaks but never to whom, and
+the cast sheet gives no relationships. The owner then asked to keep the
+idea (verbatim, excerpt):
+
+> #### Record the potential improvement to director (in follow-ups, or roadmap?)
+> 
+> You said:
+> 
+> ```
+> If we later want the characters to talk to each other more, the director could say so in the instruction, e.g. "Moira asks Ralph something". That would be a new knob and outside 2.1. Changing the format rules instead would break the prompt texts that are pinned byte for byte
+> ```
+> 
+> 
+> Let's record in our docs the  task (execution undecided yet) to add this new (type of round? how would you name this category?) to the director, if the need arises and we have time.
+
+Recorded as the follow-up "An 'exchange' round — the director has one
+character address another": a fifth kind, with the grammar enforcing
+the order (`root ::= first second`), not only who may speak.
+
+### 9.2 Pacing: gaps, holds and a guard (step 2.1b)
+
+**The owner's intuition** (verbatim, excerpt):
+
+> On that note: I have the intuition that the event rounds are going to be switching the topic of the conversation too fast, so we may have to make the frequency that new events happen a configuration setting, instead of a hardcoded modulo 2.
+
+The agent proposed `show.event_every` (default 2, 0 = off), counted in
+free rounds — v1's `n % 2 == 1` silently skipped an event whenever an
+invitation, answer or static round fell on an odd number — and pointed
+out that the tone word, changing every round, may churn the
+conversation more than the events do. **The owner's decision**
+(verbatim, excerpt):
+
+> #### Small frequency knobs
+> 
+> Let's we come back to this small improvement we were discussing "Why a setting helps beyond tuning".
+> 
+> Yes, and I am ok with your pick `show.event_every: int = 2`, however we should add also another setting parameter to add a random "jittery" to it, otherwise users may pick up on the pattern. 
+> 
+>  Also yes to your suggestion:
+> 
+> ```
+> Worth listening for, too: the tone word changes every round, and a jump from "whimsical" to "funereal" may churn the conversation more than the events do. If your intuition proves right on the box, the tone word could get the same knob.
+> ```
+> 
+> Yes! I missed this one, you are 100% right, this one needs similar knobs.
+> 
+> Keep in mind to execute these two changes at the first opportunity we have. Remind me about them if we do not execute them soon.
+
+**The shape (condensed).** A tone word is **held** for a few rounds
+rather than spaced out (a steady color is what fixes the churn); the
+jitter is **bounded** (each gap or hold drawn once within N +/- jitter,
+never below 1, from a generator seeded by the run's seed and the round
+where it began, so a seed still replays a run) rather than a per-round
+chance (unbounded gaps); defaults events 2 +/- 1 free rounds, tone
+words 3 +/- 1 rounds; the run's first free round opens with an event.
+The owner's question on the word "stretch" (verbatim) led to the terms
+of §8 — gap, hold, jitter — and to the tone knob's name, `tone_hold`:
+
+> "a. The tone knob: hold one word for a stretch" and "c. The defaults: events 2 ± 1 (gaps of 1–3 free rounds), tones held 3 ± 1 (2–4 rounds)" at the same time seem to indicate that "one stretch" for you means  "2–4 rounds".
+> 
+> What is a stretch? Is this an abstraction for us, or you are just using casual language?
+
+**The ruling** (verbatim, excerpt):
+
+> We can Go with this last proposal.
+
+**The static round's wording.** In both live drives the bare "Only
+static answers." made the operator sign off ("This is a dead end.",
+"Farewell, dear listeners, wherever you may be."). The agent proposed
+"Only static answers; the broadcast goes on." The owner (verbatim,
+excerpt):
+
+> 1. Static wording: A/ Let's fix it now. Re-run the live test to check the effect of the new text.
+
+Re-driven with the same seed (rounds 1-8 identical): "We'll keep
+broadcasting." and a station identification instead of a farewell.
+
+**The tone-repeat guard.** A new tone word was only guaranteed to
+differ from the word just held. The owner (verbatim, excerpt):
+
+> "That only works because a new word always differs from the one before"... Humm, I think I missed a detail here. When we randomly pick a tone, is there a mechanism to avoid picking a word twice? (I know the probability is low now that the file is big, but is there a code feature to guard this?)
+
+The agent's answer (condensed): half a guard — never the word just
+held, but a word could return later; simulated, 78 % of 40-minute shows
+(about 40 words each) repeated one. Proposed: reuse the events' rule
+("no repeats until the pool is used up", `_next_event` since v0) as one
+shared helper. **The ruling** (verbatim, excerpt):
+
+> Go with this proposal for "Decision 2: the tone-repeat guard".
+
+As built: `_fresh(pool, used)`; none of 300 simulated shows repeated a
+word.
+
+### 9.3 The trim (step 2.2)
+
+**The agent's shape (condensed).** Before each round, the size the
+server last reported (`prompt_n + cache_n + predicted_n`) against
+`show.context_budget`: at 90 %, flag whole rounds `trimmed` until 50 %;
+each round records its share of the size from `timings`; the first 2
+and last 4 rounds are kept; the trim shows on the record, the `round`
+event and the driver; measured with a budget of 1500. It had proposed
+flagging the oldest middle rounds first. **The owner's clarifications,
+and a better order** (verbatim):
+
+> I like the shape, but seeking some clarification:
+> 
+> a. Each round's share: recorded with the round, from timings
+> 
+> Ok,  I like your lean. But what is the cost of adding a /tokenize measurement every n rounds only to check for drift? Do you think it's a good idea? If so, we will put it in follow-ups, not to execute right now.
+> 
+> 
+> b. How much is kept: the first 2 and last 4 rounds, as constants in code, or as yaml settings (trim_keep_first, trim_keep_last).
+> 
+> We can proceed with the first 2 and last 4 rounds. However, there is a question I do not see here: ok, we trim from the second half of the context until we reach 50% of the 16k context, but, crucially, from what part of that segment do we start dropping rounds? 
+> I strongly suggest we drop in a loop line: `rounds[len(rounds) / 2]` until we reach the 50%. Pushbacks?
+> 
+> (By the way, we drop whole rounds, not individual lines, right?)
+> 
+>  
+> c. Visibility: trims on the record and the round event, and printed by the driver
+> 
+> Yes, go with your lean.
+> 
+> d. The measurement drive: context_budget: 1500 for about 24 rounds
+> 
+> Yes, go with your lean. Feel free to adjust and repeat measurement as you like, we have the VM precisely for this.
+
+**The agent's answer (condensed).**
+
+- A periodic `/tokenize` drift check is cheap (two calls of ~120-170
+  ms, no slot) but adds little: every round's `timings` report the true
+  size, so a share a few tokens off only moves where a trim lands (49 %
+  or 52 %). It belongs in the debug switch (it went there, §9.4).
+- **Middle-out: agreed, with one more reason.** Besides keeping the
+  early rounds as context the characters can call back to and removing
+  one contiguous span, the server can reuse its cache only up to the
+  first changed token: a cut right after the opening re-reads almost
+  everything, a cut in the middle about half (unless the hybrid model
+  must re-read from the start anyway — the measurement would tell).
+  The loop runs over the candidates only (neither protected nor already
+  trimmed), `candidates[len(candidates) // 2]`, until the size is at or
+  under 50 %.
+- The 90 % and 50 % are of `show.context_budget` (14,000 by default,
+  below the server's 16,384 to leave room for the reply), not of 16k.
+- **Whole rounds:** a trimmed round loses its instruction and its reply
+  together; the history always alternates, and the model never sees a
+  reply without the instruction that asked for it.
+
+**The measurement, and the owner's hunch.** Two identical 28-round
+drives with a budget of 1500. The agent first concluded that a trim
+costs 0.1-0.2 s (only the prompt-evaluation time) and that the slow
+rounds were not the trim. The owner (verbatim):
+
+> This reminds me of the "cache ejected from memory" observation we had in our earlier experiments. Could this be the cause? Maybe it will stabilize once a few more requests are done with the same stable context?
+
+That was it: the server log's phase between choosing the slot and
+starting the work (not in `timings`) took 1.3-1.5 s in three trims of
+four, with a low `f_keep` — the slot swap through the host-RAM cache the
+ADR-0003 gate had seen; the next round is back to ~1 ms. So a trim
+costs about 1.5 s once (lessons §4.10 question 3, answered; the
+follow-up "Pauses the model server's timings do not show"). One stall
+remained, 1.5 s before a request even reached the server; the owner
+(verbatim, excerpt):
+
+> Humm, this sounds like llama.cpp is configured to unload the model from memory after a certain time of inactivity. I know ollama does this, so it has to be a knob in llama.cpp too. Could it be?
+
+Ruled out: llama.cpp has the knob (`--sleep-idle-seconds`), but it
+defaults to -1 (off), the box does not set it, the previous round had
+ended 1.5 s before, and the round's prompt was read in the normal time.
+
+### 9.4 The debug switch (step 2.3)
+
+**The owner's ask** (verbatim):
+
+> bring the shape of 2.3, the debug switch, let's evaluate including the token-count check, if it does not complicate the build.
+
+**The evidence first (condensed).** Before shaping, the agent rebuilt
+seven rounds of an earlier drive from the record, rendered them with
+`/apply-template` and counted them with `/tokenize` (special markers
+parsed, the start token added): equal to the server's `prompt_n +
+cache_n` to the token, trim rounds included. (The first attempt was off
+by hundreds: it used the record's end-state `trimmed` flags; the
+`trims` field says which rounds had been trimmed at each point.) So the
+check neither complicates the build nor misleads.
+
+**The picks (condensed):** a readable `rNNN.txt` plus the exact
+`rNNN.request.json` per round (JSON alone would escape every newline of
+the rendered prompt); the token check with a warning on a difference;
+written after the round (a debug round costs ~0.35 s more); failed
+rounds get a file too. **The ruling** (verbatim): "Go with your picks". Live:
+16 rounds with a trim, `difference 0` on all 16.
+
+### 9.5 The listener's turn on the server (step 2.4)
+
+**The agent's shape (condensed), with the picks:**
+
+- **a. The show's own route**, `POST /api/show/listen`, and the
+  transcript filter in the round endpoint — the server keeps the show's
+  Whisper settings (the cast's names, the language) and the page just
+  passes along what was heard — rather than the page calling upstream's
+  `/api/stt` with extra fields (the page would need the cast names;
+  upstream's route and model would change).
+- **b. A new client function beside upstream's `transcribe_audio`,
+  which stays untouched** — against the letter of SED §6.7, which
+  planned to change its placeholder; the goal (the placeholder never
+  reaches the director) is met because the show never calls it, and it
+  sits on the filter's noise list besides. "Stay close to upstream".
+- **c. Whisper's prompt: the cast's first names** — what the answer
+  round narrows on; surnames later if Whisper mangles them.
+- **d. The noise list in code** — Whisper's quirks, not story content.
+- **e. `heard` recorded** on the answer or static round (text, numbers,
+  verdict), so a static round shows what was dismissed and why.
+
+**The ruling** (verbatim): "Go with your picks". The live loop then found what
+no unit test could: the deployed Whisper server rejects
+`verbose_json` and carries the per-segment confidence in plain `json`
+(the agent had assumed OpenAI's behavior and faked the server that
+way); and the cast-names prompt made Whisper surer of the same clip.
+Mouth to ear: TTS spoke "Moira, is the virus airborne?", the show heard
+it, Moira answered; silence gave the static round.
+
+### 9.6 The voice keeps the model's emphasis marks
+
+In a live drive the model wrote "How \*charming\*." (the tone word was
+"impish"); nothing between the model and the voice removes `*` or `_`.
+The agent proposed stripping them from the spoken text only; the owner
+asked for a listening test through the real app — three syntheses of
+the same line in Moira's voice: plain, with asterisks, with
+underscores. The owner (verbatim):
+
+> The 3 sound bad to be honest, I suppose that's due to the artificial voice sample. 
+> The most natural sounding is the asterisk, followed by the underscore, and the least natural is the plain text without a doubt. Based on this quick test I prefer not to remove the asterisks and underscores, the TTS model seems to understand it and apply some intonation... The only problem is if we decide to try another TTS model (something that is in my wishlist), each model could react differently to different special characters.
+> 
+> I'll say let's document these findings, and for the moment take no action for these characters.
+
+The agent's per-engine concern, and the owner's (verbatim):
+
+> ```
+> The fix, if an engine mishandles them: strip the marks from the spoken text only
+> ```
+> 
+> Just adding to this that we cannot change the char translation table for each new model and leave the old model char translation misconfigured... When the model arises we will need to store separate translation tables  per TTS model. Push backs? If not, record this observation too.
+
+The agent's refinement (condensed): a shared base table (today's
+`_SPOKEN`) plus per-engine exceptions, chosen by the engine the TTS
+server reports in `/capabilities` (the box: `faster-qwen3-tts`) — never
+by a setting to keep in sync. Recorded as the follow-up "Markdown
+emphasis in spoken lines — kept for now; re-test with any new TTS
+engine".
+
+### 9.7 Where else the day's decisions live
+
+| Decision | Where |
+|---|---|
+| Each step as built, with commits and receipts | `docs/TODO.md`, slice 2 ticks |
+| Timeline terms (gap, hold, jitter) | §8 above |
+| The trim's pause | lessons §4.10 question 3 |
+| The exchange round; events on topic; emphasis marks; hidden pauses | `docs/follow-ups.md` |
+| The llama.cpp and Whisper image pins; dry runs | `docs/specs/product-definition.md` (ledger), TODO owner action queue item 5 |
+| Code comments per repository | this repo's `CLAUDE.md`; the fork's `AGENTS.md` house rules |
+| The story's 500 tone words and 289 events | the fork's `stories/lab-outbreak/` (commit `22a0af2`) |
+| How the listener's route settled SED §6.7's open question | the dated note in §6.7 |
+
 ## Update trail
 
 - **2026-09-23** — Document created on the owner's request after
@@ -1294,3 +1608,7 @@ held, `.` a round with no tone word.
 - **2026-09-24 (evening)** — §6.7 gains a dated note: as built in step
   2.4, the show reaches Whisper through its own route and a new client
   function, leaving upstream's `transcribe_audio` untouched.
+- **2026-09-24 (night)** — §9 added: why slice 2 was built this way — the
+  load-bearing exchanges of steps 2.1 to 2.4, the owner's words verbatim
+  (extracted from the session transcript by script and checked), the
+  agent's shapes condensed.

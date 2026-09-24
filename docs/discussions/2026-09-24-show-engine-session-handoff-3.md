@@ -715,7 +715,8 @@ one run.
    receipts, 2.5 open), the checkpoint, slice 3.
 4. SED (`docs/discussions/2026-09-23-show-engine-design.md`) §5.7 (the
    director), §6.7 (the listener's turn, with today's dated note), §8
-   (the timeline terms); lessons
+   (the timeline terms), **§9 (why slice 2 was built this way — the
+   owner's words verbatim, step by step)**; lessons
    (`docs/discussions/2026-09-22-grammar-and-prompt-cache-lessons.md`)
    §4.10 question 3 (the trim's pause).
 5. `docs/follow-ups.md` — today's four entries.
