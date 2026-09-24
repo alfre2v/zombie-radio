@@ -470,12 +470,33 @@ hibernation era created.
 - **Service pins and server defaults we rely on (ledger
   2026-09-22):** tts-serve at tag `1.2` (proven from zero); the
   llama.cpp image on its floating `server-cuda` tag (build
-  `b11096` served on 2026-09-22; digest-pinned at show-freeze), run
+  `b11096` served on 2026-09-22; digest-pinned at show-freeze) —
+  *[ledger 2026-09-24: pinned to the tag `server-cuda-b11096`, at
+  the owner's call, so a fresh box runs the build every measurement
+  came from; its digest, `sha256:0192ab2545ef…`, is the image the
+  box was already running, checked that day; not yet proven by a
+  deploy — the next one is its live test; the same day the Whisper
+  image, `whisper-fastapi:latest` until then, was pinned by digest
+  to the `latest` the box runs (`sha256:e6ea4a5ca181…`, built
+  2025-12-28 — the image has no version tag for it, only an older
+  `v1.0.3`), with the same live test pending]*, run
   with one slot (`--parallel 1`) and its defaults — among them a
   host-RAM prompt cache (`--cache-ram`, 8,192 MiB) that the show's
   latency profile reflects (§5.3). One conversation per slot: the
   chat UI and the show should not use the same server at the same
   time.
+- **Dry runs work (ledger 2026-09-24):**
+  `make ans-deploy ENV=<env> ANS_ARGS="--check --diff"` reports what
+  a deploy would change without applying it. Six read-only tasks run
+  for real under `--check` (`check_mode: false`): the base role's
+  tool and CUDA probes, the three health gates (`uri` has no check
+  mode), and the `pip show` guard of the TTS role — before, the CUDA
+  probe came back empty and the base role's assertion failed. Proven
+  on the A6000 that day: `failed=0`, four changes — the llama and
+  Whisper containers (their image names, after the pins; same
+  images) and a false alarm: the torch/torchaudio install, with the
+  TTS restart it notifies, reports "changed" although the venv holds
+  exactly the pinned `2.9.1+cu128` builds.
 - **The client side (as-built 2026-09-19; repointed 2026-09-23):**
   `make client-mac` installs the client on the Mac from a
   standalone, inventory-free playbook

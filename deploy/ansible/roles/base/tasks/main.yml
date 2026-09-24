@@ -16,6 +16,7 @@
     - nvidia-smi
     - nvidia-ctk
   changed_when: false
+  check_mode: false
 
 # The driver's reported "CUDA Version" is the MAXIMUM runtime it supports;
 # wheels/images built for a NEWER CUDA major hard-fail on it ("driver too
@@ -29,6 +30,7 @@
     executable: /bin/bash
   register: base_cuda_probe
   changed_when: false
+  check_mode: false
 
 # Majors are precomputed in vars ON PURPOSE: complex Jinja inside assert.that
 # evaluates through a different path than {{ }} templating and can silently

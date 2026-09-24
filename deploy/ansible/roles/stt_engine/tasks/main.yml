@@ -36,3 +36,4 @@
       until: stt_engine_health.status == 200
       retries: "{{ stt_engine_health_retries }}"
       delay: "{{ stt_engine_health_delay }}"
+      check_mode: false

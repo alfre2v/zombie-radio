@@ -120,12 +120,20 @@ the agent keeps this current. These carry across arcs.*
    one sitting); or rent an L40 (48 GB like the A6000; $1.00/h
    against $0.50/h in that survey) and deploy from zero. The agent's
    advice: retry first, the L40 only if the checkpoint arrives
-   without an A6000; before any fresh deploy, pin llama.cpp in
-   `deploy/ansible/inventories/common_vars.yml` to
-   `server-cuda-b11096` (the tag exists, checked 2026-09-24) — the
-   floating `server-cuda` would bring a newer build than the one
-   every measurement came from; keep the A6000 hibernated until the
-   timebox ends (its disk holds that image).
+   without an A6000; keep the A6000 hibernated until the timebox
+   ends (its disk holds the llama.cpp image). **Later that day the
+   owner woke it, on the same address**; a sanity check over SSH
+   found it healthy (the A6000 visible with the models loaded, all
+   three services answering, llama.cpp build `b11096-c550d2f60`).
+   **The llama.cpp and Whisper images are now pinned** (2026-09-24,
+   at the owner's call) in
+   `deploy/ansible/inventories/common_vars.yml`: llama.cpp to the
+   tag `server-cuda-b11096`, Whisper by digest to the `latest` of
+   2025-12-28 (it has no version tag) — both the exact images the
+   box was running (same digests). **The next deploy is their first
+   live test** — the owner asked to be reminded: after it, `/props`
+   must report build `b11096`, and `docker inspect whisper` must
+   show the pinned digest.
 
 ## The critical path — Task 6b
 

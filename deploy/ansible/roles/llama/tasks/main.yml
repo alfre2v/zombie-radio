@@ -40,6 +40,7 @@
       until: llama_health.status == 200
       retries: "{{ llama_health_retries }}"
       delay: "{{ llama_health_delay }}"
+      check_mode: false
 
     # The canonical-v3 pothole lesson: check the mount, don't assume it — a
     # misrouted cache means silent re-downloads on every container start.

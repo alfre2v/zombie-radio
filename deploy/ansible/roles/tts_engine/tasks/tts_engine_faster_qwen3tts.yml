@@ -56,6 +56,7 @@
   register: tts_engine_common_check
   changed_when: false
   failed_when: false
+  check_mode: false
 
 - name: Install tts-engine-common from the clone
   become: true
