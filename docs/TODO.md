@@ -42,7 +42,8 @@ below it is detail.*
   2.1b, the pacing knobs** (`2f76b34`), **are done**, both proven on
   the box; tone words no longer repeat within a run (`35f34e0`);
   **2.2, the trim** (`57a08c9`), is done and measured (about 1.5 s
-  once per trim). **Next:** 2.3 to 2.5, then the checkpoint. How to
+  once per trim); **2.3, the debug switch** (`129d3de`), is done.
+  **Next:** 2.4 and 2.5, then the checkpoint. How to
   drive the show yourself: the fork's `docs/runbooks/show-driver.md`.
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
@@ -477,7 +478,21 @@ the agent keeps this current. These carry across arcs.*
         counts; on the box, with `context_budget` near 3,000, the trim
         fires within a few rounds and its pause is measured — the
         number goes to L §4.10 question 3 as a dated note.
-      - [ ] **2.3 The debug switch** — with `show.debug` on, each
+      - [x] **2.3 The debug switch** (`129d3de`; suite 948 passed). As
+        built, with the owner's picks of 2026-09-24: per round a
+        readable `rNNN.txt` (numbers, grammar, the prompt as the model
+        read it, the reply as it streamed) and the exact
+        `rNNN.request.json` (replayable with curl); failed rounds
+        included; written after the round (a debug round costs about
+        0.35 s more). **The token-count check the owner asked about:**
+        `/tokenize` of the rendered prompt (special markers parsed,
+        start token added) against `prompt_n + cache_n`, a warning on
+        a difference — checked before building on 7 rounds of an
+        earlier drive rebuilt from its record (equal to the token,
+        trim rounds included; the record's `trims` make the rebuild
+        possible), then **live: 16 rounds with a trim, difference 0
+        on all 16** (the fork's `runs/2026-09-24T17-37-14/`). The
+        runbook gained "Look inside a round". — With `show.debug` on, each
         round writes `runs/<run-id>/debug/`: the messages sent, the
         grammar in full, the rendered prompt from `/apply-template`
         (verified 2026-09-23: ~120 ms, no generation, no slot), and

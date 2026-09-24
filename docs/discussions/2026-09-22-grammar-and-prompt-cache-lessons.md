@@ -860,7 +860,9 @@ unknowns the ADR-0003 gate left open"):
    starting the work — a phase `timings` does not report, the one
    where the ADR-0003 gate saw about 1.7 s of saving and restoring
    the slot's state in host RAM — three of the four trims spent
-   1,498, 1,348 and 1,326 ms (the fourth 174 ms, unexplained),
+   1,498, 1,348 and 1,326 ms (the fourth 174 ms, believed restored
+   from the host-RAM cache: its prompt was identical to the first
+   drive's, same seed — so identical repeat drives understate the cost),
    against about 1 ms for a normal round. It comes with a low
    `f_keep` in the log (0.37-0.38 after a trim; a new run's first
    round shows 0.22 and pays it too, 1.1-1.4 s), and the very next

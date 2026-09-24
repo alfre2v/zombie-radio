@@ -144,7 +144,12 @@ reader's memory):
   1.1-1.5 s between choosing the slot and starting the work (about
   1 ms otherwise): believed to be the save and restore through the
   host-RAM prompt cache that the ADR-0003 gate saw (about 1.7 s).
-  One trim of four paid only 174 ms, unexplained. The owner's hunch
+  One trim of four paid only 174 ms — believed: that round's prompt
+  was identical to the first drive's (same seed), so the server
+  restored a matching state from its host-RAM cache; a third
+  identical drive (2.3's check) then reused 777 cached tokens after
+  its trim, not 512. So identical repeat drives understate a trim's
+  cost; the first drive's 1.3-1.5 s is the number. The owner's hunch
   (the gate's "evictions") pointed at it. (2) **A stall before the
   request reaches the server:** once in 56 requests (round 8 of the
   first drive, not in the repeat), 1.5 s passed between one round's
