@@ -7,8 +7,8 @@ decided one question at a time before the code: the agent's agenda of
 seven decisions (§1), then one section per decision as the owner
 rules on it.
 **Status:** OPEN — decisions 2 (the show's growing script), 3 (where
-the show's record lives) and 4 (where the cast sheet comes from)
-ruled 2026-09-23; decisions 1 and 5–7 pending.
+the show's record lives), 4 (where the cast sheet comes from) and 5
+(the director) ruled 2026-09-23; decisions 1, 6 and 7 pending.
 
 *Context for the cold reader.* [ADR-0003] (accepted 2026-09-23) fixes
 the engine's shape: one shared script as the model's context (the
@@ -572,6 +572,249 @@ The owner, 2026-09-23 (verbatim):
 - **Stretch (decision 2):** episode files, their beats fed by the
   director, moving from one episode to the next.
 
+## 5. Decision 5 — the director
+
+*The exchange in order, every message verbatim: the agent's proposal, the owner's first question (the message was cut off mid-sentence), the agent's answer, the owner's three questions, the agent's answer with the revisions, and the ruling.*
+
+### 5.1 The agent's proposal (verbatim)
+
+Here's the director: first what it is and what's already settled, then what it decides each round, a worked example, and the choices left for you.
+
+#### What the director is
+
+The director is **code in the server, not an LLM call**. Before every round it decides that round's constraints and **writes each one twice**:
+- **in words**, in the instruction it sends as the `user` turn;
+- **in the grammar** sent with that request.
+
+It's your 2024 hidden Narrator ("Narrator: There is an update in the story…"), moved out of the prompt and into code. It also decides **when the radio listens**.
+
+#### What's already settled (receipts)
+
+- **ADR-0003, point 2:** the director is code; it sets the beat, who may speak, the line budget, a stage direction and entropy terms, all written into the `user` turn.
+- **ADR-0003, point 7:** the mic opens on a random **time window of played audio** (a minimum and maximum number of seconds, with the probability rising in between), never a round count. That was your pushback.
+- **ADR-0003, point 8:** the round that answers a listener has **one speaker**.
+- **Lessons §4.2 and §2.6:** every rule in the grammar is also stated in words; "up to four lines" is read as four, so the grammar's bound is what enforces the budget.
+- **Spec §5.1, entropy terms:** your 2024 Narrator named a random speaker, a random emotional register, a random word count (5–50) and one random adjective from a list of about 70. You recalled that it "brought the narration alive" and fought repetition.
+- **Today's decisions:**
+  - the director also runs the trim (#2);
+  - per-round rules go in the instruction, never in the cast sheet (#4);
+  - episode beats are fed in by the director, as a stretch (#2).
+
+#### What it decides each round
+
+**Three kinds of round:**
+1. **Free round:** the scientists talk.
+2. **Invitation round:** one voice calls out to the listeners, then the page starts listening.
+3. **Answer round:** one voice answers what the listener said, or reacts to silence.
+
+**The knobs, with my proposal for the timebox:**
+
+| Knob | Proposal |
+|---|---|
+| **Who may speak** | 2–3 names in a free round, chosen by three rules in order: (a) whoever has been silent longest is always in; (b) anyone named in the last round (e.g. "Ralph, the doors?") is in; (c) random names fill the rest. Rule (a) is our cheapest defense against one voice taking over, the identity-bleed risk. The model picks the order and who speaks within the list. |
+| **How many lines** | Random between 1 and 4, weighted toward 2–3. Exactly 1 for invitation and answer rounds. Enforced by `line{1,N}`, and said as "the next two lines". |
+| **What happens** | An event from the story's pool of "radio traffic" (the gate's events are the seed), about every other round, with no repeats until the pool is used up. The other rounds get a plain "continue". The pool lives **in the story folder** (e.g. `stories/lab-outbreak/events.yaml`), since events are story content. Later, episode beats take this role. |
+| **Entropy term** | One tone word per round from a list, as in 2024 ("Let the mood be: brittle"). It's cheap, and it's the proven repetition fighter. The mood tags already vary the **delivery**; this word varies the **content**. |
+| **When the radio listens** | The browser reports seconds of audio played with each round request; only the browser knows what has actually played. Below the minimum, never; between minimum and maximum, a rising chance; at the maximum, always. |
+| **Who talks to the listener** | An `operator` named in the story's front matter (for this story, Samantha, the comms lead) both invites and answers. |
+| **Silence** | If the listening window closes with no usable transcript, the next round is told "only static answers", then play continues. |
+
+**What the director remembers.** As little as possible, and **derived from `script.json`** every round: who spoke when, which events were used, the seconds played since the last listening window. Nothing kept on the side can fall out of sync. The one extra is the **random seed, stored in the run**, which makes a retake reproducible and supports the canned episode.
+
+#### A worked example
+
+**Free round.** Instruction (the `user` turn):
+
+```
+Radio traffic: something is scratching at the loading dock door, slow and rhythmic.
+Ralph and Moira speak next: the next two lines, each with the emotion in its voice. Let the mood be: brittle.
+```
+
+Grammar, written from the same decision:
+
+```
+root    ::= line{1,2}
+line    ::= speaker " (" emotion "): " text "\n"
+speaker ::= "Ralph" | "Moira"
+emotion ::= "calm" | ... | "exhausted"
+text    ::= [^\n\[\]()]+
+```
+
+**Invitation round:** "Samantha turns to the microphone and asks anyone listening to answer: one line." The grammar allows `"Samantha"` only, with `line{1,1}`. The page then starts listening.
+
+**Answer round:** "A voice on the frequency says: 'I'm in Austin, the bridges are down.' Samantha answers the voice: one line."
+
+#### Your choices (my picks in bold)
+
+- **a. Who may speak:** **silent-longest + named + random fill, 2–3 names**, or plain random.
+- **b. Line budget:** **1–4 weighted to 2–3**, or a fixed number.
+- **c. Events:** **the story's pool, about every other round, no repeats**, or every round.
+- **d. Entropy terms:** **one tone word per round**, or none for now (keeping the audition's comparison cleaner).
+- **e. The mic:** **played-seconds window, with an `operator` in the story who invites and answers**, or any cast member.
+- **f. Silence:** **"only static answers", then carry on.**
+- **g. Memory:** **derived from `script.json`, plus the seed stored in the run.**
+
+Which do you want to challenge? Or adopt the set and adjust later?
+
+### 5.2 The owner's first question (verbatim)
+
+> This is a very good proposal. I will adopt it almost all but I have a few questions first.
+>
+> Questions to improve my understanding:
+>
+> * When you write "Radio traffic: something is scratching at the loading dock door, slow and rhythmic."... I assume this radio traffic line is not something we will reproduce as a TTS line, right? Otherwise we would need another voice, and based on the app, another persona for an unspecified character (radio traffic voice). 
+> * In my 2024,
+
+### 5.3 The agent's answer (verbatim)
+
+**First question: no, that line is never spoken.**
+
+- **Who hears what:** the audience only hears **script lines**, the `Name (mood): text` lines the model writes. The parser picks them out of the stream one at a time, and each finished line goes to the TTS in that character's voice.
+- **What the instruction is:** the director's instruction, including its "Radio traffic: …" part, is the `user` turn of the request. It goes to llama.cpp as input and never passes through the parser, so it never reaches the TTS.
+- **How the audience learns about an event:** only through the characters' reactions, for example "Ralph (afraid): Something's at the loading dock door. It's rhythmic. Over."
+
+The same goes for a listener's words: they enter the next instruction as text, and nobody repeats them aloud. The listener already heard themselves.
+
+So no extra voice and no extra persona. You've caught a naming problem, though: **"Radio traffic:" sounds like something heard on the radio.** In the gate it was only a framing for the model. I'd rename the two kinds of input so they say what they are:
+- **"Offstage:"** for events: something happens, the characters react;
+- **"A voice on the frequency says:"** for the listener's words only.
+
+A possible later option, and not something I'm recommending now: an **announcer**, a fifth voice with its own reference clip that reads events aloud, the way 1930s radio plays had one. The grammar would simply allow `"Announcer"` as a speaker. It's worth remembering for the 1930s look, but it's outside the timebox.
+
+**Your second question got cut off after "In my 2024,".** Please send the rest.
+
+### 5.4 The owner's three questions (verbatim)
+
+> Please document the idea of the announcer (as a follow up? or in the roadmap?).
+>
+> My other questions:
+>
+> * In my 2024 prototype, I think the narrator was actually identified also for the LLM as `Narrator: ....`, though I am not 100% sure (please confirm), will we be doing that here too, as `Director: ... ` or do you recommend against? I am more inclined to not do that, but just write the directors instructions before each round as you show in `Invitation round: "Samantha turns to the microphone and asks anyone listening to answer: one line."`, and otherwise this radio traffic thing you propose do not work.
+> * About "Who talks to the listener", wait, I do not think only one character should answer the coms if an external user speaks for the whole story. What if the user asks a direct question to one of the characters? Maybe I do not understand what you mean.
+> * About "When the radio listens": I don't really understand what you said there. My questions is: How do we dynamically extend the listening time if we detect a user is probably speaking? In my 2024 prototype I think I set a fixed max time to listen, but if a voice was talking, we detected the "Over and out" from the transcript and closed listening earlier... But I think this is not an option here as I do not think we have control in the browser of streaming the input in segments to send to STT for transcript, right? Anyway, this is a rabbit hole, we discussed some of the challenges in `docs/discussions/2026-09-13-product-definition-brainstorm.md` in section "5. Challenges for voice recognition & audio processing".
+
+### 5.5 The agent's answer, with the revisions (verbatim)
+
+The announcer is now in `docs/roadmap.md` under "Ideas / parking lot": what it is, how small the mechanism would be, what parks it, and what would bring it back. It's uncommitted.
+
+#### 1. "Narrator:" in 2024, and whether we label the director
+
+**Confirmed.** Every 2024 directive began with the label: `query = f"Narrator: {character['name']} {action} a {emotion} sentence of at least {num_words} words related to {descriptive} in the next line."` (`zradio_local.py:657`). The system prompt also introduced the Narrator to the model as "not a character in the play" (line 520).
+
+**I agree with you: no label.**
+- **The role already says it.** The director's text travels as the `user` turn, and the chat template marks it as a separate turn (`<SPECIAL_11>User`), distinct from the script lines. A label would say the same thing twice.
+- **Our runs already did without one.** The gate and run 2 sent unlabeled instructions ("Radio traffic: … Write the next lines of the script: …"). The model reacted to the events, and every line came out in the right shape.
+- **A label buys nothing and risks a little.** The grammar makes a "Director:" line impossible anyway, and the label only invites the model to treat the director as a character.
+
+So the instruction is plain sentences:
+- "Offstage: …" for events;
+- "A voice on the frequency says: …" for a listener;
+- then the constraint: who speaks, how many lines.
+
+If "this radio traffic thing" in your message meant the label, agreed: it goes, and events become "Offstage:".
+
+#### 2. Who answers the listener
+
+**You're right; my proposal was wrong there.** I had the operator both invite and answer. Your 2024 code picked a **random** character to answer (`_narrator_user_message_received`); neither is right when the listener asks someone something. Revised:
+- **Invitation:** one voice calls out to the listeners. By default that's the story's `operator` (Samantha, who runs the radio), since someone has to be at the microphone.
+- **Answer:** **whoever the listener addressed**, done in two layers:
+  1. **The model decides by default.** The answer round's grammar allows the **whole cast** and one line. The instruction says: "The character the voice addressed answers; if it addressed no one, whoever fits best answers." The model reads the listener's words, so "Moira, is the virus airborne?" gets Moira, and an unaddressed question gets whoever fits. This copes with Whisper misspelling names, which stays a live problem even with a button (challenge C6, brainstorm §5).
+  2. **The code guarantees it when it's sure.** If the transcript contains a cast name exactly, the director narrows the grammar to that name.
+- **Afterwards:** the next free round follows the usual "anyone named in the last round is in" rule, so the others react naturally.
+
+#### 3. How long the radio listens
+
+My table mixed up two different timers. There are three separate pieces, and none of them needs the 2024 "over and out" trick.
+
+1. **Cadence: when the show opens the mic.** How much audio plays between invitations, set by `interaction_min_s` and `interaction_max_s` (story-loop §9 Q2). That's what I described before.
+2. **The waiting window: how long the show waits for a press.** `listen_window_s`, for example 10 s. It **stops counting the moment the button goes down.**
+3. **The press itself: hold-to-talk** ("Definitely hold-to-talk", your story-loop ruling Q4). Recording lasts exactly as long as the button is held; **release is the end of speech.** The brainstorm lists end-of-speech detection as challenge C2, "solved by construction" by the button.
+   - There's no fixed limit to cut someone off, and no need to spot "over and out".
+   - The one limit is a safety cap on a single press (say 30 s), against a stuck button.
+
+A timeline:
+
+```
+Samantha: "Anyone out there? Tell us where you are. Over."
+  → the queue drains → LISTENING: button enabled, window 10 s starts
+  (a) nobody presses in 10 s → next round: "only static answers" → free rounds resume
+  (b) press at 4 s → recording (window no longer counts) → release at 17 s
+      → audio to Whisper (~1 s) → answer round with the listener's words
+```
+
+About streaming from the browser: it is actually possible. A browser can deliver the recording in chunks while it's running, and can measure the sound level live. So the 2024 approach could be rebuilt in the browser. **Hold-to-talk just makes it unnecessary for the MVP.** The always-listening version (voice detection, judging when a sentence is finished) stays the post-MVP path, as the brainstorm planned. A live level meter while the button is held ("we hear you") would be cheap polish.
+
+Do you adopt #5 with these revisions: no label, "Offstage:", the addressed character answers (model by default, narrowed by an exact name), and the three separate timers?
+
+### 5.6 The ruling
+
+The owner, 2026-09-23 (verbatim):
+
+> Yes, adopt #5 with these revisions: no label, "Offstage:", the addressed character answers (model by default, narrowed by an exact name), and the three separate timers.
+
+- **Adopted:** the proposal of §5.1 with the revisions of §5.5 — no
+  label on the director's instruction; events phrased "Offstage: …";
+  the listener's words phrased "A voice on the frequency says: …";
+  the character the listener addressed answers (the model decides by
+  default, the director narrows to an exact cast-name match); three
+  separate timers.
+- **Parked:** an announcer voice that would read some events aloud —
+  `docs/roadmap.md`, "Ideas / parking lot".
+
+### 5.7 What it means for the build
+
+- **Three kinds of round**, plus the silent case:
+  - **free** — the scientists talk; **2–3 names** allowed, chosen in
+    order: whoever has been silent longest (always), anyone named in
+    the last round or in the listener's words, then random names;
+    **1–4 lines, weighted to 2–3**;
+  - **invitation** — the story's `operator` (a new field in the
+    story's front matter; Samantha in `lab-outbreak`) calls out to
+    the listeners; one line; the page then listens;
+  - **answer** — the whole cast allowed, one line, the instruction
+    saying "the character the voice addressed answers; if it
+    addressed no one, whoever fits best answers"; an exact cast-name
+    match in the transcript narrows the grammar to that name;
+  - **silence** — the waiting window closed without a usable
+    transcript: "Only static answers.", then free rounds resume.
+- **The instruction** (the `user` turn) is plain sentences with no
+  label: "Offstage: …" for an event, "A voice on the frequency says:
+  …" for a listener, then the constraint in words ("Ralph and Moira
+  speak next: the next two lines, each with the emotion in its
+  voice."), then the entropy term ("Let the mood be: brittle.").
+  Every constraint in the grammar is said in these words (lesson
+  §4.2); the budget is enforced by `line{1,N}` and said as "the next
+  N lines".
+- **Events:** the story's pool (`stories/<story>/events.yaml`),
+  about every other round, no repeats until the pool is used up; a
+  plain "continue" otherwise; episode beats take this role later
+  (decision 2's stretch). Never spoken — the audience learns of an
+  event through the characters' reactions.
+- **Entropy term:** one tone word per round from a list, the 2024
+  trick (where the list lives is settled in code; a story may bring
+  its own).
+- **The three timers** (yaml knobs):
+  - **cadence** — `interaction_min_s` / `interaction_max_s`, in
+    seconds of played audio, reported by the browser with each round
+    request (only the browser knows what has played): never below
+    the minimum, a linearly rising chance in between, always at the
+    maximum;
+  - **the waiting window** — `listen_window_s`: how long the show
+    waits for a press; it stops counting when the button goes down;
+  - **the press** — hold-to-talk: release is the end of speech; the
+    only limit is a safety cap on one press (about 30 s).
+- **Memory:** derived from the run's `script.json` every round (who
+  spoke when, which events were used, played seconds since the last
+  listening window); the random seed stored in the run, so a retake
+  is reproducible.
+- **Tests** (the TODO's director acceptance, extended): the
+  allowlist and the budget appear both in the instruction's words
+  and in the grammar; the silent-longest name is always allowed in a
+  free round; with a seeded random source, no invitation before
+  `interaction_min_s` and always one by `interaction_max_s`; an
+  exact cast name in a transcript narrows the answer round to that
+  name; a silent window yields the static round.
+
 ## Update trail
 
 - **2026-09-23** — Document created on the owner's request after
@@ -596,3 +839,11 @@ The owner, 2026-09-23 (verbatim):
   `stories/<story>/` with `episodes/` tracked in the fork, runs
   renamed to `runs/`, the cast moved into the story. §3.4 gets a
   dated note for the two knock-on changes.
+- **2026-09-23 (night)** — §5 added: decision 5, the director — the
+  whole exchange verbatim (the proposal, two rounds of the owner's
+  questions and the agent's answers) and the ruling: no label on the
+  instruction, events as "Offstage:", the addressed character
+  answers the listener (model by default, narrowed by an exact name),
+  three separate timers; the announcer voice parked in the roadmap.
+  §5.7 turns it into build notes; the story's front matter gains
+  `operator`.

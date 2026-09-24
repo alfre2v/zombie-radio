@@ -109,3 +109,19 @@ the prototype settles.
   challenge C6), and browser/WebGPU behavior varies by machine.
   Trigger to consider: post-MVP, if server VRAM gets tight or a
   multi-listener staging makes server-side STT a bottleneck.
+- **An announcer voice** — parked 2026-09-23, surfaced while
+  designing the show engine's director ([discussion 2026-09-23]
+  show-engine-design, decision 5). Today the director's events
+  ("Offstage: something is scratching at the loading dock door")
+  are never spoken: they reach the model as instructions, and the
+  audience learns of them only through the characters' reactions.
+  An announcer would be a fifth voice with its own reference clip
+  that reads some events aloud, the way 1930s radio plays had one
+  ("Meanwhile, in the cold room…"). Mechanically small: the
+  grammar allows `"Announcer"` as a speaker in the rounds the
+  director chooses, and the story's cast lists it with a voice.
+  Costs that park it: a voice sample to find and clear, the
+  writing to make it sound period-true, and one more voice
+  competing for airtime. Trigger to consider: the 1930s radio look
+  (day-three polish) or the show arc, if the events feel too
+  hidden.

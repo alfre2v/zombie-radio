@@ -410,7 +410,17 @@ the agent keeps this current. These carry across arcs.*
         (L §4.2 — a grammar that disagrees with its prompt costs
         ~10 % per token and drifts the style); the line budget is
         enforced by the grammar's bound, since "up to N" is read as
-        N (L §2.6).
+        N (L §2.6). **Decided (decision 5, owner ruling 2026-09-23 —
+        [discussion 2026-09-23] show-engine-design §5.7):** free,
+        invitation, answer and static rounds; free rounds allow 2–3
+        names (silent-longest always, anyone just named, random
+        fill) and 1–4 lines weighted to 2–3; the story's `operator`
+        invites; the addressed character answers (whole cast
+        allowed, narrowed to an exact name match); events as
+        "Offstage: …" from the story's pool, about every other
+        round; one tone word per round; no label on the
+        instruction; memory derived from `script.json`, the seed
+        stored in the run.
       - **Grammar builder:** allowlist → `speaker` alternatives;
         budget → `line{1,N}`; square brackets out of `text`; the
         `(emotion)` rule behind a yaml switch, **default ON (owner
@@ -443,7 +453,8 @@ the agent keeps this current. These carry across arcs.*
         template (strict mode; `jinja2` already pinned) at
         `stories/<story>/cast_sheet.md`, tracked in the fork — front
         matter for the code (`title`, `cast`, each name checked
-        against `Personas/<Name>/` for its voice); the body is what
+        against `Personas/<Name>/` for its voice, and `operator`,
+        the voice that invites listeners — decision 5); the body is what
         the model reads, with three placeholders: `{{ model_prefix }}`
         (a setting, today `/no_think`), `{{ format_rules }}` (one of
         two fixed snippets chosen by the emotion switch, kept next to
@@ -456,8 +467,10 @@ the agent keeps this current. These carry across arcs.*
         /api/show/round`**, a sibling of `_chat_stream`
         (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/app/routers/chat.py:208`),
         plays the next round of the current run — no room
-        parameter — and takes an optional audience transcript, which
-        enters the directive as in-fiction radio traffic; empty or
+        parameter — and takes the seconds of audio played since the
+        last request (the director's cadence clock; only the browser
+        knows) and an optional audience transcript, which enters the
+        directive as "A voice on the frequency says: …"; empty or
         low-confidence transcripts are dropped at the STT proxy
         (the "No response received from STT server" pitfall —
         [discussion 2026-09-21] story-loop §6).
@@ -487,9 +500,11 @@ the agent keeps this current. These carry across arcs.*
         into a shared function.
     - *Configuration:* all knobs yaml-only — a `show:` section
       (`story` and optionally `episode`, `model_prefix`,
-      `context_budget`, the emotion switch, `debug`, cadence minimum
-      and maximum in played seconds, the listening window — the cast
-      lives in the story, not here); the accumulator's limit and
+      `context_budget`, the emotion switch, `debug`, the three timers
+      — `interaction_min_s` / `interaction_max_s` in played seconds,
+      `listen_window_s` (stops counting on a press), and a safety cap
+      on one press — the cast lives in the story, not here); the
+      accumulator's limit and
       tolerance next to `tts.streaming`. No dialogs.
     - *Operating notes (measured 2026-09-22):* one conversation per
       server slot — keep the chat UI off the show's server during
@@ -508,9 +523,12 @@ the agent keeps this current. These carry across arcs.*
         *Delegable later: yes.*
       - **Code director** — unit tests: the round's allowlist and
         line budget appear both in the directive's words and in the
-        grammar; with a seeded random source, no interaction beat
+        grammar; the silent-longest name is always allowed in a free
+        round; with a seeded random source, no interaction beat
         before the minimum played seconds and always one after the
-        maximum. *Delegable later: no* (design-heavy).
+        maximum; an exact cast name in a transcript narrows the
+        answer round to that name; a silent window yields the static
+        round. *Delegable later: no* (design-heavy).
       - **Grammar builder** — unit tests: the exact GBNF text for a
         given allowlist and budget, with the emotion switch on and
         off; then, on a box, one control request (only a name absent
