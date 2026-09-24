@@ -35,10 +35,10 @@ below it is detail.*
   that morning) · end 2026-09-26 14:46. Its design is fully decided
   ([discussion 2026-09-23] show-engine-design); its ordered checklist
   is the next section but one.
-- **Next:** step **1.5** (the run record and the assembler), then
-  1.6, 1.8 and 1.9 (the box). Slice 1 is under way (2026-09-23
-  evening into the night: 1.1, 1.2, 1.3, 1.4 and 1.7 done; the four
-  finished pieces proven together in one real round on the box) on
+- **Next:** step **1.9** — the driver, and ten rounds on the box.
+  Slice 1 is under way (2026-09-23 evening into the night: 1.1–1.8
+  done; the first four finished pieces proven together in one real
+  round on the box) on
   the fork's `alfre2v/show-slice-1-skeleton`; this
   repository's ticks ride on `alfre2v/show-slice-1`. The design (PR
   #9) is merged.
@@ -250,7 +250,12 @@ the agent keeps this current. These carry across arcs.*
         difference; the mapping character by character; quotes;
         moods off; a cut line. *Delegable later: yes — the best
         first candidate.*
-      - [ ] **1.5 The run record and the assembler** (append only) —
+      - [x] **1.5 The run record and the assembler** (`8b39b17`; one
+        file per run, written at the start and atomically once per
+        round; the cast sheet stored per episode, so episodes will not
+        change the file's shape; the reply byte-identical to the
+        model's output; a round with no lines stays out of the
+        history) (append only) —
         `app/show/script.py`; `runs/` added to the fork's
         `.gitignore`. `script.json` holds the story, the cast, the
         seed, and the rounds (instruction, listener's words, lines
@@ -267,7 +272,10 @@ the agent keeps this current. These carry across arcs.*
         are the cast sheet then alternating turns, and no `[Name]:`
         appears anywhere; the record round-trips. *Delegable later:
         yes.*
-      - [ ] **1.6 Director v0** — `app/show/director.py`, seeded: 2–3
+      - [x] **1.6 Director v0** (`ac0de25`; a pure function — the
+        generator seeded by the run's seed and the round number, so
+        nothing extra is stored; `Round` gains `event`, which the
+        no-repeat rule reads) — `app/show/director.py`, seeded: 2–3
         random names, 2–3 lines, an "Offstage:" event from the pool
         every other round, no microphone; the constraint said in
         plain words ("Ralph and Moira speak next: the next two
@@ -275,8 +283,9 @@ the agent keeps this current. These carry across arcs.*
         (SED §5.7, the subset.) *Done when:* the allowlist and the
         budget appear both in the instruction's words and in the
         grammar; the same seed gives the same rounds.
-      - [x] **1.7 The request with the grammar** (`cf6f8e7`;
-        `stream_chat` also takes the show's `max_tokens` and `seed`)
+      - [x] **1.7 The request with the grammar** (`cf6f8e7`; in 1.8
+        the keys moved into `stream_round`, the show's own request,
+        and `stream_chat` went back to upstream's exact code)
         — one more key,
         `grammar`, at the top level of the payload
         (`_base_payload`,
@@ -284,7 +293,11 @@ the agent keeps this current. These carry across arcs.*
         the chat path unchanged. ([ADR-0003].) *Done when:* a unit
         test shows the key in the show's payload and its absence in
         the chat's. *Delegable later: yes.*
-      - [ ] **1.8 The endpoints** — `app/routers/show.py`:
+      - [x] **1.8 The endpoints** (`9ae374a`; no show state on the
+        server — the caller sends the run id; `stream_round` in
+        `llm.py` over a split SSE iterator; an error or a disconnect
+        mid-round records nothing; the disconnect path is not
+        covered by a test) — `app/routers/show.py`:
         `POST /api/show/start` opens a run (a new `runs/<run-id>/`,
         returns the cast); `POST /api/show/round` runs the director,
         streams the SSE events, and appends the round — a sibling of
