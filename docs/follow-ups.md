@@ -108,11 +108,10 @@ reader's memory):
   it evaluates 130 or 270 tokens — slow for an A6000, and the
   reason one request per round beats one per line; (2) **the host-RAM
   prompt cache's entries are large** — 417 MiB to 1.8 GB for prompts
-  of a few hundred to ~1,600 tokens; (3) **what a history edit costs
-  on this hybrid model**: trimming the script breaks the cached
-  prefix from the edit point on, and with recurrent-state
-  checkpoints at least 8,192 tokens apart by default the server may
-  re-evaluate from much further back — unmeasured; (4) **the
+  of a few hundred to ~1,600 tokens; (3), what a history edit costs
+  on this hybrid model, was answered on 2026-09-24 (lessons §4.10
+  question 3: a trim re-reads little but pays about 1.5 s of slot
+  swapping once — see the next entry) and left this list; (4) **the
   believed reason a grammar is nearly free when the model agrees and
   ~10 % dearer when it must overrule it**: the sampler checks the
   chosen token first and applies the grammar to the whole
@@ -122,22 +121,56 @@ reader's memory):
   grammar-and-prompt-cache-lessons §3 and §4.3/§4.8;
   `docs/experiments/2026-09-22-adr-0003-gate/` (runlog entries
   12–14).
-- **Trigger:** (3) during Task 6b, once the midpoint trim exists —
-  its pause measured with a low `show.context_budget` (reframed
-  2026-09-23: the owner ruled for the trim, so the design no longer
-  waits on it — [discussion 2026-09-23] show-engine-design §2); (1)
-  and (2) when show
-  latency is tuned, or the Task 5a audition swaps the model; (4)
-  whenever a grammar change is weighed on cost.
+- **Trigger:** (1) and (2) when show latency is tuned, or the Task
+  5a audition swaps the model; (4) whenever a grammar change is
+  weighed on cost.
 - **Fix shape:** a small probe reusing the gate's scripts, one
   server flag changed at a time through the playbook
   (`--ctx-checkpoints 0`, a smaller `--checkpoint-min-step`,
-  `--cache-ram 0`), plus one history-trim arm; for (4), read the
-  sampler in llama.cpp's `common/sampling.cpp` at the build we
-  serve.
+  `--cache-ram 0`); for (4), read the sampler in llama.cpp's
+  `common/sampling.cpp` at the build we serve.
 - **When an item resolves:** write the answer back as a dated note
   in [discussion 2026-09-22] grammar-and-prompt-cache-lessons §4.10
   (the lasting home of these questions), then delete the item here.
+
+## Pauses the model server's timings do not show
+
+- **The gap (measured 2026-09-24, two identical 28-round drives on
+  the box, the fork's trim with `show.context_budget` 1500):** two
+  kinds of pause, neither in the `timings` the show records.
+  (1) **The slot swap.** When a request keeps only a small share of
+  what the server's one slot holds — `f_keep` 0.37-0.38 in the log
+  after a trim, 0.22 on a new run's first round — the server spends
+  1.1-1.5 s between choosing the slot and starting the work (about
+  1 ms otherwise): believed to be the save and restore through the
+  host-RAM prompt cache that the ADR-0003 gate saw (about 1.7 s).
+  One trim of four paid only 174 ms, unexplained. The owner's hunch
+  (the gate's "evictions") pointed at it. (2) **A stall before the
+  request reaches the server:** once in 56 requests (round 8 of the
+  first drive, not in the repeat), 1.5 s passed between one round's
+  end and the server even seeing the next request. *Ruled out the
+  same day, on the owner's question: an idle unload of the model
+  (ollama's `keep_alive`). llama.cpp has the knob,
+  `--sleep-idle-seconds`, but it defaults to -1 (disabled) and the
+  box's container does not set it (`docker inspect`); the previous
+  round had ended only 1.5 s before; and the round's prompt was read
+  in the normal 364 ms, with no server log line during the stall.*
+- **Where flagged:** Task 6b step 2.2's measurement ([discussion
+  2026-09-22] grammar-and-prompt-cache-lessons §4.10 question 3,
+  answered that day); the runs `runs/2026-09-24T17-12-04/` and
+  `runs/2026-09-24T17-15-15/` in the fork.
+- **Trigger:** (1) if the trim's pause is heard in rehearsal, or a
+  show needs trims often; (2) if stalls show up again in drives or in
+  the browser.
+- **Fix shape:** (1) one server flag at a time through the playbook,
+  measured the same way — `--cache-ram 0` first (no host-RAM cache
+  to save to; what the slot then does on a trim is itself the
+  question); (2) time the phases of the app's request to llama.cpp
+  (connect, first byte) to see whether the stall is in the app or in
+  the SSH tunnel — upstream's LLM client opens a new connection per
+  call, so each round opens a new tunnel channel. How to read the
+  server's side: `docker logs llama`, the lines `selected slot`,
+  `launch_slot_` and `release` (their timestamps and `f_keep`).
 
 ## Mac-local TTS probe with tts-serve's MLX engine (parked post-MVP)
 

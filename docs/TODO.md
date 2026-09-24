@@ -40,8 +40,9 @@ below it is detail.*
   `alfre2v/show-slice-2-rules` and this repository's
   `alfre2v/show-slice-2`: **2.1, director v1** (`ce8bd71`) **and
   2.1b, the pacing knobs** (`2f76b34`), **are done**, both proven on
-  the box; tone words no longer repeat within a run (`35f34e0`).
-  **Next:** 2.2, the trim, then 2.3 to 2.5 and the checkpoint. How to
+  the box; tone words no longer repeat within a run (`35f34e0`);
+  **2.2, the trim** (`57a08c9`), is done and measured (about 1.5 s
+  once per trim). **Next:** 2.3 to 2.5, then the checkpoint. How to
   drive the show yourself: the fork's `docs/runbooks/show-driver.md`.
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
@@ -446,7 +447,25 @@ the agent keeps this current. These carry across arcs.*
         fixes the churn); the jitter's name and unit. *Done when:*
         seeded tests keep every gap within its bounds and replay
         identically; 0 turns each off.
-      - [ ] **2.2 The trim** — in `app/show/script.py`: before a
+      - [x] **2.2 The trim** (`57a08c9`; suite 936 passed). As built,
+        with the owner's picks of 2026-09-24: each round records its
+        share of the size (`tokens`) from `timings`; the first 2 and
+        last 4 rounds the model reads are always kept; the rest
+        flagged **from the middle outwards** (the owner's order: the
+        early rounds survive as context, one contiguous span leaves);
+        `trims` on the record and the `round` event; the driver
+        prints the trim. **Measured on the box** (`context_budget`
+        1500 instead of 3,000 — at about 80 tokens a round, 3,000
+        would first trim near round 33; two identical 28-round
+        drives, two trims each): the re-read is small (the cache
+        reused up to the cut, 512 of 516 tokens; 308-316 tokens read
+        in 453-474 ms against ~365 ms normally), but the slot swap
+        between choosing the slot and starting the work costs
+        1.3-1.5 s in three trims of four — a pause `timings` does
+        not show, the one the ADR-0003 gate saw, spotted on the
+        owner's hunch; the next round is normal again. Written to L
+        §4.10 question 3; follow-ups: "Pauses the model server's
+        timings do not show". — In `app/show/script.py`: before a
         round, the script's size from the last response's final
         ("stop") chunk — `timings.prompt_n + timings.cache_n +
         timings.predicted_n` (a stream carries no `usage` by default;

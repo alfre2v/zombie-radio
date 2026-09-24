@@ -848,7 +848,32 @@ unknowns the ADR-0003 gate left open"):
    the owner ruled for a midpoint trim ([discussion 2026-09-23]
    show-engine-design §2), so the design no longer waits on this; what
    remains is how long the pause after a trim lasts, measured on the
-   box during Task 6b with a low `show.context_budget`.*
+   box during Task 6b with a low `show.context_budget`.* *Answered
+   2026-09-24 (measured on the box, build `b11096`, the fork's trim
+   of step 2.2 with `show.context_budget` 1500, two trims per drive,
+   two identical drives): the trims cut the script right after its
+   first 516 tokens (the cast sheet and the first two rounds). The
+   re-read itself is small: the cache was reused for 512 tokens and
+   only what followed was read again — 308 and 316 tokens, in 474 and
+   453 ms, against about 365 ms for a normal round. But the server
+   log shows where the pause goes: between choosing the slot and
+   starting the work — a phase `timings` does not report, the one
+   where the ADR-0003 gate saw about 1.7 s of saving and restoring
+   the slot's state in host RAM — three of the four trims spent
+   1,498, 1,348 and 1,326 ms (the fourth 174 ms, unexplained),
+   against about 1 ms for a normal round. It comes with a low
+   `f_keep` in the log (0.37-0.38 after a trim; a new run's first
+   round shows 0.22 and pays it too, 1.1-1.4 s), and the very next
+   round is back to about 1 ms. So a trim costs about 1.5 s once. At
+   the default budget (14,000 tokens, about 80 per round) the first
+   trim comes roughly 50 minutes into a show, then about every 25
+   (estimates, at 20 s of audio per round) — a pause that can hide
+   in the listening beat. The owner's hunch pointed at the swap. That
+   the reuse stopped at 512 rather than 516 is believed to be a block
+   size of the cache, not measured. Separately, one stall of 1.5 s
+   happened before a request even reached the server (round 8 of the
+   first drive only), cause unknown (follow-ups: "Pauses the model
+   server's timings do not show").*
 4. **Why agreement is nearly free and disagreement costs ~10 %** —
    believed: the sampler checks the chosen token first and applies
    the grammar to the whole vocabulary only when that token is
