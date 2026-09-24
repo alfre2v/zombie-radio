@@ -50,8 +50,9 @@ below it is detail.*
   bibles (they land as the cast entries of the fork's
   `stories/lab-outbreak/cast_sheet.md`) and the voice samples. No
   dependency on the build; any day, box or no box.
-- **The box** stays up through 6b (owner action queue, item 5); the
-  tunnel is the owner's to start.
+- **The box** is hibernated (2026-09-23 evening); the owner wakes it,
+  re-wires `hosts.yml` and starts the tunnel when a step needs it —
+  first at step 1.9 (owner action queue, item 5).
 - **At a session's end:** a fresh-session handoff replaces any
   mid-session one, and a handoff is deleted only with the owner's
   permission.
@@ -98,14 +99,16 @@ the agent keeps this current. These carry across arcs.*
    Pre-decided: the **"canned episode" emergency mode is a
    MUST** (Task 7). Candidate on the radar: a tunnel that reconnects by
    itself (follow-ups, SSH keepalives — low priority).
-5. **The Hyperstack VM is awake and stays up** — woken from
-   hibernation 2026-09-23 on the same IP; hibernation is a full
-   shutdown with the disk kept, so the box booted cold and every
-   service came back by itself (the TTS warms up on first use).
-   Kept running through Task 6b for quick live tests (owner,
-   2026-09-23). Decide after the timebox: hibernate (its IP kept for
-   a few cents an hour) or destroy; a from-zero deploy takes about
-   7 minutes.
+5. **The Hyperstack VM — hibernated, woken per box session.** Woken
+   from hibernation 2026-09-23 on the same IP; hibernation is a full
+   shutdown with the disk kept, so the box boots cold and every
+   service comes back by itself (the TTS warms up on first use).
+   Kept up during the day for quick live tests, hibernated again
+   that evening (owner, 2026-09-23). For each box step of Task 6b
+   (first 1.9): wake it, `make ans-set ENV=cloud IP=…`, start the
+   tunnel; `make ans-unset ENV=cloud` after. Decide after the
+   timebox: keep hibernating (its IP kept for a few cents an hour)
+   or destroy; a from-zero deploy takes about 7 minutes.
 
 ## The critical path — Task 6b
 
