@@ -6,10 +6,10 @@
 decided one question at a time before the code: the agent's agenda of
 seven decisions (§1), then one section per decision as the owner
 rules on it.
-**Status:** OPEN — decisions 2 (the show's growing script), 3 (where
-the show's record lives), 4 (where the cast sheet comes from), 5 (the
-director) and 6 (the listener's turn) ruled 2026-09-23; decisions 1
-and 7 pending.
+**Status:** DECIDED — all seven decisions ruled on 2026-09-23 (in
+the order 2, 3, 4, 5, 6, then 1 and 7 together); append-only from
+here — reality reports back through dated addenda. The build is TODO
+Task 6b.
 
 *Context for the cold reader.* [ADR-0003] (accepted 2026-09-23) fixes
 the engine's shape: one shared script as the model's context (the
@@ -982,6 +982,159 @@ The owner, 2026-09-23 (verbatim):
   transcription request carries `prompt`, `language` and
   `vad_filter`.
 
+## 7. Decisions 1 and 7 — the build order and the module layout
+
+### 7.1 The agent's proposal (verbatim)
+
+One change from my agenda first: **I'm revising my own build order.** Decisions 2–6 added about seven pieces. Building all of them offline before touching the box would put the first real run on the evening of 09-24 at best, which leaves the checkpoint judging code that has never met the model. The better shape is a **thin end-to-end slice first**, then the rules layered on top.
+
+#### #1: build order and what the checkpoint judges
+
+**Timeline:** the clock started at 14:46 today; the checkpoint is 02:46 on 09-25, which in practice means the morning of the 25th; the end is 14:46 on 09-26.
+
+**Slice 1, the skeleton. Target: end of day on 09-24.** Every piece is built in its simplest form, each tested offline first, then run on the box:
+- the `show:` settings;
+- the story loader, which renders the cast sheet template;
+- the grammar builder (allowlist, budget, mood rule);
+- the stream parser and punctuation normalizer;
+- the run record (`script.json`) and the assembler, appending only;
+- **director v0**: 2–3 random names, 2–3 lines, an "Offstage:" event every other round, **no mic yet**;
+- `POST /api/show/start` and `/round` (streaming);
+- a small **driver script** that plays ten rounds through the tunnel with no browser.
+
+**Slice 2, the rules. Target: the checkpoint.**
+- **director v1:**
+  - silent-longest and just-named speakers;
+  - the tone word;
+  - the cadence, with invitation, answer and static rounds, fed by fake transcripts from the driver;
+- the trim, with a low `context_budget`, measuring the pause;
+- the debug switch (`/apply-template`);
+- the transcript filter and the STT client changes.
+
+**The checkpoint judges, on the box and with no browser:**
+- ten unattended rounds;
+- speakers and line counts obeying the director;
+- one invitation followed by an answer from an injected transcript, and one silent window giving the static round;
+- the trim firing;
+- the debug files written.
+
+Then **continue, scale down, or stop.** Scaling down would mean dropping the tone word or the events first, then the cadence rules: keep the mic, simplify when it opens. The fallback is still TalkWithMe 7.1 plus the canned episode.
+
+**Slice 3, the browser. Days 2–3.**
+- the `/show` page and `show.js` states (idle, generating, playing, listening);
+- the SSE reader pulled out of `chat.js`;
+- the accumulator in `tts.js`;
+- hold-to-talk in `stt.js`, with the played seconds reported back;
+- **the exit criterion judged by ear** on the real stack.
+
+**Polish, only if the checkpoint is green:** prefetch, dead air, the 1930s look with your gauge, then episodes (the stretch from #2).
+
+#### #7: module layout and branches
+
+In the fork:
+
+```
+app/
+  config.py            ← + the show: settings model, beside the existing ones
+  show/                ← new package, one file per piece
+    story.py           ← load stories/<story>/: front matter, Jinja (strict), voice check
+    rules/             ← the two format snippets (moods off / on)
+    grammar.py         ← GBNF builder
+    parser.py          ← stream parser + normalizer
+    script.py          ← the run record, the assembler, the trim
+    director.py        ← round kinds, speakers, budget, events, tone word, cadence
+    listen.py          ← the transcript filter
+  routers/show.py      ← GET /show, POST /api/show/start, POST /api/show/round
+  services/llm.py      ← + the grammar key in the request
+  services/stt_client.py ← decision 6's changes
+stories/lab-outbreak/  ← cast_sheet.md, events.yaml (tracked)
+runs/                  ← gitignored
+templates/show.html
+static/show.js, static/sse.js (the extracted reader); tts.js, stt.js changed
+scripts/drive_show.py  ← the driver for slices 1–2 (standard library only)
+tests/test_show_*.py   ← one per module; conftest's fixture gains the runs/ and stories/ roots
+```
+
+**Branches and PRs:**
+- **Fork:** branch `alfre2v/show-engine`, with **one PR per slice**, each merged before the next. That gives you three review points, and each merged slice is backed up on GitHub. The installer's pin moves to a new tag (`tz-0.2`) only after slice 3, once the show works in the browser.
+- **zombie-radio:** the design doc's branch (same name, 6 commits so far) goes up as a PR once you're happy with the design. The TODO gains the slice plan.
+
+Adopt #1 (skeleton first) and #7 as laid out?
+
+### 7.2 The ruling
+
+The owner, 2026-09-23 (verbatim):
+
+> Yes, Adopt #1 (skeleton first) and #7 as laid out. 
+> This is a very good grouping of tasks in slices to keep complexity from stopping progress.
+
+- **Adopted:** skeleton first — three slices, each ending in a
+  review point — and the module layout as laid out.
+- **What changed from the agenda (§1):** the agenda's decision 1 put
+  every box-free piece before the first box run. Decisions 2–6 added
+  about seven pieces, so that order would have left the checkpoint
+  judging code that had never met the model. The thin end-to-end
+  slice first, rules layered after, is the correction.
+
+### 7.3 What it means for the build
+
+- **The three slices, in order** (clock: started 2026-09-23 14:46
+  CDT; checkpoint 2026-09-25 02:46, in practice that morning; end
+  2026-09-26 14:46):
+  1. **The skeleton** — target end of day 2026-09-24: the `show:`
+     settings; the story loader rendering the cast-sheet template
+     (§4); the grammar builder; the stream parser and normalizer; the
+     run record and the assembler, appending only (§3); director v0
+     (2–3 random names, 2–3 lines, an "Offstage:" event every other
+     round, no microphone); the request with the grammar key;
+     `POST /api/show/start` and `/round`; the driver script — ten
+     rounds on the box, through the tunnel, no browser.
+  2. **The rules** — target the checkpoint: director v1 (§5.7 —
+     silent-longest and just-named speakers, the tone word, the
+     cadence with invitation, answer and static rounds, fed by fake
+     transcripts from the driver); the trim with a low
+     `context_budget`, its pause measured (§2.4); the debug switch
+     with `/apply-template`; the transcript filter and the STT client
+     changes (§6.7).
+  3. **The browser** — days 2–3: the `/show` page and `show.js`
+     states; the SSE reader extracted from `chat.js`; the accumulator
+     in `tts.js`; hold-to-talk in `stt.js`, the played seconds
+     reported back; the exit criterion judged by ear on the real
+     stack.
+- **What the checkpoint judges** (on the box, no browser): ten
+  unattended rounds; speakers and line counts obeying the director;
+  an invitation then an answer from an injected transcript; a silent
+  window giving the static round; the trim firing; the debug files
+  written. Verdict: continue, scale down, or stop. **Scale-down
+  order:** the tone word and the events first, then the cadence
+  rules (keep the microphone, simplify when it opens). **Fallback:**
+  TalkWithMe 7.1 plus the canned episode.
+- **Polish, only if the checkpoint is green:** prefetch, dead air,
+  the 1930s look with the owner's gauge, then episodes (decision 2's
+  stretch).
+- **The layout** (in the fork): `app/show/` with `story.py`,
+  `rules/` (the two format snippets), `grammar.py`, `parser.py`,
+  `script.py` (record, assembler, trim), `director.py`, `listen.py`
+  (the transcript filter); `app/routers/show.py` (`GET /show`,
+  `POST /api/show/start`, `POST /api/show/round`); the show settings
+  model in `app/config.py` beside the existing ones; the grammar key
+  in `app/services/llm.py`; decision 6's changes in
+  `app/services/stt_client.py`; `stories/lab-outbreak/`
+  (`cast_sheet.md`, `events.yaml`, tracked); `runs/` (gitignored);
+  `templates/show.html`; `static/show.js` and `static/sse.js`, with
+  `tts.js` and `stt.js` changed; `scripts/drive_show.py` (standard
+  library only); `tests/test_show_*.py`, one per module, the isolation
+  fixture gaining the runs and stories roots.
+- **Branches and pull requests:** in the fork, **one feature branch
+  per slice, each cut from the fork's up-to-date `master`** —
+  `alfre2v/show-slice-1-skeleton`, `alfre2v/show-slice-2-rules`,
+  `alfre2v/show-slice-3-browser` — each with its own pull request,
+  the next branch cut only after the previous one is merged (owner's
+  precision on §7.1's "branch `alfre2v/show-engine`, with one PR per
+  slice"); the installer's pin moves to `tz-0.2` only after slice 3. In this
+  repository, the design's branch of the same name goes up as a pull
+  request when the owner is happy with the design.
+
 ## Update trail
 
 - **2026-09-23** — Document created on the owner's request after
@@ -1021,3 +1174,8 @@ The owner, 2026-09-23 (verbatim):
   silence as the static round, the debug-only "Heard" text, the
   owner's radio-gauge idea for the polish list, the cast names as
   Whisper's `prompt`, `language=en` and `vad_filter=true`.
+- **2026-09-23 (night, last)** — §7 added: decisions 1 and 7 together
+  — the agent's proposal verbatim (revising its own agenda: a thin
+  end-to-end skeleton first, then the rules, then the browser; what
+  the checkpoint judges; the module layout; one pull request per
+  slice) and the ruling. All seven decided; status DECIDED.
