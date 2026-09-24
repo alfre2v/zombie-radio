@@ -35,13 +35,14 @@ below it is detail.*
   that morning) · end 2026-09-26 14:46. Its design is fully decided
   ([discussion 2026-09-23] show-engine-design); its ordered checklist
   is the next section but one.
-- **Next:** step **1.9** — the driver, and ten rounds on the box.
-  Slice 1 is under way (2026-09-23 evening into the night: 1.1–1.8
-  done; the first four finished pieces proven together in one real
-  round on the box) on
-  the fork's `alfre2v/show-slice-1-skeleton`; this
-  repository's ticks ride on `alfre2v/show-slice-1`. The design (PR
-  #9) is merged.
+- **Next:** close **slice 1** — push the fork's
+  `alfre2v/show-slice-1-skeleton` and open its pull request; push this
+  repository's `alfre2v/show-slice-1` and open its pull request (the
+  owner's call and review) — then slice 2 on a fresh branch from the
+  fork's `master`. **Slice 1's steps are all done** (2026-09-23
+  evening to 2026-09-24 ~02:30, well ahead of its end-of-day target):
+  ten real rounds ran on the box through the app (1.9). How to drive
+  the show yourself: the fork's `docs/runbooks/show-driver.md`.
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
   samples) → Task 7, the canned episode (a MUST for the talk) →
@@ -313,7 +314,21 @@ the agent keeps this current. These carry across arcs.*
         *Done when:* an API test with the LLM stream mocked sees the
         expected events, and the round with its `timings` in
         `script.json`.
-      - [ ] **1.9 The driver, and ten rounds on the box** —
+      - [x] **1.9 The driver, and ten rounds on the box** (`4f1d908`;
+        the runbook `78cfee7` — the fork's
+        `docs/runbooks/show-driver.md`, a new folder for the fork's
+        procedures, the owner's proposal). **The first real run,
+        2026-09-24 ~02:19, on the box through the app (seed 42):** 10
+        rounds, 24 lines, 0 dropped, every round `stop`; every round
+        within its speakers and filling its line budget exactly; first
+        line ~0.8 s, average round 1.16 s; the script 1,164 tokens
+        after the last round (each round re-reads only ~115–150
+        tokens — the prompt cache works); `raw` keeps the model's
+        curly punctuation (21 lines) and trailing spaces (14),
+        `spoken` none; the characters react to the events. Control:
+        PASS (only `Operator` allowed → every line Operator's). The
+        app's startup reads the Personas folder without writing into
+        it. —
         `scripts/drive_show.py` (standard library only): start a
         run, then ten rounds through the tunnel, printing each line,
         simulating the played seconds. *Done when:* ten rounds on the
