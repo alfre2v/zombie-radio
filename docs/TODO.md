@@ -26,7 +26,7 @@ this arc".
 
 ## Now — where the arc stands
 
-*Updated 2026-09-24, afternoon. Read this section first; everything
+*Updated 2026-09-24, evening. Read this section first; everything
 below it is detail.*
 
 - **The critical path is Task 6b, the show engine,** built in the
@@ -36,16 +36,20 @@ below it is detail.*
   ([discussion 2026-09-23] show-engine-design); its ordered checklist
   is the next section but one.
 - **Slice 1 is done and merged** (2026-09-24; ten real rounds ran on
-  the box through the app). **Slice 2 is under way** on the fork's
-  `alfre2v/show-slice-2-rules` and this repository's
-  `alfre2v/show-slice-2`: **2.1, director v1** (`ce8bd71`) **and
-  2.1b, the pacing knobs** (`2f76b34`), **are done**, both proven on
-  the box; tone words no longer repeat within a run (`35f34e0`);
-  **2.2, the trim** (`57a08c9`), is done and measured (about 1.5 s
-  once per trim); **2.3, the debug switch** (`129d3de`), and **2.4,
-  the listener's turn on the server** (`d6ab1b9`), are done.
-  **Next:** 2.5, then the checkpoint. How to
-  drive the show yourself: the fork's `docs/runbooks/show-driver.md`.
+  the box through the app). **Slice 2 is built and the checkpoint
+  passed** (2026-09-24 ~18:57, about eight hours ahead of its clock:
+  6 of 6 criteria; **verdict: continue**). All six steps are done
+  and proven on the box: 2.1 director v1 (`ce8bd71`), 2.1b the
+  pacing knobs (`2f76b34`) and tone words that do not repeat
+  (`35f34e0`), 2.2 the trim (`57a08c9`, about 1.5 s once per trim),
+  2.3 the debug switch (`129d3de`), 2.4 the listener's turn on the
+  server (`d6ab1b9`), 2.5 the driver extended (`86dc1df`). **Its
+  pull requests are open:** alfre2v/TalkWithZombies#3 and this
+  repository's for `alfre2v/show-slice-2`. **Next:** the owner
+  merges them; then slice 3, the browser, on a branch cut from the
+  fork's fresh `master` (target: the end of the timebox). How to
+  drive the show yourself, and run the checkpoint: the fork's
+  `docs/runbooks/show-driver.md`.
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
   samples) → Task 7, the canned episode (a MUST for the talk) →
@@ -55,10 +59,11 @@ below it is detail.*
   bibles (they land as the cast entries of the fork's
   `stories/lab-outbreak/cast_sheet.md`) and the voice samples. No
   dependency on the build; any day, box or no box.
-- **The box** is hibernated, and on 2026-09-24 it **could not be
-  woken: Hyperstack had no A6000 in stock** (owner action queue,
-  item 5). Steps 2.1b to 2.5 build and test without it; it is needed
-  to measure the trim's pause (2.2) and for the checkpoint.
+- **The box** (the A6000) **is up**: on 2026-09-24 a first wake
+  failed (Hyperstack had no A6000 in stock), a later one succeeded
+  on the same address, and the llama.cpp and Whisper images are now
+  pinned (owner action queue, item 5). Slice 3 needs it for its exit
+  criterion by ear (3.5) and the installer's re-proof (3.6).
 - **At a session's end:** a fresh-session handoff replaces any
   mid-session one, and a handoff is deleted only with the owner's
   permission.
@@ -366,7 +371,9 @@ the agent keeps this current. These carry across arcs.*
       - [x] **Slice 1 pull request** — alfre2v/TalkWithZombies#2
         and this repository's #10, merged by the owner 2026-09-24.
 
-    - [ ] **Slice 2 — the rules.** Branch
+    - [ ] **Slice 2 — the rules** (built 2026-09-24, all six steps,
+      the checkpoint passed that evening; its pull requests await the
+      owner's merge). Branch
       `alfre2v/show-slice-2-rules`, cut 2026-09-24 from the fork's
       `master` (`4a62e18`). **Target: the checkpoint.**
       - [x] **2.1 Director v1** (`ce8bd71`; suite 909 passed). As
@@ -531,13 +538,48 @@ the agent keeps this current. These carry across arcs.*
         hallucination — each yield the static round, and the
         placeholder text never reaches the director. *Delegable
         later: yes.*
-      - [ ] **2.5 The driver, extended** — fake transcripts at the
+      - [x] **2.5 The driver, extended** (`86dc1df`; suite 1003
+        passed). As built, with the owner's picks of 2026-09-24:
+        `--heard` items answer the invitations in turn (`-` is a
+        silent window; without them, or once they run out, nothing
+        is sent, as before); by default as text, and with `--speak`
+        the real path (the app's TTS in the operator's voice →
+        `/api/show/listen` → the round request; a silent window
+        sends two seconds of silence); the `round` event now carries
+        `heard` (the text, Whisper's numbers, the silence reason) for
+        the driver and the page's debug-only "Heard: …"; `--report`
+        prints PASS or FAIL per checkpoint criterion from the record
+        and the debug folder, and the driver exits 1 on a FAIL; the
+        checkpoint's settings are set by hand; the fork's runbook
+        gained "Run the checkpoint". **Computed offline first:** at
+        seed 42 and 20 s a round, the invitations fall at rounds 8,
+        13 and 18 (the cadence depends only on the seed and the
+        played seconds), so the checkpoint's three listener windows
+        need a 20-round drive, not ten. — Fake transcripts at the
         invitations (one naming a character, one not), a silent
         window, the played seconds simulated. *Done when:* it can
         run the checkpoint below.
-      - [ ] **Slice 2 pull request** — the owner reviews and merges.
+      - [ ] **Slice 2 pull request** — alfre2v/TalkWithZombies#3
+        (opened 2026-09-24) and this repository's pull request for
+        `alfre2v/show-slice-2`; the owner reviews and merges.
 
-    - [ ] **Checkpoint — 2026-09-25, in practice that morning (clock
+    - [x] **Checkpoint — passed 2026-09-24 ~18:57, about eight hours
+      ahead of its clock. Verdict: continue** (the owner counted
+      this run as the checkpoint run and opened slice 2's pull
+      requests). The fork's `runs/2026-09-24T18-56-59/`: seed 42,
+      `context_budget` 1500, debug on, 20 rounds, the listener's
+      words spoken and transcribed (`--speak`). **The driver's
+      report: 6 of 6 criteria pass** — 20 of 20 rounds recorded; 38
+      lines, 0 dropped, every speaker allowed, no round over its
+      budget; invitations at rounds 8, 13 and 18 as computed: Moira
+      answered "Moira, is the virus airborne?" (heard word for word,
+      no_speech_prob 0.010, avg_logprob −0.225), the silent window
+      gave the static round 14, and Samantha answered a question
+      naming no one ("Who's asking?"); the trim fired before round
+      14 (rounds 3–9), whose first line came at 2.37 s against about
+      0.8 s (the slot swap, L §4.10 question 3); debug files for all
+      20 rounds, token check difference 0 on each. — The plan:
+      **2026-09-25, in practice that morning (clock
       02:46).** Judged on the box, no browser (SED §7.3): ten
       unattended rounds; speakers and line counts obey the director;
       an invitation, then an answer from an injected transcript; a

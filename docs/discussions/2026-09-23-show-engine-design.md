@@ -1133,6 +1133,14 @@ The owner, 2026-09-23 (verbatim):
   order:** the tone word and the events first, then the cadence
   rules (keep the microphone, simplify when it opens). **Fallback:**
   TalkWithMe 7.1 plus the canned episode.
+  *[note 2026-09-24: passed that evening, about eight hours ahead of
+  its clock, in one drive judged by the driver's `--report`: 6 of 6
+  criteria (the fork's `runs/2026-09-24T18-56-59/`). The owner
+  counted it as the checkpoint run — verdict: continue. Ten rounds
+  could not hold the three listener windows (a question naming a
+  character, one naming no one, a silence): at seed 42 and 20 s a
+  round the invitations fall at rounds 8, 13 and 18, so the drive
+  ran 20 rounds. Details: the TODO's checkpoint entry.]*
 - **Polish, only if the checkpoint is green:** prefetch, dead air,
   the 1930s look with the owner's gauge, then episodes (decision 2's
   stretch).
@@ -1554,6 +1562,7 @@ engine".
 | Code comments per repository | this repo's `CLAUDE.md`; the fork's `AGENTS.md` house rules |
 | The story's 500 tone words and 289 events | the fork's `stories/lab-outbreak/` (commit `22a0af2`) |
 | How the listener's route settled SED §6.7's open question | the dated note in §6.7 |
+| The driver for the checkpoint (step 2.5), the checkpoint's result and verdict | `docs/TODO.md`; the dated note in §7.3 |
 
 ## Update trail
 
@@ -1612,3 +1621,6 @@ engine".
   load-bearing exchanges of steps 2.1 to 2.4, the owner's words verbatim
   (extracted from the session transcript by script and checked), the
   agent's shapes condensed.
+- **2026-09-24 (night, later)** — §7.3 gains a dated note: the
+  checkpoint passed, 6 of 6 criteria in one 20-round drive; the
+  owner's verdict: continue. §9.7's table points to it.
