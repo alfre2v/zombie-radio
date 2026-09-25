@@ -44,20 +44,17 @@ detail.*
   pacing knobs (`2f76b34`) and tone words that do not repeat
   (`35f34e0`), 2.2 the trim (`57a08c9`, about 1.5 s once per trim),
   2.3 the debug switch (`129d3de`), 2.4 the listener's turn on the
-  server (`d6ab1b9`), 2.5 the driver extended (`86dc1df`). **The
-  fork's pull request is merged** (alfre2v/TalkWithZombies#3,
-  2026-09-25, the fork's `master` at `5b2485f`); this repository's
-  (#11, `alfre2v/show-slice-2`) stays open to carry slice 3's plan
-  discussion. **Next:** slice 3, the browser, on a branch cut from
-  the fork's `master` once its plan is agreed (target: the end of
-  the timebox). **Slice
-  3's plan is decided** ([discussion 2026-09-25]
-  show-slice-3-browser-plan): five steps — the page on a simulated
-  clock, the voice, the listener's turn, the exit criterion by ear,
-  the close — with the show's frontend in its own files, upstream's
-  untouched. How to
-  drive the show yourself, and run the checkpoint: the fork's
-  `docs/runbooks/show-driver.md`.
+  server (`d6ab1b9`), 2.5 the driver extended (`86dc1df`); both
+  repositories' pull requests are merged (alfre2v/TalkWithZombies#3,
+  this repository's #11, 2026-09-25). **Slice 3 is under way** on the
+  fork's `alfre2v/show-slice-3-browser` and this repository's
+  `alfre2v/show-slice-3`, to the plan of [discussion 2026-09-25]
+  show-slice-3-browser-plan (five steps; the show's frontend in its
+  own files, upstream's untouched): **3.1, the page with text only**
+  (`8bca58b`), **is done** and proven on the box. **Next:** 3.2, the
+  voice. How to drive the show yourself: the fork's
+  `docs/runbooks/show-driver.md` (no browser) and
+  `docs/runbooks/show-page.md` (the `/show` page).
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
   samples) → Task 7, the canned episode (a MUST for the talk) →
@@ -379,9 +376,9 @@ the agent keeps this current. These carry across arcs.*
       - [x] **Slice 1 pull request** — alfre2v/TalkWithZombies#2
         and this repository's #10, merged by the owner 2026-09-24.
 
-    - [ ] **Slice 2 — the rules** (built 2026-09-24, all six steps,
-      the checkpoint passed that evening; the fork's pull request
-      merged 2026-09-25, this repository's still open). Branch
+    - [x] **Slice 2 — the rules** (built 2026-09-24, all six steps,
+      the checkpoint passed that evening; both pull requests merged
+      2026-09-25). Branch
       `alfre2v/show-slice-2-rules`, cut 2026-09-24 from the fork's
       `master` (`4a62e18`). **Target: the checkpoint.**
       - [x] **2.1 Director v1** (`ce8bd71`; suite 909 passed). As
@@ -567,12 +564,12 @@ the agent keeps this current. These carry across arcs.*
         invitations (one naming a character, one not), a silent
         window, the played seconds simulated. *Done when:* it can
         run the checkpoint below.
-      - [ ] **Slice 2 pull request** — alfre2v/TalkWithZombies#3
-        (opened 2026-09-24, **merged by the owner 2026-09-25**: the
-        fork's `master` at `5b2485f`) and this repository's #11 for
-        `alfre2v/show-slice-2` (open: it also carries slice 3's plan
-        discussion, at the owner's request); the owner reviews and
-        merges.
+      - [x] **Slice 2 pull request** — alfre2v/TalkWithZombies#3
+        (opened 2026-09-24, merged by the owner 2026-09-25: the fork's
+        `master` at `5b2485f`) and this repository's #11 for
+        `alfre2v/show-slice-2` (it also carried slice 3's plan
+        discussion, at the owner's request; merged 2026-09-25,
+        `main` at `b9e4d18`).
 
     - [x] **Checkpoint — passed 2026-09-24 ~18:57, about eight hours
       ahead of its clock. Verdict: continue** (the owner counted
@@ -614,7 +611,38 @@ the agent keeps this current. These carry across arcs.*
       extracted from `chat.js`, the accumulator inside upstream's
       `static/tts.js`, hold-to-talk inside `static/stt.js`). Each step
       opens with its build shape in chat.
-      - [ ] **3.1 The page, text only** — `GET /show` in the show
+      - [x] **3.1 The page, text only** (`8bca58b`; suite 1007 passed,
+        Node tests 17 + 91 + 8). As built, with the owner's picks of
+        2026-09-25: `GET /show` on a second router with no prefix,
+        included in `app/main.py` with one line; the stage direction
+        placed above the round's lines when the `round` summary brings
+        the event (no change to the stream); the listening window shown
+        already, its countdown with the talk button disabled; Stop
+        aborts the round in flight; the runbook
+        `docs/runbooks/show-page.md`. **Live on the box**
+        (2026-09-25; the fork's `runs/2026-09-25T14-57-06` and
+        `T15-48-26`, seed 42, debug on): round 1 word for word as the
+        checkpoint's; invitations at rounds 15, 32 and 53 on the
+        simulated clock, each window counting down and the static
+        round after it; Stop mid-round (the server: "abandoned by the
+        client; nothing recorded") and Resume on the same run; a
+        dropped tunnel (the owner's, ~30 s) shown as an error, and
+        Resume replayed the failed round; the captions toggle. **Two
+        fixes from that check**, at the owner's word: a Stop can land
+        after the server recorded the round, before its summary reached
+        the page (seen on a double Stop at round 44; the owner may have
+        pressed it — "Let's keep an eye on this") — the page now learns
+        it from the next round's number and notes "(stopped, but the
+        server kept this round)"; and a recorded round's debug files
+        are written even when the client leaves meanwhile (the write
+        shielded; `r044.txt` had been cut short). Both proven live:
+        stops between lines left rounds 1-3 unrecorded and their notes
+        unchanged; a Stop during round 16's debug write kept the round,
+        wrote its files, and the note said so. The first line took
+        0.9-1.4 s in the browser against 0.76-0.94 s from the driver on
+        2026-09-24 (the box just woken; watched in 3.2). The page also
+        showed the events' flaw — the follow-up "Events the listener
+        cannot hear". — `GET /show` in the show
         router (its own `Jinja2Templates`); the start response gains
         `listen_window_s`, `press_cap_s` and `debug`; the layout of the
         plan's sketch (§6.1): Start / Stop / Resume, the state line,

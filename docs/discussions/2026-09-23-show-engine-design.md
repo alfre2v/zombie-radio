@@ -806,6 +806,17 @@ The owner, 2026-09-23 (verbatim):
   plain "continue" otherwise; episode beats take this role later
   (decision 2's stretch). Never spoken — the audience learns of an
   event through the characters' reactions.
+  *[note 2026-09-25: in practice the reactions do not carry the
+  event. Watching the `/show` page (the fork's run
+  `2026-09-25T14-57-06`, rounds 55-58), the owner saw the characters
+  react to what only the model was told — "Three layers? That's new."
+  after the blood samples separated into three layers — which a
+  listener cannot follow; the page's captions hid it, since they show
+  the event as a stage direction. Nothing in the instruction says the
+  listeners cannot see the event. Options, the agent's lean (the
+  characters report the event on air, in the Welles manner, by the
+  instruction's wording alone) and a driver A/B test: the follow-up
+  "Events the listener cannot hear" in `docs/follow-ups.md`.]*
 - **Entropy term:** one tone word per round from a list, the 2024
   trick (where the list lives is settled in code; a story may bring
   its own).
@@ -1624,3 +1635,7 @@ engine".
 - **2026-09-24 (night, later)** — §7.3 gains a dated note: the
   checkpoint passed, 6 of 6 criteria in one 20-round drive; the
   owner's verdict: continue. §9.7's table points to it.
+- **2026-09-25** — §5.7 gains a dated note on events: the characters'
+  reactions do not carry an event to the listener (seen by the owner on
+  the `/show` page); the follow-up "Events the listener cannot hear"
+  holds the options.

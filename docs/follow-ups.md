@@ -19,8 +19,36 @@ reader's memory):
 
 ---
 
-## SSH keepalives and polling for long silent deploy tasks — low priority (owner, 2026-09-23)
+## SSH keepalives and polling for long silent deploy tasks — priority raised 2026-09-25 (was low, owner 2026-09-23)
 
+- **Status 2026-09-25 — the tunnel drops while an interactive session
+  survives (owner); priority raised:** the tunnel keeps breaking at
+  certain times, while the owner's interactive SSH session to the box
+  (running tmux) stays open most of the time. The lid-closing
+  explanation below would kill both, so it no longer fits. The leading
+  explanation — believed, not proven — is idle traffic: tmux redraws
+  its status bar every 15 s by default, so the interactive session
+  keeps talking, while the tunnel (`ssh -N`, the Makefile's
+  `ssh-tunnel`, whose options carry no keepalive) is silent between
+  rounds, and Wi-Fi routers and firewalls drop idle connections. Not
+  checked: whether the owner's own ssh config gives the interactive
+  session a keepalive (the owner's SSH directory is off limits to the
+  agent). A drop now interrupts the work: the `/show` page stops with
+  an error until Resume (slice 3). **Fix shape, the agent's picks:**
+  (1) client side, in the Makefile's `ssh-tunnel`:
+  `-o ServerAliveInterval=30 -o ServerAliveCountMax=3` — an idle
+  tunnel keeps talking, and a dead link is detected within about 90 s,
+  so ssh exits instead of lingering; (2) the tunnel restarts by itself:
+  a small loop around the command (restart after an exit, a short
+  pause) or `autossh` — with (1), a drop heals in seconds and the
+  page's Resume picks up; (3) optional, later: `ClientAliveInterval`
+  in the box's `sshd_config` through the playbook (belt and braces; it
+  changes the box). Proof: count the drops over a day of use, before
+  and after. **Fix (1) applied the same day, at the owner's request**
+  ("this tunnel thing is too annoying already"): the Makefile's
+  `ssh-tunnel` now passes `-o ServerAliveInterval=30
+  -o ServerAliveCountMax=3`; a tunnel started before the change must be
+  restarted to get it. (2) and (3) remain open.
 - **Status 2026-09-23 — explained, not a significant worry (owner):**
   the owner works on public library Wi-Fi and closes the laptop's lid
   during breaks, probably without closing the tunnel first — which
@@ -343,6 +371,110 @@ reader's memory):
   last event's group with a chance that falls as the run grows (a
   yaml knob for the typical run length); tests: runs occur, no
   repeats until the pool is used up, the same seed replays.
+
+## Events the listener cannot hear — the characters react to what only the model was told (owner, 2026-09-25)
+
+- **The gap:** the director gives an event to the model at the head of
+  a free round's instruction ("Offstage: The blood samples … Daniel and
+  Moira speak next: …" — the fork's `app/show/director.py`,
+  `instruction_for`), and nothing says the listeners cannot see it; so
+  the characters react like people who saw it together, and a listener
+  hears reactions to things never told. The show engine's design
+  assumed the reactions would carry the event (SED §5.7: "the audience
+  learns of an event through the characters' reactions" — dated note
+  2026-09-25). The `/show` page's captions hide the gap: they show the
+  event as a stage direction in brackets. By ear there is no bracket —
+  so the by-ear checks (slice 3's step 3.4) are judged with captions
+  off. The jumps between unrelated events (the entry "Events that stay
+  on topic for a few rounds") make it worse.
+- **The owner's evidence** (the page, the fork's run
+  `2026-09-25T14-57-06`, rounds 55-58, debug on; as pasted):
+
+  ```
+  [The infected at the south gate are tearing at a car, but the car is empty.]
+
+  Daniel (calm): They're wasting energy. Over.
+
+  Samantha (calm): Let them chew on a rusted shell. Over.
+
+  Daniel (calm): We'll move when we're ready. Over.
+
+  round 55 · free · speakers Daniel, Samantha · event The infected at the south gate are tearing at a car, but the car is empty. · tone swaggering · first line 1.1 s · round 2.4 s · run 2026-09-25T14-57-06
+
+  [The blood samples from the first victims have separated into three layers instead of two.]
+
+  Daniel (calm): Three layers? That's new. Over.
+
+  Moira (calm): It's either a mutation or a trick. Over.
+
+  round 56 · free · speakers Daniel, Moira · event The blood samples from the first victims have separated into three layers instead of two. · tone swaggering · first line 1.2 s · round 2.4 s · run 2026-09-25T14-57-06
+
+  Moira (calm): We'll test it. Over.
+
+  Ralph (calm): If it's a trick, we'll laugh. Over.
+
+  Moira (calm): Either way, it's our problem. Over.
+
+  round 57 · free · speakers Moira, Ralph · event — · tone swaggering · first line 1.3 s · round 3.1 s · run 2026-09-25T14-57-06
+
+  Moira (calm): We'll crack it. Over.
+
+  round 58 · free · speakers Moira, Samantha · event — · tone swaggering · first line 1.0 s · round 1.9 s · run 2026-09-25T14-57-06
+
+  [A dark handprint appears on the inside of the observation window.]
+
+  Ralph (urgent): We need to seal that window. Over.
+
+  Samantha (urgent): The handprint's recent. Over.
+
+  Ralph (urgent): Could be a trap. Over.
+
+  Samantha (urgent): We'll reinforce it. Over.
+  ```
+
+  The owner: after "[The blood samples from the first victims have
+  separated into three layers instead of two.]", Daniel's "Three
+  layers? That's new. Over." — the listener will never know what
+  these layers are: a context-sharing problem.
+- **Options** (1-3 the owner's, 4 the agent's):
+  1. **A narrator.** The owner hesitates: a voice outside the fiction
+     breaks the emergency-broadcast frame that imitates Orson Welles's
+     *The War of the Worlds* (1938), which played on the ambiguity
+     between a radio play and a real newsfeed. The agent agrees; the
+     in-world announcer already exists — the operator (Samantha), whose
+     job is reporting — which is option 3 with her as the describer.
+  2. **An event round**, a new kind with its own instruction (the
+     owner's wording: "The characters describe the event that just
+     happened and comment to each other the consequences of this
+     event."); then rounds continue as usual.
+     Costs a round kind in the director, the record, the summary and
+     the page; no extra request if it replaces the free round.
+  3. **A describe-it round trip** per event: one character describes
+     the event in their own words; then rounds continue as usual. The
+     most control; costs one more request per event (another
+     round-boundary gap of ~2-4 s, [discussion 2026-09-25]
+     show-slice-3-browser-plan §2) and one more line, about every other
+     free round.
+  4. **The wording alone, in the same round** — the agent's lean: for
+     example "Something happens that the listeners cannot see: X.
+     Daniel tells the listeners on air what is happening; then Daniel
+     and Moira speak: …". The characters are on air, so reporting is
+     what they would do — the device the Welles broadcast is built on
+     (reporters describing to the audience what they witness). One
+     sentence in `instruction_for`; the director already picks the
+     speakers, so it can name the reporter (the first speaker, or the
+     operator when she is in the round). Risk: the model may skip or
+     bury the description — the grammar enforces who speaks, not what
+     is said; then option 3 with the operator.
+- **Where flagged:** the owner, 2026-09-25, watching the `/show` page
+  during slice 3's step 3.1 (the plan's discussion, [discussion
+  2026-09-25] show-slice-3-browser-plan).
+- **Trigger:** before the by-ear exit criterion (slice 3's step 3.4),
+  or whenever the owner wants to hear the show make sense.
+- **Fix shape — decide by an A/B test:** the driver at seed 42, 20
+  rounds each, today's wording against option 4's; read the first line
+  after each event and count the events a listener could follow without
+  the caption. If option 4 falls short, try option 3 the same way.
 
 ## Bounded scratchpad before the script — test the "room to reason" hypothesis
 

@@ -122,5 +122,6 @@ ssh-tunnel:
 	 case "$$host" in REPLACE_ME*) echo "$(ENV) hosts.yml still carries the REPLACE_ME sentinel"; exit 2;; esac; \
 	 test -n "$$key" || { echo "no ansible_ssh_private_key_file found in inventories/common_vars.yml"; exit 2; }; \
 	 echo "Tunnel to $$host: llama :8080 / tts :8001 / whisper :8002   (Ctrl-C closes it)"; \
-	 ssh -N -o ExitOnForwardFailure=yes -i "$$key" $(SSH_TOFU_OPTS) \
+	 ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
+	     -i "$$key" $(SSH_TOFU_OPTS) \
 	     -L 8080:127.0.0.1:8080 -L 8001:127.0.0.1:8001 -L 8002:127.0.0.1:8002 "$$user@$$host"
