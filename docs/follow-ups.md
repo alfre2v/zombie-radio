@@ -177,6 +177,46 @@ reader's memory):
   server's side: `docker logs llama`, the lines `selected slot`,
   `launch_slot_` and `release` (their timestamps and `f_keep`).
 
+## Prefetch the next round — hide the silence between rounds
+
+- **The gap:** the `/show` page asks for round N+1 only when round
+  N's audio has drained (the browser is the clock, SED), so every
+  round boundary is silent while the model writes the first line
+  (0.76-0.94 s through the app and the tunnel in the checkpoint
+  drive; 2.37 s after a trim) and the voice synthesizes the first
+  chunk (1-3 s for short lines): about 2-4 s, estimated — not yet
+  heard in a browser.
+- **Where flagged:** [discussion 2026-09-25]
+  show-slice-3-browser-plan §2-§3 (the owner: "worth documenting");
+  the TODO's polish list ("prefetch round N+1").
+- **Trigger:** the page plays rounds by ear (slice 3) and the silence
+  between rounds bothers the listener.
+- **Fix shape:** request N+1 on N's `complete` (its text streamed),
+  with `played_s` = the seconds played + the duration of the audio
+  still queued (exact from the decoded clips); never after an
+  invitation (the listening window is the gap). Measure first whether
+  the model and the voice slow each other on the shared GPU.
+
+## Resume the same run after a page reload
+
+- **The gap:** a reload of the `/show` page forgets the run and Start
+  opens a new one (the owner's ruling for slice 3); the old run's
+  record stays on disk. A crash mid-show restarts the story.
+- **Where flagged:** [discussion 2026-09-25]
+  show-slice-3-browser-plan §6 (item 5, question 3).
+- **Trigger:** a reload or a crash during a long show hurts — above
+  all near the talk.
+- **Fix shape (about an hour with tests, estimated):** keep the run id
+  in the URL (`/show?run=...`); a read route (for example
+  `GET /api/show/run/<id>`) gives back what the page loses — the
+  played seconds so far (restarted at 0, the cadence would count the
+  time since the last invitation as negative, and no invitation would
+  come for minutes) and whether the last round was an invitation (the
+  listening window opens first). Two gaps remain: the last round's
+  own audio length is never recorded, so the resumed clock is an
+  estimate; and a round whose text arrived but whose audio never
+  played is skipped.
+
 ## Mac-local TTS probe with tts-serve's MLX engine (parked post-MVP)
 
 - **The gap:** tts-serve ships a native Apple-Silicon engine
