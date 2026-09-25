@@ -636,7 +636,7 @@ the agent keeps this current. These carry across arcs.*
         fixes from that check**, at the owner's word: a Stop can land
         after the server recorded the round, before its summary reached
         the page (seen on a double Stop at round 44; the owner may have
-        pressed it — "Let's keep an eye on this") — the page now learns
+        pressed it — "LEt's keep an eye on this", verbatim) — the page now learns
         it from the next round's number and notes "(stopped, but the
         server kept this round)"; and a recorded round's debug files
         are written even when the client leaves meanwhile (the write
