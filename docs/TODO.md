@@ -53,8 +53,11 @@ detail.*
   own files, upstream's untouched): **3.1, the page with text only**
   (`8bca58b`), **and 3.2, the voice** (`a2d942e`), **are done** and
   proven on the box — the owner, by ear: "We can call this a
-  success". **Next:** 3.3, the listener's turn. How to drive the show
-  yourself: the fork's
+  success". **3.3, the listener's turn** (`57dce7f`), **is done** —
+  checked live with a fake microphone; the real button is checked in
+  3.4. **Next:** the events A/B test (the follow-up "Events the
+  listener cannot hear"), then 3.4, the exit criterion by ear. How
+  to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
@@ -716,7 +719,28 @@ the agent keeps this current. These carry across arcs.*
         180-character sentence whole and alone), which resolves the
         follow-up "JavaScript test for the accumulator's packing
         rules".
-      - [ ] **3.3 The listener's turn** — `mic.js`: hold to talk
+      - [x] **3.3 The listener's turn** (`57dce7f`; suite 1007
+        passed, Node tests 17 + 91 + 26). As built, with the owner's
+        picks of 2026-09-25: the microphone asked for once at Start and
+        open only while the radio listens (opened with each window,
+        closed after — a press records at once, and no permission prompt
+        eats a window); one press per window; a failed transcription
+        counts as silence (noted with debug on); with debug on, the
+        invitation's block shows what Whisper heard. **Checked live
+        with a fake microphone** (the fork's run `2026-09-25T17-50-50`;
+        the page's `getUserMedia` fed the TTS saying "Moira, is the virus
+        airborne?"; invitations brought forward by temporary settings,
+        20-40 s): the window opened with the microphone, the press
+        recorded, Whisper heard the question word for word, and round 5
+        was Moira's answer; a window left unpressed gave the static
+        round (round 12); the microphone was closed outside the windows.
+        **The real button and microphone are checked in 3.4's session**
+        (the owner's call, 2026-09-25: 3.4 needs a real spoken exchange
+        anyway). The owner kept the listening window for the MVP and
+        recorded a preference for talking back at any moment — the
+        follow-up "Talk anytime"; the check also surfaced the follow-up
+        "A line broken off with an em dash sounds and reads cut". —
+        `mic.js`: hold to talk
         (mouse, touch, the space bar), enabled only while listening,
         the recording code copied from upstream's `stt.js`; the
         window's countdown (`listen_window_s`) stops on a press; the
@@ -731,8 +755,11 @@ the agent keeps this current. These carry across arcs.*
         through the tunnel: at least ten unattended turns with the four
         placeholder personas; speakers chosen by the director; one
         interaction beat that opens the microphone and absorbs the
-        reply; sentences accumulated, not split. The owner listens; the
-        verdict is recorded here.
+        reply — with the real talk button and microphone, which also
+        closes 3.3's check by hand (hold, the press cap, a window left
+        unpressed); sentences accumulated, not split. Judged with the
+        captions off (the follow-up "Events the listener cannot hear").
+        The owner listens; the verdict is recorded here.
       - [ ] **3.5 Close the timebox** — slice 3's pull request merged;
         tag `tz-0.2`; the installer's `client_version` bumped to it and
         re-proven (fresh install, re-run `changed=0`, HTTP 200 — the
