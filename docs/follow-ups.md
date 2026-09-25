@@ -108,11 +108,10 @@ reader's memory):
   it evaluates 130 or 270 tokens — slow for an A6000, and the
   reason one request per round beats one per line; (2) **the host-RAM
   prompt cache's entries are large** — 417 MiB to 1.8 GB for prompts
-  of a few hundred to ~1,600 tokens; (3) **what a history edit costs
-  on this hybrid model**: trimming the script breaks the cached
-  prefix from the edit point on, and with recurrent-state
-  checkpoints at least 8,192 tokens apart by default the server may
-  re-evaluate from much further back — unmeasured; (4) **the
+  of a few hundred to ~1,600 tokens; (3), what a history edit costs
+  on this hybrid model, was answered on 2026-09-24 (lessons §4.10
+  question 3: a trim re-reads little but pays about 1.5 s of slot
+  swapping once — see the next entry) and left this list; (4) **the
   believed reason a grammar is nearly free when the model agrees and
   ~10 % dearer when it must overrule it**: the sampler checks the
   chosen token first and applies the grammar to the whole
@@ -122,22 +121,101 @@ reader's memory):
   grammar-and-prompt-cache-lessons §3 and §4.3/§4.8;
   `docs/experiments/2026-09-22-adr-0003-gate/` (runlog entries
   12–14).
-- **Trigger:** (3) during Task 6b, once the midpoint trim exists —
-  its pause measured with a low `show.context_budget` (reframed
-  2026-09-23: the owner ruled for the trim, so the design no longer
-  waits on it — [discussion 2026-09-23] show-engine-design §2); (1)
-  and (2) when show
-  latency is tuned, or the Task 5a audition swaps the model; (4)
-  whenever a grammar change is weighed on cost.
+- **Trigger:** (1) and (2) when show latency is tuned, or the Task
+  5a audition swaps the model; (4) whenever a grammar change is
+  weighed on cost.
 - **Fix shape:** a small probe reusing the gate's scripts, one
   server flag changed at a time through the playbook
   (`--ctx-checkpoints 0`, a smaller `--checkpoint-min-step`,
-  `--cache-ram 0`), plus one history-trim arm; for (4), read the
-  sampler in llama.cpp's `common/sampling.cpp` at the build we
-  serve.
+  `--cache-ram 0`); for (4), read the sampler in llama.cpp's
+  `common/sampling.cpp` at the build we serve.
 - **When an item resolves:** write the answer back as a dated note
   in [discussion 2026-09-22] grammar-and-prompt-cache-lessons §4.10
   (the lasting home of these questions), then delete the item here.
+
+## Pauses the model server's timings do not show
+
+- **The gap (measured 2026-09-24, two identical 28-round drives on
+  the box, the fork's trim with `show.context_budget` 1500):** two
+  kinds of pause, neither in the `timings` the show records.
+  (1) **The slot swap.** When a request keeps only a small share of
+  what the server's one slot holds — `f_keep` 0.37-0.38 in the log
+  after a trim, 0.22 on a new run's first round — the server spends
+  1.1-1.5 s between choosing the slot and starting the work (about
+  1 ms otherwise): believed to be the save and restore through the
+  host-RAM prompt cache that the ADR-0003 gate saw (about 1.7 s).
+  One trim of four paid only 174 ms — believed: that round's prompt
+  was identical to the first drive's (same seed), so the server
+  restored a matching state from its host-RAM cache; a third
+  identical drive (2.3's check) then reused 777 cached tokens after
+  its trim, not 512. So identical repeat drives understate a trim's
+  cost; the first drive's 1.3-1.5 s is the number. The owner's hunch
+  (the gate's "evictions") pointed at it. (2) **A stall before the
+  request reaches the server:** once in 56 requests (round 8 of the
+  first drive, not in the repeat), 1.5 s passed between one round's
+  end and the server even seeing the next request. *Ruled out the
+  same day, on the owner's question: an idle unload of the model
+  (ollama's `keep_alive`). llama.cpp has the knob,
+  `--sleep-idle-seconds`, but it defaults to -1 (disabled) and the
+  box's container does not set it (`docker inspect`); the previous
+  round had ended only 1.5 s before; and the round's prompt was read
+  in the normal 364 ms, with no server log line during the stall.*
+- **Where flagged:** Task 6b step 2.2's measurement ([discussion
+  2026-09-22] grammar-and-prompt-cache-lessons §4.10 question 3,
+  answered that day); the runs `runs/2026-09-24T17-12-04/` and
+  `runs/2026-09-24T17-15-15/` in the fork.
+- **Trigger:** (1) if the trim's pause is heard in rehearsal, or a
+  show needs trims often; (2) if stalls show up again in drives or in
+  the browser.
+- **Fix shape:** (1) one server flag at a time through the playbook,
+  measured the same way — `--cache-ram 0` first (no host-RAM cache
+  to save to; what the slot then does on a trim is itself the
+  question); (2) time the phases of the app's request to llama.cpp
+  (connect, first byte) to see whether the stall is in the app or in
+  the SSH tunnel — upstream's LLM client opens a new connection per
+  call, so each round opens a new tunnel channel. How to read the
+  server's side: `docker logs llama`, the lines `selected slot`,
+  `launch_slot_` and `release` (their timestamps and `f_keep`).
+
+## Prefetch the next round — hide the silence between rounds
+
+- **The gap:** the `/show` page asks for round N+1 only when round
+  N's audio has drained (the browser is the clock, SED), so every
+  round boundary is silent while the model writes the first line
+  (0.76-0.94 s through the app and the tunnel in the checkpoint
+  drive; 2.37 s after a trim) and the voice synthesizes the first
+  chunk (1-3 s for short lines): about 2-4 s, estimated — not yet
+  heard in a browser.
+- **Where flagged:** [discussion 2026-09-25]
+  show-slice-3-browser-plan §2-§3 (the owner: "worth documenting");
+  the TODO's polish list ("prefetch round N+1").
+- **Trigger:** the page plays rounds by ear (slice 3) and the silence
+  between rounds bothers the listener.
+- **Fix shape:** request N+1 on N's `complete` (its text streamed),
+  with `played_s` = the seconds played + the duration of the audio
+  still queued (exact from the decoded clips); never after an
+  invitation (the listening window is the gap). Measure first whether
+  the model and the voice slow each other on the shared GPU.
+
+## Resume the same run after a page reload
+
+- **The gap:** a reload of the `/show` page forgets the run and Start
+  opens a new one (the owner's ruling for slice 3); the old run's
+  record stays on disk. A crash mid-show restarts the story.
+- **Where flagged:** [discussion 2026-09-25]
+  show-slice-3-browser-plan §6 (item 5, question 3).
+- **Trigger:** a reload or a crash during a long show hurts — above
+  all near the talk.
+- **Fix shape (about an hour with tests, estimated):** keep the run id
+  in the URL (`/show?run=...`); a read route (for example
+  `GET /api/show/run/<id>`) gives back what the page loses — the
+  played seconds so far (restarted at 0, the cadence would count the
+  time since the last invitation as negative, and no invitation would
+  come for minutes) and whether the last round was an invitation (the
+  listening window opens first). Two gaps remain: the last round's
+  own audio length is never recorded, so the resumed clock is an
+  estimate; and a round whose text arrived but whose audio never
+  played is skipped.
 
 ## Mac-local TTS probe with tts-serve's MLX engine (parked post-MVP)
 
@@ -170,6 +248,101 @@ reader's memory):
 - **Fix shape:** a third Node test in upstream's `vm.Context`
   pattern (`tests/test_tts_settings.js` as the template) covering
   the three packing rules and the line-end flush.
+
+## An "exchange" round — the director has one character address another
+
+- **The gap:** the characters report to the room; they rarely talk
+  to each other. In the first real run of the show engine (the
+  fork's `runs/2026-09-24T02-18-51/`, 10 rounds, seed 42), none of
+  the 24 lines named another character — first names, surnames and
+  "Dr." checked by script — and only one spoke to anyone at all
+  ("You should've locked the east wing when we still had power!",
+  the addressee unnamed). Director v1's rule "anyone named in the
+  last round is allowed next" ([discussion 2026-09-23]
+  show-engine-design §5.7) therefore has little to act on. One run,
+  one seed: a tendency observed, not established.
+- **The idea:** a fifth kind of round beside free, invitation,
+  answer and static — **`exchange`** (the name proposed
+  2026-09-24; "cross-talk", the radio word for on-air banter, was
+  the alternative, set aside because it also means signal
+  interference). The director picks two characters and says who
+  addresses whom: "Moira asks Ralph something; Ralph answers: the
+  next two lines, each with the emotion in its voice." The grammar
+  can enforce the order, not only who is allowed:
+  ```
+  root   ::= first second
+  first  ::= "Moira" " (" emotion "): " text "\n"
+  second ::= "Ralph" " (" emotion "): " text "\n"
+  ```
+  The verb could come from a short list, like the tone words: asks,
+  warns, blames, reassures, teases, confides in.
+- **Why the director and not the format rules:** asking for it in
+  the cast sheet's format paragraph would change the texts pinned
+  byte for byte to the proven prompts (the fork's
+  `tests/test_show_story.py`) and lose that anchor; the director's
+  instruction is per round and leaves the anchor alone. The
+  character bibles (Task 4) may change the picture by giving the
+  characters relationships to talk across — believed, not measured.
+- **Where flagged:** the owner, 2026-09-24, reviewing director v1
+  (Task 6b step 2.1): record it "if the need arises and we have
+  time"; execution undecided.
+- **Trigger:** drives on the box, or the listening test of slice 3,
+  show the characters still rarely speaking to each other, the
+  owner's ear minds, and there is time after the timebox's
+  essentials.
+- **Fix shape:** in the fork, the director gains the kind (how often
+  — a chance per free round, a yaml knob) and its instruction
+  words; `build_grammar` gains an ordered form (a sequence of named
+  lines instead of `line{1,N}`); tests in the manner of step 2.1's
+  (words and grammar agree; the order is enforced). About the size
+  of one checklist step (estimate).
+
+## Events that stay on topic for a few rounds
+
+- **The gap:** the director draws each event at random from the
+  whole pool (without repeats until the pool is used up), so the
+  story jumps between unrelated threads — a flooded basement, then
+  a listener in Anchorage, then a specimen jar — and the lab's
+  backstory can drift ("a sample logged here eleven years ago" and
+  "the university burned the same sample" may both come up). How
+  often events come: in free rounds with an odd round number only
+  (the fork's `app/show/director.py`, `n % 2 == 1`) — about every
+  other round; at the driver's 20 s of audio per round, roughly one
+  event per 40 s of show (the real audio per round is unmeasured).
+- **Two ideas, the owner's (2026-09-24):**
+  1. **Semantic neighbors.** Embed every event once and draw the
+     next one near the last one, so a thread continues for a few
+     events before the story moves on. At the pool's size (289
+     events, 2026-09-24) a vector database is more than needed: the
+     embeddings, computed once and stored as a file in the story
+     folder, and a nearest-unused-neighbor pick do the same job; a
+     database pays off only with thousands of events or episodes
+     written on the fly.
+  2. **Topic runs, almost free.** The pool is already written in
+     14 topic groups, and the director stays in one group for a few
+     events, then jumps to another. The groups are only YAML
+     comments today, which the loader discards — they must become
+     data first (`events:` as a mapping of group to list, the loader
+     accepting both forms). Within a run, pick at random rather than
+     in file order: the order inside a group is the writing order,
+     not a story arc, and a fixed walk would repeat the same sequence
+     every show. The current group and the run's length are derived
+     from the record, like all of the director's memory, so a seed
+     still replays a run.
+- **Where flagged:** the owner, 2026-09-24, after the events pool
+  grew from 10 to 289 ("which we will probably never have time to
+  execute, but I do not want to forget it").
+- **Trigger:** listening to real rounds (on the box or in slice 3),
+  the events feel scattered and the story never settles on a
+  thread — and there is time after the timebox's essentials. Idea 2
+  first; idea 1 only if 2 is not enough. Episode beats
+  ([discussion 2026-09-23] show-engine-design §2.4, §5.7) are the
+  ordered, authored form of the same wish.
+- **Fix shape (idea 2):** the loader reads grouped events into
+  `Story.events` plus each event's group; `_next_event` stays in the
+  last event's group with a chance that falls as the run grows (a
+  yaml knob for the typical run length); tests: runs occur, no
+  repeats until the pool is used up, the same seed replays.
 
 ## Bounded scratchpad before the script — test the "room to reason" hypothesis
 
@@ -244,6 +417,56 @@ reader's memory):
   expose via the standard `/synthesize` + `/capabilities` API;
   F5-TTS first (known quantity), Breeze TTS 2 second (newer,
   unproven locally). Consider upstreaming as PRs to scorbo2.
+
+## Markdown emphasis in spoken lines — kept for now; re-test with any new TTS engine
+
+- **The finding (2026-09-24):** the model sometimes marks emphasis
+  the way chat text does. In the first live drive of director v1
+  (the fork's `runs/2026-09-24T14-43-54/`, round 7, tone word
+  "impish"), Moira's line came back as `How *charming*.` Nothing
+  stops the marks on their way to the voice: the grammar's text rule
+  (`[^\n\[\]()]+`) allows `*` and `_`; the format rules forbid
+  markdown only in words; the parser's voice-only replacements
+  (the fork's `app/show/parser.py`, `_SPOKEN`) cover curly quotes,
+  dashes and the ellipsis; upstream's browser and server TTS code do
+  no text cleanup (checked 2026-09-24).
+- **The listening test (the owner, by ear, 2026-09-24):** the same
+  line three times in Moira's voice through the fork's `/api/tts` —
+  plain, with `*charming*`, with `_charming_` — on tts-serve 1.2 with
+  Faster Qwen3-TTS and the `say`-made reference voice. All three
+  sounded poor, believed to be the artificial reference voice; but
+  the ranking was clear: the asterisks most natural, then the
+  underscores, the plain line least natural. The engine seems to
+  read the marks as emphasis and inflect the word.
+- **Ruling (the owner, 2026-09-24):** keep the marks; no action for
+  now.
+- **The risk:** another TTS engine — on the owner's wishlist (this
+  file: "Add new TTS engines", "LuxTTS landed upstream") — may react
+  differently: read the marks aloud, pause on them, or ignore them.
+- **Trigger:** any TTS engine change, or the real reference voices
+  (Task 5b): re-run the three-line test and listen.
+- **The test, to repeat it:** with the fork's app serving (the
+  runbook `docs/runbooks/show-driver.md`), three
+  `POST /api/tts` calls with `{"text": …, "persona_name": "Moira"}`;
+  each reply's `audio_base64` decodes to a WAV file.
+- **Fix shape if an engine mishandles them:** strip `*` and `_` from
+  the spoken text only; the history keeps the model's raw text.
+  Forbidding them in the grammar instead would break the
+  byte-identical anchor and force the model.
+- **The replacements must be per TTS engine** (the owner,
+  2026-09-24): a single table changed for each new engine would
+  leave the previous engine misconfigured, since engines react
+  differently to the same characters (this test: Faster Qwen3-TTS
+  inflects on `*` and `_`). The shape, refined in discussion: a
+  shared base table (the replacements every engine takes, today's
+  `_SPOKEN`) plus per-engine exceptions, each engine's re-checked by
+  ear with the three-line test; the table chosen by the engine the
+  TTS server reports — `engine` in tts-serve's `/capabilities` (the
+  box, 2026-09-24: `faster-qwen3-tts`, model
+  `Qwen/Qwen3-TTS-12Hz-1.7B-Base`), a document the app already
+  caches — never by a setting to keep in sync, so an engine switch
+  in Settings brings its table along, and an engine without one gets
+  the base table.
 
 ## MassedCompute 50% code verification — parked
 

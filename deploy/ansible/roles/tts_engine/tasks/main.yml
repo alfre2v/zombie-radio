@@ -60,3 +60,4 @@
       until: tts_engine_health.status == 200
       retries: "{{ tts_engine_health_retries }}"
       delay: "{{ tts_engine_health_delay }}"
+      check_mode: false

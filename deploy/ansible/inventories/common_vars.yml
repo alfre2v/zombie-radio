@@ -46,7 +46,7 @@ zr_models_dir: "/home/{{ zr_service_user }}/models"
 zr_cuda_variant: "cu128"
 zr_torch_version: "2.9.1"
 
-zr_llama_image: "ghcr.io/ggml-org/llama.cpp:server-cuda"  # floating tag; digest-pin at show-freeze
+zr_llama_image: "ghcr.io/ggml-org/llama.cpp:server-cuda-b11096"  # pinned build (sha256:0192ab2545ef...); bump deliberately
 zr_llama_model_hf: "bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF:Q4_K_M"
 zr_llama_ctx: 16384
 zr_llama_ngl: 99
@@ -56,6 +56,7 @@ zr_tts_engine: faster_qwen3tts
 zr_tts_serve_repo: "https://github.com/scorbo2/tts-serve"
 zr_tts_serve_version: "1.2"  # pinned tag (upstream tags carry no v prefix); bump deliberately
 
-zr_stt_image: "docker.io/heimoshuiyu/whisper-fastapi:latest"  # floating tag; digest-pin at show-freeze
+# Pinned by digest: `latest` as of 2025-12-28; no version tag names it. Bump deliberately.
+zr_stt_image: "docker.io/heimoshuiyu/whisper-fastapi@sha256:e6ea4a5ca181cc7cbb7d12ba69407c84703b224aaa9e558c5c875c55a3d65230"
 zr_stt_model: small
 zr_stt_cache_dir: "/home/{{ zr_service_user }}/.cache/huggingface"

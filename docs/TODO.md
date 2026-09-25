@@ -26,23 +26,38 @@ this arc".
 
 ## Now — where the arc stands
 
-*Updated 2026-09-23, night. Read this section first; everything
-below it is detail.*
+*Updated 2026-09-25. Read this section first; everything below it is
+detail.*
 
 - **The critical path is Task 6b, the show engine,** built in the
-  fork TalkWithZombies under a 3-day timebox — clock started
-  2026-09-23 14:46 CDT · checkpoint 2026-09-25 02:46 (in practice
-  that morning) · end 2026-09-26 14:46. Its design is fully decided
+  fork TalkWithZombies under a timebox — clock started 2026-09-23
+  14:46 CDT · checkpoint passed 2026-09-24 · **end moved to Monday
+  2026-09-28** (the owner, 2026-09-25; it was 2026-09-26 14:46). Its
+  design is fully decided
   ([discussion 2026-09-23] show-engine-design); its ordered checklist
   is the next section but one.
-- **Next:** close **slice 1** — push the fork's
-  `alfre2v/show-slice-1-skeleton` and open its pull request; push this
-  repository's `alfre2v/show-slice-1` and open its pull request (the
-  owner's call and review) — then slice 2 on a fresh branch from the
-  fork's `master`. **Slice 1's steps are all done** (2026-09-23
-  evening to 2026-09-24 ~02:30, well ahead of its end-of-day target):
-  ten real rounds ran on the box through the app (1.9). How to drive
-  the show yourself: the fork's `docs/runbooks/show-driver.md`.
+- **Slice 1 is done and merged** (2026-09-24; ten real rounds ran on
+  the box through the app). **Slice 2 is built and the checkpoint
+  passed** (2026-09-24 ~18:57, about eight hours ahead of its clock:
+  6 of 6 criteria; **verdict: continue**). All six steps are done
+  and proven on the box: 2.1 director v1 (`ce8bd71`), 2.1b the
+  pacing knobs (`2f76b34`) and tone words that do not repeat
+  (`35f34e0`), 2.2 the trim (`57a08c9`, about 1.5 s once per trim),
+  2.3 the debug switch (`129d3de`), 2.4 the listener's turn on the
+  server (`d6ab1b9`), 2.5 the driver extended (`86dc1df`). **The
+  fork's pull request is merged** (alfre2v/TalkWithZombies#3,
+  2026-09-25, the fork's `master` at `5b2485f`); this repository's
+  (#11, `alfre2v/show-slice-2`) stays open to carry slice 3's plan
+  discussion. **Next:** slice 3, the browser, on a branch cut from
+  the fork's `master` once its plan is agreed (target: the end of
+  the timebox). **Slice
+  3's plan is decided** ([discussion 2026-09-25]
+  show-slice-3-browser-plan): five steps — the page on a simulated
+  clock, the voice, the listener's turn, the exit criterion by ear,
+  the close — with the show's frontend in its own files, upstream's
+  untouched. How to
+  drive the show yourself, and run the checkpoint: the fork's
+  `docs/runbooks/show-driver.md`.
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
   samples) → Task 7, the canned episode (a MUST for the talk) →
@@ -52,9 +67,11 @@ below it is detail.*
   bibles (they land as the cast entries of the fork's
   `stories/lab-outbreak/cast_sheet.md`) and the voice samples. No
   dependency on the build; any day, box or no box.
-- **The box** is hibernated (2026-09-23 evening); the owner wakes it,
-  re-wires `hosts.yml` and starts the tunnel when a step needs it —
-  first at step 1.9 (owner action queue, item 5).
+- **The box** (the A6000) **is up**: on 2026-09-24 a first wake
+  failed (Hyperstack had no A6000 in stock), a later one succeeded
+  on the same address, and the llama.cpp and Whisper images are now
+  pinned (owner action queue, item 5). Slice 3 needs it for its exit
+  criterion by ear (3.4) and the installer's re-proof (3.5).
 - **At a session's end:** a fresh-session handoff replaces any
   mid-session one, and a handoff is deleted only with the owner's
   permission.
@@ -111,6 +128,29 @@ the agent keeps this current. These carry across arcs.*
    tunnel; `make ans-unset ENV=cloud` after. Decide after the
    timebox: keep hibernating (its IP kept for a few cents an hour)
    or destroy; a from-zero deploy takes about 7 minutes.
+   **2026-09-24: the wake failed — Hyperstack had no A6000 in
+   stock** (the "restore-stock lottery" of
+   `docs/runbooks/service-restart-sequence.md`, "Never hibernate a
+   show box"). The options, the owner's call: retry the wake through
+   the day (the 2026-09-13 survey saw A6000 stock come and go within
+   one sitting); or rent an L40 (48 GB like the A6000; $1.00/h
+   against $0.50/h in that survey) and deploy from zero. The agent's
+   advice: retry first, the L40 only if the checkpoint arrives
+   without an A6000; keep the A6000 hibernated until the timebox
+   ends (its disk holds the llama.cpp image). **Later that day the
+   owner woke it, on the same address**; a sanity check over SSH
+   found it healthy (the A6000 visible with the models loaded, all
+   three services answering, llama.cpp build `b11096-c550d2f60`).
+   **The llama.cpp and Whisper images are now pinned** (2026-09-24,
+   at the owner's call) in
+   `deploy/ansible/inventories/common_vars.yml`: llama.cpp to the
+   tag `server-cuda-b11096`, Whisper by digest to the `latest` of
+   2025-12-28 (it has no version tag) — both the exact images the
+   box was running (same digests). **Proven live the same day**
+   (`b36c28c`): a deploy on the A6000 changed only the llama and
+   Whisper containers (their image names), and the box then reported
+   llama.cpp build `b11096-c550d2f60` and the pinned Whisper digest;
+   a second run changed nothing (`changed=0`).
 
 ## The critical path — Task 6b
 
@@ -184,7 +224,8 @@ the agent keeps this current. These carry across arcs.*
       conversation first pays a state swap (~1.8 s). The box stays
       up through 6b; the tunnel is the owner's.
 
-    - [ ] **Slice 1 — the skeleton.** Branch
+    - [x] **Slice 1 — the skeleton** (done 2026-09-24 ~02:30, merged
+      that day: the fork's `4a62e18`). Branch
       `alfre2v/show-slice-1-skeleton`. **Target: end of day
       2026-09-24.** Every piece in its simplest form, tested offline,
       then ten rounds on the box — no microphone, no browser.
@@ -335,12 +376,35 @@ the agent keeps this current. These carry across arcs.*
         box, every line parsed, the run folder written; plus one
         grammar control request (only a name absent from the prompt
         allowed) that comes back in that name alone.
-      - [ ] **Slice 1 pull request** — the owner reviews and merges.
+      - [x] **Slice 1 pull request** — alfre2v/TalkWithZombies#2
+        and this repository's #10, merged by the owner 2026-09-24.
 
-    - [ ] **Slice 2 — the rules.** Branch
-      `alfre2v/show-slice-2-rules`, cut after slice 1 merges.
-      **Target: the checkpoint.**
-      - [ ] **2.1 Director v1** — the full rules of SED §5.7: free
+    - [ ] **Slice 2 — the rules** (built 2026-09-24, all six steps,
+      the checkpoint passed that evening; the fork's pull request
+      merged 2026-09-25, this repository's still open). Branch
+      `alfre2v/show-slice-2-rules`, cut 2026-09-24 from the fork's
+      `master` (`4a62e18`). **Target: the checkpoint.**
+      - [x] **2.1 Director v1** (`ce8bd71`; suite 909 passed). As
+        built, with the owner's picks of 2026-09-24: `played_s` is
+        the running total since the run started (a failed round
+        records nothing, so per-round seconds would be lost); the
+        tone words live in the story's optional `tones.yaml` ("Let
+        the tone be: brittle.", every kind but the answer; no file,
+        no tone); cast names match whole words, exact case; the
+        static round is the operator's one line; the page learns to
+        listen from `kind` on the `round` event. **Computed with the
+        real director:** over 2,000 seeds at 20 s of audio per round,
+        invitations come 115.0 s apart on average (80 min, 180 max);
+        seed 42's default ten-round drive invites at round 8 and
+        plays the static round at round 9. **Observed in the first
+        real run:** none of its 24 lines named another character, so
+        the "named in the last round" rule has little to act on
+        (follow-ups: the "exchange" round). **Story content**
+        (`22a0af2`, the owner's request): 500 tone words in 24 groups
+        (the 2024 list pruned to 25 and extended) and 289 events (the
+        gate's ten plus 279 in 14 groups; follow-ups: events that
+        stay on topic). The fork's house rules now keep upstream's
+        documentation style (`3540d88`). — The full rules of SED §5.7: free
         rounds allow 2–3 names (whoever has been silent longest,
         always; anyone named in the last round or in the listener's
         words; random fill) and 1–4 lines weighted to 2–3; one tone
@@ -359,7 +423,66 @@ the agent keeps this current. These carry across arcs.*
         and always one by the maximum; an exact cast name narrows the
         answer round; a silent window yields the static round.
         *Delegable later: no* (design-heavy).
-      - [ ] **2.2 The trim** — in `app/show/script.py`: before a
+      - [x] **2.1b Pacing knobs for events and tone words**
+        (`2f76b34`; suite 927 passed). As built, with the owner's
+        picks of 2026-09-24: `show.event_every` 2 / `event_jitter` 1
+        (the gap, in free rounds) and `show.tone_hold` 3 /
+        `tone_jitter` 1 (the hold: one tone word kept for a few
+        rounds, the owner's pick over spacing it out); each gap and
+        hold drawn once, seeded; the run's first free round opens with
+        an event; 0 turns either off. The terms (gap, hold, jitter)
+        and a timeline: SED §8. **On the box** (seed 42, 14 rounds,
+        the fork's `runs/2026-09-24T15-57-21/`): gaps of 1, 3, 2, 2
+        free rounds and holds of 2, 4, 3, 4 rounds, within bounds; the
+        churn gone — "homesick" held four rounds gave one coherent
+        nostalgic stretch; the tone word steers the emotion tags too.
+        **The static round** read as a sign-off in both live drives
+        ("This is a dead end.", "Farewell, dear listeners…"); worded
+        now "Only static answers; the broadcast goes on." — re-driven
+        with the same seed (rounds 1–8 identical,
+        `runs/2026-09-24T16-05-03/`): "We'll keep broadcasting." and a
+        station identification instead. **The tone-repeat guard**
+        followed (`35f34e0`, the owner's go, 2026-09-24): no tone word
+        again until the list is used up, the events' rule shared
+        (`_fresh`); without it 78 % of simulated 40-minute shows
+        repeated a word, with it none of 300. —
+        The owner, 2026-09-24, reviewing 2.1: "Keep in mind to execute
+        these two changes at the first opportunity we have. Remind me
+        about them if we do not execute them soon." The worry: events
+        and tone words switch the conversation's topic and color too
+        fast. **Events:** `show.event_every` (default 2; 0 turns
+        events off — the checkpoint's "scale down: the events first"),
+        counted in free rounds since the last event, not in round
+        numbers (v1's `n % 2 == 1` silently skips an event whenever an
+        invitation, answer or static round lands on an odd number),
+        plus a jitter setting so listeners cannot hear a fixed beat
+        (each gap drawn once, seeded, within `event_every ± jitter`).
+        **Tone words:** the same pair of knobs. *To settle in the
+        shape:* whether the tone knob spaces the tone sentence out
+        (rounds in between get none) or holds one word for the whole
+        stretch (the agent's lean: hold — a steady color is what
+        fixes the churn); the jitter's name and unit. *Done when:*
+        seeded tests keep every gap within its bounds and replay
+        identically; 0 turns each off.
+      - [x] **2.2 The trim** (`57a08c9`; suite 936 passed). As built,
+        with the owner's picks of 2026-09-24: each round records its
+        share of the size (`tokens`) from `timings`; the first 2 and
+        last 4 rounds the model reads are always kept; the rest
+        flagged **from the middle outwards** (the owner's order: the
+        early rounds survive as context, one contiguous span leaves);
+        `trims` on the record and the `round` event; the driver
+        prints the trim. **Measured on the box** (`context_budget`
+        1500 instead of 3,000 — at about 80 tokens a round, 3,000
+        would first trim near round 33; two identical 28-round
+        drives, two trims each): the re-read is small (the cache
+        reused up to the cut, 512 of 516 tokens; 308-316 tokens read
+        in 453-474 ms against ~365 ms normally), but the slot swap
+        between choosing the slot and starting the work costs
+        1.3-1.5 s in three trims of four — a pause `timings` does
+        not show, the one the ADR-0003 gate saw, spotted on the
+        owner's hunch; the next round is normal again. Written to L
+        §4.10 question 3; follow-ups: "Pauses the model server's
+        timings do not show". — In `app/show/script.py`: before a
         round, the script's size from the last response's final
         ("stop") chunk — `timings.prompt_n + timings.cache_n +
         timings.predicted_n` (a stream carries no `usage` by default;
@@ -371,13 +494,45 @@ the agent keeps this current. These carry across arcs.*
         counts; on the box, with `context_budget` near 3,000, the trim
         fires within a few rounds and its pause is measured — the
         number goes to L §4.10 question 3 as a dated note.
-      - [ ] **2.3 The debug switch** — with `show.debug` on, each
+      - [x] **2.3 The debug switch** (`129d3de`; suite 948 passed). As
+        built, with the owner's picks of 2026-09-24: per round a
+        readable `rNNN.txt` (numbers, grammar, the prompt as the model
+        read it, the reply as it streamed) and the exact
+        `rNNN.request.json` (replayable with curl); failed rounds
+        included; written after the round (a debug round costs about
+        0.35 s more). **The token-count check the owner asked about:**
+        `/tokenize` of the rendered prompt (special markers parsed,
+        start token added) against `prompt_n + cache_n`, a warning on
+        a difference — checked before building on 7 rounds of an
+        earlier drive rebuilt from its record (equal to the token,
+        trim rounds included; the record's `trims` make the rebuild
+        possible), then **live: 16 rounds with a trim, difference 0
+        on all 16** (the fork's `runs/2026-09-24T17-37-14/`). The
+        runbook gained "Look inside a round". — With `show.debug` on, each
         round writes `runs/<run-id>/debug/`: the messages sent, the
         grammar in full, the rendered prompt from `/apply-template`
         (verified 2026-09-23: ~120 ms, no generation, no slot), and
         the raw reply. (L §4.9, §5.) *Done when:* switched on, every
         round leaves its file. *Delegable later: yes.*
-      - [ ] **2.4 The STT client and the transcript filter** —
+      - [x] **2.4 The STT client and the transcript filter**
+        (`d6ab1b9`; suite 980 passed). As built, with the owner's
+        picks of 2026-09-24: the show's own route, `POST
+        /api/show/listen`, transcribes with the cast's first names as
+        Whisper's prompt, `language` and `vad_filter`, and returns the
+        text with the highest `no_speech_prob` and the average
+        `avg_logprob`; the round request carries them and the round
+        runs the filter (`app/show/listen.py`) before planning;
+        `Round.heard` records what was heard and the verdict; a new
+        `transcribe_for_show` beside upstream's `transcribe_audio`,
+        which stays untouched (SED §6.7's dated note). The deployed
+        Whisper rejects `verbose_json` and carries the segments in
+        plain `json` — the live check found it. **Live, no browser**
+        (the fork's `runs/2026-09-24T18-01-23/`): TTS spoke "Moira, is
+        the virus airborne?" in Samantha's voice → heard "Moira is the
+        virus airborne" (no_speech_prob 0.01, avg_logprob −0.30) →
+        Moira answered; two seconds of silence → heard nothing → the
+        static round. The cast-names prompt made Whisper surer of the
+        same clip (no_speech_prob 0.018 → 0.005). — The STT client:
         `app/services/stt_client.py`: empty text instead of the "No
         response received from STT server" placeholder (line 85),
         the highest `no_speech_prob` and the average `avg_logprob`
@@ -391,13 +546,51 @@ the agent keeps this current. These carry across arcs.*
         hallucination — each yield the static round, and the
         placeholder text never reaches the director. *Delegable
         later: yes.*
-      - [ ] **2.5 The driver, extended** — fake transcripts at the
+      - [x] **2.5 The driver, extended** (`86dc1df`; suite 1003
+        passed). As built, with the owner's picks of 2026-09-24:
+        `--heard` items answer the invitations in turn (`-` is a
+        silent window; without them, or once they run out, nothing
+        is sent, as before); by default as text, and with `--speak`
+        the real path (the app's TTS in the operator's voice →
+        `/api/show/listen` → the round request; a silent window
+        sends two seconds of silence); the `round` event now carries
+        `heard` (the text, Whisper's numbers, the silence reason) for
+        the driver and the page's debug-only "Heard: …"; `--report`
+        prints PASS or FAIL per checkpoint criterion from the record
+        and the debug folder, and the driver exits 1 on a FAIL; the
+        checkpoint's settings are set by hand; the fork's runbook
+        gained "Run the checkpoint". **Computed offline first:** at
+        seed 42 and 20 s a round, the invitations fall at rounds 8,
+        13 and 18 (the cadence depends only on the seed and the
+        played seconds), so the checkpoint's three listener windows
+        need a 20-round drive, not ten. — Fake transcripts at the
         invitations (one naming a character, one not), a silent
         window, the played seconds simulated. *Done when:* it can
         run the checkpoint below.
-      - [ ] **Slice 2 pull request** — the owner reviews and merges.
+      - [ ] **Slice 2 pull request** — alfre2v/TalkWithZombies#3
+        (opened 2026-09-24, **merged by the owner 2026-09-25**: the
+        fork's `master` at `5b2485f`) and this repository's #11 for
+        `alfre2v/show-slice-2` (open: it also carries slice 3's plan
+        discussion, at the owner's request); the owner reviews and
+        merges.
 
-    - [ ] **Checkpoint — 2026-09-25, in practice that morning (clock
+    - [x] **Checkpoint — passed 2026-09-24 ~18:57, about eight hours
+      ahead of its clock. Verdict: continue** (the owner counted
+      this run as the checkpoint run and opened slice 2's pull
+      requests). The fork's `runs/2026-09-24T18-56-59/`: seed 42,
+      `context_budget` 1500, debug on, 20 rounds, the listener's
+      words spoken and transcribed (`--speak`). **The driver's
+      report: 6 of 6 criteria pass** — 20 of 20 rounds recorded; 38
+      lines, 0 dropped, every speaker allowed, no round over its
+      budget; invitations at rounds 8, 13 and 18 as computed: Moira
+      answered "Moira, is the virus airborne?" (heard word for word,
+      no_speech_prob 0.010, avg_logprob −0.225), the silent window
+      gave the static round 14, and Samantha answered a question
+      naming no one ("Who's asking?"); the trim fired before round
+      14 (rounds 3–9), whose first line came at 2.37 s against about
+      0.8 s (the slot swap, L §4.10 question 3); debug files for all
+      20 rounds, token check difference 0 on each. — The plan:
+      **2026-09-25, in practice that morning (clock
       02:46).** Judged on the box, no browser (SED §7.3): ten
       unattended rounds; speakers and line counts obey the director;
       an invitation, then an answer from an injected transcript; a
@@ -408,49 +601,84 @@ the agent keeps this current. These carry across arcs.*
       stop (the fallback: TalkWithMe 7.1 plus the canned episode).
 
     - [ ] **Slice 3 — the browser.** Branch
-      `alfre2v/show-slice-3-browser`, cut after slice 2 merges.
-      **Target: the end of the timebox, 2026-09-26 14:46.**
-      - [ ] **3.1 The SSE reader, extracted** — from `sendMessage`
-        (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/chat.js:135-159`)
-        into `static/sse.js`, shared by the chat and the show. *Done
-        when:* the chat UI still works end to end and upstream's Node
-        tests stay green. *Delegable later: yes* (a mechanical
-        refactor).
-      - [ ] **3.2 The `/show` page and `show.js`** —
-        `templates/show.html` including `state.js`, `tts.js`,
-        `stt.js`, `persistence.js` and the new `sse.js`; `show.js`:
-        idle → generating → playing → listening; the next round
-        requested when the audio queues drain, with the played
-        seconds; listening only when the director asked.
-        ([discussion 2026-09-21] story-loop §5.) *Done when:* by hand,
-        the states cycle and the next round is requested on drain
-        (visible in the console). *Delegable later: no.*
-      - [ ] **3.3 The accumulator** in `static/tts.js` — about 100
-        characters, whole sentences, ~20 % tail tolerance, a hard
-        flush at each line end ([discussion 2026-09-21]
-        task6-recon-talkwithme, around line 617). *Done when:* "Dr.
-        Byrne. 47. Microbiology. Over." leaves as one chunk; a
-        180-character sentence goes whole and alone; the line end
-        always flushes. *Delegable later: yes*, once the follow-up's
-        Node test exists.
-      - [ ] **3.4 Hold-to-talk and the listener's path** —
-        `static/stt.js`: press to record, release to end, enabled
-        only while listening; the waiting window stops counting on a
-        press; the press cap; the upload with the show's Whisper
-        parameters; the transcript sent with the next round; "Heard:
-        …" only while `show.debug` is on. (SED §5.7, §6.7.) *Done
-        when:* by hand — the button works only while listening, and
-        an answer follows a spoken question. *Delegable later: no.*
-      - [ ] **3.5 The exit criterion, by ear** — on the deployed
-        stack through the tunnel, per the timebox terms above: at
-        least ten unattended turns with the four placeholder
-        personas; speakers chosen by the director; one interaction
-        beat that opens the microphone and absorbs the reply;
-        sentences accumulated, not split.
-      - [ ] **3.6 Close the timebox** — slice 3's pull request merged;
-        tag `tz-0.2`; the installer's `client_version` bumped to it
-        and re-proven (fresh install, re-run `changed=0`, HTTP 200);
-        the spec's as-built entries for the engine.
+      `alfre2v/show-slice-3-browser`, cut from the fork's `master`
+      (`5b2485f`, slice 2's merge) on the owner's Go. **Target: Monday
+      2026-09-28** (the timebox's end, moved by the owner on
+      2026-09-25). **Planned 2026-09-25** ([discussion 2026-09-25]
+      show-slice-3-browser-plan, DECIDED): the show's frontend in its
+      own files — `templates/show.html` and `static/show/` (`show.js`,
+      `sse.js`, `player.js`, `mic.js`, `show.css`), classic scripts
+      sharing globals like upstream's — with upstream's JavaScript,
+      HTML and CSS untouched and copying from them welcome. This
+      replaces the first plan's six steps (a shared `static/sse.js`
+      extracted from `chat.js`, the accumulator inside upstream's
+      `static/tts.js`, hold-to-talk inside `static/stt.js`). Each step
+      opens with its build shape in chat.
+      - [ ] **3.1 The page, text only** — `GET /show` in the show
+        router (its own `Jinja2Templates`); the start response gains
+        `listen_window_s`, `press_cap_s` and `debug`; the layout of the
+        plan's sketch (§6.1): Start / Stop / Resume, the state line,
+        the cast strip with the speaker lit, the captions behind a
+        small toggle under the ON AIR sign (on by default, remembered),
+        events as stage directions with the captions, and — only while
+        `show.debug` is on — a line per round (kind, speakers, event,
+        tone, trims, dropped, timings, run id); `sse.js`, the stream
+        reader copied from upstream's `chat.js` (lines 135-159);
+        `show.js`, the states and the loop on a simulated clock: after
+        each round the page waits as long as its text would take to
+        say (characters ÷ 15 per second) and sends that as the played
+        seconds; the round after an invitation goes static (no
+        microphone yet). Failures: stop, say so, and Resume continues
+        the same run. A reload starts a new run (resuming the same run
+        is a follow-up). *Done when:* by hand — rounds play with their
+        lines, invitations and static rounds come on the cadence, the
+        toggle hides and shows lines and events, Stop and Resume
+        continue the same run, a dropped tunnel shows the error and
+        Resume recovers; Node tests in upstream's `vm` technique
+        (`tests/test_tts_settings.js`) for the stream reader (lines
+        split across network chunks) and the simulated clock; the
+        suite green.
+      - [ ] **3.2 The voice** — `chunks(line)`: the accumulator as a
+        plain function over each whole line (the text of its `done`
+        event), with the rules of 2026-09-22 ([discussion 2026-09-21]
+        task6-recon-talkwithme, the ruling on Q9 and Q4): chunks of up
+        to 100 characters of whole sentences; a remainder under ~30
+        characters rides along up to ~120; a sentence longer than 100
+        goes whole and alone; never across lines. `player.js`, copied
+        from upstream's `tts.js` without the chat's audio upload:
+        chunks fetched in order, the next while the current plays,
+        played in order; the played seconds counted from each decoded
+        clip's duration. The loop on drain: the next round when the
+        audio empties, with the real played seconds; a line's caption
+        appears when its first chunk starts playing; the speaker lit
+        while their voice plays. *Done when:* by ear — lines in order,
+        short sentences packed, none split; the next round follows the
+        drain; the played seconds match the audio (logged); Node tests
+        pin the packing rules ("Testing. 1. 2. 3. Over." one chunk; a
+        180-character sentence whole and alone), which resolves the
+        follow-up "JavaScript test for the accumulator's packing
+        rules".
+      - [ ] **3.3 The listener's turn** — `mic.js`: hold to talk
+        (mouse, touch, the space bar), enabled only while listening,
+        the recording code copied from upstream's `stt.js`; the
+        window's countdown (`listen_window_s`) stops on a press; the
+        press cap (`press_cap_s`) ends a long press; the upload to
+        `/api/show/listen`; the transcript with Whisper's numbers rides
+        the next round request; "Heard: …" with its verdict in the
+        debug line. (SED §5.7, §6.7.) *Done when:* by hand — the button
+        works only while listening; a spoken question gets its answer;
+        a silent window gives the static round; the press cap ends a
+        long press.
+      - [ ] **3.4 The exit criterion, by ear** — on the deployed stack
+        through the tunnel: at least ten unattended turns with the four
+        placeholder personas; speakers chosen by the director; one
+        interaction beat that opens the microphone and absorbs the
+        reply; sentences accumulated, not split. The owner listens; the
+        verdict is recorded here.
+      - [ ] **3.5 Close the timebox** — slice 3's pull request merged;
+        tag `tz-0.2`; the installer's `client_version` bumped to it and
+        re-proven (fresh install, re-run `changed=0`, HTTP 200 — the
+        owner's deploy); the spec's as-built entries for the engine.
 
     - [ ] **Polish — only if the checkpoint was green**, in this
       order: dead-air static through a second AudioContext source
@@ -458,8 +686,9 @@ the agent keeps this current. These carry across arcs.*
       owner's gauge (a "magic eye" or a VU needle driven by Web
       Audio's analyser — the microphone while the button is held,
       the actors' audio while it plays — SED §6.7); prefetch round
-      N+1 when the last line of N starts playing; episodes (SED §2,
-      the stretch).
+      N+1 when the last line of N starts playing (design note: the
+      follow-up "Prefetch the next round"); episodes (SED §2, the
+      stretch).
 
 ## Other open tasks
 
