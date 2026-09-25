@@ -51,8 +51,10 @@ detail.*
   `alfre2v/show-slice-3`, to the plan of [discussion 2026-09-25]
   show-slice-3-browser-plan (five steps; the show's frontend in its
   own files, upstream's untouched): **3.1, the page with text only**
-  (`8bca58b`), **is done** and proven on the box. **Next:** 3.2, the
-  voice. How to drive the show yourself: the fork's
+  (`8bca58b`), **and 3.2, the voice** (`a2d942e`), **are done** and
+  proven on the box — the owner, by ear: "We can call this a
+  success". **Next:** 3.3, the listener's turn. How to drive the show
+  yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
@@ -666,7 +668,35 @@ the agent keeps this current. These carry across arcs.*
         (`tests/test_tts_settings.js`) for the stream reader (lines
         split across network chunks) and the simulated clock; the
         suite green.
-      - [ ] **3.2 The voice** — `chunks(line)`: the accumulator as a
+      - [x] **3.2 The voice** (`a2d942e`; suite 1007 passed, Node
+        tests 17 + 91 + 19). As built, with the owner's picks of
+        2026-09-25: a chunk the voice cannot say is skipped and its line
+        still appears; `?voice=off` keeps 3.1's simulated clock; 80 ms
+        between the chunks of a line, 250 ms after a line; the debug
+        line gains "first sound" and "played" once a round is said;
+        Node tests for the packing rules and for the voice queue with
+        `fetch` and the `AudioContext` stubbed — the follow-up
+        "JavaScript test for the accumulator's packing rules" is
+        resolved (entry deleted). **Live, by ear** (2026-09-25, the
+        fork's `runs/2026-09-25T16-04-56`, 42 rounds, 245 s of audio):
+        the owner found no problem — "I cannot find any problem. Well
+        executed! We can call this a success." — and "The pauses do not
+        feel so bad actually." Measured in the page: each chunk's
+        synthesis costs 2.4-3.2 s almost whatever its length (27-55
+        characters), so silences inside a round are 250 ms or, where a
+        short line could not be ready in time, 1.2-1.9 s; 3.7-4.9 s
+        between rounds (6.8 s for a run's first, the TTS cold) — the
+        follow-ups "Measure TTS synthesis time against text length" and
+        "Prefetch the next round". **A defect fixed on the way,** from
+        the owner's questions: upstream's sentence regex cut inside
+        numbers, and the voice got "3. 5" for "3.5"; a sentence now ends
+        only where its marks meet whitespace or the line's end
+        ([discussion 2026-09-25] show-slice-3-browser-plan §8; upstream
+        has it too — candidate (5) of the follow-up "Upstream
+        contributions to scorbo2"). The owner heard "Over." run into a
+        few lines ("coming over"): the accumulator stays at 100 (the
+        follow-up "The sign-off 'Over.' sometimes runs into the line").
+        — `chunks(line)`: the accumulator as a
         plain function over each whole line (the text of its `done`
         event), with the rules of 2026-09-22 ([discussion 2026-09-21]
         task6-recon-talkwithme, the ruling on Q9 and Q4): chunks of up

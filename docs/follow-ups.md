@@ -102,6 +102,24 @@ reader's memory):
 
 ## Measure TTS synthesis time against text length (tunes the accumulator's N and the director's line budget)
 
+- **Status 2026-09-25 — partly measured, by the `/show` page's voice**
+  (slice 3's step 3.2; the fork's run `2026-09-25T16-04-56`; each
+  chunk timed in the browser, through the app's `/api/tts` and the
+  tunnel): 8 chunks of 27-55 characters took 2.4-3.2 s each to
+  synthesize (one 4.6 s), for clips of 2.0-3.6 s — synthesis time over
+  clip length 0.8-1.4. **The cost is mostly fixed per request**
+  (27 characters: 2.5 s; 55: 2.95 s), about 2.3 s. So: a short line
+  cannot hide behind the one before it (silences of 1.2-1.9 s inside
+  rounds, where the next chunk was not ready; 250 ms otherwise, the
+  configured pause); the gap between rounds is 3.7-4.9 s once warm
+  (the first line ~1.0-1.2 s, then its synthesis); and smaller chunks
+  would cost more, not less (the "Over." entry below). A suspect for
+  the fixed cost — believed, not measured: the app sends the persona's
+  reference clip to tts-serve with every request, through the tunnel
+  (tts-serve tour F3); tts-serve's `time_used` would split the server's
+  time from the transport's. Not measured yet: 100-400 characters. The
+  owner, listening: "The pauses do not feel so bad actually."
+
 - **The gap:** the accumulator sends chunks of up to N characters;
   while chunk 1 plays, chunk 2 is being synthesized, and the
   listener hears no gap only if making the next chunk takes less
@@ -212,8 +230,12 @@ reader's memory):
   round boundary is silent while the model writes the first line
   (0.76-0.94 s through the app and the tunnel in the checkpoint
   drive; 2.37 s after a trim) and the voice synthesizes the first
-  chunk (1-3 s for short lines): about 2-4 s, estimated — not yet
-  heard in a browser.
+  chunk (1-3 s for short lines): about 2-4 s, estimated. **Measured
+  2026-09-25 with the voice** (step 3.2): 3.7-4.9 s once warm (6.8 s
+  for a run's first round, the TTS cold) — see the entry "Measure TTS
+  synthesis time against text length". Prefetch would hide this gap,
+  not the silences inside a round (the voice synthesizes one request at
+  a time, tts-serve tour F5).
 - **Where flagged:** [discussion 2026-09-25]
   show-slice-3-browser-plan §2-§3 (the owner: "worth documenting");
   the TODO's polish list ("prefetch round N+1").
@@ -262,20 +284,6 @@ reader's memory):
 - **Fix shape:** one evening on the 64 GB machine — a venv,
   `impl/server_qwen3TTS_mlx.py`, point TalkWithZombies' TTS URL at
   it, read `rtf` from a few sentences; llama.cpp on Metal next.
-
-## JavaScript test for the accumulator's packing rules
-
-- **The gap:** upstream has Node test harnesses for the persona
-  form and the TTS settings section but none for `static/tts.js`;
-  the fork changes the accumulator (N = 100, ~20 % tail tolerance,
-  hard flush at line end) and adds `show.js` untested.
-- **Where flagged:** TalkWithMe tour §6 / Q11; ruled 2026-09-22: no
-  new harness inside the three-day timebox.
-- **Trigger:** the packing rules stop moving (after the timebox and
-  the first rehearsal tuning).
-- **Fix shape:** a third Node test in upstream's `vm.Context`
-  pattern (`tests/test_tts_settings.js` as the template) covering
-  the three packing rules and the line-end flush.
 
 ## An "exchange" round — the director has one character address another
 
@@ -550,6 +558,41 @@ reader's memory):
   F5-TTS first (known quantity), Breeze TTS 2 second (newer,
   unproven locally). Consider upstreaming as PRs to scorbo2.
 
+## The sign-off "Over." sometimes runs into the line — keep the accumulator at 100; re-test with any new TTS engine
+
+- **The gap:** listening to the `/show` page with voices (2026-09-25,
+  slice 3's step 3.2), the owner heard a few lines — not many — where
+  the voice said the closing "Over." without the pause after the
+  sentence before it: "Daniel (sad): They're not coming. Over." sounded
+  like "coming over". The engine: Faster Qwen3-TTS (tts-serve 1.2).
+  Every line ends with "Over." (the cast sheet's rule), and the
+  accumulator packs it into the line's last chunk.
+- **The owner's idea:** lower the accumulator's length to about 20
+  characters, so "Over." goes as a request of its own — not worth much
+  time now; perhaps a new TTS engine fixes it.
+- **The agent's view (2026-09-25): keep 100.** Measured the same day,
+  each request costs 2.4-3.2 s almost whatever its length (the entry
+  "Measure TTS synthesis time against text length"). At 20 characters,
+  "Over." and most sentences become requests of their own: about twice
+  the requests per line, and the silences inside rounds grow from 1-2 s
+  to several seconds; very short requests also bring back the fragment
+  artifacts the accumulator exists to avoid ("Testing. 1. 2. 3.").
+  **The owner agreed**, from another case: "Could this be... a
+  distraction? Over." is better said whole than cut at the "..." — the
+  accumulator keeps it whole (verbatim): "Trying to fix where to cut sentences with different punctuations so that TTS pronunciation is better is too complicated. In practice I feel the accumulator is the practical best solution."
+- **Cheaper options, for later:** (a) a pause cue in the spoken text
+  before "Over." (an ellipsis, a comma), per engine, in the tables of
+  the entry "Markdown emphasis in spoken lines"; test by ear. (b) One
+  "Over." clip per persona, synthesized once per run and played after
+  each line with a short pause, the text's "Over." left out of the
+  request — four requests per run; the same "Over." every time, which
+  suits radio protocol but not a line's mood. (c) Re-test with any new
+  TTS engine (Task 5b).
+- **Where flagged:** the owner, 2026-09-25, by ear, during step 3.2's
+  check.
+- **Trigger:** a TTS engine change; or the owner's ear asks for it
+  before the talk.
+
 ## Markdown emphasis in spoken lines — kept for now; re-test with any new TTS engine
 
 - **The finding (2026-09-24):** the model sometimes marks emphasis
@@ -647,7 +690,16 @@ reader's memory):
   recordings go out as `audio.weba`; OpenAI's transcription API
   checks the extension and lists `webm` but not `weba` (our Whisper
   ignores the name — tested live); two upstream tests fail on those
-  Pythons; our fix is TalkWithZombies commit `c46c3bf`.
+  Pythons; our fix is TalkWithZombies commit `c46c3bf`. A fifth
+  joined on 2026-09-25: (5) **the sentence splitter cuts inside
+  numbers** — upstream's `extractSentences`
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/tts.js:72`,
+  regex `/[^.!?]*[.!?]+/g`) ends a sentence at any dot, so "Take 3.5
+  milligrams every day. Over." becomes "Take 3." · "5 milligrams every
+  day." · "Over." — whole or token by token — and each sentence goes
+  as its own TTS request, the number split across two (run as is on
+  2026-09-25; found by the owner's questions about the show's
+  accumulator, [discussion 2026-09-25] show-slice-3-browser-plan §8).
   **No longer candidates:** the `[Name]:`
   output sanitizer (moot under [ADR-0003] — [spec §9]) and the
   `max_turns_for_context` raise (done in our config, 6 → 50, on
@@ -655,14 +707,23 @@ reader's memory):
 - **Where flagged:** the remote-split spike (2026-09-16) designated
   the first patches; re-ranked 2026-09-21 ([discussion 2026-09-19]
   upstream-contribution-strategy, addendum; [discussion 2026-09-21]
-  task6-reconnaissance-brief §1–§2; [ADR-0002]).
+  task6-reconnaissance-brief §1–§2; [ADR-0002]); (5) added 2026-09-25
+  ([discussion 2026-09-25] show-slice-3-browser-plan §8).
 - **Trigger:** after 2026-10-08 — outreach deferred past the
   deadline by the owner ("build offerable, contact nobody yet").
 - **Fix shape:** (1) as a pull request or a README pointer to the
   deployment repo; (2) a focused pull request against upstream's
-  `static/tts.js`, with the packing rules' Node test (entry above)
-  as its proof; (3) and (4) as GitHub issues with the receipts
-  above, (4) with our commit as the proposed fix.
+  `static/tts.js`, with the packing rules' Node tests as its proof
+  (the fork's `tests/test_show_page.js`, step 3.2); (3) and (4) as GitHub issues with the receipts
+  above, (4) with our commit as the proposed fix; (5) a small bugfix
+  pull request of its own against `extractSentences`, apart from (2) —
+  a pure fix is easier to accept: a sentence ends only where a run of
+  marks meets whitespace, `(?=\s)` while streaming (the growing buffer
+  ends at "Take 3." just before the "5" arrives, so its end is not a
+  sentence end; the tail is flushed on `done`, as today) — simulated
+  with upstream's loop: "Take 3.5 milligrams every day." · "Over." —
+  with a Node test; our version, for whole lines, is the fork's
+  `static/show/player.js` `sentencesOf` (step 3.2).
 
 ## LuxTTS landed upstream — presumptive §7.2 candidate
 
