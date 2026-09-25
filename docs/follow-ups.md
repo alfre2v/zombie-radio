@@ -267,6 +267,56 @@ reader's memory):
   estimate; and a round whose text arrived but whose audio never
   played is skipped.
 
+## Talk anytime — the listener breaks in while a round plays (polish; the owner's preference, 2026-09-25)
+
+- **The idea:** with a push-to-talk button, the listener should be able
+  to break in at any moment, not only when the operator invites them.
+  A press interrupts the round's voices — the round's text stays
+  recorded as complete — and makes silence for the microphone to
+  listen; the message rides the next round request, and the director
+  forces that next round to answer the listener. The listening window after an invitation stays: it tells
+  the listener that talking back is possible.
+- **Decided for the MVP (2026-09-25, slice 3's step 3.3):** keep the
+  listening window as designed; talk anytime is a polish follow-up.
+  The agent had argued that the window does two jobs push-to-talk
+  alone does not — it is the show's pause for an answer (without it, an
+  answer is used only after the next round, 10-15 s of audio later),
+  and it is the clock that declares silence (the static round). **The
+  owner disagrees with both reasons** and records the preference
+  (verbatim):
+
+  > But I want to record that I disagree with your two reasons under "Is the listening window unnecessary with push-to-talk?". 
+  > (1) The pause in the show was necessary because in my 2024 prototype I did not have a push-to-talk button, as it was a CLI app.
+  > (2) I am not saying to remove the listening window, that can stay always, is a way to explain to the listener that the option to talk back exists. What I am saying is that with a push-to-talk capability it follows that the user should be able to interject his message  anytime, the message can be recorded while the round is playing, and in the next round the director forces a type of round that answers to the user.
+  >
+  > But, let's keep this as a polish follow-up. Agreed with your posture here.
+
+  The owner then corrected one point of that message (verbatim):
+
+  > Actually, I correct myself "the message can be recorded while the round is playing" this is not correct, I meant that the playing of the round voices can be interrupted (even if the round text is recorded as complete), and make silence for the mic to listen.
+
+- **What it would take (the agent's first sketch, not decided):**
+  (1) the server accepts a transcript at any round — today one that
+  arrives outside a listening window is ignored with a warning (the
+  fork's `app/routers/show.py`, `_round_stream`) — and the director
+  plans an answer round whenever words are heard, not only after an
+  invitation (`app/show/director.py`, `plan_round`); (2) the page
+  enables the talk button while rounds play; a press cuts the voice
+  (`stopVoice()` in the fork's `static/show/player.js`), records in the
+  silence, and sends the recording with the next round request — so the
+  show's own voices are never in the recording (on speakers they would
+  be, and Whisper would transcribe the actors with the listener), which
+  the owner's correction settles by design; (3) the lines cut short stay
+  in the record, so the model builds on words the listener never heard
+  (as with a Stop after the server kept a round, step 3.1) — to be
+  judged by ear. About 1-2 h, estimated.
+- **Where flagged:** the owner, 2026-09-25, while shaping step 3.3
+  ([discussion 2026-09-25] show-slice-3-browser-plan; the page's
+  microphone opens only during listening windows, as step 3.3 builds
+  it).
+- **Trigger:** polish, after slice 3's exit criterion (step 3.4); before
+  the talk if time allows.
+
 ## Mac-local TTS probe with tts-serve's MLX engine (parked post-MVP)
 
 - **The gap:** tts-serve ships a native Apple-Silicon engine
@@ -592,6 +642,40 @@ reader's memory):
   check.
 - **Trigger:** a TTS engine change; or the owner's ear asks for it
   before the talk.
+
+## A line broken off with an em dash sounds and reads cut — the dash becomes a comma in the spoken text
+
+- **The gap:** the model sometimes breaks a line off on purpose with an
+  em dash, and the spoken text turns the dash into a comma, so the line
+  sounds — and, in the captions, reads — as if it had been cut. Seen by
+  the owner on the `/show` page, 2026-09-25 (slice 3's step 3.3 check;
+  the fork's run `2026-09-25T17-50-50`, round 5, an answer round):
+  - the model wrote (`debug/r005.txt`, the record's `raw`):
+    `Moira (doubtful): "I don’t know. The samples were aerosolized, but—Over."`
+    — `—` U+2014 between "but" and "Over"; `finish: stop`, 24 tokens of
+    512, nothing cut;
+  - the spoken text (the record's `spoken`, the `done` event, the
+    caption): `I don't know. The samples were aerosolized, but, Over.`;
+  - sent to the voice, one request (54 characters, one chunk):
+    `{"text": "I don't know. The samples were aerosolized, but, Over.", "persona_name": "Moira"}`.
+- **Why:** the parser's `_SPOKEN` table maps `—` to `, ` (the fork's
+  `app/show/parser.py`), chosen on 2026-09-22 because the em dash
+  dropped the pause before "Over." on Faster Qwen3-TTS (the TODO's
+  Task 5b note). Right for a dash in mid-sentence ("the lab — or what is
+  left of it — is…"); wrong for a dash that breaks a sentence off.
+- **Options, for later:** (a) the captions show what the model wrote
+  ("but—Over.", curly quotes and all) and only the voice gets the
+  normalized text — the `done` event would carry a display text too (a
+  small server change); (b) a dash that ends a clause (before "Over." or
+  a capital letter) becomes `...` — trailing off — in the spoken text,
+  a mid-sentence dash stays `, `: engine-dependent, to judge by ear, and
+  close to the punctuation rabbit hole of [discussion 2026-09-25]
+  show-slice-3-browser-plan §8.4. The owner declined a listening test
+  of the three versions for now ("but, Over." · "but—Over." · "but...
+  Over.") and asked for this note.
+- **Where flagged:** the owner, 2026-09-25, reading the captions.
+- **Trigger:** polish; or a TTS engine change (Task 5b), with the tables
+  of the entry "Markdown emphasis in spoken lines".
 
 ## Markdown emphasis in spoken lines — kept for now; re-test with any new TTS engine
 
