@@ -817,6 +817,14 @@ The owner, 2026-09-23 (verbatim):
   characters report the event on air, in the Welles manner, by the
   instruction's wording alone) and a driver A/B test: the follow-up
   "Events the listener cannot hear" in `docs/follow-ups.md`.]*
+  *[note 2026-09-25, night: the wording changed. An A/B test on the
+  box (two 30-round drives, the same 10 events) compared "Offstage:
+  <event>" with "Something happens that the listeners cannot see:
+  <event> The first to speak tells the listeners on air what is
+  happening."; the second named the event in its first line about twice
+  as often, and the owner ruled: "B wins, flip the default and record
+  it." It is the fork's `show.event_report` (`c55d25b`), on by default; `false`
+  keeps "Offstage:". The receipts: that follow-up's status.]*
 - **Entropy term:** one tone word per round from a list, the 2024
   trick (where the list lives is settled in code; a story may bring
   its own).
@@ -1639,3 +1647,5 @@ engine".
   reactions do not carry an event to the listener (seen by the owner on
   the `/show` page); the follow-up "Events the listener cannot hear"
   holds the options.
+- **2026-09-25 (night)** — §5.7 gains a second dated note: events are
+  now worded for the broadcast (the A/B test; the owner's ruling).

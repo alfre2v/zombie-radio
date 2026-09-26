@@ -55,8 +55,12 @@ detail.*
   proven on the box — the owner, by ear: "We can call this a
   success". **3.3, the listener's turn** (`57dce7f`), **is done** —
   checked live with a fake microphone; the real button is checked in
-  3.4. **Next:** the events A/B test (the follow-up "Events the
-  listener cannot hear"), then 3.4, the exit criterion by ear. How
+  3.4. **The events A/B test is decided** (2026-09-25, night): events
+  are now worded for the broadcast — the first to speak tells the
+  listeners on air what is happening (the fork's `show.event_report`,
+  `c55d25b`, on by default; the owner: "B wins, flip the default and record it.";
+  the receipts in the follow-up "Events the listener cannot hear").
+  **Next:** 3.4, the exit criterion by ear. How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).

@@ -430,7 +430,32 @@ reader's memory):
   yaml knob for the typical run length); tests: runs occur, no
   repeats until the pool is used up, the same seed replays.
 
-## Events the listener cannot hear — the characters react to what only the model was told (owner, 2026-09-25)
+## Events the listener cannot hear — the characters react to what only the model was told (owner, 2026-09-25) — option 4 adopted
+
+- **Status 2026-09-25 (night) — the A/B test decided it: option 4, the
+  wording.** Two driver drives on the box, seed 42, 30 rounds each at
+  20 s, the same 10 events at the same rounds (the fork's runs
+  `2026-09-25T22-34-16`, A, "Offstage: <event> …", and
+  `2026-09-25T22-35-07`, B, "Something happens that the listeners
+  cannot see: <event> The first to speak tells the listeners on air
+  what is happening. …"; 63 lines each, none dropped). Round 1 rebuilt
+  from the records and counted by the model server: 315 and 333 tokens,
+  exactly what the server read for each (the requests identical but for
+  the user message). A rough hint — the round's first line shares a
+  content word with the event — gave A 4/10, B 8/10. The agent's reading
+  as a listener: B clearly better in 5 (the laughing voice, the owl on
+  the mast, the old forecast, the Newfoundland request, the child's
+  voice), somewhat better in 3 (the silence, the flooding, the gate),
+  equal in 2 (the fish, the warm shape), A never better; B's lines a
+  little more descriptive, the script 5 % longer after 30 rounds (2879
+  tokens against 2740). The owner (verbatim): "B wins, flip the default
+  and record it." — `show.event_report`, on by default in the fork
+  (`c55d25b`); `false` keeps "Offstage:". Still open: B names
+  the event more often but not always fully (the burst pipe became
+  "a swamp"; the single file became "coming through the gate"); if by
+  ear (step 3.4) events still puzzle, option 3 (the operator reports,
+  one extra round per event) is next. Seen on the wire: the system
+  prompt says "No narration" — one more reason against option 1.
 
 - **The gap:** the director gives an event to the model at the head of
   a free round's instruction ("Offstage: The blood samples … Daniel and
