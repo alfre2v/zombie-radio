@@ -462,17 +462,86 @@ yet.") — **the discussion's addendum for them is still owed** (§7.1).
 
 ### 7.2 The A simulation (proposed, not run — the owner's word needed)
 
-A launcher in the scratchpad starts the app with the director's
-`_restatement` swapped in memory for an A-style one: a hand-written
-table of what a perfect extractor returns for each scripted sentence
-(name, place, what they have; "Hello again, lab." → nothing), and
-instructions that state conclusions ("This voice has not said who they
-are. Callers you know: Alfredo, in Austin, Texas, with a pickup truck;
-Maria, in Dallas, with a doctor."; "This is Alfredo, who called before:
-… Greet them as a returning friend, by name."). The same three seeds,
-script and measurements, a third column "A, simulated" — A's best case.
-The fork untouched, nothing committed. About 20 minutes and 5 minutes
-of box.
+**The question it answers:** would option A's prompts — conclusions
+stated by code ("this voice has not said who they are"; "this is
+Alfredo, who called before: in Austin, Texas, with a pickup truck")
+instead of B's raw quotes plus a rule — fix what B still gets wrong
+(the anonymous "Hello again, lab." guessed as Maria; names used about
+two times in three)? It measures **A's best case**: extraction assumed
+perfect, because the drive is scripted and every sentence the listener
+says is known in advance. A real A would do at most this well, with an
+extra step per answer (a small model call or name patterns) and
+Whisper's spellings to match.
+
+**The spec, as proposed to the owner (build it exactly so):**
+
+1. **The fact table** (`<scratchpad>/sim_a.py`) — what a perfect
+   extractor returns for each scripted sentence; any other words
+   return nothing:
+
+   | The listener says | Facts |
+   |---|---|
+   | "Hello? Is anyone there?" | — |
+   | "My name is Alfredo." | name Alfredo |
+   | "I'm in Austin, Texas, and I have a pickup truck." | in Austin, Texas; with a pickup truck |
+   | "This is Maria, from Dallas." | name Maria; in Dallas |
+   | "We have a doctor with us." | with a doctor |
+   | "Do you need medicine?" | offering medicine |
+   | "Hello again, lab." | — (no name) |
+   | "It's me, Alfredo, from Austin. I still have the truck." | name Alfredo; in Austin; with the truck |
+   | "Where should I drive?" | asking where to drive |
+   | `-` (a silent window) | no words |
+
+2. **Who is talking** — a contact runs from a Repair to its Breakdown or
+   Switch-off (as in `analyze_contacts.py`). Its caller is the name
+   found in its words so far, this round's words included; until one
+   appears, the voice is anonymous. The known callers are the earlier
+   contacts that gave a name, each with the facts merged from its
+   words. The current voice is **returning** when its name is a known
+   caller's, **new** when it names itself with a name not seen before,
+   **anonymous** otherwise.
+3. **A's wording** — the swapped `_restatement` returns, in place of
+   B's sentences (the rest of every instruction is the committed new
+   wording, unchanged, so the comparison is fair):
+   - anonymous: "This voice has not said who they are. Callers you
+     know: Alfredo, in Austin, Texas, with a pickup truck; Maria, in
+     Dallas, with a doctor, offering medicine. Do not guess which one
+     this is." (without known callers, only the first sentence);
+   - new: "This is Maria, a new caller: in Dallas, with a doctor."
+     plus "Callers you knew before: …" when there are some;
+   - returning: "This is Alfredo, who called before: in Austin, Texas,
+     with a pickup truck. Greet them as a returning friend, by name."
+     plus this contact's new facts, if any.
+   Facts are joined as "in …", "with …", "offering …", "asking …".
+4. **Where it plugs in, without touching the fork** —
+   `<scratchpad>/sim_a_server.py`, run with the fork's
+   `.venv/bin/python` from the fork's root (so `app` imports and
+   `settings.yaml` is found): import `app.show.director` and
+   `app.routers.show`; set `app.show.director._restatement` to the
+   simulated one (the director looks it up at call time, from
+   `_exchange`, `_breakdown` and `_re_call`); **the listener's current
+   words are not passed to `_restatement`**, so also wrap
+   `app.routers.show.plan_round` (the route holds its own reference) to
+   stash `transcript` in a module global before calling the original —
+   the simulated `_restatement` reads this round's words from there and
+   the earlier words from the record (`_contacts`); then
+   `uvicorn.run(app, host="127.0.0.1", port=8010)` in the same process.
+   `run_drive.sh` gains an optional third argument that starts this
+   launcher instead of `.venv/bin/uvicorn`.
+5. **The runs and the numbers** — `run_drive.sh <seed> a-sim sim` for
+   seeds 42, 7, 2026 (the same script and temporary settings: calls at
+   20-40 s, `contact_jitter: 0`); outputs `drive-3.4c.5-a-sim-<seed>.txt`;
+   `analyze_contacts.py a-sim` → the same measurements plus one added to
+   all three labels: **the anonymous "Hello again, lab." asked, not
+   guessed** (its round's lines name neither Alfredo nor Maria). The
+   table gets a third column, "A, simulated", beside "B, old wording"
+   and "B, new wording", **labeled so** (the owner's point, §9).
+
+The fork is untouched and nothing is committed; about 20 minutes of
+work and 5 of box. What the result decides: if A barely beats B, the
+follow-up "A listener memory keyed by identity" stays low priority; if
+clearly better, it becomes a candidate for the show fixes before the
+talk. It does not block 3.4c.
 
 ### 7.3 Then: 3.5, close the timebox (Monday 2026-09-28)
 
@@ -630,7 +699,9 @@ returning listener" (option A's home). To resolve at 3.4c's close:
 
 ## 11. Reading order after the compaction
 
-1. This document, in full.
+1. This document, in full — §13 (the second pass) included: every
+   ruling, the owner's words, the instructions as the model receives
+   them, the story's data, the demo notes, the weak spots.
 2. `git status -sb` and `git log --oneline -8` in both repositories
    (the fork `alfre2v/show-slice-3-browser`, zombie-radio
    `alfre2v/show-slice-3`); `git log --oneline origin/<branch>..HEAD`
@@ -662,8 +733,8 @@ B-versus-A call, the fake microphone and my test by ear remain; then
    rules in §0.1), the exact state (§2), what we did today (§3), step
    3.4c as built (§4), the facts and numbers (§5), the rulings' index
    (§6), the board ahead with the pending question (§7), the nuances
-   and your mistakes today (§8-§9), and the techniques and gotchas
-   (§10).
+   and your mistakes today (§8-§9), the techniques and gotchas
+   (§10), and the second pass of details (§13).
 2. Follow its reading order (§11) to confirm the state: git status and
    log in both repositories (what is unpushed), docs/TODO.md's "Now"
    and the 3.4c entry, and the ruled sections of
@@ -682,3 +753,377 @@ tired, no git kung-fu, code comments per repository (minimal in
 zombie-radio; upstream's docstring style in the fork), and every number
 in settings, never hard-coded.
 ```
+
+## 13. The second pass — details that must survive
+
+Added at the owner's request after a first draft left the A
+simulation's spec out (verbatim: "Because Isaw you forgot to add crucial
+details to the handoff, I am asking you to do another full pass over
+your context window, and try to capture all the nuanced details you
+can"). Everything below was pulled from the repos, the run records and
+the transcript, not from memory.
+
+### 13.1 Every ruling of the day, in one list
+
+The discussion's section in brackets; after §18, the TODO's 3.4c entry.
+
+- **3.4c happens, discussion first** [§1.2]: "Let's make it 3.4c, but we
+  need a complete discussion before implementation."
+- **The decomposition** [§3-§5]: two modes — **Broadcast** (the receiver
+  is down; the cast talk among themselves) and **Contact** (someone
+  answered); beats — **Repair** (the receiver back, the call),
+  **Breakdown** (it fails after a contact), later **Switch-off** (off by
+  choice after silence) and the **orientation / sign-on**; eight
+  features: 1 the receiver story, 2 Contact mode, 3 the contact agenda,
+  4 the hopeful tone (became the emotional overtone), 5 remembering the
+  listener, 6 comic relief, 7 scientific findings, 8 the 2024 open-mic
+  window.
+- **Feature 8 out** (hold-to-talk stays; no "Over and out"); **6 and 7
+  postponed** (follow-ups) [§4, §5].
+- **Feature 5 re-opened** — B's "mostly works already" withdrawn; the
+  owner's options A (facts in code) and B (engagement prompts),
+  reworded by the agent at the owner's request [§5.1].
+- **The pass** found ten cracks [§7.2]: the cadence restarting too
+  early; the Breakdown answering the last words; "addressed first"
+  needing a grammar rule; the show's opening; the tone word in Contact;
+  "listens" hard-coded to invitations in five places; the driver unable
+  to converse; no exit criterion; the listener after the contact; the
+  bookkeeping.
+- **Scope** [§9-§10]: Contact mode; the receiver story (Repair,
+  Breakdown, **Switch-off — the owner's idea**); **the silence rule**
+  (the owner extended the Switch-off to silence inside a contact); the
+  contact agenda; feature 5 = **B merged with the agenda, plus the
+  restatement**; feature 4 reshaped by the owner into **the emotional
+  overtone** (moods and tone words coupled, positive / neutral /
+  negative).
+- **Contact** [§13.12]: N = 3 ± 1 in settings, drawn when the contact
+  starts; **N counts the listener's answers** (an answered re-call
+  counts, a silent exchange does not); 2-3 lines, drawn per round, in
+  settings; the first line **pinned in the grammar** to the character
+  named first in the words, else whoever asked last (after the call,
+  the operator); **the rest of the cast after the first line**; the
+  re-call repeats the unanswered question — "very likely", confirm at
+  build (built; confirm by ear).
+- **The receiver story** [§14.13]: the Breakdown built like an exchange
+  without the question; the Switch-off up to two lines, the last caller
+  first, the owner's two excuses (save power; spare the fragile
+  receiver for a better time), "the broadcast goes on"; the Repair two
+  lines, the operator's call last, wording by how the receiver went
+  off; **the cadence counted from the receiver going off**; the pacing
+  in rounds → a follow-up; **the sign-on, then the owner's repeating
+  orientation** (the sign-on is its first occurrence).
+- **The agenda** [§15.9]: plain two-branch sentences; the name item
+  opens every contact; the rest random, never twice in a contact,
+  across the run not again until used up; the restatement over the
+  whole run, grouped by contact, capped (`restatement_contacts`); the
+  owner's idea of remembering returning listeners (option c, identity
+  in code, a follow-up); the wording and the list at build, with
+  evidence.
+- **The overtone** [§17.11]: one story file; the 14 moods; the tone
+  group table (single words at build); **the themes kept as data (the
+  owner's ask; their uses stored "in a prominent but adequate position"
+  — the follow-up "The tone themes as data")**; per-kind overtones,
+  neighbors only; free rounds hold, then move only to a neighbor
+  (weights in the story); **events follow the mood** (the owner caught
+  that letting the event set the mood would hand the show's overtones to
+  the event pool).
+- **The exit criterion and the page** [§17.12]: four checks; the RECEIVER
+  sign and stage directions for the beats.
+- **The mechanics** [§18.9]: the orientation's four details (when:
+  after N free rounds, an event waits, a call wins; who: the operator,
+  then the longest-silent; the facts in the cast sheet's front matter;
+  20 ± 5); the aftermath round; **the owner's recollection round**
+  (15 ± 5, the event slot, orientation first when both are due).
+- **Risks, not mistakes** [§11, prominent]: see §13.5.
+- **After the discussion** (the TODO's 3.4c entry): the build plan and
+  its picks ("Go with your picks"); the re-call's repeated question
+  built; **the recollection's count made independent with both guards**
+  ("a, the independent count with both guards"); the aftermath before a
+  due orientation kept; the new wording committed; "Do not run the A
+  simulation yet."
+
+### 13.2 The owner's words to remember (verbatim, verified 2026-09-26)
+
+- On the pace: "Next is 3.4c's scope, yes, but slow down. Bring each
+  decision to me one by one." … "so I can make the connections in my
+  head."
+- On feature 5: "I disagree. This does not work at all." … "maybe
+  nemotron is lame, but it does not seem to understand the importance
+  of trying to engage directly with the user"
+- The Switch-off: "then the characters declare they are going to
+  switch off the receiver with a good excuse"; extended: "once we build
+  it for one place, it's almost free to use it too as an exit condition
+  if we lose the engagement in the middle of contact mode."
+- The overtone: "we cannot execute them completely disconnected,
+  otherwise we will send contradictory emotional signals for the LLM to
+  generate the next lines." — "In my view this feature we are
+  discussing is the first stepping stone to reach voice with emotions
+  in TTS."
+- The mood: "We are pushing our limits here... Even you have to be a
+  bit excited, my linear algebra emergent friend!" and "I want you to
+  prominently record the "Risks, not mistakes" section."
+- On records: "I did not retire "6. Comic relief", I postponed it, so it
+  should have a proper follow-up entry. We are going to execute on this
+  at some point."
+- On events: "Because the events are not sorted by overtone yet, you
+  cannot guarantee anything about how the app will operate." — "So, in
+  my opinion (a) is  correct option, (b) is incorrect, (c) is what we
+  have, so no effect."
+- The recollection: "A new type of free round to happen with certain
+  periodicity that instructs the model to talk about something the a
+  user tell them before in the radio"; on the reset: "This statement
+  worries me".
+- On measurements: "In the table of results you presented the
+  measurements it's not clear to me what case is A and what is B." —
+  "Also, how did you measure A if it's not built?"
+- The re-call's repeated question: "I like it, let's make it as very
+  likely to implement, but leave it in the TODO still as something to
+  confirm when time to build comes."
+- Process: "Let's do first the design choices. When we finish ask me
+  again how to proceed"; "Pushback if your have strong reasons to not
+  implement your extension proposal right now."; "I leave it to you.
+  Add it if you feel it's necessary."
+
+### 13.3 The instruction, kind by kind, as the model receives it now
+
+Real text from the new-wording runs (`e261b5b`; the fork's
+`runs/2026-09-26T17-05-46`, seed 42, unless noted). The system prompt
+before them is the cast sheet with the premise and the 14 moods.
+
+- **Sign-on** (round 1): "The broadcast begins. Samantha opens it and
+  tells anyone listening, in their own words, that the lab's receiver is
+  dead — they can only transmit, and will call out for listeners when it
+  works — and who they are and where: Four scientists, Daniel, Moira,
+  Ralph and Samantha, are trapped in a secret research lab, besieged by
+  the dead since the outbreak began, and broadcasting on the lab's
+  shortwave radio. The radio's receiver is dead: they can only transmit,
+  not hear. When they get it working, they will call out for anyone
+  listening, and whoever hears them can answer then. Samantha speaks
+  first, then Daniel, Moira or Ralph: the next two lines, each with the
+  emotion in its voice, one of: calm, doubtful, urgent, curious,
+  determined. Let the tone be: stiff-upper-lip." (A repeat: "For
+  listeners just tuning in, <longest silent> tells them, in their own
+  words, …")
+- **Free, with an event** (round 2): "Something happens that the
+  listeners cannot see: The tissue in specimen jar seven is warmer than
+  the room around it. The first to speak tells the listeners on air
+  what is happening. Moira and Ralph speak next: the next two lines,
+  each with the emotion in its voice, one of: sad, afraid, terrified,
+  angry, exhausted. Let the tone be: tight-lipped."
+- **Free, plain** (round 8): "Moira and Ralph speak next: the next two
+  lines, each with the emotion in its voice, one of: sad, afraid,
+  terrified, angry, exhausted. Let the tone be: last-ditch."
+- **Repair** (round 3): "The lab has fixed the receiver. The receiver
+  crackles back to life. Daniel, Moira or Ralph tells the listeners it
+  works, then Samantha calls out to anyone listening to answer now.
+  Daniel, Moira or Ralph speaks first, then Samantha: the next two
+  lines, each with the emotion in its voice, one of: happy, hopeful,
+  excited, relieved. Let the tone be: exultant." (After a Switch-off:
+  "The lab switches the receiver back on.")
+- **Exchange, the first** (round 4): "A voice on the frequency says:
+  "Hello? Is anyone there?" Speak to the voice directly. Answer what the
+  voice said, then: Find out who the voice is. If the voice already said
+  their name, greet them by it and ask how they found this frequency.
+  The last line asks the voice a question. Samantha speaks first, then
+  Daniel, Moira or Ralph: the next three lines, each with the emotion in
+  its voice, one of: happy, hopeful, excited, relieved. Let the tone be:
+  exultant."
+- **Exchange, with the restatement** (round 10): "A voice on the
+  frequency says: "This is Maria, from Dallas." Voices that reached you
+  before, oldest first — 1: "Hello? Is anyone there?" / "My name is
+  Alfredo." / "I'm in Austin, Texas, and I have a pickup truck." Only a
+  voice that says the name of one of them is someone you spoke with
+  before: greet them as a returning friend and use what they told you.
+  Any other voice is someone new. Speak to the voice directly. Answer
+  what the voice said, then: Find out who the voice is. …" (In a later
+  exchange of the same contact, "Earlier in this contact the voice
+  said: "…" / "…"" comes first.)
+- **Re-call, before anyone answered** (round 23): "Only static answers.
+  Samantha calls out once more to anyone listening, asking them to
+  answer now; the receiver is still on. Samantha speaks next: the next
+  line, with the emotion in its voice, one of: calm, doubtful, urgent,
+  curious, determined. Let the tone be: diagnostic."
+- **Re-call, inside a contact** (round 17): "The voice has gone quiet.
+  Earlier in this contact the voice said: "Hello again, lab." Voices
+  that reached you before, oldest first — 1: … ; 2: … Only a voice that
+  says the name of one of them … Any other voice is someone new. Moira
+  speaks to the voice, calls them by name if they gave one, and asks
+  again: "How'd you find us? Over." Moira speaks next: the next line, …"
+- **Breakdown** (round 6): "A voice on the frequency says: "I'm in
+  Austin, Texas, and I have a pickup truck." Earlier in this contact the
+  voice said: "Hello? Is anyone there?" / "My name is Alfredo." First
+  answer what the voice just said, speaking to them directly. Then
+  something happens that the listeners cannot see: Smoke pours from the
+  receiver, and it goes dead. The one who notices tells the listeners on
+  air that the lab can no longer hear them, only transmit, and that the
+  broadcast goes on while they fix it. Ralph speaks first, then Daniel,
+  Moira or Samantha: the next three lines, each with the emotion in its
+  voice, one of: sad, afraid, terrified, angry, exhausted. …"
+- **Switch-off, nobody answered** (round 24): "Nobody answered the call.
+  Samantha tells the listeners the lab is switching the receiver off, to
+  save power or to spare the fragile receiver for a time when someone
+  is more likely to be listening; the broadcast goes on. Samantha
+  speaks first, then Daniel, Moira or Ralph: the next two lines, …"
+  (Inside a contact: "The voice is gone. <caller> tells the listeners
+  the lab has lost them and is switching the receiver off, …")
+- **Aftermath** (round 7): "The voice on the frequency told you: "Hello?
+  Is anyone there?" / "My name is Alfredo." / "I'm in Austin, Texas, and
+  I have a pickup truck." Talk among yourselves about what it means for
+  you. Moira and Samantha speak next: …"
+- **Recollection** (seed 7, run `T17-06-33`, round 35): "Earlier, a
+  voice on the frequency told you: "This is Maria, from Dallas." / "We
+  have a doctor with us." / "Do you need medicine?" Talk among yourselves
+  about what they told you, and imagine how they could help you if they
+  call again. Daniel, Moira and Ralph speak next: …"
+
+### 13.4 The story's new data, in full (the fork's `stories/lab-outbreak/`)
+
+- **The premise sentence** (the cast sheet's frame, so the system
+  prompt): "The radio's receiver keeps failing: while it is down they
+  can only transmit, and when they get it working they call out for
+  anyone listening to answer."
+- **`orientation:`** (front matter): "Four scientists, Daniel, Moira,
+  Ralph and Samantha, are trapped in a secret research lab, besieged by
+  the dead since the outbreak began, and broadcasting on the lab's
+  shortwave radio. The radio's receiver is dead: they can only
+  transmit, not hear. When they get it working, they will call out for
+  anyone listening, and whoever hears them can answer then."
+- **`directions:`** repair "The receiver crackles back to life.";
+  breakdown "Smoke pours from the receiver, and it goes dead.";
+  switch-off "The receiver is switched off."
+- **`agenda.yaml`**, nine items (the agent's draft; the owner reviews
+  the words before the ear test): 1 find out who the voice is (use the
+  name if given; ask how they found the frequency); 2 where they are
+  (roads open?); 3 help find the secret lab (near a wood and a swamp,
+  smoke from the east wing); 4 help get the cast out (a vehicle at the
+  south fence); 5 supplies (insulin, batteries, clean water,
+  antibiotics); 6 the outbreak where they are; 7 a message to the
+  authorities (the lab's samples could help stop the outbreak); 8 are
+  they safe, with people (keep listening); 9 a radio that can transmit,
+  to relay the lab's calls.
+- **Tone words moved between overtones** (reviewed and committed):
+  dropped as moods — hopeful, relieved, determined, curious; to
+  negative — uncanny, hallucinatory, otherworldly, unearthly, eldritch,
+  spectral, ghostly, disoriented (from "Wonder and the uncanny"),
+  brooding, last-ditch, fire-and-brimstone; to neutral — insistent,
+  emphatic, peremptory ("Pleading"), skeptical, incredulous, probing,
+  cryptic, enigmatic, mysterious ("Suspicion and secrecy"), stoic,
+  stiff-upper-lip, unflappable, dutiful ("Resolve and defiance"),
+  commanding, authoritative ("Command and coldness"), nostalgic,
+  reminiscent, bittersweet ("Longing and regret").
+- **The events' group table** (the agent's, reviewed and committed):
+  positive — Luck and small mercies; neutral — Power and machines,
+  Voices from outside, The sky and the distance, Supplies and bodies,
+  Small mysteries; negative — the ADR-0003 gate's ten, The building, The
+  specimens and the science, The dead outside, The radio itself,
+  Weather and night, Animals, Authority, Inside the walls. **81 single
+  events moved**, among them to positive: "The shamblers flinch and
+  scatter every time the radio transmits.", the ham operator in
+  Winnipeg, the pilot calling for anyone near the lab, the Newfoundland
+  town listening, the scoutmaster's troop safe, the retired
+  schoolteacher's poem, the family in a motor home ten miles away, the
+  beekeeper's bees, the chocolate stash, the last orange, the blankets,
+  the whiskey, the new exit drawn in red, the red-cross crate. The
+  generator `<scratchpad>/build_overtones.py` holds the exact lists
+  (`EVENT_MOVED`, `TONE_MOVED`).
+
+### 13.5 Emotion in the voice — the owner's vision (the discussion's §11)
+
+- The overtone keeps the prompt coherent (mood and tone word never pull
+  apart); it is **not** what picks the voice. The owner: the mood from
+  the grammar must travel with each line to the TTS, and **a separate
+  mapping, mood → reference clip, per character** decides the clip —
+  many moods onto the few clips that exist, falling back to the
+  persona's default clip; **the groups are data, not a hard-coded
+  three**, so negative can split later (fear, sorrow, anger).
+- Where the mood travels today: the parser emits it with each line's
+  `start` (the fork's `app/show/parser.py:74`), the record keeps it, the
+  page shows it in the caption — and `speakLine(persona, text)` drops it
+  (`/api/tts` gets `{text, persona_name}`).
+- On record: S2 of the reconnaissance brief (2026-09-21, OPEN); F3 and
+  Q2 of the tts-serve recon (tts-serve switches the reference clip per
+  request at no cost, each clip cached by content; the emotion lives in
+  the clip; the blocker is TalkWithMe's one `ref.wav` per persona).
+- The risks recorded prominently: three groups are coarse ("terrified"
+  and "sad" sound different); how much a clip's emotion carries into the
+  cloned voice is unmeasured; finding clean ~10 s clips per register per
+  character is the hard part of Task 4 / 5b.
+
+### 13.6 What the design implies for the demo (notes for Task 7)
+
+- **A volunteer should say their name** early ("Hello, this is <name>
+  from <place>"): B recognizes a returning caller only by name; an
+  anonymous "hello again" gets guessed (2 of 3 in the driver test).
+- The **RECEIVER sign** tells the room when they may talk; the
+  **orientation** re-tells the rules for latecomers every 20 ± 5 free
+  rounds; with the default cadence a call comes 60-180 s of audio after
+  the receiver went off; a contact lasts 2-4 answers (roughly 1-2
+  minutes).
+- For rehearsals and tests, calls brought forward to 20-40 s (temporary
+  settings). A 40-round drive rarely reaches an orientation repeat
+  (about 15 free rounds): lower `orientation_every` temporarily (e.g.
+  5-8) to hear one, and `recollection_every` (e.g. 6) to hear a
+  recollection.
+- The voice does not carry the mood yet (Task 5b); markdown emphasis
+  (`*us*`) reaches the TTS, which inflects it (kept, 2026-09-24).
+
+### 13.7 Weak spots to watch at the ear test
+
+- Lines about the listener in the third person ("They're asking if
+  we need medicine."), despite "Speak to the voice directly."
+- The Breakdown sometimes goes straight to the smoke without answering
+  (about half the time).
+- A re-call sometimes does not repeat the question ("We're not done
+  yet.", "We'll find a way to connect." — old wording; watch the new).
+- The anonymous "Hello again" guessed as the most recent caller.
+- The sign-on invents locations ("Sector 9, Lab 7-B") — harmless
+  flavor, but the lab is supposed to be secret.
+- The aftermath can misread Whisper ("Moira is the virus airborne." →
+  "If she's airborne, we might not make it.") — Whisper drops the "?".
+- Tone words that jar in a beat: "coquettish" on a Repair (the positive
+  pool includes "Intimacy"); single-word exceptions are cheap to fix.
+- The RECEIVER sign's timing (lit at the call's last line, dark at the
+  Breakdown's last line) has only been tested with Node stubs — check
+  3 is its first live look.
+
+### 13.8 Ideas raised and parked (not in 3.4c)
+
+The follow-ups of §7.5; the orientation mentioning the last caller (the
+discussion's §18.5, option b, not taken); a preferred asker per agenda
+item (§15.9, possible later); a weighted draw between a kind's two
+overtones (§16.9, option b, not taken); the 2024 open-mic window (out);
+"Talk anytime" (the follow-up of 2026-09-25); prefetching the next round
+(the follow-up); resuming the same run after a reload (the follow-up).
+
+### 13.9 The owner's working signals today
+
+- "Go with your picks" when a shape is clear; "Explain …" before ruling
+  when it is not; one decision at a time with context for design.
+- Asked "where are we" twice (15:21, ~17:40) — volunteer a short status
+  (done, left, time) at milestones.
+- Adds ideas mid-discussion and expects them recorded as the owner's;
+  asks for the agent's honest opinion ("Do you like this?") and for
+  pushback with reasons.
+- Reads measurements and handoffs critically; caught an under-detailed
+  handoff (this section's origin). Handoffs must be exhaustive.
+- Enjoys the design work ("We are pushing our limits here…"); a
+  long day (11:14 onward) with deliberate compactions.
+
+### 13.10 The day's timeline (CDT)
+
+| When | What |
+|---|---|
+| 00:05-00:10 | pickup from handoff 4 (after a compaction); the owner off |
+| 11:14 | the owner back; the VM would not wake; 3.4c decided, discussion first |
+| 12:01-12:43 | the 2024 design, the decoding, the pass |
+| 12:35 | the box up again |
+| 12:49-13:48 | the scope, one decision at a time |
+| 13:53-15:46 | the details (Contact, receiver story, agenda, overtone, design choices, mechanics) |
+| 15:47 | the discussion committed (`b8013e3`) |
+| 15:50 | the build plan approved |
+| 16:04 / 16:09 / 16:42 / 16:57 | 3.4c.1 / .2 / .3 / .4 committed in the fork |
+| 16:28 | the 3.4c.3 smoke on the box |
+| 16:51 | the 3.4c.4 checkpoint drive (6 of 6) |
+| 17:00-17:08 | the driver test, old and new wording |
+| 17:32 | the new wording committed (`e261b5b`) |
+| ~17:45 | this handoff; the second pass added at the owner's request |
