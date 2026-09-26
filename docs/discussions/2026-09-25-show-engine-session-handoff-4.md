@@ -1,6 +1,7 @@
-# Session handoff 4 — the show engine's slice 3: the browser page built (3.1-3.3), the events A/B and the close next
+# Session handoff 4 — the show engine's slice 3: built through 3.4b; the listener's exchange (3.4c?) and the close next
 
-> **EPHEMERAL.** Written 2026-09-25 ~18:10 CDT, before the owner's
+> **EPHEMERAL.** Written 2026-09-25 ~18:10 CDT and refreshed
+> 2026-09-26 ~00:05 CDT (after the events A/B, 3.4 and 3.4b), before the owner's
 > evening break, as a compaction-survival dump: if the context is
 > compacted, the agent re-reads this first. It replaces handoff 3
 > (`2026-09-24-show-engine-session-handoff-3.md`, which covered only
@@ -156,13 +157,14 @@ Hyperstack A6000 ("the box"): llama.cpp (Nemotron Nano 9B v2, build
 `b11096`), tts-serve 1.2 (Faster Qwen3-TTS), Whisper (whisper-fastapi
 `small`).
 
-## 2. Exact state (2026-09-25, ~18:10 CDT, Friday)
+## 2. Exact state (2026-09-26, ~00:05 CDT, Saturday)
 
 - **The timebox (Task 6b):** started 2026-09-23 14:46; checkpoint
   passed 2026-09-24; **end Monday 2026-09-28** (moved by the owner).
-- **Slice 3: 3.1, 3.2, 3.3 done;** next the events A/B test (shape
-  proposed, awaiting Go — §7.1), then 3.4 (by ear, a quiet place),
-  then 3.5 (close).
+- **Slice 3: 3.1, 3.2, 3.3, 3.4 (met by ear) and 3.4b done;** the
+  events A/B decided (events worded for the broadcast). **Next: the
+  owner decides whether the listener's exchange becomes step 3.4c**
+  (§7.1), then 3.5 (close).
 - **The fork:** branch **`alfre2v/show-slice-3-browser`**, cut from
   `master` `5b2485f` (slice 2's merge, PR #3). Commits, all pushed:
 
@@ -171,19 +173,22 @@ Hyperstack A6000 ("the box"): llama.cpp (Nemotron Nano 9B v2, build
   | `8bca58b` | 15:55 | 3.1 the page, text only, on a simulated clock (+ fixes a, b) |
   | `a2d942e` | 16:53 | 3.2 the voice (+ the sentence-splitter fix) |
   | `57dce7f` | 18:00 | 3.3 the listener's turn |
+  | `c55d25b` | ~22:40 | events worded for the broadcast (`show.event_report`, on by default) |
+  | `500debe` | ~23:55 | 3.4b the listener's words in the captions, per-word confidence |
 
-  Suite **1007 passed**; Node tests `test_persona_form.js` 17,
-  `test_tts_settings.js` 91, **`test_show_page.js` 26**. Working tree
+  Suite **1011 passed**; Node tests `test_persona_form.js` 17,
+  `test_tts_settings.js` 91, **`test_show_page.js` 31**. Working tree
   clean.
 - **zombie-radio:** branch **`alfre2v/show-slice-3`**, cut from `main`
   `b9e4d18` (slice 2's merge, PR #11, which also carried slice 3's plan
   discussion). Commits: `bfe88d5` (3.1 tick, tunnel keepalives, the
   events follow-up), `fbd1c46` (3.2 tick, the splitter addendum §8,
   follow-ups), `e3fe622` (follow-ups: talk anytime, the em dash),
-  `be9bdb4` (3.3 tick; the real button folded into 3.4), then the
-  commit carrying this handoff (with the TODO's corrected quote of the
-  owner, and handoff 3 deleted) — all pushed at the time of writing.
-  `hosts.yml` modified (wired) — never stage.
+  `be9bdb4` (3.3 tick; the real button folded into 3.4), then `5664d96` (this handoff,
+  the TODO's corrected quote, handoff 3 deleted), `1e45611` (the A/B's
+  records), `d8790aa` (3.4 met, 3.4b ticked, the exchange follow-up)
+  — all pushed; this refresh of the handoff is uncommitted until the
+  owner orders it. `hosts.yml` modified (wired) — never stage.
 - **Slice 2 PRs merged** (fork #3 → `5b2485f`; zombie-radio #11 →
   `b9e4d18`). No slice 3 PRs yet.
 - **The box: UP**, and the owner keeps it running overnight ("I'll even
@@ -197,7 +202,10 @@ Hyperstack A6000 ("the box"): llama.cpp (Nemotron Nano 9B v2, build
   (3.1 live: 53+ rounds, invitations 15/32/53, the double Stop at round
   44, the owner's tunnel drop at round 53), `T15-48-26` (3.1 fix a live:
   stops between lines at rounds 1-3, the kept round 16), `T16-04-56`
-  (3.2 by ear: 42 rounds, 245 s of audio), `T17-50-50` (3.3 fake
+  (3.2 by ear: 42 rounds, 245 s of audio), `T22-34-16` / `T22-35-07`
+  (the A/B's drives A and B), `T23-00-20` (3.4 by ear, the owner's voice),
+  `T23-40-48` (3.4b fake microphone), `T23-43-42` (the owner's 3.4b
+  check), `T17-50-50` (3.3 fake
   microphone: invitation 4 → answer 5, invitation 11 → static 12).
 - **The browser pane** (the agent's built-in browser; the owner sees
   the same pane) has `http://127.0.0.1:8010/show` open, with the fake
@@ -261,6 +269,21 @@ Hyperstack A6000 ("the box"): llama.cpp (Nemotron Nano 9B v2, build
 9. **The events A/B shape** proposed; deferred to the evening ("this
    A/B test looks like needs a quiet place" — the agent noted it is
    reading only; 3.4 is the step that needs quiet).
+
+10. **Evening: the events A/B test** (after the owner's Go): the knob
+    `show.event_report`; two 30-round drives (A "Offstage:", B the
+    broadcast wording), the same 10 events; round 1 rebuilt from the
+    records and shown to the owner as it went over the wire (315 / 333
+    tokens, exact); the owner: "B wins, flip the default and record it."
+11. **3.4 by ear** (the owner, real microphone, invitations at 20-40 s):
+    met — "It does what we planed. It is a success." Two findings: the
+    listener's words not in the captions (→ 3.4b); the exchange is one
+    line and the story moves on (→ a follow-up; maybe 3.4c).
+12. **3.4b the listener's words in the captions** — shaped (the owner
+    asked to explain picks c-e), built, fake-mic check, the owner's
+    check found two CSS issues (no hover tooltip; a broken wavy
+    underline), fixed, committed with the owner's order.
+13. **Handoff 4 refreshed** (this), context at 87 %.
 
 ## 4. Slice 3's code as built (the fork, `static/show/` + server bits)
 
@@ -348,6 +371,24 @@ the page on `DOMContentLoaded` (so Node can load them).
   reload, troubleshooting); `AGENTS.md` (the "show page" file table,
   the Node test and its run rule, the start-response row).
 
+**Added in the evening:**
+- `app/config.py` `ShowConfig.event_report: bool = True`;
+  `director.instruction_for(…, report)`: with an event, `Something
+  happens that the listeners cannot see: <event> The first to speak
+  tells the listeners on air what is happening. <speakers …>`; `false`
+  gives `Offstage: <event> …`; `_free` passes `show.event_report`.
+- `app/services/stt_client.py` `transcribe_for_show` also returns
+  `words: [{word, probability}]` (from `segments[].words`, trimmed);
+  `app/models.py` `ShowHeardWord`, `ShowListenResponse.words` (to the
+  page only). `static/show/show.js`: `WORD_BANDS` (0.8 / 0.5),
+  `wordBand()`, `heardWords()`, `addHeardCaption()` (a `.line
+  .listener` "You: …", word spans `word word-<band>` with
+  `data-percent`), `addVerdict()`, `settleHeard(summary)` (the verdict
+  when the next summary says silence), `show.heardCaption`. CSS: a
+  hover tooltip from `data-percent` (`::after`), bands with
+  `text-decoration-skip-ink: none`, doubtful dimmed by color (not
+  opacity — the tooltip would inherit it).
+
 ## 5. Facts and numbers (measured 2026-09-25)
 
 - **Pace today:** 3.1 estimated 2.5-3 h → ~1 h 05 (Go 14:50, commit
@@ -394,6 +435,19 @@ the page on `DOMContentLoaded` (so Node can load them).
   aerosolized, but, Over.", "persona_name": "Moira"}`.
 - **Prices:** the A6000 about $0.50/h (the 2026-09-13 survey).
 
+- **The A/B (runs `T22-34-16` A, `T22-35-07` B):** the first line shared
+  a content word with the event in 4/10 (A) vs 8/10 (B); the agent's
+  reading: B clearly better in 5, somewhat in 3, equal in 2, A never;
+  B's script 5 % longer (2879 vs 2740 tokens). The chat template eats
+  `/no_think` (it becomes `<think></think>`); the system prompt says
+  "No narration".
+- **3.4 (run `T23-00-20`):** 33 rounds, 5 invitations, 3 answers
+  (no_speech_prob ≤ 0.024), each ONE line ("Who's there?", "Who are
+  you?", "They think we should go south."), the next round an event.
+- **Whisper's words** come free in the plain json (`segments[].words`:
+  word, start, end, probability); e.g. "Moira 94 · is 77 · the 99 ·
+  virus 92 · airborne 98"; "Thank you." → the hallucination verdict.
+
 ## 6. Rulings today (the owner's)
 
 - **Timebox end Monday 2026-09-28;** the show's frontend in its own
@@ -431,70 +485,39 @@ the page on `DOMContentLoaded` (so Node can load them).
 - **3.3 ticked** with the real button and microphone checked in 3.4's
   session.
 
+- **Evening:** the A/B — "B wins, flip the default and record it."; 3.4
+  met ("It does what we planed. It is a success."); 3.4b added at the
+  owner's request, picks a label `You:`, b three bands + hover %, c
+  words to the page only, d the filter's verdict on the caption, e the
+  caption under the invitation; approved after the owner's live check;
+  the listener's exchange: "Let's decide after 3.4b if we included as
+  3.4.c."; the owner's rule for this kind of step: "Once approved we
+  commit and push the branch."
+
 ## 7. The board ahead
 
-### 7.1 NEXT: the events A/B test (shape proposed, awaiting the owner's Go)
+### 7.1 NEXT: the owner decides on 3.4c — the listener's exchange
 
-As proposed (the owner deferred it to the evening, at home):
+The follow-up "The listener's exchange is one line — the characters ask
+back, but no window opens" holds the evidence (three runs' receipts; the
+model folded the owner's name into an event) and the agent's proposed
+ingredients: a richer answer (2-3 lines, the addressed character first,
+an instruction to find out who and where the voice is); a follow-up
+window when the characters ask back (a conversation, capped, silence
+ending it); no event right after the listener's turn. Close to "Talk
+anytime". If it becomes 3.4c: a SHAPE first (a director change,
+decision 5), then build, then the owner by ear.
 
-- **Variant B wording** of a free round with an event: `Something
-  happens that the listeners cannot see: <event> The first to speak
-  tells the listeners on air what is happening. <speakers> speak next:
-  …` — today's is `Offstage: <event> <speakers> speak next: …`
-  (`app/show/director.py`, `instruction_for`; events only in free
-  rounds, via `_free`; the cast sheet never explains "Offstage";
-  `stories/lab-outbreak/events.yaml` line 2 says "The director says it
-  as 'Offstage: <event>'"). The grammar untouched.
-- **Build:** `ShowConfig.event_report: bool = False` (yaml-only);
-  `instruction_for` takes it; `_free` passes it; tests in
-  `tests/test_show_director.py` (the pinned "Offstage:" wording byte
-  for byte when off — see its lines ~133, 241, 335) and
-  `tests/test_show_config.py`; the runbook's settings list.
-- **Protocol:** two driver drives, seed 42, 30 rounds, `--played 20`
-  (`python3 scripts/drive_show.py --rounds 30 --played 20`), A with the
-  knob off, B on (app restart between, settings backed up/restored);
-  the same events come at the same rounds (event pacing is seeded by
-  the run's seed and where each gap began), speakers may drift after
-  the first differing reply; ~10 events each. A side-by-side of every
-  event round (the event · A's lines · B's lines) with a rough
-  automatic hint (does the first line share a content word with the
-  event?); **the owner judges as a listener would**. If B wins: the
-  default flips on, and a dated note goes into SED §5.7 (the "Offstage:"
-  wording was part of decision 5). If not: option 3 (the operator
-  reports, one extra round per event) the same way. Results into the
-  follow-up either way.
-- **Picks proposed:** a) "the first to speak", unnamed (the grammar
-  does not fix who speaks first); b) a yaml knob, off by default; c) a
-  plain-text side-by-side in chat (a published page if too long).
-- ~45-60 min of agent work; the owner's reading needs no microphone or
-  ears.
-
-### 7.2 Then: 3.4, the exit criterion by ear (the owner, a quiet place)
-
-On the box through the tunnel, captions off: at least ten unattended
-turns with the four placeholder personas; speakers chosen by the
-director; **one interaction beat with the real talk button and
-microphone** (hold, ask a character by name, release — the named
-character answers), which also closes 3.3's check by hand (a window
-left unpressed → static; optionally the 30 s press cap; a Stop while
-recording); sentences accumulated, not split. The page in Chrome at
-`http://127.0.0.1:8010/show` if the browser pane refuses the
-microphone (reload the pane first anyway — the fake microphone is
-installed in the open page). Invitations come every 60-180 s of audio
-by default; `interaction_min_s` / `interaction_max_s` 20/40 bring them
-forward (the owner's call). The verdict recorded in the TODO's 3.4.
-
-### 7.3 Then: 3.5, close the timebox
+### 7.2 Then: 3.5, close the timebox (the end is Monday 2026-09-28)
 
 Push; the slice 3 PRs (fork `alfre2v/show-slice-3-browser` → `master`,
 `--repo alfre2v/TalkWithZombies --base master`; zombie-radio
-`alfre2v/show-slice-3` → `main`), on the owner's ask; the owner
-merges; the tag **`tz-0.2`** on the fork's `master` (on the owner's
-order); the installer's pin bumped:
-`deploy/ansible/client-talkwithme-mac.yml:19` `client_version:
-"tz-0.1"` → `"tz-0.2"`; the owner re-proves it (a fresh install via
-`make client-mac`, a re-run `changed=0`, HTTP 200); the spec's
-as-built entries (`docs/specs/product-definition.md` ledger).
+`alfre2v/show-slice-3` → `main`), on the owner's ask; the owner merges;
+the tag **`tz-0.2`** on the fork's `master` (on the owner's order); the
+installer's pin `deploy/ansible/client-talkwithme-mac.yml:19`
+`client_version: "tz-0.1"` → `"tz-0.2"`; the owner re-proves it (a fresh
+install via `make client-mac`, a re-run `changed=0`, HTTP 200); the
+spec's as-built entries (`docs/specs/product-definition.md` ledger).
 
 ### 7.4 After slice 3 — the arc (estimates given to the owner today)
 
@@ -526,12 +549,15 @@ sign-off 'Over.' sometimes runs into the line" (keep 100; the owner's
 view); "Talk anytime — the listener breaks in while a round plays"
 (the owner's preference, disagreement and correction verbatim); "A
 line broken off with an em dash sounds and reads cut"; "Upstream
-contributions to scorbo2" candidate (5) — the splitter bugfix. Deleted
-(resolved): "JavaScript test for the accumulator's packing rules".
+contributions to scorbo2" candidate (5) — the splitter bugfix; "Events
+the listener cannot hear" (option 4 adopted after the A/B); "The
+listener's exchange is one line" (new, 3.4). Deleted (resolved):
+"JavaScript test for the accumulator's packing rules".
 
 ### 7.6 Open with the owner right now
 
-- **The events A/B shape — Go?** (§7.1)
+- **3.4c or not?** (§7.1)
+- **Commit this refreshed handoff** — on the owner's order.
 - **At the session's end:** ask permission to delete this handoff.
 
 ## 8. Nuances (hard to get from the docs alone)
@@ -579,6 +605,11 @@ contributions to scorbo2" candidate (5) — the splitter bugfix. Deleted
   not hit the last line.
 - **Stale TODO** — after the owner merged #11 the TODO still called it
   open; keep ticks in step with merges.
+
+- **Unverified UI claims** — "the percentage on hover" relied on a
+  `title` tooltip that did not show in the owner's Chrome, and the wavy
+  underline broke under descenders; verify visual features in the pane
+  (hover, screenshot) before handing them over.
 
 ## 10. Operational gotchas and techniques
 
@@ -636,6 +667,16 @@ contributions to scorbo2" candidate (5) — the splitter bugfix. Deleted
 - **macOS/zsh:** `sed -i ''`; no `--include=*.x` globs in zsh without
   quotes; `date -j -f %Y-%m-%d <d> '+%A'` for weekdays.
 
+- **Showing a past request "as it went over the wire"** without debug
+  files: rebuild it from the run's record with the app's own code
+  (`assemble_messages` on the run with `rounds` cut to those before, the
+  instruction, `build_grammar(speakers, max_lines, MOODS if moods else
+  None)`, `round_payload(…, seed=run.seed + n)`), render it with
+  `render_prompt` (`/apply-template`) and prove it with
+  `count_tokens` (`/tokenize`) against the round's `prompt_n + cache_n`.
+- **The browser pane's `zoom` action is not supported** (it returns the
+  full screenshot); use `hover` then `screenshot` to see a tooltip.
+
 ## 11. Reading order after the compaction
 
 1. This document, in full.
@@ -652,29 +693,29 @@ contributions to scorbo2" candidate (5) — the splitter bugfix. Deleted
    listener cannot hear" (the A/B's source) and "Talk anytime".
 6. The fork's `docs/runbooks/show-page.md` and `static/show/*.js`.
 7. Then report to the owner: the clock, the tunnel (probe), what is
-   pending (§7.6), and ask for the A/B's Go.
+   pending (§7.6), and ask about 3.4c.
 
 ## 12. Paste-ready prompt
 
 ```
 We continue the Zombie-Radio show engine's slice 3 (TODO Task 6b, the
-browser): 3.1, 3.2 and 3.3 are done; the events A/B test is shaped and
-waits for my Go; then 3.4 (by ear) and 3.5 (close). Re-orient before
-doing anything else:
+browser): 3.1-3.4b are done and the events A/B is decided; next I decide
+whether the listener's exchange becomes 3.4c; then 3.5 (close).
+Re-orient before doing anything else:
 
 1. Read docs/discussions/2026-09-25-show-engine-session-handoff-4.md IN
    FULL — how we work (§0 is binding, including the live-box drill
    rules in §0.1), the exact state (§2), what we did today (§3), the
    code of slice 3 as built (§4), the facts and numbers (§5), today's
-   rulings (§6), the board ahead with the A/B shape and the arc's
+   rulings (§6), the board ahead with the 3.4c question and the arc's
    estimates (§7), the nuances and your mistakes today (§8-§9), and the
    techniques and gotchas (§10).
 2. Follow its reading order (§11) to confirm the state: git status and
    log in both repositories (what is unpushed and uncommitted),
    docs/TODO.md's "Now" and slice 3.
 3. Then give me a compact summary: the clock, the tunnel (probe it
-   first), what is pending on my side, and the A/B's proposed picks —
-   and wait for my go.
+   first), what is pending on my side, and the 3.4c question — and wait
+   for my go.
 
 Standing rules: strict review-before-commit (I review uncommitted
 changes in VS Code — no diffs in chat, no commit without my explicit
