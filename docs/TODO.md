@@ -67,8 +67,9 @@ detail.*
   (2026-09-26; the owner: "Let's make it 3.4c, but we need a complete
   discussion before implementation."): shaped in [discussion
   2026-09-26] show-director-modes — its scope and details ruled one
-  at a time; **the build is under way** in five sub-steps, and
-  3.4c.1, the story's data, is done (the fork's `b988672`). Then
+  at a time; **the build is under way** in five sub-steps: 3.4c.1,
+  the story's data (the fork's `b988672`), and 3.4c.2, the grammar
+  and the settings (`5c0c2a3`), are done. Then
   3.5, the close. How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
@@ -843,7 +844,7 @@ the agent keeps this current. These carry across arcs.*
         story, the agenda, the overtone, the exit criterion, the page
         and the mechanics done, §13-§18 — the remaining mechanics are
         the agent's picks at build, recorded for review); **the build
-        is under way** (the build plan below; 3.4c.1 done), then a
+        is under way** (the build plan below; 3.4c.1 and 3.4c.2 done), then a
         driver test on the box, and the owner by ear. Resolves the follow-up
         "The listener's exchange is one line".
         - **To confirm when building:**
@@ -893,13 +894,28 @@ the agent keeps this current. These carry across arcs.*
             still draws from the flattened events and tones until
             3.4c.3. Reviewed by the owner, committed on the owner's
             order.
-          - [ ] **3.4c.2 The grammar and the settings** — the first
-            line pinned with the rest excluding that speaker, the last
-            line pinned (the Repair), moods per round; the new settings
-            (the contact's length and lines, the silences, the beats'
-            lines, the overtone's hold, the orientation's and the
-            recollection's pacing, the restatement's reach, the free
-            rounds' line budget).
+          - [x] **3.4c.2 The grammar and the settings** (`5c0c2a3`;
+            suite 1055 passed, Node tests 17 + 91 + 31).
+            `build_grammar` gains a minimum line count and one pinned
+            speaker — `first` (the addressed character opens, the other
+            speakers follow: exchanges, the Breakdown, the Switch-off,
+            the orientation) or `last` (the others lead up to the
+            operator's call: the Repair); without pins it is still byte
+            for byte the grammar proven on 2026-09-22. `ShowConfig`
+            gains the fifteen settings of 3.4c with the ruled defaults:
+            `free_lines` / `free_line_weights` (1-4 weighted 1:3:3:1 —
+            the director now reads them instead of two constants, the
+            same draws), `overtone_hold` / `overtone_jitter` (4 / 1),
+            `contact_exchanges` / `contact_jitter` (3 / 1),
+            `contact_min_lines` / `contact_max_lines` (2 / 3),
+            `silences_to_switch_off` (2), `beat_max_lines` (2),
+            `orientation_every` / `orientation_jitter` (20 / 5),
+            `recollection_every` / `recollection_jitter` (15 / 5),
+            `restatement_contacts` (5); checks for the contact's range
+            and the free budgets. The rest of the settings are read from
+            3.4c.3 on; the system prompt's mood list becomes the story's
+            14 then; their runbook lines come in 3.4c.4. Committed on the
+            owner's order.
           - [ ] **3.4c.3 The director and the record** — the modes, the
             beats, the silence rule, the agenda and the restatement, the
             overtone's drift and events per overtone, the orientation,
