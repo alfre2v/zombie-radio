@@ -69,8 +69,9 @@ detail.*
   2026-09-26] show-director-modes — its scope and details ruled one
   at a time; **the build is under way** in five sub-steps: 3.4c.1,
   the story's data (the fork's `b988672`), 3.4c.2, the grammar and
-  the settings (`5c0c2a3`), and 3.4c.3, the director and the record
-  (`4d0d7dd`), are done. Then
+  the settings (`5c0c2a3`), 3.4c.3, the director and the record
+  (`4d0d7dd`), and 3.4c.4, the page and the driver (`90ec1e8`), are
+  done; 3.4c.5, the four checks, is next. Then
   3.5, the close. How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
@@ -845,7 +846,7 @@ the agent keeps this current. These carry across arcs.*
         story, the agenda, the overtone, the exit criterion, the page
         and the mechanics done, §13-§18 — the remaining mechanics are
         the agent's picks at build, recorded for review); **the build
-        is under way** (the build plan below; 3.4c.1-3.4c.3 done), then a
+        is under way** (the build plan below; 3.4c.1-3.4c.4 done), then a
         driver test on the box, and the owner by ear. Resolves the follow-up
         "The listener's exchange is one line".
         - **To confirm when building:**
@@ -964,10 +965,36 @@ the agent keeps this current. These carry across arcs.*
             \*now\*!"). Until 3.4c.4 the page and the driver still
             listen only after the old `invitation` kind. Committed on
             the owner's order.
-          - [ ] **3.4c.4 The page and the driver** — listening after any
-            round that listens, "You:" under each, the RECEIVER light,
-            the beats' stage directions, the debug line's new fields;
-            the driver answering every listening round; the runbooks.
+          - [x] **3.4c.4 The page and the driver** (`90ec1e8`; suite
+            1082 passed, Node tests 17 + 91 + 34). The page listens
+            after any round whose summary says `listens` (the call, an
+            exchange, a re-call), the "You:" caption under that round;
+            the RECEIVER sign (green, beside ON AIR) lights when the
+            last line of a round that listens starts and goes dark when
+            that of one that does not starts (the Breakdown, the
+            Switch-off), with a fallback at the drain; a receiver beat's
+            stage direction above its lines; the debug line gains the
+            overtone, the slot, the agenda item and a contact's answers
+            ("answers 2 of 3" — the director and the round summary now
+            report `answers`, the agent's addition for that line). The
+            driver answers every listening round with its `--heard`
+            items, prints those facts under each round, and its
+            checkpoint report counts answered calls and re-calls or
+            Switch-offs. The fork's runbooks (a new "How the show runs"
+            in `show-page.md`; the 3.4c settings and the checkpoint in
+            `show-driver.md`) and `AGENTS.md` updated. **On the box**:
+            the runbook's checkpoint drive (the fork's run
+            `2026-09-26T16-51-06`, seed 42, the listener spoken by the
+            TTS and heard by Whisper) passed 6 of 6 — two calls, two
+            exchanges, three re-calls, two Switch-offs, an aftermath, the
+            trim five times, 42 lines, 0 dropped; its output is now the
+            runbook's example. **More wording notes for 3.4c.5**: an
+            exchange talked about the listener instead of to them
+            ("They're asking if anyone's alive."); the aftermath misread
+            Whisper's "Moira is the virus airborne." ("If she's
+            airborne, we might not make it."); markdown emphasis again
+            ("it's \*us\*"); the sign-on again without the receiver
+            facts. Committed on the owner's order.
           - [ ] **3.4c.5 The four checks** (below), then the
             bookkeeping: SED §5.7's dated note, the follow-up "The
             listener's exchange is one line" resolved, the discussion's
