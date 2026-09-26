@@ -71,7 +71,9 @@ detail.*
   the story's data (the fork's `b988672`), 3.4c.2, the grammar and
   the settings (`5c0c2a3`), 3.4c.3, the director and the record
   (`4d0d7dd`), and 3.4c.4, the page and the driver (`90ec1e8`), are
-  done; 3.4c.5, the four checks, is next. Then
+  done; 3.4c.5, the four checks, is under way — the driver test run
+  and the wording tuned from it (`e261b5b`); the owner's B-versus-A
+  call, the fake microphone and the test by ear remain. Then
   3.5, the close. How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
@@ -998,7 +1000,29 @@ the agent keeps this current. These carry across arcs.*
           - [ ] **3.4c.5 The four checks** (below), then the
             bookkeeping: SED §5.7's dated note, the follow-up "The
             listener's exchange is one line" resolved, the discussion's
-            addendum.
+            addendum. **Under way (2026-09-26, evening):** check 1 green
+            (suite 1082, Node 17 + 91 + 34). Check 2, the driver test:
+            a scripted listener (Alfredo, then Maria, then Alfredo back
+            with a silence, then a call nobody answers) on three seeds
+            (42, 7, 2026), calls at 20-40 s, contacts of exactly 3
+            answers, before and after a wording pass (the fork's runs
+            `2026-09-26T17-00-46` … `T17-07-23`). Old wording → new:
+            the sign-on told the receiver facts 1 → 3 of 3; exchanges
+            ended on a question 7 → 11 of 18; a first-time caller
+            welcomed back 3 → 1 of 3; Maria named 5 → 6 of 9; Alfredo
+            named after giving it 4 → 4 of 6; the anonymous "Hello
+            again, lab." guessed as Maria 2 → 2 of 3; every unanswered
+            call Repair → re-call → Switch-off; no event inside a
+            contact. The new wording committed on the owner's order
+            (the fork's `e261b5b`). **Pending: the owner's B-versus-A
+            call** (the agent's lean: B with the new wording; the
+            remaining guesses on anonymous input only A would fix — the
+            follow-up "A listener memory keyed by identity"). **A
+            simulated with perfect extraction** (a hand-written fact
+            table for the scripted sentences, swapped in at launch, the
+            fork untouched) was proposed; the owner: "Do not run the A
+            simulation yet." Then check 3 (the fake microphone) and
+            check 4 (the owner by ear).
         *Done when* (its §17.12): (1) the suite and the three Node
         tests are green; (2) the driver test on the box — scripted
         conversations and a report with numbers, from which the owner
