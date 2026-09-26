@@ -68,8 +68,9 @@ detail.*
   discussion before implementation."): shaped in [discussion
   2026-09-26] show-director-modes — its scope and details ruled one
   at a time; **the build is under way** in five sub-steps: 3.4c.1,
-  the story's data (the fork's `b988672`), and 3.4c.2, the grammar
-  and the settings (`5c0c2a3`), are done. Then
+  the story's data (the fork's `b988672`), 3.4c.2, the grammar and
+  the settings (`5c0c2a3`), and 3.4c.3, the director and the record
+  (`4d0d7dd`), are done. Then
   3.5, the close. How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
@@ -844,13 +845,14 @@ the agent keeps this current. These carry across arcs.*
         story, the agenda, the overtone, the exit criterion, the page
         and the mechanics done, §13-§18 — the remaining mechanics are
         the agent's picks at build, recorded for review); **the build
-        is under way** (the build plan below; 3.4c.1 and 3.4c.2 done), then a
+        is under way** (the build plan below; 3.4c.1-3.4c.3 done), then a
         driver test on the box, and the owner by ear. Resolves the follow-up
         "The listener's exchange is one line".
         - **To confirm when building:**
           - the re-call repeats the question that went unanswered
             ("Alfredo? Are you still there? We asked where you are.")
-            — very likely, the owner's call (2026-09-26);
+            — very likely, the owner's call (2026-09-26); built in
+            3.4c.3, to confirm by ear;
           - the restatement's wording and the agenda's list (the name
             item first, then two-branch sentences) — the agent drafts
             both, the driver test on the box shows what the model does
@@ -916,12 +918,52 @@ the agent keeps this current. These carry across arcs.*
             3.4c.3 on; the system prompt's mood list becomes the story's
             14 then; their runbook lines come in 3.4c.4. Committed on the
             owner's order.
-          - [ ] **3.4c.3 The director and the record** — the modes, the
-            beats, the silence rule, the agenda and the restatement, the
-            overtone's drift and events per overtone, the orientation,
-            the aftermath and the recollection, the cadence from the
-            receiver going off; the new kinds in the record; the round
-            route accepting a transcript after any round that listens.
+          - [x] **3.4c.3 The director and the record** (`4d0d7dd`;
+            suite 1077 passed, Node tests 17 + 91 + 31). The director
+            v2 (`app/show/director.py`): the sign-on and repeating
+            orientations; free rounds whose event slot holds an event,
+            an aftermath or a recollection; the Repair on the cadence,
+            counted from the moment the receiver went off; exchanges
+            (the named character first, else whoever asked last; the
+            next agenda item; the restatement, earlier contacts
+            included); the Breakdown after N answers; re-calls and the
+            Switch-off; each round's overtone from its kind's table or,
+            for free rounds, a held drift to neighbors, with moods, tone
+            word and event following it. The record: the new kinds (the
+            old three still load) and `overtone`, `agenda`, `slot`,
+            `recollects`; the round route listens after any round that
+            listens and reports `listens`, `overtone`, `agenda`, `slot`,
+            `direction`; the system prompt lists the story's 14 moods.
+            **Smoke on the box** (the fork's run `2026-09-26T16-28-02`,
+            no listener, calls at 20-40 s): 14 rounds, 24 lines, 0
+            dropped, about 1.35 s a round; llama.cpp accepted every new
+            grammar; the pins held (the Repair closed by Samantha's
+            call); the moods stayed in each round's overtone. **The
+            agent's picks at build, reviewed by the owner:** the
+            aftermath comes before a due orientation (immediacy); an
+            orientation comes after N free rounds; a re-call is one line
+            and repeats the unanswered question (built; still to confirm
+            by ear, above); exchanges and Breakdowns take exactly the
+            drawn 2-3 lines; every kind carries a tone word from its
+            overtone; each instruction names the allowed moods; the
+            Repair and the Breakdown also give the model the story's
+            stage direction. **One pick replaced by the owner:** the
+            recollection's gap was counted from the last aftermath, so
+            each contact reset it — measured, recollections came only in
+            long stretches (112 in 20 runs of 300 rounds with the
+            defaults, none with calls at 20-40 s); the owner: "a, the
+            independent count with both guards" — the count runs from
+            the last recollection, never directly after an aftermath,
+            and never the caller talked about last while there is
+            another (then 276, and 195 at 20-40 s; talk about callers
+            about doubles — the default may want raising after the test
+            by ear). **Wording notes for 3.4c.5**, from the smoke: the
+            sign-on did not tell the receiver facts ("We're broadcasting
+            from Sector B, lab 7…"); a re-call gave up ("We'll try again
+            later."); one line had markdown emphasis ("Answer us,
+            \*now\*!"). Until 3.4c.4 the page and the driver still
+            listen only after the old `invitation` kind. Committed on
+            the owner's order.
           - [ ] **3.4c.4 The page and the driver** — listening after any
             round that listens, "You:" under each, the RECEIVER light,
             the beats' stage directions, the debug line's new fields;
