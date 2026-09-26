@@ -60,7 +60,12 @@ detail.*
   listeners on air what is happening (the fork's `show.event_report`,
   `c55d25b`, on by default; the owner: "B wins, flip the default and record it.";
   the receipts in the follow-up "Events the listener cannot hear").
-  **Next:** 3.4, the exit criterion by ear. How
+  **3.4, the exit criterion by ear, is met** (the owner: "It does
+  what we planed. It is a success."), and **3.4b, the listener's words
+  in the captions with Whisper's confidence per word** (`500debe`),
+  **is done**. **Next:** the owner decides whether the listener's
+  exchange (the follow-up "The listener's exchange is one line")
+  becomes a step 3.4c; then 3.5, the close. How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
@@ -755,7 +760,24 @@ the agent keeps this current. These carry across arcs.*
         works only while listening; a spoken question gets its answer;
         a silent window gives the static round; the press cap ends a
         long press.
-      - [ ] **3.4 The exit criterion, by ear** — on the deployed stack
+      - [x] **3.4 The exit criterion, by ear** (2026-09-25, night; the
+        fork's run `2026-09-25T23-00-20`, invitations brought forward to
+        20-40 s, captions off, the real talk button and microphone).
+        **Met — the owner (verbatim): "It does what we planed. It is a
+        success."** 33 rounds, 5 invitations: three answered from the
+        owner's words, heard well by Whisper (no_speech_prob ≤ 0.024) —
+        "Hello, what's your name?" → Daniel: "Who's there?"; "Hello,
+        Samantha, are you there?" → Samantha: "Who are you?"; "I think
+        Ralph and Moira should go to the south entrance." → Ralph: "They
+        think we should go south." — and two static (no press; a press
+        heard as nothing). The first listen to events worded for the
+        broadcast. **Two findings:** the listener's own words do not
+        show in the captions (→ 3.4b, the owner's request); and the
+        exchange is poor — one answer line, the characters ask back but
+        no window opens, and the next round moves on, often to an event
+        (the follow-up "The listener's exchange is one line"; the owner:
+        "Let's decide after 3.4b if we included as 3.4.c."). — On the
+        deployed stack
         through the tunnel: at least ten unattended turns with the four
         placeholder personas; speakers chosen by the director; one
         interaction beat that opens the microphone and absorbs the
@@ -764,6 +786,34 @@ the agent keeps this current. These carry across arcs.*
         unpressed); sentences accumulated, not split. Judged with the
         captions off (the follow-up "Events the listener cannot hear").
         The owner listens; the verdict is recorded here.
+      - [x] **3.4b Your words in the captions, with Whisper's confidence
+        per word** (added 2026-09-25 at the owner's request, after 3.4;
+        its shape discussed before building; done the same night, the
+        fork's `500debe`; suite 1011 passed, Node tests 17 + 91 + 31).
+        As built, with the owner's picks: the label `You:`; three bands
+        by Whisper's word probability (plain from 0.80, a dotted
+        underline from 0.50, dimmed with a wavy underline below), the
+        percentage on hover; the words to the page only (the round
+        request and the record keep the text and two averages); the
+        filter's verdict added to the caption when the next summary
+        says silence ("You: Thank you. (counted as silence: a known
+        Whisper hallucination)" — seen live); the caption under the
+        invitation's lines. Checked with a fake microphone, then by the
+        owner talking to the show (run `2026-09-25T23-43-42`); from the
+        owner's check, the hover moved to a CSS tooltip (the `title`
+        tooltip did not show) and the wavy underline stopped breaking
+        under descenders (`text-decoration-skip-ink: none`); approved
+        with the owner's commit order. The page shows what the
+        listener said as a caption line, each word marked by how sure
+        Whisper was of it. Found while shaping it: the show's Whisper
+        server already returns every word with its probability in the
+        plain `json` the app asks for (`segments[].words[]`: word,
+        start, end, probability — e.g. "Hello 0.87 · Samantha, 0.80 ·
+        are 0.97 · you 1.00 · there? 1.00"); the fork's
+        `transcribe_for_show` keeps only the text and two averages today.
+        *Done when:* the owner, talking to the show live, sees the words
+        and their confidence and approves; then the branch is committed
+        and pushed.
       - [ ] **3.5 Close the timebox** — slice 3's pull request merged;
         tag `tz-0.2`; the installer's `client_version` bumped to it and
         re-proven (fresh install, re-run `changed=0`, HTTP 200 — the

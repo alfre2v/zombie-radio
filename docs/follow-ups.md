@@ -267,6 +267,47 @@ reader's memory):
   estimate; and a round whose text arrived but whose audio never
   played is skipped.
 
+## The listener's exchange is one line — the characters ask back, but no window opens (owner, 2026-09-25)
+
+- **The gap:** in slice 3's step 3.4 (the fork's run
+  `2026-09-25T23-00-20`) the owner talked to the show three times and
+  found the engagement poor: "Only one character say something in
+  passing and that's it. No direct asking: Who is this? What's your
+  name? ... The normal thing if you are trying to establish
+  communication with the outside world." (verbatim). The record:
+
+  | Round | Whisper heard | The one answer line | The next round |
+  |---|---|---|---|
+  | 17 | "Hello, what's your name?" | Daniel: "Who's there? Over." | an event (the power lines singing) |
+  | 22 | "Hello, Samantha, are you there?" | Samantha: "Who are you? Over." | an event (the Geiger counter) |
+  | 30 | "I think Ralph and Moira should go to the south entrance." | Ralph: "They think we should go south. Over." | an event (the Newfoundland request) |
+
+  The owner's check of step 3.4b the same night (the fork's run
+  `2026-09-25T23-43-42`) showed the same: "Hello, who are you? Who are
+  you? My name is Alfredo" → Samantha: "Alfredo? Over."; "It's Alfredo
+  again. I want to ask Samantha, what is the cause of the outbreak?" →
+  Samantha: "I don't know what you're asking. Over." In between, the
+  model folded the listener's name into an event — "A listener sends
+  word that the family of one of the scientists is safe." → Moira:
+  "Someone's safe, Alfredo's family. Over."
+- **Why:** the answer round is one line by design (SED §5.7: "answer —
+  the whole cast allowed, one line"); the characters do ask back, but
+  only an invitation opens a listening window, so the question hangs;
+  and the next round is an ordinary free round — events are paced on
+  free rounds, and the listener's turn does not hold them back — so the
+  story jumps away at once.
+- **Ingredients the agent proposed (not decided):** a richer answer
+  (2-3 lines, the addressed character first, an instruction to engage —
+  find out who and where the voice is); a follow-up window when the
+  characters ask back, so it becomes a conversation, up to a cap of
+  exchanges, silence ending it; no event right after the listener's
+  turn, the next free round still talking about the voice. Close to the
+  follow-up "Talk anytime".
+- **Where flagged:** the owner, 2026-09-25, in step 3.4.
+- **Trigger:** the owner decides after step 3.4b whether it becomes
+  step 3.4c: "Let's decide after 3.4b if we included as 3.4.c."
+  (verbatim). A change to the director (decision 5): a shape first.
+
 ## Talk anytime — the listener breaks in while a round plays (polish; the owner's preference, 2026-09-25)
 
 - **The idea:** with a push-to-talk button, the listener should be able
