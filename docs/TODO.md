@@ -65,9 +65,11 @@ detail.*
   in the captions with Whisper's confidence per word** (`500debe`),
   **is done**. **The listener's exchange became step 3.4c**
   (2026-09-26; the owner: "Let's make it 3.4c, but we need a complete
-  discussion before implementation."): its scope is ruled and its
-  details are being shaped one at a time in [discussion 2026-09-26]
-  show-director-modes. Then 3.5, the close. How
+  discussion before implementation."): shaped in [discussion
+  2026-09-26] show-director-modes — its scope and details ruled one
+  at a time; **the build is under way** in five sub-steps, and
+  3.4c.1, the story's data, is done (the fork's `b988672`). Then
+  3.5, the close. How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
@@ -840,9 +842,9 @@ the agent keeps this current. These carry across arcs.*
         being ruled one at a time** (its §12; Contact, the receiver
         story, the agenda, the overtone, the exit criterion, the page
         and the mechanics done, §13-§18 — the remaining mechanics are
-        the agent's picks at build, recorded for review); then the
-        build plan (a shape for the owner's Go), the build, a driver
-        test on the box, and the owner by ear. Resolves the follow-up
+        the agent's picks at build, recorded for review); **the build
+        is under way** (the build plan below; 3.4c.1 done), then a
+        driver test on the box, and the owner by ear. Resolves the follow-up
         "The listener's exchange is one line".
         - **To confirm when building:**
           - the re-call repeats the question that went unanswered
@@ -853,10 +855,65 @@ the agent keeps this current. These carry across arcs.*
             both, the driver test on the box shows what the model does
             with them, the owner reviews both before the test by ear
             (the owner's call, 2026-09-26);
-          - the tone words' single-word exceptions (the whole groups
+          - ~~the tone words' single-word exceptions (the whole groups
             are sorted — its §16.5) and the events' sort by overtone
             (by group, then single events) — the agent drafts, the
-            owner reviews.
+            owner reviews~~ — drafted in 3.4c.1 and committed on the
+            owner's order (below).
+        - **The build plan** (the agent's shape, the owner's Go,
+          2026-09-26: "Go with your picks"): five sub-steps on the
+          fork's `alfre2v/show-slice-3-browser`, one commit each on the
+          owner's order after review; the story's data first, so the
+          owner reviews the authoring while the rest is built; the old
+          round kinds (`invitation`, `answer`, `static`) stay loadable,
+          so `runs/` and the test fixtures keep working; the old story
+          shapes (a flat `tones.yaml`, a flat `events.yaml`) are
+          dropped; the box kept up through Sunday (only 3.4c.5 strictly
+          needs it). The remaining mechanics are the agent's picks,
+          recorded for review: a `listens` flag on each plan and round
+          summary; the driver's `--heard` items answering every
+          listening round in turn; the free rounds' line budget as two
+          settings; the bookkeeping at 3.4c.5.
+          - [x] **3.4c.1 The story's data** (`b988672`; suite 1028
+            passed, Node tests 17 + 91 + 31). `overtones.yaml` replaces
+            `tones.yaml`: the three overtones in order with their 14
+            moods and 496 tone words under the 24 themes (positive 96,
+            neutral 167, negative 233 — the ruled group table, then 29
+            single words moved and 4 dropped because they became moods:
+            hopeful, relieved, determined, curious — a tone word is
+            never an emotion tag), the per-kind table, the drift weights
+            1 : 2 : 3. `events.yaml` filed by overtone, then theme
+            (positive 29, neutral 94, negative 166 — the agent's group
+            table, then 81 single events moved). `agenda.yaml`: nine
+            two-branch items, the name item first. The cast sheet: the
+            premise sentence (so the system prompt changed; the pinned
+            prompts in `tests/test_show_story.py` updated and dated),
+            the orientation's facts, a stage direction per receiver
+            beat. The loader reads and checks all of it; the director
+            still draws from the flattened events and tones until
+            3.4c.3. Reviewed by the owner, committed on the owner's
+            order.
+          - [ ] **3.4c.2 The grammar and the settings** — the first
+            line pinned with the rest excluding that speaker, the last
+            line pinned (the Repair), moods per round; the new settings
+            (the contact's length and lines, the silences, the beats'
+            lines, the overtone's hold, the orientation's and the
+            recollection's pacing, the restatement's reach, the free
+            rounds' line budget).
+          - [ ] **3.4c.3 The director and the record** — the modes, the
+            beats, the silence rule, the agenda and the restatement, the
+            overtone's drift and events per overtone, the orientation,
+            the aftermath and the recollection, the cadence from the
+            receiver going off; the new kinds in the record; the round
+            route accepting a transcript after any round that listens.
+          - [ ] **3.4c.4 The page and the driver** — listening after any
+            round that listens, "You:" under each, the RECEIVER light,
+            the beats' stage directions, the debug line's new fields;
+            the driver answering every listening round; the runbooks.
+          - [ ] **3.4c.5 The four checks** (below), then the
+            bookkeeping: SED §5.7's dated note, the follow-up "The
+            listener's exchange is one line" resolved, the discussion's
+            addendum.
         *Done when* (its §17.12): (1) the suite and the three Node
         tests are green; (2) the driver test on the box — scripted
         conversations and a report with numbers, from which the owner
