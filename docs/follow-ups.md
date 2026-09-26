@@ -469,7 +469,194 @@ reader's memory):
   `Story.events` plus each event's group; `_next_event` stays in the
   last event's group with a chance that falls as the run grows (a
   yaml knob for the typical run length); tests: runs occur, no
-  repeats until the pool is used up, the same seed replays.
+  repeats until the pool is used up, the same seed replays. The tone
+  words get the same treatment in step 3.4c — their themes kept as
+  data (the follow-up "The tone themes as data — five uses waiting for
+  them", use 4: theme runs); one shape for both files.
+
+## Comic relief — the cast jokes about a funny happening (owner, 2026-09-26; postponed from step 3.4c)
+
+- **The idea:** from the owner's 2024 prototype, as the owner remembers
+  it (verbatim, 2026-09-26):
+
+  > * Something that I had in the regular programming (or maybe it was in my wishlist and I am enriching the memory) it's a "make a joke" mode, where we direct the LLM to make jokes about funny occurrences that we provide (pre-canned like events), something like "Oh, no! Is that Betty from accounting among the zombies? They got her!... Look, she is still holding her calculator in the hand... Habits die hard indeed. hahaha".
+- **Where flagged:** [discussion 2026-09-26] show-director-modes — the
+  owner's 2024 design (§2) and feature 6 of the agent's decoding (§3).
+  Postponed with feature 7 (the next entry), the owner (§4): "yes, this
+  is not about engagement so can be postponed." And later the same day:
+  "I did not retire "6. Comic relief", I postponed it, so it should have
+  a proper follow-up entry. We are going to execute on this at some
+  point."
+- **Where it fits:** the Broadcast mode of that discussion — the cast
+  talking among themselves while the receiver is down. It does not
+  involve the listener.
+- **Fix shape (the agent's, not yet discussed):** a story list of funny
+  happenings (e.g. `stories/lab-outbreak/jokes.yaml` in the fork),
+  drawn like the events — without repeats until the list is used up
+  (`_fresh` in the fork's `app/show/director.py`), paced every few free
+  rounds with jitter (a knob like `show.event_every`) — and worded as an
+  instruction to joke about it on air. Like an event, the listeners
+  cannot see it, so the first to speak says what they see
+  (`show.event_report`). Open: whether a joke takes an event's place in
+  its round or has its own pacing. The tone words already hold the
+  palette: `stories/lab-outbreak/tones.yaml` has the groups "Gallows
+  humor and wit" and "Levity and play", drawn only at random today
+  (from step 3.4c on, themes kept as data — the follow-up "The tone
+  themes as data — five uses waiting for them", use 2).
+  Tests like the events'.
+- **Trigger:** after step 3.4c and slice 3's close; a candidate for the
+  show fixes before the talk or for the show arc (stories and
+  episodes) — the owner's call.
+
+## Scientific findings — the cast reports what the lab learns about the infection (owner, 2026-09-26; postponed from step 3.4c)
+
+- **The idea:** from the owner's 2024 design (verbatim, 2026-09-26),
+  said while describing what the cast asks a listener:
+
+  > We could also make one of their focus to describe the "scientific findings" from the infestation instead of asking questions, although I think this fits better their regular programing (when the radio is broken).
+- **Where flagged:** [discussion 2026-09-26] show-director-modes —
+  feature 7 of the agent's decoding (§3); postponed with feature 6 (the
+  entry above), the owner (§4): "yes, this is not about engagement so
+  can be postponed."
+- **Where it fits:** the Broadcast mode, as the owner said — not the
+  conversation with a listener.
+- **Fix shape (the agent's, not yet discussed):** a list of findings,
+  drawn like the events and worded as a finding one scientist reports on
+  air. Either a story file of its own or a group of `events.yaml` — the
+  pool already holds lab happenings such as "Sample twelve in the cold
+  room has started moving inside its sealed jar." A finding could
+  continue across rounds (the follow-up "Events that stay on topic for a
+  few rounds").
+- **Trigger:** the same as comic relief's.
+
+## Pace the calls in rounds, not seconds — one unit for all pacing (owner, 2026-09-26)
+
+- **The idea (the owner, verbatim, 2026-09-26, while shaping step
+  3.4c):** "I am proposing that we unify all pacing measurements on
+  count of number of round, and not time." And: "Maybe not for right
+  now, but to keep it as an identified follow-up..."
+- **Today:** the only pacing counted in time is the cadence of the
+  calls — seconds of played audio since the last invitation (the
+  fork's `app/show/director.py:68-80`, `_time_to_listen`;
+  `show.interaction_min_s` 60, `show.interaction_max_s` 180), from the
+  round request's `played_s`, which the page reports because only the
+  page knows what has played. From step 3.4c on, counted from the
+  moment the receiver goes off ([discussion 2026-09-26]
+  show-director-modes). Every other pacing is already in rounds: the
+  event gap (`event_every` ± `event_jitter`, free rounds), the tone
+  hold (`tone_hold` ± `tone_jitter`), and 3.4c's contact length (the
+  listener's answers) and silence count. Not pacing, and staying in
+  seconds either way: the listening window (`listen_window_s`) and the
+  press cap (`press_cap_s`) — wall-clock timers.
+- **History:** seconds came from the owner's own pushback on
+  2026-09-21 ([discussion 2026-09-21] story-loop §9 Q2) against the
+  agent's "every third or fourth round": (1) rounds are seconds long,
+  so that count opens the microphone about every minute and pauses the
+  show; (2) a fixed count is predictable; (3) the interval must be
+  configurable and tuned by ear. A round count with jitter, in
+  settings, meets (2) and (3); (1) asks for larger counts, e.g. 10-30
+  rounds.
+- **For rounds:** one unit for all pacing; the director a function of
+  the record and the seed alone, with no number from the page (the
+  round request's `played_s` would then feed only the debug line and
+  the record); the driver no longer invents played seconds (`--played`,
+  20 s per round by default, the fork's `scripts/drive_show.py:213`).
+- **Against:** rounds vary in length — 1 to 4 lines, a one-line re-call
+  against a three-line exchange — so the time between chances to talk
+  gets less even; over the 10-30 rounds between calls it mostly
+  averages out.
+- **No help to step 3.4c's testing** (the owner asked): the driver
+  already reports a fixed 20 s per round, so under the driver the
+  cadence is already a round count (60 s = 3 rounds); the unit tests
+  pass `played_s` directly; by ear, temporary settings bring the calls
+  forward either way. 3.4c's "count from the receiver going off" works
+  in either unit.
+- **Trigger:** after step 3.4c, when the calls' spacing is tuned by ear
+  — if seconds buy nothing audible over rounds, simplify to rounds.
+- **Fix shape:** `_time_to_listen` counts broadcast rounds since the
+  receiver went off; the two settings become round counts (names
+  indicative: `call_min_rounds`, `call_max_rounds`), the linearly
+  rising chance kept; tests; the runbook `docs/runbooks/show-driver.md`;
+  a dated note on SED §5.7 and on story-loop §9 Q2.
+
+## The tone themes as data — five uses waiting for them (owner, 2026-09-26)
+
+- **What exists from step 3.4c on:** the 24 themes of the tone words
+  ("Hope and warmth", "On the air, 1930s", "Fever and chaos", …) are
+  keys inside each overtone of the story's overtones file, which
+  replaces `tones.yaml` in the fork's `stories/lab-outbreak/`; a mixed
+  theme appears under two overtones. The loader reads each word with
+  its overtone and its theme; 3.4c's draw uses only the overtone
+  ([discussion 2026-09-26] show-director-modes, the overtone's
+  details). The owner, who asked to keep the themes (verbatim): "I like
+  this grouping of therms a lot and I think we should preserve this in
+  some way." — and to store these uses "in a prominent but adequate
+  position in our docs".
+- **The uses (the agent's, 2026-09-26):**
+  1. **The orientation round** draws its tone word from "On the air,
+     1930s" ("broadcast-polished", "newsreel", "static-laced") — the
+     station-identification register.
+  2. **Comic relief** (the follow-up "Comic relief — the cast jokes
+     about a funny happening") draws from "Gallows humor and wit" and
+     "Levity and play".
+  3. **The Breakdown** leans on "Fever and chaos" or "Nerves and
+     tension".
+  4. **Theme runs:** hold one theme for a few rounds — the same wish as
+     the follow-up "Events that stay on topic for a few rounds" (its
+     idea 2: the events' groups as data).
+  5. **The debug line** shows the theme next to the tone word.
+- **Trigger:** each use when its feature is built (comic relief, theme
+  runs), or when listening shows a need (the orientation's register,
+  the Breakdown's). Use 5 is small enough to fold into 3.4c's build if
+  convenient.
+- **Fix shape:** per use, a director rule "in a round of kind K, draw
+  the tone word from theme T, when the round's overtone holds it" — a
+  kind-to-theme mapping in the story's overtones file, so another story
+  brings its own; tests like the tone word's.
+
+## A listener memory keyed by identity — revisit how the show remembers a returning listener (owner, 2026-09-26)
+
+- **The decision to revisit:** in step 3.4c the restatement — the
+  listener's words repeated, verbatim, in each contact instruction —
+  reaches over the whole run, grouped by contact, oldest first, capped
+  at the last few contacts (a setting), with one line asking the model
+  to greet a voice it spoke with before as a returning friend and use
+  what they told it. The model does the matching; no identity in code
+  ([discussion 2026-09-26] show-director-modes, the agenda's details).
+- **The owner's idea behind it (verbatim, 2026-09-26):** "What if we
+  keep in memory a cache of all answers provided by each user (once the
+  user has identified itself), that way we can provide even more context
+  for returning users. Otherwise the model will forget who the user is
+  between subsequence contacts. This can complicate things a bit, but I
+  think giving some sort of a memory of past interactions with the user
+  is worth it."
+- **The alternative to consider (the agent's option c, which the owner
+  asked to keep, verbatim):** "A memory keyed by identity, with names
+  extracted in code and matched across contacts. It's the most exact,
+  but it needs A's extraction and fuzzy name matching. A follow-up, tied
+  to A, if b falls short." The owner: "Add a follow-up entry to revisit
+  this decision in the future and consider implementing instead".
+- **What it needs:**
+  - **extraction** — the listener's name (and maybe place) pulled out
+    of the transcript in code: option A of feature 5 in that discussion
+    (§5.1), with the ways the agent listed — a second small request to
+    the model with a grammar after each listener turn, a hidden "facts"
+    line at the top of the answer's grammar, or plain patterns ("my
+    name is …", "this is …");
+  - **fuzzy matching** — Whisper may spell one name differently from
+    one contact to the next (SED §6.3: a misspelled cast name, "Maura"
+    for "Moira", defeats an exact match);
+  - **a per-listener store** — derived from the run's record like all
+    of the director's memory, or a new field in it.
+- **Not identity by browser:** at a demo, many people talk through one
+  laptop — one browser, many listeners.
+- **Across runs:** both b and c last one run; a page reload starts a new
+  run. Memory across runs is a feature of its own (see also "Resume the
+  same run after a page reload").
+- **Trigger:** the driver test or the owner's ear shows b falls short —
+  the model misses a returning voice, mixes two listeners up, or the cap
+  drops a listener who comes back later — or option A comes back for
+  feature 5.
 
 ## Events the listener cannot hear — the characters react to what only the model was told (owner, 2026-09-25) — option 4 adopted
 

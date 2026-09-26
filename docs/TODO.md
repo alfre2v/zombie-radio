@@ -26,7 +26,7 @@ this arc".
 
 ## Now — where the arc stands
 
-*Updated 2026-09-25. Read this section first; everything below it is
+*Updated 2026-09-26. Read this section first; everything below it is
 detail.*
 
 - **The critical path is Task 6b, the show engine,** built in the
@@ -63,9 +63,11 @@ detail.*
   **3.4, the exit criterion by ear, is met** (the owner: "It does
   what we planed. It is a success."), and **3.4b, the listener's words
   in the captions with Whisper's confidence per word** (`500debe`),
-  **is done**. **Next:** the owner decides whether the listener's
-  exchange (the follow-up "The listener's exchange is one line")
-  becomes a step 3.4c; then 3.5, the close. How
+  **is done**. **The listener's exchange became step 3.4c**
+  (2026-09-26; the owner: "Let's make it 3.4c, but we need a complete
+  discussion before implementation."): its scope is ruled and its
+  details are being shaped one at a time in [discussion 2026-09-26]
+  show-director-modes. Then 3.5, the close. How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
@@ -814,6 +816,55 @@ the agent keeps this current. These carry across arcs.*
         *Done when:* the owner, talking to the show live, sees the words
         and their confidence and approves; then the branch is committed
         and pushed.
+      - [ ] **3.4c The listener's exchange — Contact mode, the receiver
+        story, the emotional overtone** (added 2026-09-26 at the owner's
+        call; discussed before any code in [discussion 2026-09-26]
+        show-director-modes, from the owner's 2024 design). **Scope ruled
+        2026-09-26** (its §10): Contact mode — after the listener speaks,
+        several exchanges with a listening window after each; the
+        receiver story — the beats Repair, Breakdown and Switch-off, a
+        repeating orientation round (the sign-on at round 1 its first;
+        added while shaping, the owner's idea), and the silence rule
+        (two silences in a row switch the receiver off); the listener
+        kept in the story — an aftermath round after each contact, and
+        a periodic recollection round (the owner's idea) in which the
+        cast talk about what a caller told them and how that caller
+        could help if they call again;
+        the contact agenda — what the cast wants from a listener, one
+        item per exchange; remembering the listener — each agenda item
+        asks for something or, once the listener gave it, uses it, and
+        each contact instruction restates the listener's words; the
+        emotional overtone — moods and tone words split into positive,
+        neutral and negative, one overtone per round constraining both.
+        Every number in settings, none hard-coded. **Its details are
+        being ruled one at a time** (its §12; Contact, the receiver
+        story, the agenda, the overtone, the exit criterion, the page
+        and the mechanics done, §13-§18 — the remaining mechanics are
+        the agent's picks at build, recorded for review); then the
+        build plan (a shape for the owner's Go), the build, a driver
+        test on the box, and the owner by ear. Resolves the follow-up
+        "The listener's exchange is one line".
+        - **To confirm when building:**
+          - the re-call repeats the question that went unanswered
+            ("Alfredo? Are you still there? We asked where you are.")
+            — very likely, the owner's call (2026-09-26);
+          - the restatement's wording and the agenda's list (the name
+            item first, then two-branch sentences) — the agent drafts
+            both, the driver test on the box shows what the model does
+            with them, the owner reviews both before the test by ear
+            (the owner's call, 2026-09-26);
+          - the tone words' single-word exceptions (the whole groups
+            are sorted — its §16.5) and the events' sort by overtone
+            (by group, then single events) — the agent drafts, the
+            owner reviews.
+        *Done when* (its §17.12): (1) the suite and the three Node
+        tests are green; (2) the driver test on the box — scripted
+        conversations and a report with numbers, from which the owner
+        decides whether B is enough; (3) a fake-microphone check in the
+        page; (4) the owner by ear with the real microphone — a full
+        contact where the cast engages, and a call left unanswered
+        until the Switch-off; the verdict recorded, then commit and
+        push.
       - [ ] **3.5 Close the timebox** — slice 3's pull request merged;
         tag `tz-0.2`; the installer's `client_version` bumped to it and
         re-proven (fresh install, re-run `changed=0`, HTTP 200 — the
