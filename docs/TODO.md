@@ -72,9 +72,9 @@ detail.*
   the settings (`5c0c2a3`), 3.4c.3, the director and the record
   (`4d0d7dd`), and 3.4c.4, the page and the driver (`90ec1e8`), are
   done; 3.4c.5, the four checks, is under way — the driver test run
-  and the wording tuned from it (`e261b5b`); the owner's B-versus-A
-  call, the fake microphone and the test by ear remain. Then
-  3.5, the close. How
+  and the wording tuned from it (`e261b5b`); B versus A ruled (B for
+  3.4c; [experiment 2026-09-26] listener-memory-b-vs-a); the fake
+  microphone and the test by ear remain. Then 3.5, the close. How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
@@ -82,7 +82,10 @@ detail.*
   engine (5a needs the owner's character bibles, 5b the voice
   samples) → Task 7, the canned episode (a MUST for the talk) →
   Task 8, the close ritual. Hard deadline 2026-10-08; the talk at
-  the Austin Python Meetup is in October 2026.
+  the Austin Python Meetup is in October 2026. **Among the show
+  fixes before the talk:** names-only A — code states who the
+  voice is (the owner's ruling, 2026-09-26; shaped and estimated in
+  the follow-up "A listener memory keyed by identity").
 - **In parallel, the owner's long pole — Task 4:** the character
   bibles (they land as the cast entries of the fork's
   `stories/lab-outbreak/cast_sheet.md`) and the voice samples. No
@@ -1011,18 +1014,26 @@ the agent keeps this current. These carry across arcs.*
             ended on a question 7 → 11 of 18; a first-time caller
             welcomed back 3 → 1 of 3; Maria named 5 → 6 of 9; Alfredo
             named after giving it 4 → 4 of 6; the anonymous "Hello
-            again, lab." guessed as Maria 2 → 2 of 3; every unanswered
-            call Repair → re-call → Switch-off; no event inside a
-            contact. The new wording committed on the owner's order
-            (the fork's `e261b5b`). **Pending: the owner's B-versus-A
-            call** (the agent's lean: B with the new wording; the
-            remaining guesses on anonymous input only A would fix — the
-            follow-up "A listener memory keyed by identity"). **A
-            simulated with perfect extraction** (a hand-written fact
-            table for the scripted sentences, swapped in at launch, the
-            fork untouched) was proposed; the owner: "Do not run the A
-            simulation yet." Then check 3 (the fake microphone) and
-            check 4 (the owner by ear).
+            again, lab." taken for Maria 3 → 3 of 3 (reported at the
+            time as 2 → 2, corrected on re-reading: the experiment's
+            findings, below); every unanswered call Repair → re-call →
+            Switch-off; no event inside a contact. The new wording
+            committed on the owner's order (the fork's `e261b5b`).
+            **B versus A — ruled (2026-09-26, 18:37):** at the owner's
+            order, A simulated with perfect extraction (a fact table for
+            the scripted sentences, swapped in at launch, the fork
+            untouched) on the same script and seeds: the anonymous voice
+            taken for Maria 0 of 3 (the cast asked who it was); Alfredo
+            named across his return 7 of 12, against 3 of 12; the rest
+            within noise. The owner: "We are going to do: "a. B for
+            3.4c; names-only A becomes a show fix before the talk, with
+            the follow-up updated."" — B stays in 3.4c; names-only A is
+            shaped and estimated in the follow-up "A listener memory
+            keyed by identity". The scripts, the nine runs and the
+            findings: [experiment 2026-09-26] listener-memory-b-vs-a
+            (`docs/experiments/2026-09-26-listener-memory-b-vs-a/`).
+            Next: check 3 (the fake microphone) and check 4 (the owner
+            by ear).
         *Done when* (its §17.12): (1) the suite and the three Node
         tests are green; (2) the driver test on the box — scripted
         conversations and a report with numbers, from which the owner

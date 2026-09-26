@@ -1,0 +1,194 @@
+run 2026-09-26T17-05-46 — The Lab at the End of the Frequency — cast Daniel, Moira, Ralph, Samantha — seed 42
+  [ 4.46s] Samantha (urgent): We're broadcasting from Sector 9, Lab 7-B. The receiver's dead, we can only transmit. If you hear this, respond Over.
+  [ 4.66s] Daniel (calm): Our power's holding, but the contamination levels are rising. Over.
+round 1 (orientation): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: stiff-upper-lip · dropped: 0 · finish: stop · first line 4.46s, round 4.72s
+  overtone neutral
+  [ 0.85s] Moira (sad): The tissue in jar seven, it's warm. Like it's... alive. Over.
+  [ 1.07s] Ralph (afraid): Something's happening in that jar. We need to check it. Over.
+round 2 (free): 2 line(s) of Moira, Ralph · event: The tissue in specimen jar seven is warmer than the room around it. · tone: tight-lipped · dropped: 0 · finish: stop · first line 0.85s, round 1.12s
+  overtone negative
+  [ 0.73s] Daniel (relieved): The receiver's back online. Over.
+  [ 0.94s] Samantha (excited): Anyone out there? Respond now, we need help! Over.
+round 3 (repair): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: exultant · dropped: 0 · finish: stop · first line 0.73s, round 0.94s
+  overtone positive
+  [ 0.77s] Samantha (hopeful): Hello! We're here, over!
+  [ 0.94s] Daniel (relieved): We can hear you now. Over.
+  [ 1.09s] Moira (excited): Do you know what frequency you're on? Over.
+round 4 (exchange): 3 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: exultant · dropped: 0 · finish: stop · first line 0.77s, round 1.10s
+  listener: "Hello? Is anyone there?"
+  overtone positive · asks "Find out who the voice is. If the voice already said their name, greet them by it and ask how they found this frequency." · answers 1 of 3
+  [ 0.74s] Moira (curious): Alfredo, we can hear you. Over.
+  [ 1.01s] Daniel (determined): Do you have a transmitter? We need to relay our calls through yours. Over.
+  [ 1.25s] Ralph (urgent): If you can't, repeat what we're saying, *now*. Over.
+round 5 (exchange): 3 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: spellbound · dropped: 0 · finish: stop · first line 0.74s, round 1.27s
+  listener: "My name is Alfredo."
+  overtone neutral · asks "Ask the voice whether they have a radio that can transmit, to relay the lab's calls further. If the voice already said what they have, ask them to repeat the lab's message on it." · answers 2 of 3
+  [ 0.76s] Ralph (afraid): The receiver's smoking, it's dead. Over.
+  [ 0.97s] Daniel (sad): We can't hear you anymore. Only transmitting. Over.
+  [ 1.19s] Samantha (exhausted): We'll fix it, but it'll take time. Over.
+round 6 (breakdown): 3 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: restless · dropped: 0 · finish: stop · first line 0.76s, round 1.25s
+  listener: "I'm in Austin, Texas, and I have a pickup truck."
+  overtone negative · answers 3 of 3
+  [ 0.86s] Moira (afraid): He's in Texas. A pickup truck. Why would anyone help us from there? Over.
+  [ 1.14s] Samantha (angry): That's it? A truck? No gear, no plan? Over.
+  [ 1.30s] Moira (terrified): What if he's a trap? Over.
+round 7 (free): 3 line(s) of Moira, Samantha · event: — · tone: restless · dropped: 0 · finish: stop · first line 0.86s, round 1.36s
+  overtone negative · aftermath
+  [ 0.78s] Moira (terrified): He's not coming. We're alone. Over.
+  [ 0.95s] Ralph (angry): Last chance, he's lying. Over.
+round 8 (free): 2 line(s) of Moira, Ralph · event: — · tone: last-ditch · dropped: 0 · finish: stop · first line 0.78s, round 0.95s
+  overtone negative
+  [ 0.73s] Daniel (relieved): The receiver's alive again. Over.
+  [ 1.00s] Samantha (hopeful): Anyone? We're back, *please* answer. Over.
+round 9 (repair): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: flirtatious · dropped: 0 · finish: stop · first line 0.73s, round 1.00s
+  overtone positive
+  [ 0.76s] Samantha (calm): Maria, we've heard you before. Over.
+  [ 0.98s] Daniel (doubtful): How did you find this frequency? Over.
+  [ 1.09s] Ralph (curious): Why Austin to Dallas? Over.
+round 10 (exchange): 3 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: mundane · dropped: 0 · finish: stop · first line 0.76s, round 1.15s
+  listener: "This is Maria, from Dallas."
+  overtone neutral · asks "Find out who the voice is. If the voice already said their name, greet them by it and ask how they found this frequency." · answers 1 of 3
+  [ 0.83s] Ralph (relieved): Maria, we need you to tell authorities about the lab samples. Over.
+  [ 1.04s] Daniel (hopeful): You're here! That's great. Over.
+  [ 1.30s] Samantha (excited): Can you call 911? Tell them we've got a cure! Over.
+round 11 (exchange): 3 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: zany · dropped: 0 · finish: stop · first line 0.83s, round 1.30s
+  listener: "We have a doctor with us."
+  overtone positive · asks "Ask the voice to pass a message to the authorities. The lab holds samples that could help stop the outbreak. If the voice already offered to help, tell them whom to call and what to say." · answers 2 of 3
+  [ 0.77s] Samantha (calm): Maria, we need medicine. Over.
+  [ 0.93s] Daniel (urgent): Is the doctor real? Over.
+  [ 1.16s] Ralph (doubtful): This is a trap, isn't it? Over.
+round 12 (breakdown): 3 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: acerbic · dropped: 0 · finish: stop · first line 0.77s, round 1.17s
+  listener: "Do you need medicine?"
+  overtone neutral · answers 3 of 3
+  [ 0.72s] Moira (calm): We need the medicine now. Over.
+  [ 0.93s] Ralph (doubtful): Is this a trick? Over.
+  [ 1.09s] Samantha (determined): We'll take the risk. Over.
+round 13 (free): 3 line(s) of Moira, Ralph, Samantha · event: — · tone: acerbic · dropped: 0 · finish: stop · first line 0.72s, round 1.15s
+  overtone neutral · aftermath
+  [ 0.76s] Daniel (curious): A toy soldier just fell over. Over.
+  [ 0.93s] Ralph (doubtful): Is this a distraction? Over.
+round 14 (free): 2 line(s) of Daniel, Ralph · event: A wind-up toy soldier marches out of the supply closet and falls over. · tone: acerbic · dropped: 0 · finish: stop · first line 0.76s, round 0.93s
+  overtone neutral
+  [ 0.77s] Daniel (relieved): The receiver's back online. Over.
+  [ 0.93s] Samantha (excited): Answer us, we're smug about it. Over.
+round 15 (repair): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: smug · dropped: 0 · finish: stop · first line 0.77s, round 0.99s
+  overtone positive
+  [ 0.78s] Samantha (happy): Maria, hello again! Over.
+  [ 0.98s] Daniel (relieved): You mentioned medicine earlier, still need it? Over.
+  [ 1.15s] Moira (hopeful): How'd you find us? Over.
+round 16 (exchange): 3 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: smug · dropped: 0 · finish: stop · first line 0.78s, round 1.15s
+  listener: "Hello again, lab."
+  overtone positive · asks "Find out who the voice is. If the voice already said their name, greet them by it and ask how they found this frequency." · answers 1 of 3
+  [ 0.75s] Moira (determined): How'd you find us? Over.
+round 17 (re-call): 1 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: satirical · dropped: 0 · finish: stop · first line 0.75s, round 0.75s
+  heard: "" -> silence: nothing heard
+  overtone neutral · answers 1 of 3
+  [ 0.82s] Moira (curious): Alfredo, you're back! How'd you stay safe? Over.
+  [ 0.99s] Daniel (doubtful): Truck still running? Over.
+round 18 (exchange): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: satirical · dropped: 0 · finish: stop · first line 0.82s, round 0.99s
+  listener: "It's me, Alfredo, from Austin. I still have the truck."
+  overtone neutral · asks "Ask whether the voice is safe and has people with them. If the voice already said, ask them to keep listening on this frequency." · answers 2 of 3
+  [ 0.78s] Daniel (calm): You should head to Dallas. Maria's there. Over.
+  [ 0.93s] Moira (urgent): Is the truck safe? Over.
+round 19 (breakdown): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: clinical · dropped: 0 · finish: stop · first line 0.78s, round 0.94s
+  listener: "Where should I drive?"
+  overtone neutral · answers 3 of 3
+  [ 0.81s] Daniel (curious): He's asking for directions, probably to Maria in Dallas. Over.
+  [ 0.95s] Ralph (doubtful): Why trust him? Over.
+round 20 (free): 2 line(s) of Daniel, Ralph · event: — · tone: clinical · dropped: 0 · finish: stop · first line 0.81s, round 0.97s
+  overtone neutral · aftermath
+  [ 0.77s] Daniel (afraid): We've got company in the specimen room. Over.
+  [ 0.94s] Moira (terrified): It's moving. Over.
+round 21 (free): 2 line(s) of Daniel, Moira, Samantha · event: The thermal camera shows a warm shape standing still in the specimen room. · tone: lonely · dropped: 0 · finish: stop · first line 0.77s, round 0.94s
+  overtone negative
+  [ 0.76s] Daniel (relieved): Receiver's humming again. Over.
+  [ 1.03s] Samantha (excited): Answer us, *please*! We're whimsical today. Over.
+round 22 (repair): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: whimsical · dropped: 0 · finish: stop · first line 0.76s, round 1.03s
+  overtone positive
+  [ 0.81s] Samantha (urgent): Anyone? We need a real answer now. Over.
+round 23 (re-call): 1 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: diagnostic · dropped: 0 · finish: stop · first line 0.81s, round 0.81s
+  heard: "" -> silence: nothing heard
+  overtone neutral · answers 0 of 3
+  [ 0.81s] Samantha (calm): We're shutting down the receiver. Over.
+  [ 0.98s] Daniel (determined): We'll restart it later. Over.
+round 24 (switch-off): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: diagnostic · dropped: 0 · finish: stop · first line 0.81s, round 0.98s
+  heard: "" -> silence: nothing heard
+  overtone neutral · answers 0 of 3
+  [ 0.78s] Moira (determined): We'll keep the samples secure. Over.
+  [ 1.00s] Ralph (urgent): If anyone's out there, tell us, *now*. Over.
+  [ 1.18s] Samantha (curious): Why did we pick this frequency? Over.
+round 25 (free): 3 line(s) of Moira, Ralph, Samantha · event: — · tone: diagnostic · dropped: 0 · finish: stop · first line 0.78s, round 1.25s
+  overtone neutral
+  [ 0.79s] Daniel (curious): Why this frequency, precisely? Over.
+  [ 0.91s] Moira (determined): To amplify the odds. Over.
+round 26 (free): 2 line(s) of Daniel, Moira, Ralph · event: — · tone: pedantic · dropped: 0 · finish: stop · first line 0.79s, round 0.92s
+  overtone neutral
+  [ 0.83s] Daniel (relieved): Receiver's back, *dauntless* this time. Over.
+  [ 1.05s] Samantha (hopeful): Answer us! We're not giving up. Over.
+round 27 (repair): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: dauntless · dropped: 0 · finish: stop · first line 0.83s, round 1.05s
+  overtone positive
+  [ 0.84s] Samantha (determined): Answer us, or we'll start a podcast. Over.
+round 28 (re-call): 1 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: flippant · dropped: 0 · finish: stop · first line 0.84s, round 0.84s
+  heard: nothing sent
+  overtone neutral · answers 0 of 3
+  [ 0.78s] Samantha (calm): Receiver's going dark. Over.
+  [ 0.94s] Daniel (determined): Let's pretend we didn't say that. Over.
+round 29 (switch-off): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: flippant · dropped: 0 · finish: stop · first line 0.78s, round 1.00s
+  heard: nothing sent
+  overtone neutral · answers 0 of 3
+  [ 0.80s] Ralph (calm): The water's warm and metallic. Over.
+  [ 0.96s] Samantha (curious): Could be contamination. Over.
+  [ 1.13s] Ralph (doubtful): Or a broken pipe. Over.
+  [ 1.29s] Samantha (urgent): We need to test it. Over.
+round 30 (free): 4 line(s) of Ralph, Samantha · event: The water from the tap comes out warm and smells faintly of iron. · tone: lulling · dropped: 0 · finish: stop · first line 0.80s, round 1.35s
+  overtone neutral
+  [ 0.85s] Moira (sad): This isn't just water, it's a sign. Over.
+  [ 1.07s] Samantha (afraid): We're running out of options. Over.
+  [ 1.22s] Moira (terrified): The contamination's spreading. Over.
+  [ 1.44s] Samantha (exhausted): We can't afford mistakes. Over.
+round 31 (free): 4 line(s) of Moira, Samantha · event: — · tone: somber · dropped: 0 · finish: stop · first line 0.85s, round 1.45s
+  overtone negative
+  [ 0.87s] Daniel (relieved): Receiver's alive again. Over.
+  [ 0.98s] Samantha (hopeful): Someone's out there, right? Over.
+round 32 (repair): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: idealistic · dropped: 0 · finish: stop · first line 0.87s, round 0.98s
+  overtone positive
+  [ 0.78s] Samantha (determined): Answer us, or we'll blame the static. Over.
+round 33 (re-call): 1 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: pulpy · dropped: 0 · finish: stop · first line 0.78s, round 0.85s
+  heard: nothing sent
+  overtone neutral · answers 0 of 3
+  [ 0.81s] Samantha (terrified): We're shutting it down. Over.
+  [ 0.97s] Daniel (angry): No one's coming. Over.
+round 34 (switch-off): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: apocalyptic · dropped: 0 · finish: stop · first line 0.81s, round 1.02s
+  heard: nothing sent
+  overtone negative · answers 0 of 3
+  [ 0.87s] Moira (terrified): The alarm went off for no reason, just rain. Over.
+  [ 1.08s] Ralph (angry): Somebody's tampering with the systems. Over.
+  [ 1.31s] Samantha (exhausted): We're losing control here. Over.
+  [ 1.41s] Moira (sad): This place is breaking. Over.
+round 35 (free): 4 line(s) of Moira, Ralph, Samantha · event: The roof hatch alarm tripped, but the camera shows only rain. · tone: apocalyptic · dropped: 0 · finish: stop · first line 0.87s, round 1.48s
+  overtone negative
+  [ 0.81s] Daniel (calm): Let's document the anomaly. Over.
+  [ 0.96s] Ralph (urgent): We need to seal the hatch. Over.
+  [ 1.14s] Daniel (determined): No shortcuts. Over.
+round 36 (free): 3 line(s) of Daniel, Ralph · event: — · tone: procedural · dropped: 0 · finish: stop · first line 0.81s, round 1.14s
+  overtone neutral
+  [ 0.86s] Daniel (relieved): Receiver's back, *coquettishly* functioning. Over.
+  [ 1.13s] Samantha (excited): Answer us, or we'll play *coquettish* games. Over.
+round 37 (repair): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: coquettish · dropped: 0 · finish: stop · first line 0.86s, round 1.13s
+  overtone positive
+  [ 0.80s] Samantha (urgent): Answer now, this is official. Over.
+round 38 (re-call): 1 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: official · dropped: 0 · finish: stop · first line 0.80s, round 0.81s
+  heard: nothing sent
+  overtone neutral · answers 0 of 3
+  [ 0.80s] Samantha (calm): Receiver deactivated per protocol. Over.
+  [ 0.96s] Daniel (determined): We'll reboot it later. Over.
+round 39 (switch-off): 2 line(s) of Daniel, Moira, Ralph, Samantha · event: — · tone: official · dropped: 0 · finish: stop · first line 0.80s, round 0.97s
+  heard: nothing sent
+  overtone neutral · answers 0 of 3
+  [ 0.79s] Moira (calm): Fume hoods shut. Over.
+  [ 0.96s] Ralph (urgent): Something's wrong with the system. Over.
+round 40 (free): 2 line(s) of Moira, Ralph, Samantha · event: The fume hoods in the chemistry lab all shut off at once. · tone: facetious · dropped: 0 · finish: stop · first line 0.79s, round 1.02s
+  overtone neutral
+
+40 rounds · 92 lines · 0 dropped · average round 1.16s · script after the last round: 6509 tokens
+record: runs/2026-09-26T17-05-46/script.json

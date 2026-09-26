@@ -616,6 +616,44 @@ reader's memory):
 
 ## A listener memory keyed by identity — revisit how the show remembers a returning listener (owner, 2026-09-26)
 
+- **Status 2026-09-26, evening — measured; RULING: names-only A, a show
+  fix before the talk.** Step 3.4c.5's driver test ran B in two
+  wordings and A simulated with a perfect extractor, on the same
+  script and seeds ([experiment 2026-09-26] listener-memory-b-vs-a:
+  the scripts, the raw runs, the findings). An anonymous "Hello again,
+  lab." was treated as the most recent caller, Maria, in 3 of 3 drives
+  with B in both wordings, and in 0 of 3 with A — A's cast asked who it
+  was; Alfredo's name, across his return's rounds, 3 of 12 with the
+  committed B against 7 of 12 with A; the rest within noise. The gains
+  come from knowing who is speaking, not from the facts. The owner:
+  "We are going to do: "a. B for 3.4c; names-only A becomes a show fix
+  before the talk, with the follow-up updated.""
+- **The shape to build (names-only A):**
+  - **detect the caller's name, or its absence, for each answer**, in
+    code — the only new piece: a second small model request with a
+    grammar that allows only one of the known callers' names, "new:
+    ‹Name›", or "none", which also maps Whisper's spellings ("Alfred")
+    to a known caller; plain patterns are the fallback (about 30
+    minutes, brittle: "this is crazy" matches "this is …"); the delay
+    it adds per answer is unmeasured;
+  - **keep it in the run's record** — one optional field per round, so
+    the director stays a function of the record and old runs load;
+  - **the restatement states who the voice is** — anonymous ("This
+    voice has not said who they are. Callers you know: … Do not guess
+    which one this is."), new ("This is Maria, a new caller."),
+    returning ("This is Alfredo, who called before. Greet them as a
+    returning friend, by name."); the facts stay the listener's quoted
+    words, grouped under the caller's name. The simulation's
+    `sim_a.py` is the draft.
+  - **Estimate:** about 3 hours — detection about 1 h, the record
+    15 minutes, the director about 1 h, a driver test on the box with
+    the words spoken and heard by Whisper about 30 minutes; the agent's
+    build estimates ran high lately (3.4c's four sub-steps took about
+    1 h 07 against 4-6 h), so 1.5-3 h.
+  - **Test first:** detection on real speech — names Whisper mangles,
+    "I'm Alfredo's friend", nicknames. A small model follows a wrong
+    conclusion as faithfully as a right one: a misheard name would have
+    the cast greet the wrong person with confidence.
 - **The decision to revisit:** in step 3.4c the restatement — the
   listener's words repeated, verbatim, in each contact instruction —
   reaches over the whole run, grouped by contact, oldest first, capped
@@ -653,10 +691,12 @@ reader's memory):
 - **Across runs:** both b and c last one run; a page reload starts a new
   run. Memory across runs is a feature of its own (see also "Resume the
   same run after a page reload").
-- **Trigger:** the driver test or the owner's ear shows b falls short —
+- **Trigger:** ~~the driver test or the owner's ear shows b falls short —
   the model misses a returning voice, mixes two listeners up, or the cap
   drops a listener who comes back later — or option A comes back for
-  feature 5.
+  feature 5~~ — **fired 2026-09-26** (the driver test: B takes an
+  anonymous returning voice for the most recent caller). Now: among
+  the show fixes before the talk, after slice 3 closes.
 
 ## Events the listener cannot hear — the characters react to what only the model was told (owner, 2026-09-25) — option 4 adopted
 
