@@ -74,7 +74,8 @@ detail.*
   done; 3.4c.5, the four checks, is under way — the driver test run
   and the wording tuned from it (`e261b5b`); B versus A ruled (B for
   3.4c; [experiment 2026-09-26] listener-memory-b-vs-a); the fake
-  microphone and the test by ear remain. Then 3.5, the close. How
+  microphone passed, and the radio beats were reworded (`3c4154c`);
+  the test by ear remains. Then 3.5, the close. How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
@@ -1032,7 +1033,22 @@ the agent keeps this current. These carry across arcs.*
             keyed by identity". The scripts, the nine runs and the
             findings: [experiment 2026-09-26] listener-memory-b-vs-a
             (`docs/experiments/2026-09-26-listener-memory-b-vs-a/`).
-            Next: check 3 (the fake microphone) and check 4 (the owner
+            **Check 3 passed** (19:03; the fork's run
+            `2026-09-26T18-59-43`, the fake microphone in the page): a
+            full contact and an unanswered call to the Switch-off; the
+            RECEIVER sign, the beats' directions, the captions and the
+            debug line's fields as designed; a silent window leaves no
+            caption — kept as built (the owner). **The radio beats
+            reworded** at the owner's call after check 3 ("It is very
+            annoying that the LLM does not explain what is going on with
+            the radio"): two measured rounds ([experiment 2026-09-26]
+            radio-beats-wording), the second kept (the fork's
+            `3c4154c`): the Repair says the lab can hear them 2 → 21 of
+            21, the Switch-off says the receiver is going off 5 → 12 of
+            12; "we can't hear you" after a Breakdown or a Switch-off is
+            still mostly missing — for the ear test. The Breakdown takes
+            a new setting, `breakdown_lines` (3); the Repair and the
+            Switch-off take `beat_max_lines`. Next: check 4 (the owner
             by ear).
         *Done when* (its §17.12): (1) the suite and the three Node
         tests are green; (2) the driver test on the box — scripted
