@@ -698,6 +698,49 @@ reader's memory):
   anonymous returning voice for the most recent caller). Now: among
   the show fixes before the talk, after slice 3 closes.
 
+## Event texts reworded as lines of dialog — a personal account from the cast (owner, 2026-09-27)
+
+- **The gap:** with the fixed lines ruled on 2026-09-27 (after step
+  3.4c.5's test by ear), a cast member reads an event's text word for
+  word on air. The texts in the fork's `stories/lab-outbreak/events.yaml`
+  (289: positive 29, neutral 94, negative 166) are written as narration
+  in the third person, not as something a person says.
+- **The owner (verbatim, 2026-09-27):** "I expect some percentage of the
+  event lines may need to be re-written to better suite a line of
+  dialog, providing a more personal account, and more details of what
+  is happening. e.g. `- A dusty guitar turns up in the security office,
+  with all six strings.`, clearly this line is not a good dialog line to
+  be told in first person, instead it should be something like `- Guys!
+  A dusty guitar turned up in the security office, with all six
+  strings!`. Seems small, but it's important.... However, this is not
+  the time to fix this, we can do later... But we should save this as a
+  follow up to not forget."
+- **Trigger:** after the fixed lines are built — the owner's call.
+- **Fix shape:** go through the events and reword those that do not
+  read as speech — said by someone in the lab, to the others or to the
+  listeners, about what just happened, with a concrete detail; the
+  agent drafts, the owner reviews. Rewording events changes the
+  baseline of the wording experiments (the driver test), so it is a
+  measured step of its own.
+
+## The contact agenda — more items (owner, 2026-09-27)
+
+- **The list:** the fork's `stories/lab-outbreak/agenda.yaml`, nine
+  two-branch items, the name item first (step 3.4c; [discussion
+  2026-09-26] show-director-modes §15.9). Reviewed by the owner before
+  the test by ear.
+- **The owner (verbatim, 2026-09-27):** "I reviewed the agenda items.
+  They could be improved with more items, but I want to keep it as is
+  for the moment, because if we change it now we change the baseline
+  for comparing prompt wording improvements like the last experiments
+  we just did. So any improvements ti agenda items would be a follow
+  up."
+- **Trigger:** once the wording work measured against the driver
+  test's baseline is done — the owner's call.
+- **Fix shape:** the agent drafts more items in the same two-branch
+  form (ask for something; if the voice already gave it, use it); the
+  owner reviews; a driver test before and after.
+
 ## Events the listener cannot hear — the characters react to what only the model was told (owner, 2026-09-25) — option 4 adopted
 
 - **Status 2026-09-25 (night) — the A/B test decided it: option 4, the
