@@ -1,0 +1,1968 @@
+{
+ "run_id": "2026-09-26T19-26-25",
+ "started": "2026-09-26T19:26:25",
+ "story": "lab-outbreak",
+ "cast": [
+  "Daniel",
+  "Moira",
+  "Ralph",
+  "Samantha"
+ ],
+ "moods": true,
+ "seed": 2026,
+ "systems": {
+  "": "/no_think\nYou write a live radio play. Four scientists are trapped in a besieged research lab during a zombie outbreak, speaking over the lab's shortwave radio. The radio's receiver keeps failing: while it is down they can only transmit, and when they get it working they call out for anyone listening to answer.\n\nThe cast:\n- Daniel: Dr. Daniel Hayworth, systems engineer. Dry British understatement; competent, tired, quietly heroic.\n- Moira: Dr. Moira Byrne, microbiologist. Irish lilt in her phrasing; grimly fascinated by the science of the outbreak, sometimes forgetting to be afraid.\n- Ralph: Dr. Ralph Okafor, security officer. Deep, deliberate, a little paranoid; counts things (doors, cans, shamblers) because counting keeps him calm.\n- Samantha: Dr. Samantha Reyes, communications lead running the broadcast. Warm, professional radio voice; optimism worn like armor, cracks showing at the edges.\n\nFormat: write the next lines of the script, one line per transmission, as `Name (emotion): spoken words`. The emotion in parentheses is the one the listener should hear in the speaker's voice, exactly one of: happy, hopeful, excited, relieved, calm, doubtful, urgent, curious, determined, sad, afraid, terrified, angry, exhausted. Each transmission is one or two short spoken sentences ending with \"Over.\" No narration, no markdown, and nothing else in parentheses."
+ },
+ "episode": "",
+ "rounds": [
+  {
+   "n": 1,
+   "kind": "orientation",
+   "played_s": 0.0,
+   "instruction": "The broadcast begins. Samantha opens it and tells anyone listening, in their own words, that the lab's receiver is dead — they can only transmit, and will call out for listeners when it works — and who they are and where: Four scientists, Daniel, Moira, Ralph and Samantha, are trapped in a secret research lab, besieged by the dead since the outbreak began, and broadcasting on the lab's shortwave radio. The radio's receiver is dead: they can only transmit, not hear. When they get it working, they will call out for anyone listening, and whoever hears them can answer then. Samantha speaks first, then Daniel, Moira or Ralph: the next two lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: hypnotic.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "hypnotic",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "calm",
+     "raw": "Samantha (calm): We are the four trapped in the research lab, besieged by the undead. Our receiver is dead—only transmission possible. Over.  ",
+     "spoken": "We are the four trapped in the research lab, besieged by the undead. Our receiver is dead, only transmission possible. Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "doubtful",
+     "raw": "Daniel (doubtful): We’ve lost all external contact. The silence beyond this room… is it real, or just the radio failing? Over.  ",
+     "spoken": "We've lost all external contact. The silence beyond this room... is it real, or just the radio failing? Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 181,
+    "cache_n": 300,
+    "predicted_n": 71
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": null,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 2,
+   "kind": "free",
+   "played_s": 20.0,
+   "instruction": "Something happens that the listeners cannot see: The rain fills the rooftop tanks with clean water. The first to speak tells the listeners on air what is happening. Moira and Ralph speak next: the next three lines, each with the emotion in its voice, one of: happy, hopeful, excited, relieved. Let the tone be: protective.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Moira",
+    "Ralph"
+   ],
+   "max_lines": 3,
+   "event": "The rain fills the rooftop tanks with clean water.",
+   "tone": "protective",
+   "lines": [
+    {
+     "speaker": "Moira",
+     "mood": "relieved",
+     "raw": "Moira (relieved): The rain has filled the rooftop tanks—clean water, finally. We may have a way to sustain ourselves. Over.  ",
+     "spoken": "The rain has filled the rooftop tanks, clean water, finally. We may have a way to sustain ourselves. Over."
+    },
+    {
+     "speaker": "Ralph",
+     "mood": "hopeful",
+     "raw": "Ralph (hopeful): If we can filter this water, it could help us last longer. Maybe even lure survivors? Over.  ",
+     "spoken": "If we can filter this water, it could help us last longer. Maybe even lure survivors? Over."
+    },
+    {
+     "speaker": "Moira",
+     "mood": "excited",
+     "raw": "Moira (excited): This changes everything. We’re not just surviving—we’re *preparing* to fight back. Over.",
+     "spoken": "This changes everything. We're not just surviving, we're *preparing* to fight back. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 328,
+    "cache_n": 300,
+    "predicted_n": 93
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 169,
+   "trims": [],
+   "episode": "",
+   "overtone": "positive",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 3,
+   "kind": "repair",
+   "played_s": 40.0,
+   "instruction": "Something happens that the listeners cannot see: the lab has fixed the receiver, the part of the radio that hears. The receiver crackles back to life. First, Daniel, Moira or Ralph tells the listeners on air, in detail, what just happened to the receiver: what they see and hear. Last, Samantha tells anyone listening that the lab can hear them now, and asks them to answer. Daniel, Moira or Ralph speaks first, then Samantha: the next two lines, each with the emotion in its voice, one of: happy, hopeful, excited, relieved. Let the tone be: protective.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "protective",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "relieved",
+     "raw": "Daniel (relieved): The receiver’s back—crackling, alive. It’s like the static was a prison, and now it’s broken. Over.  ",
+     "spoken": "The receiver's back, crackling, alive. It's like the static was a prison, and now it's broken. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "hopeful",
+     "raw": "Samantha (hopeful): We can hear you now. If you’re out there, answer. Over.",
+     "spoken": "We can hear you now. If you're out there, answer. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 306,
+    "cache_n": 546,
+    "predicted_n": 60
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 191,
+   "trims": [],
+   "episode": "",
+   "overtone": "positive",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 4,
+   "kind": "exchange",
+   "played_s": 60.0,
+   "instruction": "A voice on the frequency says: \"Hello? Is anyone there?\" Speak to the voice directly. Answer what the voice said, then: Find out who the voice is. If the voice already said their name, greet them by it and ask how they found this frequency. The last line asks the voice a question. Samantha speaks first, then Daniel, Moira or Ralph: the next three lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: stiff-upper-lip.",
+   "listener": "Hello? Is anyone there?",
+   "heard": {
+    "text": "Hello? Is anyone there?",
+    "no_speech_prob": null,
+    "avg_logprob": null,
+    "silence": null
+   },
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 3,
+   "event": null,
+   "tone": "stiff-upper-lip",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "calm",
+     "raw": "Samantha (calm): Hello? This is Samantha Reyes. We’re in a besieged lab—answer us. Over.  ",
+     "spoken": "Hello? This is Samantha Reyes. We're in a besieged lab, answer us. Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "doubtful",
+     "raw": "Daniel (doubtful): Who’s on the other end? That voice… it’s not structured. Over.  ",
+     "spoken": "Who's on the other end? That voice... it's not structured. Over."
+    },
+    {
+     "speaker": "Moira",
+     "mood": "curious",
+     "raw": "Moira (curious): Are they… a survivor? Or something else? Over.",
+     "spoken": "Are they... a survivor? Or something else? Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 316,
+    "cache_n": 717,
+    "predicted_n": 73
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 194,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": "Find out who the voice is. If the voice already said their name, greet them by it and ask how they found this frequency.",
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 5,
+   "kind": "exchange",
+   "played_s": 80.0,
+   "instruction": "A voice on the frequency says: \"My name is Alfredo.\" Earlier in this contact the voice said: \"Hello? Is anyone there?\" Speak to the voice directly. Answer what the voice said, then: Ask whether the voice is safe and has people with them. If the voice already said, ask them to keep listening on this frequency. The last line asks the voice a question. Moira speaks first, then Daniel, Ralph or Samantha: the next three lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: stiff-upper-lip.",
+   "listener": "My name is Alfredo.",
+   "heard": {
+    "text": "My name is Alfredo.",
+    "no_speech_prob": null,
+    "avg_logprob": null,
+    "silence": null
+   },
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 3,
+   "event": null,
+   "tone": "stiff-upper-lip",
+   "lines": [
+    {
+     "speaker": "Moira",
+     "mood": "calm",
+     "raw": "Moira (calm): Alfredo? We received your name. Are you safe? Do you have others with you? Over.  ",
+     "spoken": "Alfredo? We received your name. Are you safe? Do you have others with you? Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "doubtful",
+     "raw": "Daniel (doubtful): Why now? This frequency’s unstable—why risk it? Over.  ",
+     "spoken": "Why now? This frequency's unstable, why risk it? Over."
+    },
+    {
+     "speaker": "Ralph",
+     "mood": "urgent",
+     "raw": "Ralph (urgent): If you’re out there, stay put. We can’t afford risks. Over.",
+     "spoken": "If you're out there, stay put. We can't afford risks. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 333,
+    "cache_n": 908,
+    "predicted_n": 74
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 209,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": "Ask whether the voice is safe and has people with them. If the voice already said, ask them to keep listening on this frequency.",
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 6,
+   "kind": "breakdown",
+   "played_s": 100.0,
+   "instruction": "A voice on the frequency says: \"I'm in Austin, Texas, and I have a pickup truck.\" Earlier in this contact the voice said: \"Hello? Is anyone there?\" / \"My name is Alfredo.\" The first line answers what the voice just said, speaking to them directly. Then something happens that the listeners cannot see: Smoke pours from the receiver, and it goes dead. The last line tells the listeners on air, in detail, what is happening to the receiver, and what it means for them: the lab can no longer hear them, but the transmitter still works, so the broadcast goes on while they fix the receiver. Ralph speaks first, then Daniel, Moira or Samantha: the next two lines, each with the emotion in its voice, one of: sad, afraid, terrified, angry, exhausted. Let the tone be: scornful.",
+   "listener": "I'm in Austin, Texas, and I have a pickup truck.",
+   "heard": {
+    "text": "I'm in Austin, Texas, and I have a pickup truck.",
+    "no_speech_prob": null,
+    "avg_logprob": null,
+    "silence": null
+   },
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "scornful",
+   "lines": [
+    {
+     "speaker": "Ralph",
+     "mood": "sad",
+     "raw": "Ralph (sad): The receiver’s smoking—fire’s eating through the circuits. We’re broadcasting blind now. Over.  ",
+     "spoken": "The receiver's smoking, fire's eating through the circuits. We're broadcasting blind now. Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "afraid",
+     "raw": "Daniel (afraid): Alfredo, if you can hear this, *stay away from the frequency*. It’s unstable. Over.  ",
+     "spoken": "Alfredo, if you can hear this, *stay away from the frequency*. It's unstable. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 398,
+    "cache_n": 1102,
+    "predicted_n": 58
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 243,
+   "trims": [],
+   "episode": "",
+   "overtone": "negative",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 7,
+   "kind": "free",
+   "played_s": 120.0,
+   "instruction": "The voice on the frequency told you: \"Hello? Is anyone there?\" / \"My name is Alfredo.\" / \"I'm in Austin, Texas, and I have a pickup truck.\" Talk among yourselves about what it means for you. Ralph and Samantha speak next: the next line, with the emotion in its voice, one of: sad, afraid, terrified, angry, exhausted. Let the tone be: scornful.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 1,
+   "event": null,
+   "tone": "scornful",
+   "lines": [
+    {
+     "speaker": "Ralph",
+     "mood": "angry",
+     "raw": "Ralph (angry): A pickup truck in Austin? That’s a *thousand* miles from here. What does he even want? Over.  ",
+     "spoken": "A pickup truck in Austin? That's a *thousand* miles from here. What does he even want? Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 340,
+    "cache_n": 1311,
+    "predicted_n": 34
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 127,
+   "trims": [],
+   "episode": "",
+   "overtone": "negative",
+   "agenda": null,
+   "slot": "aftermath",
+   "recollects": 3
+  },
+  {
+   "n": 8,
+   "kind": "free",
+   "played_s": 140.0,
+   "instruction": "Something happens that the listeners cannot see: A soldier at the gate shouts that he is not infected and begs to be let in. The first to speak tells the listeners on air what is happening. Daniel, Ralph and Samantha speak next: the next four lines, each with the emotion in its voice, one of: sad, afraid, terrified, angry, exhausted. Let the tone be: secretive.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 4,
+   "event": "A soldier at the gate shouts that he is not infected and begs to be let in.",
+   "tone": "secretive",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "terrified",
+     "raw": "Daniel (terrified): A soldier’s at the gate—he says he’s not infected. He’s begging to come in. Over.  ",
+     "spoken": "A soldier's at the gate, he says he's not infected. He's begging to come in. Over."
+    },
+    {
+     "speaker": "Ralph",
+     "mood": "afraid",
+     "raw": "Ralph (afraid): If he’s telling the truth… why would he risk it? Over.  ",
+     "spoken": "If he's telling the truth... why would he risk it? Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "sad",
+     "raw": "Samantha (sad): We don’t know what’s happening outside. Maybe he’s lying. Over.  ",
+     "spoken": "We don't know what's happening outside. Maybe he's lying. Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "exhausted",
+     "raw": "Daniel (exhausted): We can’t let anyone in without checking. Over.",
+     "spoken": "We can't let anyone in without checking. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 221,
+    "cache_n": 1552,
+    "predicted_n": 97
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 185,
+   "trims": [],
+   "episode": "",
+   "overtone": "negative",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 9,
+   "kind": "repair",
+   "played_s": 160.0,
+   "instruction": "Something happens that the listeners cannot see: the lab has fixed the receiver, the part of the radio that hears. The receiver crackles back to life. First, Daniel, Moira or Ralph tells the listeners on air, in detail, what just happened to the receiver: what they see and hear. Last, Samantha tells anyone listening that the lab can hear them now, and asks them to answer. Daniel, Moira or Ralph speaks first, then Samantha: the next two lines, each with the emotion in its voice, one of: happy, hopeful, excited, relieved. Let the tone be: heartfelt.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "heartfelt",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "relieved",
+     "raw": "Daniel (relieved): The receiver’s back—crackling, alive. It’s like the static was a prison, and now it’s broken. Over.  ",
+     "spoken": "The receiver's back, crackling, alive. It's like the static was a prison, and now it's broken. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "hopeful",
+     "raw": "Samantha (hopeful): We can hear you now. If you’re out there, answer. Over.",
+     "spoken": "We can hear you now. If you're out there, answer. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 323,
+    "cache_n": 1679,
+    "predicted_n": 60
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 192,
+   "trims": [],
+   "episode": "",
+   "overtone": "positive",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 10,
+   "kind": "exchange",
+   "played_s": 180.0,
+   "instruction": "A voice on the frequency says: \"This is Maria, from Dallas.\" Voices that reached you before, oldest first — 1: \"Hello? Is anyone there?\" / \"My name is Alfredo.\" / \"I'm in Austin, Texas, and I have a pickup truck.\" Only a voice that says the name of one of them is someone you spoke with before: greet them as a returning friend and use what they told you. Any other voice is someone new. Speak to the voice directly. Answer what the voice said, then: Find out who the voice is. If the voice already said their name, greet them by it and ask how they found this frequency. The last line asks the voice a question. Samantha speaks first, then Daniel, Moira or Ralph: the next three lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: tranquil.",
+   "listener": "This is Maria, from Dallas.",
+   "heard": {
+    "text": "This is Maria, from Dallas.",
+    "no_speech_prob": null,
+    "avg_logprob": null,
+    "silence": null
+   },
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 3,
+   "event": null,
+   "tone": "tranquil",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "calm",
+     "raw": "Samantha (calm): Maria, from Dallas? We’ve heard your name before—Alfredo, the one in Austin. How did you find this frequency? Over.  ",
+     "spoken": "Maria, from Dallas? We've heard your name before, Alfredo, the one in Austin. How did you find this frequency? Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "doubtful",
+     "raw": "Daniel (doubtful): Why now? This signal’s been unstable. Over.  ",
+     "spoken": "Why now? This signal's been unstable. Over."
+    },
+    {
+     "speaker": "Moira",
+     "mood": "curious",
+     "raw": "Moira (curious): If you’re here, are you safe? Over.",
+     "spoken": "If you're here, are you safe? Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 394,
+    "cache_n": 1866,
+    "predicted_n": 75
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 273,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": "Find out who the voice is. If the voice already said their name, greet them by it and ask how they found this frequency.",
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 11,
+   "kind": "exchange",
+   "played_s": 200.0,
+   "instruction": "A voice on the frequency says: \"We have a doctor with us.\" Earlier in this contact the voice said: \"This is Maria, from Dallas.\" Voices that reached you before, oldest first — 1: \"Hello? Is anyone there?\" / \"My name is Alfredo.\" / \"I'm in Austin, Texas, and I have a pickup truck.\" Only a voice that says the name of one of them is someone you spoke with before: greet them as a returning friend and use what they told you. Any other voice is someone new. Speak to the voice directly. Answer what the voice said, then: Find out where the voice is. If the voice already said where they are, ask how things are there and whether the roads are open. The last line asks the voice a question. Moira speaks first, then Daniel, Ralph or Samantha: the next three lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: tranquil.",
+   "listener": "We have a doctor with us.",
+   "heard": {
+    "text": "We have a doctor with us.",
+    "no_speech_prob": null,
+    "avg_logprob": null,
+    "silence": null
+   },
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 3,
+   "event": null,
+   "tone": "tranquil",
+   "lines": [
+    {
+     "speaker": "Moira",
+     "mood": "calm",
+     "raw": "Moira (calm): A doctor? That’s valuable. Where are you? Over.  ",
+     "spoken": "A doctor? That's valuable. Where are you? Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "doubtful",
+     "raw": "Daniel (doubtful): Why tell us now? This frequency’s unreliable. Over.  ",
+     "spoken": "Why tell us now? This frequency's unreliable. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "curious",
+     "raw": "Samantha (curious): Are the roads open? Are you near supplies? Over.",
+     "spoken": "Are the roads open? Are you near supplies? Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 492,
+    "cache_n": 2058,
+    "predicted_n": 61
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 276,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": "Find out where the voice is. If the voice already said where they are, ask how things are there and whether the roads are open.",
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 12,
+   "kind": "breakdown",
+   "played_s": 220.0,
+   "instruction": "A voice on the frequency says: \"Do you need medicine?\" Earlier in this contact the voice said: \"This is Maria, from Dallas.\" / \"We have a doctor with us.\" Voices that reached you before, oldest first — 1: \"Hello? Is anyone there?\" / \"My name is Alfredo.\" / \"I'm in Austin, Texas, and I have a pickup truck.\" Only a voice that says the name of one of them is someone you spoke with before: greet them as a returning friend and use what they told you. Any other voice is someone new. The first line answers what the voice just said, speaking to them directly. Then something happens that the listeners cannot see: Smoke pours from the receiver, and it goes dead. The second line tells the listeners on air, in detail, what is happening to the receiver: what they see and hear. The last line tells them what it means for them: the lab can no longer hear them, but the transmitter still works, so the broadcast goes on while they fix the receiver. Samantha speaks first, then Daniel, Moira or Ralph: the next three lines, each with the emotion in its voice, one of: sad, afraid, terrified, angry, exhausted. Let the tone be: despairing.",
+   "listener": "Do you need medicine?",
+   "heard": {
+    "text": "Do you need medicine?",
+    "no_speech_prob": null,
+    "avg_logprob": null,
+    "silence": null
+   },
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 3,
+   "event": null,
+   "tone": "despairing",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "sad",
+     "raw": "Samantha (sad): Maria, we need medicine—do you have any? Over.  ",
+     "spoken": "Maria, we need medicine, do you have any? Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "afraid",
+     "raw": "Daniel (afraid): The receiver’s smoking—it’s failing. Over.  ",
+     "spoken": "The receiver's smoking, it's failing. Over."
+    },
+    {
+     "speaker": "Ralph",
+     "mood": "exhausted",
+     "raw": "Ralph (exhausted): We can’t afford to lose this link. Fix it now. Over.",
+     "spoken": "We can't afford to lose this link. Fix it now. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 548,
+    "cache_n": 2331,
+    "predicted_n": 63
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 331,
+   "trims": [],
+   "episode": "",
+   "overtone": "negative",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 13,
+   "kind": "free",
+   "played_s": 240.0,
+   "instruction": "The voice on the frequency told you: \"This is Maria, from Dallas.\" / \"We have a doctor with us.\" / \"Do you need medicine?\" Talk among yourselves about what it means for you. Moira and Ralph speak next: the next three lines, each with the emotion in its voice, one of: sad, afraid, terrified, angry, exhausted. Let the tone be: despairing.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Moira",
+    "Ralph"
+   ],
+   "max_lines": 3,
+   "event": null,
+   "tone": "despairing",
+   "lines": [
+    {
+     "speaker": "Moira",
+     "mood": "exhausted",
+     "raw": "Moira (exhausted): A doctor? We don’t know if they’re real or just another risk. Over.  ",
+     "spoken": "A doctor? We don't know if they're real or just another risk. Over."
+    },
+    {
+     "speaker": "Ralph",
+     "mood": "angry",
+     "raw": "Ralph (angry): They’re broadcasting *now*? This frequency’s a death trap. Over.  ",
+     "spoken": "They're broadcasting *now*? This frequency's a death trap. Over."
+    },
+    {
+     "speaker": "Moira",
+     "mood": "terrified",
+     "raw": "Moira (terrified): If they’re lying, we’re wasting time. We need to focus on survival. Over.",
+     "spoken": "If they're lying, we're wasting time. We need to focus on survival. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 426,
+    "cache_n": 2607,
+    "predicted_n": 78
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 169,
+   "trims": [],
+   "episode": "",
+   "overtone": "negative",
+   "agenda": null,
+   "slot": "aftermath",
+   "recollects": 9
+  },
+  {
+   "n": 14,
+   "kind": "free",
+   "played_s": 260.0,
+   "instruction": "Moira and Samantha speak next: the next four lines, each with the emotion in its voice, one of: sad, afraid, terrified, angry, exhausted. Let the tone be: despairing.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Moira",
+    "Samantha"
+   ],
+   "max_lines": 4,
+   "event": null,
+   "tone": "despairing",
+   "lines": [
+    {
+     "speaker": "Moira",
+     "mood": "terrified",
+     "raw": "Moira (terrified): If they’re lying, we’re wasting time. We need to focus on survival. Over.  ",
+     "spoken": "If they're lying, we're wasting time. We need to focus on survival. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "afraid",
+     "raw": "Samantha (afraid): What if they’re not real? What if they’re *zombies*? Over.  ",
+     "spoken": "What if they're not real? What if they're *zombies*? Over."
+    },
+    {
+     "speaker": "Moira",
+     "mood": "sad",
+     "raw": "Moira (sad): We can’t afford distractions. The lab’s collapsing. Over.  ",
+     "spoken": "We can't afford distractions. The lab's collapsing. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "exhausted",
+     "raw": "Samantha (exhausted): We’re running out of options. Over.",
+     "spoken": "We're running out of options. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 221,
+    "cache_n": 2938,
+    "predicted_n": 96
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 144,
+   "trims": [],
+   "episode": "",
+   "overtone": "negative",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 15,
+   "kind": "repair",
+   "played_s": 280.0,
+   "instruction": "Something happens that the listeners cannot see: the lab has fixed the receiver, the part of the radio that hears. The receiver crackles back to life. First, Daniel, Moira or Ralph tells the listeners on air, in detail, what just happened to the receiver: what they see and hear. Last, Samantha tells anyone listening that the lab can hear them now, and asks them to answer. Daniel, Moira or Ralph speaks first, then Samantha: the next two lines, each with the emotion in its voice, one of: happy, hopeful, excited, relieved. Let the tone be: whimsical.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "whimsical",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "hopeful",
+     "raw": "Daniel (hopeful): The receiver’s back—crackling, alive. It’s like the static was a storm, and now it’s clearing. Over.  ",
+     "spoken": "The receiver's back, crackling, alive. It's like the static was a storm, and now it's clearing. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "relieved",
+     "raw": "Samantha (relieved): We can hear you now. If you’re out there, answer. Over.",
+     "spoken": "We can hear you now. If you're out there, answer. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 281,
+    "cache_n": 3107,
+    "predicted_n": 60
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 193,
+   "trims": [],
+   "episode": "",
+   "overtone": "positive",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 16,
+   "kind": "exchange",
+   "played_s": 300.0,
+   "instruction": "A voice on the frequency says: \"Hello again, lab.\" Voices that reached you before, oldest first — 1: \"Hello? Is anyone there?\" / \"My name is Alfredo.\" / \"I'm in Austin, Texas, and I have a pickup truck.\"; 2: \"This is Maria, from Dallas.\" / \"We have a doctor with us.\" / \"Do you need medicine?\" Only a voice that says the name of one of them is someone you spoke with before: greet them as a returning friend and use what they told you. Any other voice is someone new. Speak to the voice directly. Answer what the voice said, then: Find out who the voice is. If the voice already said their name, greet them by it and ask how they found this frequency. The last line asks the voice a question. Samantha speaks first, then Daniel, Moira or Ralph: the next three lines, each with the emotion in its voice, one of: happy, hopeful, excited, relieved. Let the tone be: whimsical.",
+   "listener": "Hello again, lab.",
+   "heard": {
+    "text": "Hello again, lab.",
+    "no_speech_prob": null,
+    "avg_logprob": null,
+    "silence": null
+   },
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 3,
+   "event": null,
+   "tone": "whimsical",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "happy",
+     "raw": "Samantha (happy): Hello again, Maria! We missed you. How did you find this frequency? Over.  ",
+     "spoken": "Hello again, Maria! We missed you. How did you find this frequency? Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "hopeful",
+     "raw": "Daniel (hopeful): Maybe she’s nearby? Could be a lifeline. Over.  ",
+     "spoken": "Maybe she's nearby? Could be a lifeline. Over."
+    },
+    {
+     "speaker": "Ralph",
+     "mood": "relieved",
+     "raw": "Ralph (relieved): If she’s real, we need answers fast. Over.",
+     "spoken": "If she's real, we need answers fast. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 421,
+    "cache_n": 3251,
+    "predicted_n": 67
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 291,
+   "trims": [],
+   "episode": "",
+   "overtone": "positive",
+   "agenda": "Find out who the voice is. If the voice already said their name, greet them by it and ask how they found this frequency.",
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 17,
+   "kind": "re-call",
+   "played_s": 320.0,
+   "instruction": "The voice has gone quiet. Earlier in this contact the voice said: \"Hello again, lab.\" Voices that reached you before, oldest first — 1: \"Hello? Is anyone there?\" / \"My name is Alfredo.\" / \"I'm in Austin, Texas, and I have a pickup truck.\"; 2: \"This is Maria, from Dallas.\" / \"We have a doctor with us.\" / \"Do you need medicine?\" Only a voice that says the name of one of them is someone you spoke with before: greet them as a returning friend and use what they told you. Any other voice is someone new. Ralph speaks to the voice, calls them by name if they gave one, and asks again: \"If she's real, we need answers fast. Over.\" Ralph speaks next: the next line, with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: rapt.",
+   "listener": null,
+   "heard": {
+    "text": "",
+    "no_speech_prob": null,
+    "avg_logprob": null,
+    "silence": "nothing heard"
+   },
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 1,
+   "event": null,
+   "tone": "rapt",
+   "lines": [
+    {
+     "speaker": "Ralph",
+     "mood": "determined",
+     "raw": "Ralph (determined): Maria, if you’re real, tell us where you are. Over.",
+     "spoken": "Maria, if you're real, tell us where you are. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 498,
+    "cache_n": 3444,
+    "predicted_n": 22
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 225,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 18,
+   "kind": "exchange",
+   "played_s": 340.0,
+   "instruction": "A voice on the frequency says: \"It's me, Alfredo, from Austin. I still have the truck.\" Earlier in this contact the voice said: \"Hello again, lab.\" Voices that reached you before, oldest first — 1: \"Hello? Is anyone there?\" / \"My name is Alfredo.\" / \"I'm in Austin, Texas, and I have a pickup truck.\"; 2: \"This is Maria, from Dallas.\" / \"We have a doctor with us.\" / \"Do you need medicine?\" Only a voice that says the name of one of them is someone you spoke with before: greet them as a returning friend and use what they told you. Any other voice is someone new. Speak to the voice directly. Answer what the voice said, then: Ask the voice whether they have a radio that can transmit, to relay the lab's calls further. If the voice already said what they have, ask them to repeat the lab's message on it. The last line asks the voice a question. Ralph speaks first, then Daniel, Moira or Samantha: the next three lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: rapt.",
+   "listener": "It's me, Alfredo, from Austin. I still have the truck.",
+   "heard": {
+    "text": "It's me, Alfredo, from Austin. I still have the truck.",
+    "no_speech_prob": null,
+    "avg_logprob": null,
+    "silence": null
+   },
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 3,
+   "event": null,
+   "tone": "rapt",
+   "lines": [
+    {
+     "speaker": "Ralph",
+     "mood": "determined",
+     "raw": "Ralph (determined): Alfredo, we need to know if you can transmit our calls. Over.  ",
+     "spoken": "Alfredo, we need to know if you can transmit our calls. Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "curious",
+     "raw": "Daniel (curious): Do you have a working radio? We could use it to coordinate. Over.  ",
+     "spoken": "Do you have a working radio? We could use it to coordinate. Over."
+    },
+    {
+     "speaker": "Moira",
+     "mood": "urgent",
+     "raw": "Moira (urgent): If you can relay messages, do it now. Over.",
+     "spoken": "If you can relay messages, do it now. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 491,
+    "cache_n": 3735,
+    "predicted_n": 65
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 327,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": "Ask the voice whether they have a radio that can transmit, to relay the lab's calls further. If the voice already said what they have, ask them to repeat the lab's message on it.",
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 19,
+   "kind": "breakdown",
+   "played_s": 360.0,
+   "instruction": "A voice on the frequency says: \"Where should I drive?\" Earlier in this contact the voice said: \"Hello again, lab.\" / \"It's me, Alfredo, from Austin. I still have the truck.\" Voices that reached you before, oldest first — 1: \"Hello? Is anyone there?\" / \"My name is Alfredo.\" / \"I'm in Austin, Texas, and I have a pickup truck.\"; 2: \"This is Maria, from Dallas.\" / \"We have a doctor with us.\" / \"Do you need medicine?\" Only a voice that says the name of one of them is someone you spoke with before: greet them as a returning friend and use what they told you. Any other voice is someone new. The first line answers what the voice just said, speaking to them directly. Then something happens that the listeners cannot see: Smoke pours from the receiver, and it goes dead. The second line tells the listeners on air, in detail, what is happening to the receiver: what they see and hear. The last line tells them what it means for them: the lab can no longer hear them, but the transmitter still works, so the broadcast goes on while they fix the receiver. Moira speaks first, then Daniel, Ralph or Samantha: the next three lines, each with the emotion in its voice, one of: sad, afraid, terrified, angry, exhausted. Let the tone be: sullen.",
+   "listener": "Where should I drive?",
+   "heard": {
+    "text": "Where should I drive?",
+    "no_speech_prob": null,
+    "avg_logprob": null,
+    "silence": null
+   },
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 3,
+   "event": null,
+   "tone": "sullen",
+   "lines": [
+    {
+     "speaker": "Moira",
+     "mood": "sad",
+     "raw": "Moira (sad): The receiver’s smoking again—fire’s eating through it. Over.  ",
+     "spoken": "The receiver's smoking again, fire's eating through it. Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "afraid",
+     "raw": "Daniel (afraid): We’re broadcasting blind now. Over.  ",
+     "spoken": "We're broadcasting blind now. Over."
+    },
+    {
+     "speaker": "Ralph",
+     "mood": "exhausted",
+     "raw": "Ralph (exhausted): We can’t lose this link. Fix it. Over.",
+     "spoken": "We can't lose this link. Fix it. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 633,
+    "cache_n": 3960,
+    "predicted_n": 57
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 359,
+   "trims": [],
+   "episode": "",
+   "overtone": "negative",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 20,
+   "kind": "free",
+   "played_s": 380.0,
+   "instruction": "The voice on the frequency told you: \"Hello again, lab.\" / \"It's me, Alfredo, from Austin. I still have the truck.\" / \"Where should I drive?\" Talk among yourselves about what it means for you. Daniel and Samantha speak next: the next two lines, each with the emotion in its voice, one of: sad, afraid, terrified, angry, exhausted. Let the tone be: sullen.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "sullen",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "afraid",
+     "raw": "Daniel (afraid): If he’s asking where to drive, he might be lost or in danger. Over.  ",
+     "spoken": "If he's asking where to drive, he might be lost or in danger. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "exhausted",
+     "raw": "Samantha (exhausted): We don’t know if he’s friend or foe. Over.",
+     "spoken": "We don't know if he's friend or foe. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 459,
+    "cache_n": 4287,
+    "predicted_n": 48
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 144,
+   "trims": [],
+   "episode": "",
+   "overtone": "negative",
+   "agenda": null,
+   "slot": "aftermath",
+   "recollects": 15
+  },
+  {
+   "n": 21,
+   "kind": "free",
+   "played_s": 400.0,
+   "instruction": "Something happens that the listeners cannot see: The crickets outside stop chirping all at once. The first to speak tells the listeners on air what is happening. Moira and Ralph speak next: the next three lines, each with the emotion in its voice, one of: sad, afraid, terrified, angry, exhausted. Let the tone be: desperate.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Moira",
+    "Ralph"
+   ],
+   "max_lines": 3,
+   "event": "The crickets outside stop chirping all at once.",
+   "tone": "desperate",
+   "lines": [
+    {
+     "speaker": "Moira",
+     "mood": "terrified",
+     "raw": "Moira (terrified): The crickets stopped—it’s unnatural. Something’s wrong outside. Over.  ",
+     "spoken": "The crickets stopped, it's unnatural. Something's wrong outside. Over."
+    },
+    {
+     "speaker": "Ralph",
+     "mood": "afraid",
+     "raw": "Ralph (afraid): If the silence means danger, we need to act. Over.  ",
+     "spoken": "If the silence means danger, we need to act. Over."
+    },
+    {
+     "speaker": "Moira",
+     "mood": "exhausted",
+     "raw": "Moira (exhausted): We can’t afford to wait. Over.",
+     "spoken": "We can't afford to wait. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 227,
+    "cache_n": 4646,
+    "predicted_n": 64
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 143,
+   "trims": [],
+   "episode": "",
+   "overtone": "negative",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 22,
+   "kind": "repair",
+   "played_s": 420.0,
+   "instruction": "Something happens that the listeners cannot see: the lab has fixed the receiver, the part of the radio that hears. The receiver crackles back to life. First, Daniel, Moira or Ralph tells the listeners on air, in detail, what just happened to the receiver: what they see and hear. Last, Samantha tells anyone listening that the lab can hear them now, and asks them to answer. Daniel, Moira or Ralph speaks first, then Samantha: the next two lines, each with the emotion in its voice, one of: happy, hopeful, excited, relieved. Let the tone be: naive.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "naive",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "happy",
+     "raw": "Daniel (happy): The receiver’s back—crackling, alive. It’s like the world’s waking up again. Over.  ",
+     "spoken": "The receiver's back, crackling, alive. It's like the world's waking up again. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "relieved",
+     "raw": "Samantha (relieved): We can hear you now. If you’re out there, answer. Over.",
+     "spoken": "We can hear you now. If you're out there, answer. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 278,
+    "cache_n": 4790,
+    "predicted_n": 54
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 185,
+   "trims": [],
+   "episode": "",
+   "overtone": "positive",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 23,
+   "kind": "re-call",
+   "played_s": 440.0,
+   "instruction": "Only static answers. Samantha calls out once more to anyone listening, asking them to answer now; the receiver is still on. Samantha speaks next: the next line, with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: dutiful.",
+   "listener": null,
+   "heard": {
+    "text": "",
+    "no_speech_prob": null,
+    "avg_logprob": null,
+    "silence": "nothing heard"
+   },
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 1,
+   "event": null,
+   "tone": "dutiful",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "determined",
+     "raw": "Samantha (determined): Answer now—we’re not out of this alone. Over.",
+     "spoken": "Answer now, we're not out of this alone. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 257,
+    "cache_n": 4933,
+    "predicted_n": 21
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 89,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 24,
+   "kind": "switch-off",
+   "played_s": 460.0,
+   "instruction": "Nobody answered the call. First, Samantha tells the listeners on air that the lab is switching the receiver off now, and why: to save power, or to spare the fragile receiver for a time when someone is more likely to be listening. The last line tells them what it means for them: the lab will not hear anyone until the receiver is back on, but the transmitter stays on, so the broadcast goes on. Samantha speaks first, then Daniel, Moira or Ralph: the next two lines, each with the emotion in its voice, one of: sad, afraid, terrified, angry, exhausted. Let the tone be: curmudgeonly.",
+   "listener": null,
+   "heard": {
+    "text": "",
+    "no_speech_prob": null,
+    "avg_logprob": null,
+    "silence": "nothing heard"
+   },
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "curmudgeonly",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "sad",
+     "raw": "Samantha (sad): The receiver’s going dark—we’re switching it off to save power. Over.  ",
+     "spoken": "The receiver's going dark, we're switching it off to save power. Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "angry",
+     "raw": "Daniel (angry): If no one answers, we’ll never know if help’s out there. Over.",
+     "spoken": "If no one answers, we'll never know if help's out there. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 232,
+    "cache_n": 5118,
+    "predicted_n": 49
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 188,
+   "trims": [],
+   "episode": "",
+   "overtone": "negative",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 25,
+   "kind": "free",
+   "played_s": 480.0,
+   "instruction": "Ralph and Samantha speak next: the next line, with the emotion in its voice, one of: sad, afraid, terrified, angry, exhausted. Let the tone be: curmudgeonly.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 1,
+   "event": null,
+   "tone": "curmudgeonly",
+   "lines": [
+    {
+     "speaker": "Ralph",
+     "mood": "exhausted",
+     "raw": "Ralph (exhausted): We’ve broadcasted for hours. Over.  ",
+     "spoken": "We've broadcasted for hours. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 240,
+    "cache_n": 5207,
+    "predicted_n": 19
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 67,
+   "trims": [],
+   "episode": "",
+   "overtone": "negative",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 26,
+   "kind": "free",
+   "played_s": 500.0,
+   "instruction": "Daniel, Moira and Ralph speak next: the next three lines, each with the emotion in its voice, one of: sad, afraid, terrified, angry, exhausted. Let the tone be: curmudgeonly.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph"
+   ],
+   "max_lines": 3,
+   "event": null,
+   "tone": "curmudgeonly",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "angry",
+     "raw": "Daniel (angry): We wasted time on a dead frequency. Over.  ",
+     "spoken": "We wasted time on a dead frequency. Over."
+    },
+    {
+     "speaker": "Moira",
+     "mood": "exhausted",
+     "raw": "Moira (exhausted): This noise… it’s pointless. Over.  ",
+     "spoken": "This noise... it's pointless. Over."
+    },
+    {
+     "speaker": "Ralph",
+     "mood": "sad",
+     "raw": "Ralph (sad): The lab’s just… done. Over.",
+     "spoken": "The lab's just... done. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 121,
+    "cache_n": 5395,
+    "predicted_n": 51
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 101,
+   "trims": [],
+   "episode": "",
+   "overtone": "negative",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 27,
+   "kind": "repair",
+   "played_s": 520.0,
+   "instruction": "Something happens that the listeners cannot see: the lab switches the receiver, the part of the radio that hears, back on. The receiver crackles back to life. First, Daniel, Moira or Ralph tells the listeners on air, in detail, what just happened to the receiver: what they see and hear. Last, Samantha tells anyone listening that the lab can hear them now, and asks them to answer. Daniel, Moira or Ralph speaks first, then Samantha: the next two lines, each with the emotion in its voice, one of: happy, hopeful, excited, relieved. Let the tone be: radiant.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "radiant",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "relieved",
+     "raw": "Daniel (relieved): The receiver’s back—crackling, alive. It’s like the static finally gave up. Over.  ",
+     "spoken": "The receiver's back, crackling, alive. It's like the static finally gave up. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "hopeful",
+     "raw": "Samantha (hopeful): We can hear you again. If you’re out there, *answer*. Over.",
+     "spoken": "We can hear you again. If you're out there, *answer*. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 241,
+    "cache_n": 5460,
+    "predicted_n": 55
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 189,
+   "trims": [],
+   "episode": "",
+   "overtone": "positive",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 28,
+   "kind": "re-call",
+   "played_s": 540.0,
+   "instruction": "Only static answers. Samantha calls out once more to anyone listening, asking them to answer now; the receiver is still on. Samantha speaks next: the next line, with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: jocular.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 1,
+   "event": null,
+   "tone": "jocular",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "determined",
+     "raw": "Samantha (determined): Answer now—this time, we’re *begging* you. Over.",
+     "spoken": "Answer now, this time, we're *begging* you. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 261,
+    "cache_n": 5563,
+    "predicted_n": 24
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 92,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 29,
+   "kind": "switch-off",
+   "played_s": 560.0,
+   "instruction": "Nobody answered the call. First, Samantha tells the listeners on air that the lab is switching the receiver off now, and why: to save power, or to spare the fragile receiver for a time when someone is more likely to be listening. The last line tells them what it means for them: the lab will not hear anyone until the receiver is back on, but the transmitter stays on, so the broadcast goes on. Samantha speaks first, then Daniel, Moira or Ralph: the next two lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: jocular.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "jocular",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "determined",
+     "raw": "Samantha (determined): The receiver’s going dark—we’re saving it for when someone *really* needs to hear us. Over.  ",
+     "spoken": "The receiver's going dark, we're saving it for when someone *really* needs to hear us. Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "calm",
+     "raw": "Daniel (calm): If no one answers, we’ll keep trying. Over.",
+     "spoken": "If no one answers, we'll keep trying. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 233,
+    "cache_n": 5752,
+    "predicted_n": 50
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 187,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 30,
+   "kind": "free",
+   "played_s": 580.0,
+   "instruction": "Something happens that the listeners cannot see: The name tag of a staff member no one has ever heard of turns up in the cafeteria. The first to speak tells the listeners on air what is happening. Moira and Samantha speak next: the next three lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: jocular.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Moira",
+    "Samantha"
+   ],
+   "max_lines": 3,
+   "event": "The name tag of a staff member no one has ever heard of turns up in the cafeteria.",
+   "tone": "jocular",
+   "lines": [
+    {
+     "speaker": "Moira",
+     "mood": "curious",
+     "raw": "Moira (curious): A new name tag? In the cafeteria? Over.  ",
+     "spoken": "A new name tag? In the cafeteria? Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "determined",
+     "raw": "Samantha (determined): Let’s find out who it is. Over.  ",
+     "spoken": "Let's find out who it is. Over."
+    },
+    {
+     "speaker": "Moira",
+     "mood": "urgent",
+     "raw": "Moira (urgent): If it’s a new survivor, we need to know now. Over.",
+     "spoken": "If it's a new survivor, we need to know now. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 280,
+    "cache_n": 5844,
+    "predicted_n": 61
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 150,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 31,
+   "kind": "free",
+   "played_s": 600.0,
+   "instruction": "Daniel, Moira and Ralph speak next: the next two lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: absent-minded.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "absent-minded",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "calm",
+     "raw": "Daniel (calm): Odd. A new tag—maybe a survivor? Over.  ",
+     "spoken": "Odd. A new tag, maybe a survivor? Over."
+    },
+    {
+     "speaker": "Moira",
+     "mood": "curious",
+     "raw": "Moira (curious): Should we check the cafeteria? Over.",
+     "spoken": "Should we check the cafeteria? Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 204,
+    "cache_n": 6031,
+    "predicted_n": 35
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 85,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 32,
+   "kind": "repair",
+   "played_s": 620.0,
+   "instruction": "Something happens that the listeners cannot see: the lab switches the receiver, the part of the radio that hears, back on. The receiver crackles back to life. First, Daniel, Moira or Ralph tells the listeners on air, in detail, what just happened to the receiver: what they see and hear. Last, Samantha tells anyone listening that the lab can hear them now, and asks them to answer. Daniel, Moira or Ralph speaks first, then Samantha: the next two lines, each with the emotion in its voice, one of: happy, hopeful, excited, relieved. Let the tone be: confiding.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "confiding",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "relieved",
+     "raw": "Daniel (relieved): The receiver’s back—crackling, alive. It’s like the lab’s whispering back to us. Over.  ",
+     "spoken": "The receiver's back, crackling, alive. It's like the lab's whispering back to us. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "hopeful",
+     "raw": "Samantha (hopeful): We can hear you now. If you’re out there, *answer*. Over.",
+     "spoken": "We can hear you now. If you're out there, *answer*. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 223,
+    "cache_n": 6181,
+    "predicted_n": 58
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 192,
+   "trims": [],
+   "episode": "",
+   "overtone": "positive",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 33,
+   "kind": "re-call",
+   "played_s": 640.0,
+   "instruction": "Only static answers. Samantha calls out once more to anyone listening, asking them to answer now; the receiver is still on. Samantha speaks next: the next line, with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: witty.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 1,
+   "event": null,
+   "tone": "witty",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "determined",
+     "raw": "Samantha (determined): Answer now, or I’ll start playing *Baby Shark* on the speaker. Over.",
+     "spoken": "Answer now, or I'll start playing *Baby Shark* on the speaker. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 264,
+    "cache_n": 6266,
+    "predicted_n": 27
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 95,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 34,
+   "kind": "switch-off",
+   "played_s": 660.0,
+   "instruction": "Nobody answered the call. First, Samantha tells the listeners on air that the lab is switching the receiver off now, and why: to save power, or to spare the fragile receiver for a time when someone is more likely to be listening. The last line tells them what it means for them: the lab will not hear anyone until the receiver is back on, but the transmitter stays on, so the broadcast goes on. Samantha speaks first, then Daniel, Moira or Ralph: the next two lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: witty.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "witty",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "determined",
+     "raw": "Samantha (determined): The receiver’s off—saved for when someone *needs* us. Over.  ",
+     "spoken": "The receiver's off, saved for when someone *needs* us. Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "calm",
+     "raw": "Daniel (calm): If they’re not answering, maybe they’re already here. Over.",
+     "spoken": "If they're not answering, maybe they're already here. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 236,
+    "cache_n": 6458,
+    "predicted_n": 46
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 183,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 35,
+   "kind": "free",
+   "played_s": 680.0,
+   "instruction": "Something happens that the listeners cannot see: Heat lightning flickers silently across the whole horizon. The first to speak tells the listeners on air what is happening. Daniel, Ralph and Samantha speak next: the next three lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: witty.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 3,
+   "event": "Heat lightning flickers silently across the whole horizon.",
+   "tone": "witty",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "calm",
+     "raw": "Daniel (calm): Heat lightning—nothing to worry about, just nature’s bad jokes. Over.  ",
+     "spoken": "Heat lightning, nothing to worry about, just nature's bad jokes. Over."
+    },
+    {
+     "speaker": "Ralph",
+     "mood": "determined",
+     "raw": "Ralph (determined): If it’s lighting up, maybe someone’s out there. Over.  ",
+     "spoken": "If it's lighting up, maybe someone's out there. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "urgent",
+     "raw": "Samantha (urgent): Let’s not waste time on jokes. Answer now. Over.",
+     "spoken": "Let's not waste time on jokes. Answer now. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 267,
+    "cache_n": 6553,
+    "predicted_n": 66
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 146,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 36,
+   "kind": "free",
+   "played_s": 700.0,
+   "instruction": "Daniel, Moira and Samantha speak next: the next three lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: darkly comic.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Samantha"
+   ],
+   "max_lines": 3,
+   "event": null,
+   "tone": "darkly comic",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "determined",
+     "raw": "Daniel (determined): If this is a sign, it’s a very subtle one. Over.  ",
+     "spoken": "If this is a sign, it's a very subtle one. Over."
+    },
+    {
+     "speaker": "Moira",
+     "mood": "calm",
+     "raw": "Moira (calm): Maybe the zombies are finally listening. Over.  ",
+     "spoken": "Maybe the zombies are finally listening. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "urgent",
+     "raw": "Samantha (urgent): Or maybe we should stop pretending this is a comedy. Over.",
+     "spoken": "Or maybe we should stop pretending this is a comedy. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 201,
+    "cache_n": 6736,
+    "predicted_n": 61
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 112,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 37,
+   "kind": "repair",
+   "played_s": 720.0,
+   "instruction": "Something happens that the listeners cannot see: the lab switches the receiver, the part of the radio that hears, back on. The receiver crackles back to life. First, Daniel, Moira or Ralph tells the listeners on air, in detail, what just happened to the receiver: what they see and hear. Last, Samantha tells anyone listening that the lab can hear them now, and asks them to answer. Daniel, Moira or Ralph speaks first, then Samantha: the next two lines, each with the emotion in its voice, one of: happy, hopeful, excited, relieved. Let the tone be: breezy.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "breezy",
+   "lines": [
+    {
+     "speaker": "Daniel",
+     "mood": "relieved",
+     "raw": "Daniel (relieved): The receiver’s back—crackling, alive. It’s like the static finally admitted defeat. Over.  ",
+     "spoken": "The receiver's back, crackling, alive. It's like the static finally admitted defeat. Over."
+    },
+    {
+     "speaker": "Samantha",
+     "mood": "hopeful",
+     "raw": "Samantha (hopeful): We can hear you now. If you’re out there, *answer*. Over.",
+     "spoken": "We can hear you now. If you're out there, *answer*. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 250,
+    "cache_n": 6882,
+    "predicted_n": 55
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 189,
+   "trims": [],
+   "episode": "",
+   "overtone": "positive",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 38,
+   "kind": "re-call",
+   "played_s": 740.0,
+   "instruction": "Only static answers. Samantha calls out once more to anyone listening, asking them to answer now; the receiver is still on. Samantha speaks next: the next line, with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: bittersweet.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 1,
+   "event": null,
+   "tone": "bittersweet",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "determined",
+     "raw": "Samantha (determined): Answer now—this time, I’ll play *Baby Shark* if you don’t. Over.",
+     "spoken": "Answer now, this time, I'll play *Baby Shark* if you don't. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 262,
+    "cache_n": 6994,
+    "predicted_n": 29
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 98,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 39,
+   "kind": "switch-off",
+   "played_s": 760.0,
+   "instruction": "Nobody answered the call. First, Samantha tells the listeners on air that the lab is switching the receiver off now, and why: to save power, or to spare the fragile receiver for a time when someone is more likely to be listening. The last line tells them what it means for them: the lab will not hear anyone until the receiver is back on, but the transmitter stays on, so the broadcast goes on. Samantha speaks first, then Daniel, Moira or Ralph: the next two lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: bittersweet.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Daniel",
+    "Moira",
+    "Ralph",
+    "Samantha"
+   ],
+   "max_lines": 2,
+   "event": null,
+   "tone": "bittersweet",
+   "lines": [
+    {
+     "speaker": "Samantha",
+     "mood": "determined",
+     "raw": "Samantha (determined): The receiver’s off—saved for when someone *needs* us. Over.  ",
+     "spoken": "The receiver's off, saved for when someone *needs* us. Over."
+    },
+    {
+     "speaker": "Daniel",
+     "mood": "calm",
+     "raw": "Daniel (calm): Maybe they’re already here. Over.",
+     "spoken": "Maybe they're already here. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 240,
+    "cache_n": 7183,
+    "predicted_n": 40
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 178,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  },
+  {
+   "n": 40,
+   "kind": "free",
+   "played_s": 780.0,
+   "instruction": "Something happens that the listeners cannot see: The water pressure dropped and the showers on level two ran brown. The first to speak tells the listeners on air what is happening. Moira and Ralph speak next: the next two lines, each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: clipped.",
+   "listener": null,
+   "heard": null,
+   "speakers": [
+    "Moira",
+    "Ralph"
+   ],
+   "max_lines": 2,
+   "event": "The water pressure dropped and the showers on level two ran brown.",
+   "tone": "clipped",
+   "lines": [
+    {
+     "speaker": "Moira",
+     "mood": "urgent",
+     "raw": "Moira (urgent): Brown showers? We’ve got a contamination leak. Over.  ",
+     "spoken": "Brown showers? We've got a contamination leak. Over."
+    },
+    {
+     "speaker": "Ralph",
+     "mood": "determined",
+     "raw": "Ralph (determined): Fix this now—before it spreads. Over.",
+     "spoken": "Fix this now, before it spreads. Over."
+    }
+   ],
+   "dropped": [],
+   "timings": {
+    "prompt_n": 264,
+    "cache_n": 7281,
+    "predicted_n": 38
+   },
+   "finish_reason": "stop",
+   "trimmed": false,
+   "tokens": 120,
+   "trims": [],
+   "episode": "",
+   "overtone": "neutral",
+   "agenda": null,
+   "slot": null,
+   "recollects": null
+  }
+ ]
+}

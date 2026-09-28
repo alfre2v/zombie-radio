@@ -6,9 +6,12 @@
 ([discussion 2026-09-16]) and the deployment-first ruling
 ([discussion 2026-09-17]): the prototype is the experiment
 platform, and the deployment machinery is deliverable #1.
-**Spec:** `specs/product-definition.md` continues as the living
-LEDGER (inversion guardrail 3) — as-built entries land within a
-session of each settled decision; no new spec for this arc.
+**Spec:** `specs/product-definition.md` — since 2026-09-28 a linear
+description of the product as built, rewritten in place when the
+product changes (the owner: "The specification is not a log, it
+should read as the guide to build the product."); until then it was
+kept as a living ledger of as-built entries (inversion guardrail 3).
+No new spec for this arc.
 
 **Deliverables:** **D1** — deployment machinery (Ansible +
 Docker, cloud VM ≡ localhost) · **D2** — the running prototype
@@ -26,7 +29,7 @@ this arc".
 
 ## Now — where the arc stands
 
-*Updated 2026-09-25. Read this section first; everything below it is
+*Updated 2026-09-28. Read this section first; everything below it is
 detail.*
 
 - **The critical path is Task 6b, the show engine,** built in the
@@ -44,25 +47,65 @@ detail.*
   pacing knobs (`2f76b34`) and tone words that do not repeat
   (`35f34e0`), 2.2 the trim (`57a08c9`, about 1.5 s once per trim),
   2.3 the debug switch (`129d3de`), 2.4 the listener's turn on the
-  server (`d6ab1b9`), 2.5 the driver extended (`86dc1df`). **The
-  fork's pull request is merged** (alfre2v/TalkWithZombies#3,
-  2026-09-25, the fork's `master` at `5b2485f`); this repository's
-  (#11, `alfre2v/show-slice-2`) stays open to carry slice 3's plan
-  discussion. **Next:** slice 3, the browser, on a branch cut from
-  the fork's `master` once its plan is agreed (target: the end of
-  the timebox). **Slice
-  3's plan is decided** ([discussion 2026-09-25]
-  show-slice-3-browser-plan): five steps — the page on a simulated
-  clock, the voice, the listener's turn, the exit criterion by ear,
-  the close — with the show's frontend in its own files, upstream's
-  untouched. How to
-  drive the show yourself, and run the checkpoint: the fork's
-  `docs/runbooks/show-driver.md`.
+  server (`d6ab1b9`), 2.5 the driver extended (`86dc1df`); both
+  repositories' pull requests are merged (alfre2v/TalkWithZombies#3,
+  this repository's #11, 2026-09-25). **Slice 3 is under way** on the
+  fork's `alfre2v/show-slice-3-browser` and this repository's
+  `alfre2v/show-slice-3`, to the plan of [discussion 2026-09-25]
+  show-slice-3-browser-plan (five steps; the show's frontend in its
+  own files, upstream's untouched): **3.1, the page with text only**
+  (`8bca58b`), **and 3.2, the voice** (`a2d942e`), **are done** and
+  proven on the box — the owner, by ear: "We can call this a
+  success". **3.3, the listener's turn** (`57dce7f`), **is done** —
+  checked live with a fake microphone; the real button is checked in
+  3.4. **The events A/B test is decided** (2026-09-25, night): events
+  are now worded for the broadcast — the first to speak tells the
+  listeners on air what is happening (the fork's `show.event_report`,
+  `c55d25b`, on by default; the owner: "B wins, flip the default and record it.";
+  the receipts in the follow-up "Events the listener cannot hear").
+  **3.4, the exit criterion by ear, is met** (the owner: "It does
+  what we planed. It is a success."), and **3.4b, the listener's words
+  in the captions with Whisper's confidence per word** (`500debe`),
+  **is done**. **The listener's exchange became step 3.4c**
+  (2026-09-26; the owner: "Let's make it 3.4c, but we need a complete
+  discussion before implementation."): shaped in [discussion
+  2026-09-26] show-director-modes — its scope and details ruled one
+  at a time; **the build is under way** in five sub-steps: 3.4c.1,
+  the story's data (the fork's `b988672`), 3.4c.2, the grammar and
+  the settings (`5c0c2a3`), 3.4c.3, the director and the record
+  (`4d0d7dd`), and 3.4c.4, the page and the driver (`90ec1e8`), are
+  done; 3.4c.5, the four checks, is under way — the driver test run
+  and the wording tuned from it (`e261b5b`); B versus A ruled (B for
+  3.4c; [experiment 2026-09-26] listener-memory-b-vs-a); the fake
+  microphone passed, and the radio beats were reworded (`3c4154c`);
+  the test by ear passed (2026-09-27), and its findings became step
+  3.4c.6, fixed lines (`07669dc`), built and checked on the box. Then
+  3.5, the close. **To decide after the day's work:**
+  whether to postpone the optional polish (the owner, 2026-09-27).
+  **Today, 2026-09-28, the timebox's last day** — the owner: "I want to
+  have a functional story narration before we close the time box.":
+  3.4c.7 and 3.4c.8, a check on the box and by ear, the bookkeeping,
+  then 3.5. 3.4c.7 is done (`4d051ba`), and with it the owner's sweep
+  of every prompt the model receives ([discussion 2026-09-28]
+  prompt-sweep: the event, the call, the Breakdown, the system prompt,
+  the sign-on and the orientation repeat reviewed; the fixed lines
+  audited; the owner's ruling, 13:14: invented details are a feature —
+  the model's improvisation is what the project probes). **Step 3.4c is
+  done** (2026-09-28): the owner's listen (run `2026-09-28T13-43-28`) —
+  "Wow, big improvement in story coherence… All in all I am satisfied
+  with where we are."; 3.4c.8, the repeat guard, dropped (no repeats
+  heard or measured). **Next: 3.5, the close.** How
+  to drive the show yourself: the fork's
+  `docs/runbooks/show-driver.md` (no browser) and
+  `docs/runbooks/show-page.md` (the `/show` page).
 - **The order after the timebox:** Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
   samples) → Task 7, the canned episode (a MUST for the talk) →
   Task 8, the close ritual. Hard deadline 2026-10-08; the talk at
-  the Austin Python Meetup is in October 2026.
+  the Austin Python Meetup is in October 2026. **Among the show
+  fixes before the talk:** names-only A — code states who the
+  voice is (the owner's ruling, 2026-09-26; shaped and estimated in
+  the follow-up "A listener memory keyed by identity").
 - **In parallel, the owner's long pole — Task 4:** the character
   bibles (they land as the cast entries of the fork's
   `stories/lab-outbreak/cast_sheet.md`) and the voice samples. No
@@ -106,7 +149,7 @@ the agent keeps this current. These carry across arcs.*
 2. **Seed the character bibles** — EXECUTING SOON. Names,
    personalities, quirks, voice descriptions; rough is fine;
    model-neutral (guardrail 2). They become the sections of the
-   show's cast sheet ([spec §5.3]) — concretely, each character's
+   show's cast sheet ([spec §5]) — concretely, each character's
    entry under "The cast:" in the fork's
    `stories/lab-outbreak/cast_sheet.md`, arriving as a pull request
    ([discussion 2026-09-23] show-engine-design §4). Unblocks Task 5a.
@@ -200,7 +243,7 @@ the agent keeps this current. These carry across arcs.*
   - [ ] **6b — Build the show engine, as three slices. NEXT.**
     **Read this first.** The design is decided and lives in
     [discussion 2026-09-23] show-engine-design — cited below as
-    **SED §n** — with its roots in [ADR-0003], [spec §5.3], and the
+    **SED §n** — with its roots in [ADR-0003], [spec §6], and the
     lessons of
     [discussion 2026-09-22] grammar-and-prompt-cache-lessons (cited
     as **L §n**). This list is the ORDER and the STATE: each step
@@ -379,9 +422,9 @@ the agent keeps this current. These carry across arcs.*
       - [x] **Slice 1 pull request** — alfre2v/TalkWithZombies#2
         and this repository's #10, merged by the owner 2026-09-24.
 
-    - [ ] **Slice 2 — the rules** (built 2026-09-24, all six steps,
-      the checkpoint passed that evening; the fork's pull request
-      merged 2026-09-25, this repository's still open). Branch
+    - [x] **Slice 2 — the rules** (built 2026-09-24, all six steps,
+      the checkpoint passed that evening; both pull requests merged
+      2026-09-25). Branch
       `alfre2v/show-slice-2-rules`, cut 2026-09-24 from the fork's
       `master` (`4a62e18`). **Target: the checkpoint.**
       - [x] **2.1 Director v1** (`ce8bd71`; suite 909 passed). As
@@ -567,12 +610,12 @@ the agent keeps this current. These carry across arcs.*
         invitations (one naming a character, one not), a silent
         window, the played seconds simulated. *Done when:* it can
         run the checkpoint below.
-      - [ ] **Slice 2 pull request** — alfre2v/TalkWithZombies#3
-        (opened 2026-09-24, **merged by the owner 2026-09-25**: the
-        fork's `master` at `5b2485f`) and this repository's #11 for
-        `alfre2v/show-slice-2` (open: it also carries slice 3's plan
-        discussion, at the owner's request); the owner reviews and
-        merges.
+      - [x] **Slice 2 pull request** — alfre2v/TalkWithZombies#3
+        (opened 2026-09-24, merged by the owner 2026-09-25: the fork's
+        `master` at `5b2485f`) and this repository's #11 for
+        `alfre2v/show-slice-2` (it also carried slice 3's plan
+        discussion, at the owner's request; merged 2026-09-25,
+        `main` at `b9e4d18`).
 
     - [x] **Checkpoint — passed 2026-09-24 ~18:57, about eight hours
       ahead of its clock. Verdict: continue** (the owner counted
@@ -614,7 +657,38 @@ the agent keeps this current. These carry across arcs.*
       extracted from `chat.js`, the accumulator inside upstream's
       `static/tts.js`, hold-to-talk inside `static/stt.js`). Each step
       opens with its build shape in chat.
-      - [ ] **3.1 The page, text only** — `GET /show` in the show
+      - [x] **3.1 The page, text only** (`8bca58b`; suite 1007 passed,
+        Node tests 17 + 91 + 8). As built, with the owner's picks of
+        2026-09-25: `GET /show` on a second router with no prefix,
+        included in `app/main.py` with one line; the stage direction
+        placed above the round's lines when the `round` summary brings
+        the event (no change to the stream); the listening window shown
+        already, its countdown with the talk button disabled; Stop
+        aborts the round in flight; the runbook
+        `docs/runbooks/show-page.md`. **Live on the box**
+        (2026-09-25; the fork's `runs/2026-09-25T14-57-06` and
+        `T15-48-26`, seed 42, debug on): round 1 word for word as the
+        checkpoint's; invitations at rounds 15, 32 and 53 on the
+        simulated clock, each window counting down and the static
+        round after it; Stop mid-round (the server: "abandoned by the
+        client; nothing recorded") and Resume on the same run; a
+        dropped tunnel (the owner's, ~30 s) shown as an error, and
+        Resume replayed the failed round; the captions toggle. **Two
+        fixes from that check**, at the owner's word: a Stop can land
+        after the server recorded the round, before its summary reached
+        the page (seen on a double Stop at round 44; the owner may have
+        pressed it — "LEt's keep an eye on this", verbatim) — the page now learns
+        it from the next round's number and notes "(stopped, but the
+        server kept this round)"; and a recorded round's debug files
+        are written even when the client leaves meanwhile (the write
+        shielded; `r044.txt` had been cut short). Both proven live:
+        stops between lines left rounds 1-3 unrecorded and their notes
+        unchanged; a Stop during round 16's debug write kept the round,
+        wrote its files, and the note said so. The first line took
+        0.9-1.4 s in the browser against 0.76-0.94 s from the driver on
+        2026-09-24 (the box just woken; watched in 3.2). The page also
+        showed the events' flaw — the follow-up "Events the listener
+        cannot hear". — `GET /show` in the show
         router (its own `Jinja2Templates`); the start response gains
         `listen_window_s`, `press_cap_s` and `debug`; the layout of the
         plan's sketch (§6.1): Start / Stop / Resume, the state line,
@@ -638,7 +712,35 @@ the agent keeps this current. These carry across arcs.*
         (`tests/test_tts_settings.js`) for the stream reader (lines
         split across network chunks) and the simulated clock; the
         suite green.
-      - [ ] **3.2 The voice** — `chunks(line)`: the accumulator as a
+      - [x] **3.2 The voice** (`a2d942e`; suite 1007 passed, Node
+        tests 17 + 91 + 19). As built, with the owner's picks of
+        2026-09-25: a chunk the voice cannot say is skipped and its line
+        still appears; `?voice=off` keeps 3.1's simulated clock; 80 ms
+        between the chunks of a line, 250 ms after a line; the debug
+        line gains "first sound" and "played" once a round is said;
+        Node tests for the packing rules and for the voice queue with
+        `fetch` and the `AudioContext` stubbed — the follow-up
+        "JavaScript test for the accumulator's packing rules" is
+        resolved (entry deleted). **Live, by ear** (2026-09-25, the
+        fork's `runs/2026-09-25T16-04-56`, 42 rounds, 245 s of audio):
+        the owner found no problem — "I cannot find any problem. Well
+        executed! We can call this a success." — and "The pauses do not
+        feel so bad actually." Measured in the page: each chunk's
+        synthesis costs 2.4-3.2 s almost whatever its length (27-55
+        characters), so silences inside a round are 250 ms or, where a
+        short line could not be ready in time, 1.2-1.9 s; 3.7-4.9 s
+        between rounds (6.8 s for a run's first, the TTS cold) — the
+        follow-ups "Measure TTS synthesis time against text length" and
+        "Prefetch the next round". **A defect fixed on the way,** from
+        the owner's questions: upstream's sentence regex cut inside
+        numbers, and the voice got "3. 5" for "3.5"; a sentence now ends
+        only where its marks meet whitespace or the line's end
+        ([discussion 2026-09-25] show-slice-3-browser-plan §8; upstream
+        has it too — candidate (5) of the follow-up "Upstream
+        contributions to scorbo2"). The owner heard "Over." run into a
+        few lines ("coming over"): the accumulator stays at 100 (the
+        follow-up "The sign-off 'Over.' sometimes runs into the line").
+        — `chunks(line)`: the accumulator as a
         plain function over each whole line (the text of its `done`
         event), with the rules of 2026-09-22 ([discussion 2026-09-21]
         task6-recon-talkwithme, the ruling on Q9 and Q4): chunks of up
@@ -658,7 +760,28 @@ the agent keeps this current. These carry across arcs.*
         180-character sentence whole and alone), which resolves the
         follow-up "JavaScript test for the accumulator's packing
         rules".
-      - [ ] **3.3 The listener's turn** — `mic.js`: hold to talk
+      - [x] **3.3 The listener's turn** (`57dce7f`; suite 1007
+        passed, Node tests 17 + 91 + 26). As built, with the owner's
+        picks of 2026-09-25: the microphone asked for once at Start and
+        open only while the radio listens (opened with each window,
+        closed after — a press records at once, and no permission prompt
+        eats a window); one press per window; a failed transcription
+        counts as silence (noted with debug on); with debug on, the
+        invitation's block shows what Whisper heard. **Checked live
+        with a fake microphone** (the fork's run `2026-09-25T17-50-50`;
+        the page's `getUserMedia` fed the TTS saying "Moira, is the virus
+        airborne?"; invitations brought forward by temporary settings,
+        20-40 s): the window opened with the microphone, the press
+        recorded, Whisper heard the question word for word, and round 5
+        was Moira's answer; a window left unpressed gave the static
+        round (round 12); the microphone was closed outside the windows.
+        **The real button and microphone are checked in 3.4's session**
+        (the owner's call, 2026-09-25: 3.4 needs a real spoken exchange
+        anyway). The owner kept the listening window for the MVP and
+        recorded a preference for talking back at any moment — the
+        follow-up "Talk anytime"; the check also surfaced the follow-up
+        "A line broken off with an em dash sounds and reads cut". —
+        `mic.js`: hold to talk
         (mouse, touch, the space bar), enabled only while listening,
         the recording code copied from upstream's `stt.js`; the
         window's countdown (`listen_window_s`) stops on a press; the
@@ -669,12 +792,460 @@ the agent keeps this current. These carry across arcs.*
         works only while listening; a spoken question gets its answer;
         a silent window gives the static round; the press cap ends a
         long press.
-      - [ ] **3.4 The exit criterion, by ear** — on the deployed stack
+      - [x] **3.4 The exit criterion, by ear** (2026-09-25, night; the
+        fork's run `2026-09-25T23-00-20`, invitations brought forward to
+        20-40 s, captions off, the real talk button and microphone).
+        **Met — the owner (verbatim): "It does what we planed. It is a
+        success."** 33 rounds, 5 invitations: three answered from the
+        owner's words, heard well by Whisper (no_speech_prob ≤ 0.024) —
+        "Hello, what's your name?" → Daniel: "Who's there?"; "Hello,
+        Samantha, are you there?" → Samantha: "Who are you?"; "I think
+        Ralph and Moira should go to the south entrance." → Ralph: "They
+        think we should go south." — and two static (no press; a press
+        heard as nothing). The first listen to events worded for the
+        broadcast. **Two findings:** the listener's own words do not
+        show in the captions (→ 3.4b, the owner's request); and the
+        exchange is poor — one answer line, the characters ask back but
+        no window opens, and the next round moves on, often to an event
+        (the follow-up "The listener's exchange is one line"; the owner:
+        "Let's decide after 3.4b if we included as 3.4.c."). — On the
+        deployed stack
         through the tunnel: at least ten unattended turns with the four
         placeholder personas; speakers chosen by the director; one
         interaction beat that opens the microphone and absorbs the
-        reply; sentences accumulated, not split. The owner listens; the
-        verdict is recorded here.
+        reply — with the real talk button and microphone, which also
+        closes 3.3's check by hand (hold, the press cap, a window left
+        unpressed); sentences accumulated, not split. Judged with the
+        captions off (the follow-up "Events the listener cannot hear").
+        The owner listens; the verdict is recorded here.
+      - [x] **3.4b Your words in the captions, with Whisper's confidence
+        per word** (added 2026-09-25 at the owner's request, after 3.4;
+        its shape discussed before building; done the same night, the
+        fork's `500debe`; suite 1011 passed, Node tests 17 + 91 + 31).
+        As built, with the owner's picks: the label `You:`; three bands
+        by Whisper's word probability (plain from 0.80, a dotted
+        underline from 0.50, dimmed with a wavy underline below), the
+        percentage on hover; the words to the page only (the round
+        request and the record keep the text and two averages); the
+        filter's verdict added to the caption when the next summary
+        says silence ("You: Thank you. (counted as silence: a known
+        Whisper hallucination)" — seen live); the caption under the
+        invitation's lines. Checked with a fake microphone, then by the
+        owner talking to the show (run `2026-09-25T23-43-42`); from the
+        owner's check, the hover moved to a CSS tooltip (the `title`
+        tooltip did not show) and the wavy underline stopped breaking
+        under descenders (`text-decoration-skip-ink: none`); approved
+        with the owner's commit order. The page shows what the
+        listener said as a caption line, each word marked by how sure
+        Whisper was of it. Found while shaping it: the show's Whisper
+        server already returns every word with its probability in the
+        plain `json` the app asks for (`segments[].words[]`: word,
+        start, end, probability — e.g. "Hello 0.87 · Samantha, 0.80 ·
+        are 0.97 · you 1.00 · there? 1.00"); the fork's
+        `transcribe_for_show` keeps only the text and two averages today.
+        *Done when:* the owner, talking to the show live, sees the words
+        and their confidence and approves; then the branch is committed
+        and pushed.
+      - [x] **3.4c The listener's exchange — Contact mode, the receiver
+        story, the emotional overtone** (added 2026-09-26 at the owner's
+        call; discussed before any code in [discussion 2026-09-26]
+        show-director-modes, from the owner's 2024 design). **Scope ruled
+        2026-09-26** (its §10): Contact mode — after the listener speaks,
+        several exchanges with a listening window after each; the
+        receiver story — the beats Repair, Breakdown and Switch-off, a
+        repeating orientation round (the sign-on at round 1 its first;
+        added while shaping, the owner's idea), and the silence rule
+        (two silences in a row switch the receiver off); the listener
+        kept in the story — an aftermath round after each contact, and
+        a periodic recollection round (the owner's idea) in which the
+        cast talk about what a caller told them and how that caller
+        could help if they call again;
+        the contact agenda — what the cast wants from a listener, one
+        item per exchange; remembering the listener — each agenda item
+        asks for something or, once the listener gave it, uses it, and
+        each contact instruction restates the listener's words; the
+        emotional overtone — moods and tone words split into positive,
+        neutral and negative, one overtone per round constraining both.
+        Every number in settings, none hard-coded. **Its details are
+        being ruled one at a time** (its §12; Contact, the receiver
+        story, the agenda, the overtone, the exit criterion, the page
+        and the mechanics done, §13-§18 — the remaining mechanics are
+        the agent's picks at build, recorded for review); **the build
+        is under way** (the build plan below; 3.4c.1-3.4c.4 done), then a
+        driver test on the box, and the owner by ear. Resolves the follow-up
+        "The listener's exchange is one line". **Done 2026-09-28** (the
+        fork's `b988672` … `1ab5d6f` on `alfre2v/show-slice-3-browser`):
+        the four checks passed and the show re-proven by the owner's ear on
+        the timebox's last day (3.4c.5); 3.4c.6 and 3.4c.7 built; 3.4c.8
+        dropped; the follow-up deleted, SED §5.7's dated note and the
+        discussion's addendum written.
+        - **To confirm when building:**
+          - the re-call repeats the question that went unanswered
+            ("Alfredo? Are you still there? We asked where you are.")
+            — very likely, the owner's call (2026-09-26); built in
+            3.4c.3, to confirm by ear;
+          - the restatement's wording and the agenda's list (the name
+            item first, then two-branch sentences) — the agent drafts
+            both, the driver test on the box shows what the model does
+            with them, the owner reviews both before the test by ear
+            (the owner's call, 2026-09-26);
+          - ~~the tone words' single-word exceptions (the whole groups
+            are sorted — its §16.5) and the events' sort by overtone
+            (by group, then single events) — the agent drafts, the
+            owner reviews~~ — drafted in 3.4c.1 and committed on the
+            owner's order (below).
+        - **The build plan** (the agent's shape, the owner's Go,
+          2026-09-26: "Go with your picks"): five sub-steps on the
+          fork's `alfre2v/show-slice-3-browser`, one commit each on the
+          owner's order after review; the story's data first, so the
+          owner reviews the authoring while the rest is built; the old
+          round kinds (`invitation`, `answer`, `static`) stay loadable,
+          so `runs/` and the test fixtures keep working; the old story
+          shapes (a flat `tones.yaml`, a flat `events.yaml`) are
+          dropped; the box kept up through Sunday (only 3.4c.5 strictly
+          needs it). The remaining mechanics are the agent's picks,
+          recorded for review: a `listens` flag on each plan and round
+          summary; the driver's `--heard` items answering every
+          listening round in turn; the free rounds' line budget as two
+          settings; the bookkeeping at 3.4c.5.
+          - [x] **3.4c.1 The story's data** (`b988672`; suite 1028
+            passed, Node tests 17 + 91 + 31). `overtones.yaml` replaces
+            `tones.yaml`: the three overtones in order with their 14
+            moods and 496 tone words under the 24 themes (positive 96,
+            neutral 167, negative 233 — the ruled group table, then 29
+            single words moved and 4 dropped because they became moods:
+            hopeful, relieved, determined, curious — a tone word is
+            never an emotion tag), the per-kind table, the drift weights
+            1 : 2 : 3. `events.yaml` filed by overtone, then theme
+            (positive 29, neutral 94, negative 166 — the agent's group
+            table, then 81 single events moved). `agenda.yaml`: nine
+            two-branch items, the name item first. The cast sheet: the
+            premise sentence (so the system prompt changed; the pinned
+            prompts in `tests/test_show_story.py` updated and dated),
+            the orientation's facts, a stage direction per receiver
+            beat. The loader reads and checks all of it; the director
+            still draws from the flattened events and tones until
+            3.4c.3. Reviewed by the owner, committed on the owner's
+            order.
+          - [x] **3.4c.2 The grammar and the settings** (`5c0c2a3`;
+            suite 1055 passed, Node tests 17 + 91 + 31).
+            `build_grammar` gains a minimum line count and one pinned
+            speaker — `first` (the addressed character opens, the other
+            speakers follow: exchanges, the Breakdown, the Switch-off,
+            the orientation) or `last` (the others lead up to the
+            operator's call: the Repair); without pins it is still byte
+            for byte the grammar proven on 2026-09-22. `ShowConfig`
+            gains the fifteen settings of 3.4c with the ruled defaults:
+            `free_lines` / `free_line_weights` (1-4 weighted 1:3:3:1 —
+            the director now reads them instead of two constants, the
+            same draws), `overtone_hold` / `overtone_jitter` (4 / 1),
+            `contact_exchanges` / `contact_jitter` (3 / 1),
+            `contact_min_lines` / `contact_max_lines` (2 / 3),
+            `silences_to_switch_off` (2), `beat_max_lines` (2),
+            `orientation_every` / `orientation_jitter` (20 / 5),
+            `recollection_every` / `recollection_jitter` (15 / 5),
+            `restatement_contacts` (5); checks for the contact's range
+            and the free budgets. The rest of the settings are read from
+            3.4c.3 on; the system prompt's mood list becomes the story's
+            14 then; their runbook lines come in 3.4c.4. Committed on the
+            owner's order.
+          - [x] **3.4c.3 The director and the record** (`4d0d7dd`;
+            suite 1077 passed, Node tests 17 + 91 + 31). The director
+            v2 (`app/show/director.py`): the sign-on and repeating
+            orientations; free rounds whose event slot holds an event,
+            an aftermath or a recollection; the Repair on the cadence,
+            counted from the moment the receiver went off; exchanges
+            (the named character first, else whoever asked last; the
+            next agenda item; the restatement, earlier contacts
+            included); the Breakdown after N answers; re-calls and the
+            Switch-off; each round's overtone from its kind's table or,
+            for free rounds, a held drift to neighbors, with moods, tone
+            word and event following it. The record: the new kinds (the
+            old three still load) and `overtone`, `agenda`, `slot`,
+            `recollects`; the round route listens after any round that
+            listens and reports `listens`, `overtone`, `agenda`, `slot`,
+            `direction`; the system prompt lists the story's 14 moods.
+            **Smoke on the box** (the fork's run `2026-09-26T16-28-02`,
+            no listener, calls at 20-40 s): 14 rounds, 24 lines, 0
+            dropped, about 1.35 s a round; llama.cpp accepted every new
+            grammar; the pins held (the Repair closed by Samantha's
+            call); the moods stayed in each round's overtone. **The
+            agent's picks at build, reviewed by the owner:** the
+            aftermath comes before a due orientation (immediacy); an
+            orientation comes after N free rounds; a re-call is one line
+            and repeats the unanswered question (built; still to confirm
+            by ear, above); exchanges and Breakdowns take exactly the
+            drawn 2-3 lines; every kind carries a tone word from its
+            overtone; each instruction names the allowed moods; the
+            Repair and the Breakdown also give the model the story's
+            stage direction. **One pick replaced by the owner:** the
+            recollection's gap was counted from the last aftermath, so
+            each contact reset it — measured, recollections came only in
+            long stretches (112 in 20 runs of 300 rounds with the
+            defaults, none with calls at 20-40 s); the owner: "a, the
+            independent count with both guards" — the count runs from
+            the last recollection, never directly after an aftermath,
+            and never the caller talked about last while there is
+            another (then 276, and 195 at 20-40 s; talk about callers
+            about doubles — the default may want raising after the test
+            by ear). **Wording notes for 3.4c.5**, from the smoke: the
+            sign-on did not tell the receiver facts ("We're broadcasting
+            from Sector B, lab 7…"); a re-call gave up ("We'll try again
+            later."); one line had markdown emphasis ("Answer us,
+            \*now\*!"). Until 3.4c.4 the page and the driver still
+            listen only after the old `invitation` kind. Committed on
+            the owner's order.
+          - [x] **3.4c.4 The page and the driver** (`90ec1e8`; suite
+            1082 passed, Node tests 17 + 91 + 34). The page listens
+            after any round whose summary says `listens` (the call, an
+            exchange, a re-call), the "You:" caption under that round;
+            the RECEIVER sign (green, beside ON AIR) lights when the
+            last line of a round that listens starts and goes dark when
+            that of one that does not starts (the Breakdown, the
+            Switch-off), with a fallback at the drain; a receiver beat's
+            stage direction above its lines; the debug line gains the
+            overtone, the slot, the agenda item and a contact's answers
+            ("answers 2 of 3" — the director and the round summary now
+            report `answers`, the agent's addition for that line). The
+            driver answers every listening round with its `--heard`
+            items, prints those facts under each round, and its
+            checkpoint report counts answered calls and re-calls or
+            Switch-offs. The fork's runbooks (a new "How the show runs"
+            in `show-page.md`; the 3.4c settings and the checkpoint in
+            `show-driver.md`) and `AGENTS.md` updated. **On the box**:
+            the runbook's checkpoint drive (the fork's run
+            `2026-09-26T16-51-06`, seed 42, the listener spoken by the
+            TTS and heard by Whisper) passed 6 of 6 — two calls, two
+            exchanges, three re-calls, two Switch-offs, an aftermath, the
+            trim five times, 42 lines, 0 dropped; its output is now the
+            runbook's example. **More wording notes for 3.4c.5**: an
+            exchange talked about the listener instead of to them
+            ("They're asking if anyone's alive."); the aftermath misread
+            Whisper's "Moira is the virus airborne." ("If she's
+            airborne, we might not make it."); markdown emphasis again
+            ("it's \*us\*"); the sign-on again without the receiver
+            facts. Committed on the owner's order.
+          - [x] **3.4c.5 The four checks** (below), then the
+            bookkeeping: SED §5.7's dated note, the follow-up "The
+            listener's exchange is one line" resolved, the discussion's
+            addendum. **Under way (2026-09-26, evening):** check 1 green
+            (suite 1082, Node 17 + 91 + 34). Check 2, the driver test:
+            a scripted listener (Alfredo, then Maria, then Alfredo back
+            with a silence, then a call nobody answers) on three seeds
+            (42, 7, 2026), calls at 20-40 s, contacts of exactly 3
+            answers, before and after a wording pass (the fork's runs
+            `2026-09-26T17-00-46` … `T17-07-23`). Old wording → new:
+            the sign-on told the receiver facts 1 → 3 of 3; exchanges
+            ended on a question 7 → 11 of 18; a first-time caller
+            welcomed back 3 → 1 of 3; Maria named 5 → 6 of 9; Alfredo
+            named after giving it 4 → 4 of 6; the anonymous "Hello
+            again, lab." taken for Maria 3 → 3 of 3 (reported at the
+            time as 2 → 2, corrected on re-reading: the experiment's
+            findings, below); every unanswered call Repair → re-call →
+            Switch-off; no event inside a contact. The new wording
+            committed on the owner's order (the fork's `e261b5b`).
+            **B versus A — ruled (2026-09-26, 18:37):** at the owner's
+            order, A simulated with perfect extraction (a fact table for
+            the scripted sentences, swapped in at launch, the fork
+            untouched) on the same script and seeds: the anonymous voice
+            taken for Maria 0 of 3 (the cast asked who it was); Alfredo
+            named across his return 7 of 12, against 3 of 12; the rest
+            within noise. The owner: "We are going to do: "a. B for
+            3.4c; names-only A becomes a show fix before the talk, with
+            the follow-up updated."" — B stays in 3.4c; names-only A is
+            shaped and estimated in the follow-up "A listener memory
+            keyed by identity". The scripts, the nine runs and the
+            findings: [experiment 2026-09-26] listener-memory-b-vs-a
+            (`docs/experiments/2026-09-26-listener-memory-b-vs-a/`).
+            **Check 3 passed** (19:03; the fork's run
+            `2026-09-26T18-59-43`, the fake microphone in the page): a
+            full contact and an unanswered call to the Switch-off; the
+            RECEIVER sign, the beats' directions, the captions and the
+            debug line's fields as designed; a silent window leaves no
+            caption — kept as built (the owner). **The radio beats
+            reworded** at the owner's call after check 3 ("It is very
+            annoying that the LLM does not explain what is going on with
+            the radio"): two measured rounds ([experiment 2026-09-26]
+            radio-beats-wording), the second kept (the fork's
+            `3c4154c`): the Repair says the lab can hear them 2 → 21 of
+            21, the Switch-off says the receiver is going off 5 → 12 of
+            12; "we can't hear you" after a Breakdown or a Switch-off is
+            still mostly missing — for the ear test. The Breakdown takes
+            a new setting, `breakdown_lines` (3); the Repair and the
+            Switch-off take `beat_max_lines`. **Check 4 passed**
+            (2026-09-27, 00:34-01:05, the owner's call; the fork's run
+            `2026-09-27T00-34-00`, 63 rounds, in Chrome with the real
+            microphone: 16 answers over six contacts, then a call left
+            unanswered — Repair, re-call, Switch-off, rounds 58-60). The
+            owner's verdict, verbatim: speaking directly — "Yes, big
+            improvement in this front. It's not perfect, but much
+            better."; the Switch-off — "It's bad, they do not mention
+            anyone by name, they don't even clearly explain what is
+            happening "We're turning it off to conserve power, we can't
+            keep this up forever. Over." ... Turning what off? Huff.";
+            "The radio breaks too fast, we should leave more turns of
+            interaction on average before the radio breaks."; "On each
+            event, there is no way that the LLM actually describes what
+            happened to the listeners. I think we will have to create a
+            type of simple line that is not generated by the LLM, that
+            just read the event text as one of the cast."; and
+            "\*crackle\*" in almost every call. Read in the run: the
+            Breakdown answered first in 0 of 6 and said the lab cannot
+            hear in 1 of 6. The fixes: step 3.4c.6. **Re-proven by ear on
+            2026-09-28** (13:43-14:12, the owner in Chrome with the real
+            microphone, debug on; the fork's `1ab5d6f`, run
+            `2026-09-28T13-43-28`: 113 rounds, about 13 minutes of audio,
+            four contacts with 23 answers, four Breakdowns, one unanswered
+            call to the Switch-off, the sign-on and three orientation
+            repeats; 55 fixed lines, 215 model lines). The owner's verdict,
+            verbatim: "Wow, big improvement in story coherence. The system
+            prompt improvement is clearly strengthening the story
+            narrative... And the more the user adds details about zombies
+            the more the model plays along. Week parts still, the in the
+            exchange rounds the model never remembers who they spoke to
+            before, but if you ask about who contacted them, they suddenly
+            remember. So it is nemotron's limits. But this is not something
+            to fix today. All in all I am satisfied with where we are."
+            Repeats: "I did not see a single case of repetition in the app
+            run we did." — measured, 0 of 215 model lines at 0.9
+            similarity or more to one of the four lines before. Two
+            details asked about and left as they are (the owner): a
+            speaker twice in a row in rounds 103 and 106 (the grammar
+            allows it; "it adds a bit of unpredictability"), and an event
+            heard on the frequency after the Switch-off (round 112; noted
+            in the follow-up "Event texts reworded as lines of dialog").
+            The bookkeeping done the same day.
+          - [x] **3.4c.6 Fixed lines** (`07669dc`; added 2026-09-27 after check 4,
+            the owner's idea; shaped one decision at a time, the owner:
+            "Go with all four as shown", "Go with beats.yaml, four
+            versions each, as shown", the who and the mood as proposed —
+            the event line's mood from the round's overtone, which also
+            picked the event — then "Go with your picks, build it now").
+            The lines the listener must not miss are said word for word
+            by the cast instead of written by the model: an event, read
+            by the round's first speaker, the model writing the rest;
+            the call, both lines, with no model request; the Breakdown's
+            closing line, the operator's, after the model's answer and
+            reaction; the Switch-off's opening line, the operator's,
+            then one reaction. The texts: the event's own, and the
+            story's new `beats.yaml` (four versions each, drawn without
+            repeats — the agent's draft, for the owner's review). A
+            setting, `fixed_lines` (on; off, the model writes every
+            line); fixed lines recorded with a `fixed` flag and streamed
+            as ordinary line events, so the page is unchanged. Ridden
+            along: `contact_exchanges` 3 → 5 (the owner: "The radio
+            breaks too fast"). Suite 1106 passed,
+            Node 17 + 91 + 34. **On the box** (three drives of the saved
+            driver script, contacts of 3 kept temporarily so the
+            scenario matches the earlier ones; the fork's runs
+            `2026-09-27T01-59-04`, `T01-59-43`, `T02-00-26`): every fixed
+            line in place (the call 21 of 21, the Breakdown 9 of 9, the
+            Switch-off 12 of 12, events 17 of 17); the Breakdown answered
+            the voice first in 5 of 9, and sometimes says the failure
+            before the operator's line repeats it; rounds 0.94-1.04 s on
+            average (1.31-1.36 before), the call no longer asking the
+            model. Follow-ups written: the event texts reworded as lines
+            of dialog, and more agenda items (both the owner's).
+          - [x] **3.4c.7 Fixed lines kept out of the model's own turns**
+            (the agent's idea, 2026-09-27; the owner, 2026-09-28: "It is
+            a great idea. Let's implement it. But before implementing,
+            record well this idea and the reason why we need to try
+            this."). **The idea:** in the script the model reads back,
+            its own turns hold only the lines it wrote; a fixed line is
+            quoted in a user turn, as something a character said.
+            **Why — the evidence.** In the owner's listen of 2026-09-27
+            (the fork's run `2026-09-27T02-06-50`), round 25: Ralph read
+            the event ("A rack falls in the virology lab, and one test
+            tube keeps rolling across the floor.") and Moira repeated it
+            word for word; round 24 opened by echoing round 23's last
+            line ("Of course it is." → "\*Of course\* it is."). The
+            messages the model received, rebuilt from the record with the
+            route's own code: every earlier event round's user turn says
+            "Moira has just told them on air: "…" Carry on from there.
+            Daniel speaks next: the next line", yet the assistant turn
+            after it — the record replayed as if the model had written it
+            — opens with that same line, then Daniel's: a reply that
+            repeats what was just quoted, and two lines where one was
+            asked. Nine such rounds taught the habit; the model then
+            repeated the event itself, and echoed the line before in plain
+            rounds. The owner's reading (verbatim, 2026-09-27): "I think
+            the model does not understand the introduced line as it did
+            not generated it." Measured over the driver runs and the
+            owner's listens: a round opening with the last line before it
+            2 of 179 rounds before fixed lines, 4 of 141 with; the model
+            repeating the event 0 of 29 before, 1 of 26 with — rare, but
+            heard. **The design** (the agent's picks, for review): the
+            assistant turn carries only the model's lines; fixed lines
+            said before them are quoted in the round's own instruction
+            (the events and the Switch-off's already are; the call's
+            instruction quotes its two lines); fixed lines said after
+            them (the Breakdown's closing) are quoted at the top of the
+            next user turn; a round with no model line joins the next
+            user turn, so user and assistant turns still alternate. **The
+            check:** the suite; three drives of the driver script, as for
+            3.4c.6 — every fixed line still in place, the echo counts
+            reported; then the owner by ear. The repeat guard (3.4c.8) is
+            the safety net for what remains.
+            **Built, then reshaped with the owner case by case** (the
+            fork's `4d051ba`, 2026-09-28; the whole review in [discussion
+            2026-09-28] prompt-sweep). A real run of the first build
+            showed the word "round" reaching the model twice and the
+            call, folded into the next turn in the present tense, read as
+            an order to do it again; the owner: "Stop modifying the model
+            instructions. Instead I will do it case by case." The
+            outcome: the model's own turns hold only its lines; the call
+            is told as already said, in the words an event's reading
+            uses, and runs on with "Then" into the voice's answer or the
+            silence; an event round always leaves the model a line; the
+            Breakdown is split in two — the contact's last answer gets
+            the last exchange (answered, asking nothing, no listening
+            window), then the Breakdown as a receiver beat of its own
+            (the operator's fixed line told like an event's reading, then
+            a reaction, on `beat_max_lines`; `breakdown_lines` removed);
+            the RECEIVER sign stays lit through the last exchange (the
+            round summary's `receiver`); no instruction speaks of rounds.
+            Suite 1109 passed, Node 17 + 91 + 35. On the box (the fork's
+            run `2026-09-28T11-50-15`): the first exchange after the call
+            no longer re-announced the receiver; the last exchange
+            answered by name but still asked questions (an open point of
+            the sweep); the Breakdown one clean beat. The sweep continues
+            over every other prompt case (the discussion's checklist).
+            **The sweep, the rest of 2026-09-28** ([discussion 2026-09-28]
+            prompt-sweep, §3.4-§3.8): the system prompt's premise says who
+            a voice on the frequency is, what the scientists tell the
+            listeners (the owner's own sentence) and where the lab stands,
+            as flavour (the fork's `432a378`); an orientation tells the
+            receiver as it went off — dead, or switched off after a
+            Switch-off (`1ab5d6f`); the owner's ruling (13:14): invented
+            details are a feature, the model's improvisation is what the
+            project probes; the last exchange may end on a question (the
+            owner: "in the story they do not know the radio will fail
+            next"); the fixed lines audited — none reaches the model's own
+            turns — and a past-tense rewording of their context tried in a
+            seeded A/B test and rejected. The remaining cases are not
+            planned; the owner's listen of 2026-09-28 closed the day's
+            goal (3.4c.5).
+          - [~] **3.4c.8 The repeat guard** — **dropped 2026-09-28** (the
+            owner: "Yes, repetitions seem to be gone: I did not see a
+            single case of repetition in the app run we did. So, we drop
+            the 3.4c.8, the repeat guard."; measured in the owner's
+            listen, 0 of 215 model lines at 0.9 similarity or more to one
+            of the four lines before). Was: the agent's proposal, the
+            owner, 2026-09-27: "we will build the repeat guard
+            tomorrow" — a line the model writes that nearly repeats one
+            of the last few lines, fixed ones included, is dropped before
+            it reaches the page — not shown, not spoken, not in the
+            script, logged as dropped; the threshold in settings. Keeping
+            fixed lines out of the model's own turns (3.4c.7) removed the
+            cause.
+        *Done when* (its §17.12): (1) the suite and the three Node
+        tests are green; (2) the driver test on the box — scripted
+        conversations and a report with numbers, from which the owner
+        decides whether B is enough; (3) a fake-microphone check in the
+        page; (4) the owner by ear with the real microphone — a full
+        contact where the cast engages, and a call left unanswered
+        until the Switch-off; the verdict recorded, then commit and
+        push.
       - [ ] **3.5 Close the timebox** — slice 3's pull request merged;
         tag `tz-0.2`; the installer's `client_version` bumped to it and
         re-proven (fresh install, re-run `changed=0`, HTTP 200 — the
@@ -705,7 +1276,7 @@ the agent keeps this current. These carry across arcs.*
 - [ ] **Task 5 — In-prototype experiments (deliverable D3;
   protocol skeleton per guardrail 1: question, timebox,
   pre-registered pick criteria, runlog).**
-  - [ ] **5a — LLM audition** ([spec §7.3]): the ranked five via
+  - [ ] **5a — LLM audition** ([spec §9]): the ranked five via
     one `-hf` flag each; identical scenario; scored on BOTH
     narrative-health axes; name-memory retest at the raised
     window. Picks the working default. Needs Task 4 bibles.
@@ -716,7 +1287,7 @@ the agent keeps this current. These carry across arcs.*
     answered for Nemotron by identity and re-checked for any other
     finalist; the bounded-scratchpad cell rides along
     (follow-ups).
-  - [ ] **5b — TTS comparison + VRAM budget** ([spec §7.2]):
+  - [ ] **5b — TTS comparison + VRAM budget** ([spec §9]):
     engines via the parametrized role; **LuxTTS's ~1 GB claim is
     the first check**; picks two engines + Whisper size;
     measures the two-engine stack vs 24 GB target / 16 GB
@@ -972,7 +1543,7 @@ ritual's migration to `task_history.md`.*
   file, unchanged):
 
 **NOT in this arc (deliberate boundary, 2026-09-17):** the
-ensemble-director design ([spec §5.3]), story/episode authoring,
+ensemble-director design ([spec §6]), story/episode authoring,
 and the full demo rehearsal — that is the next arc's material
 ("the show arc"), shaped by what this prototype teaches. This
 arc builds the platform, picks the components, and patches the

@@ -558,6 +558,86 @@ Once item 8 is agreed, I'll rewrite the TODO's slice 3 checklist to match. The d
   rewritten to it (2026-09-25). Each step still opens with its build
   shape in chat (files, functions, tests) before the code.
 
+## 8. Addendum 2026-09-25 — the sentence splitter: a defect found in step 3.2
+
+### 8.1 The owner's questions (verbatim)
+
+> I notice your accumulator regex does not separate sentences by `...`, this does not necessarily need a fix. Was this intentional?  What happens to repeated punctuations in general. How would you parse sentences like "What??? They are here!!! ... Let's go"?
+>
+>  And what about non-ascii equivalent of punctuation marks? (I actually do not use them, but given that LLM seem to love non-ascii, I wonder if there is something there).
+
+### 8.2 What the splitter did (the agent's probe, condensed)
+
+The agent ran the real functions — `sentencesOf` and `chunks` in the
+fork's `static/show/player.js`, then still with upstream's regex
+`/[^.!?]*[.!?]+/g` — on the owner's examples and a few more:
+
+| Text | Sentences | Chunks (what the voice gets) |
+|---|---|---|
+| `Could this be... a distraction? Over.` | `Could this be...` · `a distraction?` · `Over.` | the text, whole |
+| `What??? They are here!!! ... Let's go` | `What???` · `They are here!!!` · `...` · `Let's go` | the text, whole |
+| `Wait?! No!? Over.` | `Wait?!` · `No!?` · `Over.` | the text, whole |
+| `Really‽ Over.` | one sentence: `‽` is not a mark to the regex | the text, whole |
+| `Take 3.5 milligrams. Over.` | `Take 3.` · `5 milligrams.` · `Over.` | **`Take 3. 5 milligrams. Over.`** |
+
+- **`...` does end a sentence:** the regex takes a run of marks
+  (`???`, `!!!`, `?!`, `...`) as one end, and the packing joins the
+  short pieces back, so it did not show. A free-standing `...` becomes
+  a sentence of its own and rides along with its neighbour.
+- **Non-ASCII marks mostly never reach the page:** the parser's spoken
+  text maps `…` to `...`, curly quotes to straight ones and `—` to
+  `, ` (the fork's `app/show/parser.py`, `_SPOKEN`). The rarer marks
+  (`‽`, `‼`) are not sentence ends to the regex; that only changes the
+  packing, never cuts text. How an engine pronounces them is the
+  per-engine question of the follow-up "Markdown emphasis in spoken
+  lines".
+- **The defect:** the regex also cuts inside numbers and abbreviations
+  whose dot is followed directly by a character, and the packing
+  rejoins the pieces with a space: the voice received "3. 5" for
+  "3.5" (and would have received "e. g." for "e.g.").
+
+### 8.3 The fix, folded into step 3.2 at the owner's word
+
+- A sentence ends only where a run of `.`, `!`, `?` or `…` meets
+  whitespace or the end of the line (`/[.!?…]+(?=\s|$)/g`), and the
+  text between the cuts is kept as written: "Take 3.5 milligrams." and
+  "Over."; `e.g.` and `U.S.` are not cut inside; "Dr. Byrne." still
+  splits at the space and packs back as written. Our show splits whole
+  lines (the text of each line's `done` event), so the end of the line
+  is a true end.
+- Two Node tests pin it: the sentence ends, and the chunks reproducing
+  the text as written for `3.5`, `e.g.` / `U.S.` and the owner's
+  example.
+
+### 8.4 The owner's conclusion (verbatim)
+
+> Yes, fold the fix into 3.2.
+> Notice also that in your example "Could this be... a distraction? Over." Although the regex was doing its intended work, in this specific case for sending to a TTS engine, it would have been better not to split at the `...` because that degrades the pronunciation of the sentences. I think this defends our case for the accumulator, and keeping the 100 split decision. Trying to fix where to cut sentences with different punctuations so that TTS pronunciation is better is too complicated. In practice I feel the accumulator is the practical best solution.
+
+It also settles the owner's "Over." observation of the same day (the
+follow-up "The sign-off 'Over.' sometimes runs into the line"): the
+accumulator stays at 100 characters.
+
+### 8.5 Upstream has the same defect — a candidate bugfix
+
+- **Upstream's `extractSentences`** (TalkWithMe `static/tts.js`, lines
+  72-83, the same regex), run as is: "Take 3.5 milligrams every day.
+  Over." gives `Take 3.` · `5 milligrams every day.` · `Over.` —
+  whether the text comes whole or token by token — and upstream sends
+  each sentence as its own TTS request, so the number is split across
+  two requests.
+- **The fix needs one change for upstream's streaming mode:** there
+  the sentences are cut from a growing buffer, and the buffer ends at
+  "Take 3." just before the "5" arrives, so the end of the buffer must
+  not count as a sentence end while streaming (`(?=\s)`); the tail is
+  flushed on `done`, as upstream already does. Simulated with
+  upstream's loop: with `(?=\s|$)` the result is still `Take 3.` ·
+  `5 milligrams every day.` · `Over.`; with `(?=\s)` and the flush,
+  `Take 3.5 milligrams every day.` · `Over.`.
+- **Recorded as candidate (5)** of the follow-up "Upstream
+  contributions to scorbo2", to be offered after the deadline as a
+  small bugfix pull request of its own.
+
 ## Update trail
 
 - **2026-09-25** — Document created on the owner's request, recorded
@@ -580,3 +660,7 @@ Once item 8 is agreed, I'll rewrite the TODO's slice 3 checklist to match. The d
   classic scripts, and the start response's new fields in 3.1. The
   agenda is complete; status DECIDED; the TODO's slice 3 checklist
   rewritten to it.
+- **2026-09-25 (night)** — §8 added, a dated addendum: the sentence
+  splitter's defect found during step 3.2 ("3.5" reached the voice as
+  "3. 5"), the owner's questions and conclusion verbatim, the fix, and
+  the same defect in upstream — a candidate bugfix.

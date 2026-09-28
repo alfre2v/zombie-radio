@@ -19,8 +19,36 @@ reader's memory):
 
 ---
 
-## SSH keepalives and polling for long silent deploy tasks — low priority (owner, 2026-09-23)
+## SSH keepalives and polling for long silent deploy tasks — priority raised 2026-09-25 (was low, owner 2026-09-23)
 
+- **Status 2026-09-25 — the tunnel drops while an interactive session
+  survives (owner); priority raised:** the tunnel keeps breaking at
+  certain times, while the owner's interactive SSH session to the box
+  (running tmux) stays open most of the time. The lid-closing
+  explanation below would kill both, so it no longer fits. The leading
+  explanation — believed, not proven — is idle traffic: tmux redraws
+  its status bar every 15 s by default, so the interactive session
+  keeps talking, while the tunnel (`ssh -N`, the Makefile's
+  `ssh-tunnel`, whose options carry no keepalive) is silent between
+  rounds, and Wi-Fi routers and firewalls drop idle connections. Not
+  checked: whether the owner's own ssh config gives the interactive
+  session a keepalive (the owner's SSH directory is off limits to the
+  agent). A drop now interrupts the work: the `/show` page stops with
+  an error until Resume (slice 3). **Fix shape, the agent's picks:**
+  (1) client side, in the Makefile's `ssh-tunnel`:
+  `-o ServerAliveInterval=30 -o ServerAliveCountMax=3` — an idle
+  tunnel keeps talking, and a dead link is detected within about 90 s,
+  so ssh exits instead of lingering; (2) the tunnel restarts by itself:
+  a small loop around the command (restart after an exit, a short
+  pause) or `autossh` — with (1), a drop heals in seconds and the
+  page's Resume picks up; (3) optional, later: `ClientAliveInterval`
+  in the box's `sshd_config` through the playbook (belt and braces; it
+  changes the box). Proof: count the drops over a day of use, before
+  and after. **Fix (1) applied the same day, at the owner's request**
+  ("this tunnel thing is too annoying already"): the Makefile's
+  `ssh-tunnel` now passes `-o ServerAliveInterval=30
+  -o ServerAliveCountMax=3`; a tunnel started before the change must be
+  restarted to get it. (2) and (3) remain open.
 - **Status 2026-09-23 — explained, not a significant worry (owner):**
   the owner works on public library Wi-Fi and closes the laptop's lid
   during breaks, probably without closing the tunnel first — which
@@ -73,6 +101,24 @@ reader's memory):
   2026-09-22; the playbook never reboots).
 
 ## Measure TTS synthesis time against text length (tunes the accumulator's N and the director's line budget)
+
+- **Status 2026-09-25 — partly measured, by the `/show` page's voice**
+  (slice 3's step 3.2; the fork's run `2026-09-25T16-04-56`; each
+  chunk timed in the browser, through the app's `/api/tts` and the
+  tunnel): 8 chunks of 27-55 characters took 2.4-3.2 s each to
+  synthesize (one 4.6 s), for clips of 2.0-3.6 s — synthesis time over
+  clip length 0.8-1.4. **The cost is mostly fixed per request**
+  (27 characters: 2.5 s; 55: 2.95 s), about 2.3 s. So: a short line
+  cannot hide behind the one before it (silences of 1.2-1.9 s inside
+  rounds, where the next chunk was not ready; 250 ms otherwise, the
+  configured pause); the gap between rounds is 3.7-4.9 s once warm
+  (the first line ~1.0-1.2 s, then its synthesis); and smaller chunks
+  would cost more, not less (the "Over." entry below). A suspect for
+  the fixed cost — believed, not measured: the app sends the persona's
+  reference clip to tts-serve with every request, through the tunnel
+  (tts-serve tour F3); tts-serve's `time_used` would split the server's
+  time from the transport's. Not measured yet: 100-400 characters. The
+  owner, listening: "The pauses do not feel so bad actually."
 
 - **The gap:** the accumulator sends chunks of up to N characters;
   while chunk 1 plays, chunk 2 is being synthesized, and the
@@ -184,8 +230,12 @@ reader's memory):
   round boundary is silent while the model writes the first line
   (0.76-0.94 s through the app and the tunnel in the checkpoint
   drive; 2.37 s after a trim) and the voice synthesizes the first
-  chunk (1-3 s for short lines): about 2-4 s, estimated — not yet
-  heard in a browser.
+  chunk (1-3 s for short lines): about 2-4 s, estimated. **Measured
+  2026-09-25 with the voice** (step 3.2): 3.7-4.9 s once warm (6.8 s
+  for a run's first round, the TTS cold) — see the entry "Measure TTS
+  synthesis time against text length". Prefetch would hide this gap,
+  not the silences inside a round (the voice synthesizes one request at
+  a time, tts-serve tour F5).
 - **Where flagged:** [discussion 2026-09-25]
   show-slice-3-browser-plan §2-§3 (the owner: "worth documenting");
   the TODO's polish list ("prefetch round N+1").
@@ -217,6 +267,56 @@ reader's memory):
   estimate; and a round whose text arrived but whose audio never
   played is skipped.
 
+## Talk anytime — the listener breaks in while a round plays (polish; the owner's preference, 2026-09-25)
+
+- **The idea:** with a push-to-talk button, the listener should be able
+  to break in at any moment, not only when the operator invites them.
+  A press interrupts the round's voices — the round's text stays
+  recorded as complete — and makes silence for the microphone to
+  listen; the message rides the next round request, and the director
+  forces that next round to answer the listener. The listening window after an invitation stays: it tells
+  the listener that talking back is possible.
+- **Decided for the MVP (2026-09-25, slice 3's step 3.3):** keep the
+  listening window as designed; talk anytime is a polish follow-up.
+  The agent had argued that the window does two jobs push-to-talk
+  alone does not — it is the show's pause for an answer (without it, an
+  answer is used only after the next round, 10-15 s of audio later),
+  and it is the clock that declares silence (the static round). **The
+  owner disagrees with both reasons** and records the preference
+  (verbatim):
+
+  > But I want to record that I disagree with your two reasons under "Is the listening window unnecessary with push-to-talk?". 
+  > (1) The pause in the show was necessary because in my 2024 prototype I did not have a push-to-talk button, as it was a CLI app.
+  > (2) I am not saying to remove the listening window, that can stay always, is a way to explain to the listener that the option to talk back exists. What I am saying is that with a push-to-talk capability it follows that the user should be able to interject his message  anytime, the message can be recorded while the round is playing, and in the next round the director forces a type of round that answers to the user.
+  >
+  > But, let's keep this as a polish follow-up. Agreed with your posture here.
+
+  The owner then corrected one point of that message (verbatim):
+
+  > Actually, I correct myself "the message can be recorded while the round is playing" this is not correct, I meant that the playing of the round voices can be interrupted (even if the round text is recorded as complete), and make silence for the mic to listen.
+
+- **What it would take (the agent's first sketch, not decided):**
+  (1) the server accepts a transcript at any round — today one that
+  arrives outside a listening window is ignored with a warning (the
+  fork's `app/routers/show.py`, `_round_stream`) — and the director
+  plans an answer round whenever words are heard, not only after an
+  invitation (`app/show/director.py`, `plan_round`); (2) the page
+  enables the talk button while rounds play; a press cuts the voice
+  (`stopVoice()` in the fork's `static/show/player.js`), records in the
+  silence, and sends the recording with the next round request — so the
+  show's own voices are never in the recording (on speakers they would
+  be, and Whisper would transcribe the actors with the listener), which
+  the owner's correction settles by design; (3) the lines cut short stay
+  in the record, so the model builds on words the listener never heard
+  (as with a Stop after the server kept a round, step 3.1) — to be
+  judged by ear. About 1-2 h, estimated.
+- **Where flagged:** the owner, 2026-09-25, while shaping step 3.3
+  ([discussion 2026-09-25] show-slice-3-browser-plan; the page's
+  microphone opens only during listening windows, as step 3.3 builds
+  it).
+- **Trigger:** polish, after slice 3's exit criterion (step 3.4); before
+  the talk if time allows.
+
 ## Mac-local TTS probe with tts-serve's MLX engine (parked post-MVP)
 
 - **The gap:** tts-serve ships a native Apple-Silicon engine
@@ -234,20 +334,6 @@ reader's memory):
 - **Fix shape:** one evening on the 64 GB machine — a venv,
   `impl/server_qwen3TTS_mlx.py`, point TalkWithZombies' TTS URL at
   it, read `rtf` from a few sentences; llama.cpp on Metal next.
-
-## JavaScript test for the accumulator's packing rules
-
-- **The gap:** upstream has Node test harnesses for the persona
-  form and the TTS settings section but none for `static/tts.js`;
-  the fork changes the accumulator (N = 100, ~20 % tail tolerance,
-  hard flush at line end) and adds `show.js` untested.
-- **Where flagged:** TalkWithMe tour §6 / Q11; ruled 2026-09-22: no
-  new harness inside the three-day timebox.
-- **Trigger:** the packing rules stop moving (after the timebox and
-  the first rehearsal tuning).
-- **Fix shape:** a third Node test in upstream's `vm.Context`
-  pattern (`tests/test_tts_settings.js` as the template) covering
-  the three packing rules and the line-end flush.
 
 ## An "exchange" round — the director has one character address another
 
@@ -342,7 +428,421 @@ reader's memory):
   `Story.events` plus each event's group; `_next_event` stays in the
   last event's group with a chance that falls as the run grows (a
   yaml knob for the typical run length); tests: runs occur, no
-  repeats until the pool is used up, the same seed replays.
+  repeats until the pool is used up, the same seed replays. The tone
+  words get the same treatment in step 3.4c — their themes kept as
+  data (the follow-up "The tone themes as data — five uses waiting for
+  them", use 4: theme runs); one shape for both files.
+
+## Comic relief — the cast jokes about a funny happening (owner, 2026-09-26; postponed from step 3.4c)
+
+- **The idea:** from the owner's 2024 prototype, as the owner remembers
+  it (verbatim, 2026-09-26):
+
+  > * Something that I had in the regular programming (or maybe it was in my wishlist and I am enriching the memory) it's a "make a joke" mode, where we direct the LLM to make jokes about funny occurrences that we provide (pre-canned like events), something like "Oh, no! Is that Betty from accounting among the zombies? They got her!... Look, she is still holding her calculator in the hand... Habits die hard indeed. hahaha".
+- **Where flagged:** [discussion 2026-09-26] show-director-modes — the
+  owner's 2024 design (§2) and feature 6 of the agent's decoding (§3).
+  Postponed with feature 7 (the next entry), the owner (§4): "yes, this
+  is not about engagement so can be postponed." And later the same day:
+  "I did not retire "6. Comic relief", I postponed it, so it should have
+  a proper follow-up entry. We are going to execute on this at some
+  point."
+- **Where it fits:** the Broadcast mode of that discussion — the cast
+  talking among themselves while the receiver is down. It does not
+  involve the listener.
+- **Fix shape (the agent's, not yet discussed):** a story list of funny
+  happenings (e.g. `stories/lab-outbreak/jokes.yaml` in the fork),
+  drawn like the events — without repeats until the list is used up
+  (`_fresh` in the fork's `app/show/director.py`), paced every few free
+  rounds with jitter (a knob like `show.event_every`) — and worded as an
+  instruction to joke about it on air. Like an event, the listeners
+  cannot see it, so the first to speak says what they see
+  (`show.event_report`). Open: whether a joke takes an event's place in
+  its round or has its own pacing. The tone words already hold the
+  palette: `stories/lab-outbreak/tones.yaml` has the groups "Gallows
+  humor and wit" and "Levity and play", drawn only at random today
+  (from step 3.4c on, themes kept as data — the follow-up "The tone
+  themes as data — five uses waiting for them", use 2).
+  Tests like the events'.
+- **Trigger:** after step 3.4c and slice 3's close; a candidate for the
+  show fixes before the talk or for the show arc (stories and
+  episodes) — the owner's call.
+
+## Scientific findings — the cast reports what the lab learns about the infection (owner, 2026-09-26; postponed from step 3.4c)
+
+- **The idea:** from the owner's 2024 design (verbatim, 2026-09-26),
+  said while describing what the cast asks a listener:
+
+  > We could also make one of their focus to describe the "scientific findings" from the infestation instead of asking questions, although I think this fits better their regular programing (when the radio is broken).
+- **Where flagged:** [discussion 2026-09-26] show-director-modes —
+  feature 7 of the agent's decoding (§3); postponed with feature 6 (the
+  entry above), the owner (§4): "yes, this is not about engagement so
+  can be postponed."
+- **Where it fits:** the Broadcast mode, as the owner said — not the
+  conversation with a listener.
+- **Fix shape (the agent's, not yet discussed):** a list of findings,
+  drawn like the events and worded as a finding one scientist reports on
+  air. Either a story file of its own or a group of `events.yaml` — the
+  pool already holds lab happenings such as "Sample twelve in the cold
+  room has started moving inside its sealed jar." A finding could
+  continue across rounds (the follow-up "Events that stay on topic for a
+  few rounds").
+- **Trigger:** the same as comic relief's.
+
+## Pace the calls in rounds, not seconds — one unit for all pacing (owner, 2026-09-26)
+
+- **The idea (the owner, verbatim, 2026-09-26, while shaping step
+  3.4c):** "I am proposing that we unify all pacing measurements on
+  count of number of round, and not time." And: "Maybe not for right
+  now, but to keep it as an identified follow-up..."
+- **Today:** the only pacing counted in time is the cadence of the
+  calls — seconds of played audio since the last invitation (the
+  fork's `app/show/director.py:68-80`, `_time_to_listen`;
+  `show.interaction_min_s` 60, `show.interaction_max_s` 180), from the
+  round request's `played_s`, which the page reports because only the
+  page knows what has played. From step 3.4c on, counted from the
+  moment the receiver goes off ([discussion 2026-09-26]
+  show-director-modes). Every other pacing is already in rounds: the
+  event gap (`event_every` ± `event_jitter`, free rounds), the tone
+  hold (`tone_hold` ± `tone_jitter`), and 3.4c's contact length (the
+  listener's answers) and silence count. Not pacing, and staying in
+  seconds either way: the listening window (`listen_window_s`) and the
+  press cap (`press_cap_s`) — wall-clock timers.
+- **History:** seconds came from the owner's own pushback on
+  2026-09-21 ([discussion 2026-09-21] story-loop §9 Q2) against the
+  agent's "every third or fourth round": (1) rounds are seconds long,
+  so that count opens the microphone about every minute and pauses the
+  show; (2) a fixed count is predictable; (3) the interval must be
+  configurable and tuned by ear. A round count with jitter, in
+  settings, meets (2) and (3); (1) asks for larger counts, e.g. 10-30
+  rounds.
+- **For rounds:** one unit for all pacing; the director a function of
+  the record and the seed alone, with no number from the page (the
+  round request's `played_s` would then feed only the debug line and
+  the record); the driver no longer invents played seconds (`--played`,
+  20 s per round by default, the fork's `scripts/drive_show.py:213`).
+- **Against:** rounds vary in length — 1 to 4 lines, a one-line re-call
+  against a three-line exchange — so the time between chances to talk
+  gets less even; over the 10-30 rounds between calls it mostly
+  averages out.
+- **No help to step 3.4c's testing** (the owner asked): the driver
+  already reports a fixed 20 s per round, so under the driver the
+  cadence is already a round count (60 s = 3 rounds); the unit tests
+  pass `played_s` directly; by ear, temporary settings bring the calls
+  forward either way. 3.4c's "count from the receiver going off" works
+  in either unit.
+- **Trigger:** after step 3.4c, when the calls' spacing is tuned by ear
+  — if seconds buy nothing audible over rounds, simplify to rounds.
+- **Fix shape:** `_time_to_listen` counts broadcast rounds since the
+  receiver went off; the two settings become round counts (names
+  indicative: `call_min_rounds`, `call_max_rounds`), the linearly
+  rising chance kept; tests; the runbook `docs/runbooks/show-driver.md`;
+  a dated note on SED §5.7 and on story-loop §9 Q2.
+
+## The tone themes as data — five uses waiting for them (owner, 2026-09-26)
+
+- **What exists from step 3.4c on:** the 24 themes of the tone words
+  ("Hope and warmth", "On the air, 1930s", "Fever and chaos", …) are
+  keys inside each overtone of the story's overtones file, which
+  replaces `tones.yaml` in the fork's `stories/lab-outbreak/`; a mixed
+  theme appears under two overtones. The loader reads each word with
+  its overtone and its theme; 3.4c's draw uses only the overtone
+  ([discussion 2026-09-26] show-director-modes, the overtone's
+  details). The owner, who asked to keep the themes (verbatim): "I like
+  this grouping of therms a lot and I think we should preserve this in
+  some way." — and to store these uses "in a prominent but adequate
+  position in our docs".
+- **The uses (the agent's, 2026-09-26):**
+  1. **The orientation round** draws its tone word from "On the air,
+     1930s" ("broadcast-polished", "newsreel", "static-laced") — the
+     station-identification register.
+  2. **Comic relief** (the follow-up "Comic relief — the cast jokes
+     about a funny happening") draws from "Gallows humor and wit" and
+     "Levity and play".
+  3. **The Breakdown** leans on "Fever and chaos" or "Nerves and
+     tension".
+  4. **Theme runs:** hold one theme for a few rounds — the same wish as
+     the follow-up "Events that stay on topic for a few rounds" (its
+     idea 2: the events' groups as data).
+  5. **The debug line** shows the theme next to the tone word.
+- **Trigger:** each use when its feature is built (comic relief, theme
+  runs), or when listening shows a need (the orientation's register,
+  the Breakdown's). Use 5 is small enough to fold into 3.4c's build if
+  convenient.
+- **Fix shape:** per use, a director rule "in a round of kind K, draw
+  the tone word from theme T, when the round's overtone holds it" — a
+  kind-to-theme mapping in the story's overtones file, so another story
+  brings its own; tests like the tone word's.
+
+## A listener memory keyed by identity — revisit how the show remembers a returning listener (owner, 2026-09-26)
+
+- **Status 2026-09-26, evening — measured; RULING: names-only A, a show
+  fix before the talk.** Step 3.4c.5's driver test ran B in two
+  wordings and A simulated with a perfect extractor, on the same
+  script and seeds ([experiment 2026-09-26] listener-memory-b-vs-a:
+  the scripts, the raw runs, the findings). An anonymous "Hello again,
+  lab." was treated as the most recent caller, Maria, in 3 of 3 drives
+  with B in both wordings, and in 0 of 3 with A — A's cast asked who it
+  was; Alfredo's name, across his return's rounds, 3 of 12 with the
+  committed B against 7 of 12 with A; the rest within noise. The gains
+  come from knowing who is speaking, not from the facts. The owner:
+  "We are going to do: "a. B for 3.4c; names-only A becomes a show fix
+  before the talk, with the follow-up updated.""
+- **The shape to build (names-only A):**
+  - **detect the caller's name, or its absence, for each answer**, in
+    code — the only new piece: a second small model request with a
+    grammar that allows only one of the known callers' names, "new:
+    ‹Name›", or "none", which also maps Whisper's spellings ("Alfred")
+    to a known caller; plain patterns are the fallback (about 30
+    minutes, brittle: "this is crazy" matches "this is …"); the delay
+    it adds per answer is unmeasured;
+  - **keep it in the run's record** — one optional field per round, so
+    the director stays a function of the record and old runs load;
+  - **the restatement states who the voice is** — anonymous ("This
+    voice has not said who they are. Callers you know: … Do not guess
+    which one this is."), new ("This is Maria, a new caller."),
+    returning ("This is Alfredo, who called before. Greet them as a
+    returning friend, by name."); the facts stay the listener's quoted
+    words, grouped under the caller's name. The simulation's
+    `sim_a.py` is the draft.
+  - **Estimate:** about 3 hours — detection about 1 h, the record
+    15 minutes, the director about 1 h, a driver test on the box with
+    the words spoken and heard by Whisper about 30 minutes; the agent's
+    build estimates ran high lately (3.4c's four sub-steps took about
+    1 h 07 against 4-6 h), so 1.5-3 h.
+  - **Test first:** detection on real speech — names Whisper mangles,
+    "I'm Alfredo's friend", nicknames. A small model follows a wrong
+    conclusion as faithfully as a right one: a misheard name would have
+    the cast greet the wrong person with confidence.
+- **The decision to revisit:** in step 3.4c the restatement — the
+  listener's words repeated, verbatim, in each contact instruction —
+  reaches over the whole run, grouped by contact, oldest first, capped
+  at the last few contacts (a setting), with one line asking the model
+  to greet a voice it spoke with before as a returning friend and use
+  what they told it. The model does the matching; no identity in code
+  ([discussion 2026-09-26] show-director-modes, the agenda's details).
+- **The owner's idea behind it (verbatim, 2026-09-26):** "What if we
+  keep in memory a cache of all answers provided by each user (once the
+  user has identified itself), that way we can provide even more context
+  for returning users. Otherwise the model will forget who the user is
+  between subsequence contacts. This can complicate things a bit, but I
+  think giving some sort of a memory of past interactions with the user
+  is worth it."
+- **The alternative to consider (the agent's option c, which the owner
+  asked to keep, verbatim):** "A memory keyed by identity, with names
+  extracted in code and matched across contacts. It's the most exact,
+  but it needs A's extraction and fuzzy name matching. A follow-up, tied
+  to A, if b falls short." The owner: "Add a follow-up entry to revisit
+  this decision in the future and consider implementing instead".
+- **What it needs:**
+  - **extraction** — the listener's name (and maybe place) pulled out
+    of the transcript in code: option A of feature 5 in that discussion
+    (§5.1), with the ways the agent listed — a second small request to
+    the model with a grammar after each listener turn, a hidden "facts"
+    line at the top of the answer's grammar, or plain patterns ("my
+    name is …", "this is …");
+  - **fuzzy matching** — Whisper may spell one name differently from
+    one contact to the next (SED §6.3: a misspelled cast name, "Maura"
+    for "Moira", defeats an exact match);
+  - **a per-listener store** — derived from the run's record like all
+    of the director's memory, or a new field in it.
+- **Not identity by browser:** at a demo, many people talk through one
+  laptop — one browser, many listeners.
+- **Across runs:** both b and c last one run; a page reload starts a new
+  run. Memory across runs is a feature of its own (see also "Resume the
+  same run after a page reload").
+- **Trigger:** ~~the driver test or the owner's ear shows b falls short —
+  the model misses a returning voice, mixes two listeners up, or the cap
+  drops a listener who comes back later — or option A comes back for
+  feature 5~~ — **fired 2026-09-26** (the driver test: B takes an
+  anonymous returning voice for the most recent caller). Now: among
+  the show fixes before the talk, after slice 3 closes.
+
+## Event texts reworded as lines of dialog — a personal account from the cast (owner, 2026-09-27)
+
+- **The gap:** with the fixed lines ruled on 2026-09-27 (after step
+  3.4c.5's test by ear), a cast member reads an event's text word for
+  word on air. The texts in the fork's `stories/lab-outbreak/events.yaml`
+  (289: positive 29, neutral 94, negative 166) are written as narration
+  in the third person, not as something a person says.
+- **The owner (verbatim, 2026-09-27):** "I expect some percentage of the
+  event lines may need to be re-written to better suite a line of
+  dialog, providing a more personal account, and more details of what
+  is happening. e.g. `- A dusty guitar turns up in the security office,
+  with all six strings.`, clearly this line is not a good dialog line to
+  be told in first person, instead it should be something like `- Guys!
+  A dusty guitar turned up in the security office, with all six
+  strings!`. Seems small, but it's important.... However, this is not
+  the time to fix this, we can do later... But we should save this as a
+  follow up to not forget."
+- **Trigger:** after the fixed lines are built — the owner's call.
+- **Fix shape:** go through the events and reword those that do not
+  read as speech — said by someone in the lab, to the others or to the
+  listeners, about what just happened, with a concrete detail; the
+  agent drafts, the owner reviews. Rewording events changes the
+  baseline of the wording experiments (the driver test), so it is a
+  measured step of its own.
+- **Also (2026-09-28): events heard on the radio while the receiver is
+  off.** About twenty events describe something heard over the radio —
+  "A boy on the frequency says his parents went out to find food and
+  haven't come back.", "A school choir on the frequency sings for the
+  lab.", "The military frequency repeats one word, 'Evacuate', then goes
+  silent." — yet events come only in the broadcast, while the receiver
+  is dead or switched off. Seen in the owner's listen of 2026-09-28 (the
+  fork's run `2026-09-28T13-43-28`): round 112 read the boy's event two
+  rounds after the Switch-off. The owner (verbatim): "Let it be. This is
+  a minor issue, and I do not think it has an easy fix. You can make a
+  small addition to the "Event texts reworded as lines of dialog"
+  follow-up to not forget this detail, but I do not think it's worth
+  acting on this." — noted, not planned; if the events are reworded,
+  these could be reworded as something the cast heard earlier, or left
+  out while the receiver is off.
+
+## The contact agenda — more items (owner, 2026-09-27)
+
+- **The list:** the fork's `stories/lab-outbreak/agenda.yaml`, nine
+  two-branch items, the name item first (step 3.4c; [discussion
+  2026-09-26] show-director-modes §15.9). Reviewed by the owner before
+  the test by ear.
+- **The owner (verbatim, 2026-09-27):** "I reviewed the agenda items.
+  They could be improved with more items, but I want to keep it as is
+  for the moment, because if we change it now we change the baseline
+  for comparing prompt wording improvements like the last experiments
+  we just did. So any improvements ti agenda items would be a follow
+  up."
+- **Trigger:** once the wording work measured against the driver
+  test's baseline is done — the owner's call.
+- **Fix shape:** the agent drafts more items in the same two-branch
+  form (ask for something; if the voice already gave it, use it); the
+  owner reviews; a driver test before and after.
+
+## Events the listener cannot hear — the characters react to what only the model was told (owner, 2026-09-25) — option 4 adopted
+
+- **Status 2026-09-25 (night) — the A/B test decided it: option 4, the
+  wording.** Two driver drives on the box, seed 42, 30 rounds each at
+  20 s, the same 10 events at the same rounds (the fork's runs
+  `2026-09-25T22-34-16`, A, "Offstage: <event> …", and
+  `2026-09-25T22-35-07`, B, "Something happens that the listeners
+  cannot see: <event> The first to speak tells the listeners on air
+  what is happening. …"; 63 lines each, none dropped). Round 1 rebuilt
+  from the records and counted by the model server: 315 and 333 tokens,
+  exactly what the server read for each (the requests identical but for
+  the user message). A rough hint — the round's first line shares a
+  content word with the event — gave A 4/10, B 8/10. The agent's reading
+  as a listener: B clearly better in 5 (the laughing voice, the owl on
+  the mast, the old forecast, the Newfoundland request, the child's
+  voice), somewhat better in 3 (the silence, the flooding, the gate),
+  equal in 2 (the fish, the warm shape), A never better; B's lines a
+  little more descriptive, the script 5 % longer after 30 rounds (2879
+  tokens against 2740). The owner (verbatim): "B wins, flip the default
+  and record it." — `show.event_report`, on by default in the fork
+  (`c55d25b`); `false` keeps "Offstage:". Still open: B names
+  the event more often but not always fully (the burst pipe became
+  "a swamp"; the single file became "coming through the gate"); if by
+  ear (step 3.4) events still puzzle, option 3 (the operator reports,
+  one extra round per event) is next. Seen on the wire: the system
+  prompt says "No narration" — one more reason against option 1.
+
+- **The gap:** the director gives an event to the model at the head of
+  a free round's instruction ("Offstage: The blood samples … Daniel and
+  Moira speak next: …" — the fork's `app/show/director.py`,
+  `instruction_for`), and nothing says the listeners cannot see it; so
+  the characters react like people who saw it together, and a listener
+  hears reactions to things never told. The show engine's design
+  assumed the reactions would carry the event (SED §5.7: "the audience
+  learns of an event through the characters' reactions" — dated note
+  2026-09-25). The `/show` page's captions hide the gap: they show the
+  event as a stage direction in brackets. By ear there is no bracket —
+  so the by-ear checks (slice 3's step 3.4) are judged with captions
+  off. The jumps between unrelated events (the entry "Events that stay
+  on topic for a few rounds") make it worse.
+- **The owner's evidence** (the page, the fork's run
+  `2026-09-25T14-57-06`, rounds 55-58, debug on; as pasted):
+
+  ```
+  [The infected at the south gate are tearing at a car, but the car is empty.]
+
+  Daniel (calm): They're wasting energy. Over.
+
+  Samantha (calm): Let them chew on a rusted shell. Over.
+
+  Daniel (calm): We'll move when we're ready. Over.
+
+  round 55 · free · speakers Daniel, Samantha · event The infected at the south gate are tearing at a car, but the car is empty. · tone swaggering · first line 1.1 s · round 2.4 s · run 2026-09-25T14-57-06
+
+  [The blood samples from the first victims have separated into three layers instead of two.]
+
+  Daniel (calm): Three layers? That's new. Over.
+
+  Moira (calm): It's either a mutation or a trick. Over.
+
+  round 56 · free · speakers Daniel, Moira · event The blood samples from the first victims have separated into three layers instead of two. · tone swaggering · first line 1.2 s · round 2.4 s · run 2026-09-25T14-57-06
+
+  Moira (calm): We'll test it. Over.
+
+  Ralph (calm): If it's a trick, we'll laugh. Over.
+
+  Moira (calm): Either way, it's our problem. Over.
+
+  round 57 · free · speakers Moira, Ralph · event — · tone swaggering · first line 1.3 s · round 3.1 s · run 2026-09-25T14-57-06
+
+  Moira (calm): We'll crack it. Over.
+
+  round 58 · free · speakers Moira, Samantha · event — · tone swaggering · first line 1.0 s · round 1.9 s · run 2026-09-25T14-57-06
+
+  [A dark handprint appears on the inside of the observation window.]
+
+  Ralph (urgent): We need to seal that window. Over.
+
+  Samantha (urgent): The handprint's recent. Over.
+
+  Ralph (urgent): Could be a trap. Over.
+
+  Samantha (urgent): We'll reinforce it. Over.
+  ```
+
+  The owner: after "[The blood samples from the first victims have
+  separated into three layers instead of two.]", Daniel's "Three
+  layers? That's new. Over." — the listener will never know what
+  these layers are: a context-sharing problem.
+- **Options** (1-3 the owner's, 4 the agent's):
+  1. **A narrator.** The owner hesitates: a voice outside the fiction
+     breaks the emergency-broadcast frame that imitates Orson Welles's
+     *The War of the Worlds* (1938), which played on the ambiguity
+     between a radio play and a real newsfeed. The agent agrees; the
+     in-world announcer already exists — the operator (Samantha), whose
+     job is reporting — which is option 3 with her as the describer.
+  2. **An event round**, a new kind with its own instruction (the
+     owner's wording: "The characters describe the event that just
+     happened and comment to each other the consequences of this
+     event."); then rounds continue as usual.
+     Costs a round kind in the director, the record, the summary and
+     the page; no extra request if it replaces the free round.
+  3. **A describe-it round trip** per event: one character describes
+     the event in their own words; then rounds continue as usual. The
+     most control; costs one more request per event (another
+     round-boundary gap of ~2-4 s, [discussion 2026-09-25]
+     show-slice-3-browser-plan §2) and one more line, about every other
+     free round.
+  4. **The wording alone, in the same round** — the agent's lean: for
+     example "Something happens that the listeners cannot see: X.
+     Daniel tells the listeners on air what is happening; then Daniel
+     and Moira speak: …". The characters are on air, so reporting is
+     what they would do — the device the Welles broadcast is built on
+     (reporters describing to the audience what they witness). One
+     sentence in `instruction_for`; the director already picks the
+     speakers, so it can name the reporter (the first speaker, or the
+     operator when she is in the round). Risk: the model may skip or
+     bury the description — the grammar enforces who speaks, not what
+     is said; then option 3 with the operator.
+- **Where flagged:** the owner, 2026-09-25, watching the `/show` page
+  during slice 3's step 3.1 (the plan's discussion, [discussion
+  2026-09-25] show-slice-3-browser-plan).
+- **Trigger:** before the by-ear exit criterion (slice 3's step 3.4),
+  or whenever the owner wants to hear the show make sense.
+- **Fix shape — decide by an A/B test:** the driver at seed 42, 20
+  rounds each, today's wording against option 4's; read the first line
+  after each event and count the events a listener could follow without
+  the caption. If option 4 falls short, try option 3 the same way.
 
 ## Bounded scratchpad before the script — test the "room to reason" hypothesis
 
@@ -407,7 +907,7 @@ reader's memory):
   and brainstorm §3.
 - **Trigger:** time allows after the MVP's TTS path works
   end-to-end with an existing engine — explicitly a SOFT goal;
-  also triggered if the [spec §7.2] engine comparison experiment
+  also triggered if the [spec §9] engine comparison experiment
   finds the existing seven inadequate for 4 distinct character
   voices. *(Pointer corrected 2026-09-16: was "§8.4", a stale
   pre-spec number.)*
@@ -417,6 +917,75 @@ reader's memory):
   expose via the standard `/synthesize` + `/capabilities` API;
   F5-TTS first (known quantity), Breeze TTS 2 second (newer,
   unproven locally). Consider upstreaming as PRs to scorbo2.
+
+## The sign-off "Over." sometimes runs into the line — keep the accumulator at 100; re-test with any new TTS engine
+
+- **The gap:** listening to the `/show` page with voices (2026-09-25,
+  slice 3's step 3.2), the owner heard a few lines — not many — where
+  the voice said the closing "Over." without the pause after the
+  sentence before it: "Daniel (sad): They're not coming. Over." sounded
+  like "coming over". The engine: Faster Qwen3-TTS (tts-serve 1.2).
+  Every line ends with "Over." (the cast sheet's rule), and the
+  accumulator packs it into the line's last chunk.
+- **The owner's idea:** lower the accumulator's length to about 20
+  characters, so "Over." goes as a request of its own — not worth much
+  time now; perhaps a new TTS engine fixes it.
+- **The agent's view (2026-09-25): keep 100.** Measured the same day,
+  each request costs 2.4-3.2 s almost whatever its length (the entry
+  "Measure TTS synthesis time against text length"). At 20 characters,
+  "Over." and most sentences become requests of their own: about twice
+  the requests per line, and the silences inside rounds grow from 1-2 s
+  to several seconds; very short requests also bring back the fragment
+  artifacts the accumulator exists to avoid ("Testing. 1. 2. 3.").
+  **The owner agreed**, from another case: "Could this be... a
+  distraction? Over." is better said whole than cut at the "..." — the
+  accumulator keeps it whole (verbatim): "Trying to fix where to cut sentences with different punctuations so that TTS pronunciation is better is too complicated. In practice I feel the accumulator is the practical best solution."
+- **Cheaper options, for later:** (a) a pause cue in the spoken text
+  before "Over." (an ellipsis, a comma), per engine, in the tables of
+  the entry "Markdown emphasis in spoken lines"; test by ear. (b) One
+  "Over." clip per persona, synthesized once per run and played after
+  each line with a short pause, the text's "Over." left out of the
+  request — four requests per run; the same "Over." every time, which
+  suits radio protocol but not a line's mood. (c) Re-test with any new
+  TTS engine (Task 5b).
+- **Where flagged:** the owner, 2026-09-25, by ear, during step 3.2's
+  check.
+- **Trigger:** a TTS engine change; or the owner's ear asks for it
+  before the talk.
+
+## A line broken off with an em dash sounds and reads cut — the dash becomes a comma in the spoken text
+
+- **The gap:** the model sometimes breaks a line off on purpose with an
+  em dash, and the spoken text turns the dash into a comma, so the line
+  sounds — and, in the captions, reads — as if it had been cut. Seen by
+  the owner on the `/show` page, 2026-09-25 (slice 3's step 3.3 check;
+  the fork's run `2026-09-25T17-50-50`, round 5, an answer round):
+  - the model wrote (`debug/r005.txt`, the record's `raw`):
+    `Moira (doubtful): "I don’t know. The samples were aerosolized, but—Over."`
+    — `—` U+2014 between "but" and "Over"; `finish: stop`, 24 tokens of
+    512, nothing cut;
+  - the spoken text (the record's `spoken`, the `done` event, the
+    caption): `I don't know. The samples were aerosolized, but, Over.`;
+  - sent to the voice, one request (54 characters, one chunk):
+    `{"text": "I don't know. The samples were aerosolized, but, Over.", "persona_name": "Moira"}`.
+- **Why:** the parser's `_SPOKEN` table maps `—` to `, ` (the fork's
+  `app/show/parser.py`), chosen on 2026-09-22 because the em dash
+  dropped the pause before "Over." on Faster Qwen3-TTS (the TODO's
+  Task 5b note). Right for a dash in mid-sentence ("the lab — or what is
+  left of it — is…"); wrong for a dash that breaks a sentence off.
+- **Options, for later:** (a) the captions show what the model wrote
+  ("but—Over.", curly quotes and all) and only the voice gets the
+  normalized text — the `done` event would carry a display text too (a
+  small server change); (b) a dash that ends a clause (before "Over." or
+  a capital letter) becomes `...` — trailing off — in the spoken text,
+  a mid-sentence dash stays `, `: engine-dependent, to judge by ear, and
+  close to the punctuation rabbit hole of [discussion 2026-09-25]
+  show-slice-3-browser-plan §8.4. The owner declined a listening test
+  of the three versions for now ("but, Over." · "but—Over." · "but...
+  Over.") and asked for this note.
+- **Where flagged:** the owner, 2026-09-25, reading the captions.
+- **Trigger:** polish; or a TTS engine change (Task 5b), with the tables
+  of the entry "Markdown emphasis in spoken lines".
 
 ## Markdown emphasis in spoken lines — kept for now; re-test with any new TTS engine
 
@@ -515,22 +1084,40 @@ reader's memory):
   recordings go out as `audio.weba`; OpenAI's transcription API
   checks the extension and lists `webm` but not `weba` (our Whisper
   ignores the name — tested live); two upstream tests fail on those
-  Pythons; our fix is TalkWithZombies commit `c46c3bf`.
+  Pythons; our fix is TalkWithZombies commit `c46c3bf`. A fifth
+  joined on 2026-09-25: (5) **the sentence splitter cuts inside
+  numbers** — upstream's `extractSentences`
+  (`/Users/alfredo/workspace/hackTNT_2026/TalkWithMe/static/tts.js:72`,
+  regex `/[^.!?]*[.!?]+/g`) ends a sentence at any dot, so "Take 3.5
+  milligrams every day. Over." becomes "Take 3." · "5 milligrams every
+  day." · "Over." — whole or token by token — and each sentence goes
+  as its own TTS request, the number split across two (run as is on
+  2026-09-25; found by the owner's questions about the show's
+  accumulator, [discussion 2026-09-25] show-slice-3-browser-plan §8).
   **No longer candidates:** the `[Name]:`
-  output sanitizer (moot under [ADR-0003] — [spec §9]) and the
+  output sanitizer (moot under [ADR-0003] — [spec §10]) and the
   `max_turns_for_context` raise (done in our config, 6 → 50, on
   2026-09-18 — a setting, not a patch).
 - **Where flagged:** the remote-split spike (2026-09-16) designated
   the first patches; re-ranked 2026-09-21 ([discussion 2026-09-19]
   upstream-contribution-strategy, addendum; [discussion 2026-09-21]
-  task6-reconnaissance-brief §1–§2; [ADR-0002]).
+  task6-reconnaissance-brief §1–§2; [ADR-0002]); (5) added 2026-09-25
+  ([discussion 2026-09-25] show-slice-3-browser-plan §8).
 - **Trigger:** after 2026-10-08 — outreach deferred past the
   deadline by the owner ("build offerable, contact nobody yet").
 - **Fix shape:** (1) as a pull request or a README pointer to the
   deployment repo; (2) a focused pull request against upstream's
-  `static/tts.js`, with the packing rules' Node test (entry above)
-  as its proof; (3) and (4) as GitHub issues with the receipts
-  above, (4) with our commit as the proposed fix.
+  `static/tts.js`, with the packing rules' Node tests as its proof
+  (the fork's `tests/test_show_page.js`, step 3.2); (3) and (4) as GitHub issues with the receipts
+  above, (4) with our commit as the proposed fix; (5) a small bugfix
+  pull request of its own against `extractSentences`, apart from (2) —
+  a pure fix is easier to accept: a sentence ends only where a run of
+  marks meets whitespace, `(?=\s)` while streaming (the growing buffer
+  ends at "Take 3." just before the "5" arrives, so its end is not a
+  sentence end; the tail is flushed on `done`, as today) — simulated
+  with upstream's loop: "Take 3.5 milligrams every day." · "Over." —
+  with a Node test; our version, for whole lines, is the fork's
+  `static/show/player.js` `sentencesOf` (step 3.2).
 
 ## LuxTTS landed upstream — presumptive §7.2 candidate
 

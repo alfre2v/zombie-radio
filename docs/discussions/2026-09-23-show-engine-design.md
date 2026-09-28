@@ -793,6 +793,31 @@ The owner, 2026-09-23 (verbatim):
     goes on." in step 2.1b — with the bare sentence, the operator
     signed off in both live drives ("This is a dead end.",
     "Farewell, dear listeners…"); see the TODO's 2.1b.]*
+  *[note 2026-09-28: superseded by step 3.4c (done 2026-09-28; the
+  TODO's 3.4c entry and [discussion 2026-09-26] show-director-modes).
+  The listener's answer is no longer one line and one round: a
+  contact is a sequence of rounds. The kinds now are **orientation**
+  (the sign-on at round 1, then a repeat every 20 ± 5 free rounds),
+  **free** (with an event, an aftermath or a recollection in its
+  slot), **repair** (the call: the receiver back, the operator calls
+  out; the page listens), **exchange** (the listener's words
+  answered, the character they addressed first, 2-3 lines, an agenda
+  item; the page listens again), **last-exchange** (the contact's
+  N-th answer, N = 5 ± 1: answered, and the page does not listen),
+  **breakdown** (the receiver fails, straight after the last
+  exchange), **re-call** (a silence: the call or the question once
+  more) and **switch-off** (two silences in a row: the receiver
+  switched off to save it). The receiver story gives the listening
+  window its reason; the emotional overtone (positive, neutral,
+  negative) constrains each round's moods and tone word. **Fixed
+  lines** (step 3.4c.6): the lines the listener must not miss — an
+  event read out, the call, the Breakdown's and the Switch-off's key
+  lines — are said word for word by a cast member from the story's
+  texts, not written by the model; they are quoted in the next
+  instruction as already said, never replayed as the model's own
+  lines (step 3.4c.7). The old kinds (`invitation`, `answer`,
+  `static`) stay loadable for old runs. The wording of every prompt
+  as of 2026-09-28: [discussion 2026-09-28] prompt-sweep, §4.]*
 - **The instruction** (the `user` turn) is plain sentences with no
   label: "Offstage: …" for an event, "A voice on the frequency says:
   …" for a listener, then the constraint in words ("Ralph and Moira
@@ -806,6 +831,25 @@ The owner, 2026-09-23 (verbatim):
   plain "continue" otherwise; episode beats take this role later
   (decision 2's stretch). Never spoken — the audience learns of an
   event through the characters' reactions.
+  *[note 2026-09-25: in practice the reactions do not carry the
+  event. Watching the `/show` page (the fork's run
+  `2026-09-25T14-57-06`, rounds 55-58), the owner saw the characters
+  react to what only the model was told — "Three layers? That's new."
+  after the blood samples separated into three layers — which a
+  listener cannot follow; the page's captions hid it, since they show
+  the event as a stage direction. Nothing in the instruction says the
+  listeners cannot see the event. Options, the agent's lean (the
+  characters report the event on air, in the Welles manner, by the
+  instruction's wording alone) and a driver A/B test: the follow-up
+  "Events the listener cannot hear" in `docs/follow-ups.md`.]*
+  *[note 2026-09-25, night: the wording changed. An A/B test on the
+  box (two 30-round drives, the same 10 events) compared "Offstage:
+  <event>" with "Something happens that the listeners cannot see:
+  <event> The first to speak tells the listeners on air what is
+  happening."; the second named the event in its first line about twice
+  as often, and the owner ruled: "B wins, flip the default and record
+  it." It is the fork's `show.event_report` (`c55d25b`), on by default; `false`
+  keeps "Offstage:". The receipts: that follow-up's status.]*
 - **Entropy term:** one tone word per round from a list, the 2024
   trick (where the list lives is settled in code; a story may bring
   its own).
@@ -1624,3 +1668,9 @@ engine".
 - **2026-09-24 (night, later)** — §7.3 gains a dated note: the
   checkpoint passed, 6 of 6 criteria in one 20-round drive; the
   owner's verdict: continue. §9.7's table points to it.
+- **2026-09-25** — §5.7 gains a dated note on events: the characters'
+  reactions do not carry an event to the listener (seen by the owner on
+  the `/show` page); the follow-up "Events the listener cannot hear"
+  holds the options.
+- **2026-09-25 (night)** — §5.7 gains a second dated note: events are
+  now worded for the broadcast (the A/B test; the owner's ruling).
