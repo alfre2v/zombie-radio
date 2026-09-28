@@ -310,7 +310,8 @@ or believed — marked so) · **in place** · **next** · **status**.
   may say about the lab's location (only the wood, the swamp, the smoke)
   and that they do not know its name or address; make the sign-on a
   fixed line (the same mechanism as 3.4c.6); an unseeded run in the demo.
-- **Status:** open.
+- **Status:** **not a defect** — the owner's ruling of 2026-09-28, 13:14
+  (the addendum below): invented details are a feature.
 
 #### C8 — Event texts written as narration, not speech
 
@@ -572,3 +573,34 @@ Not proposals to act on now — the questions this inventory raises:
    2026-09-24, or strip a starred word that stands alone?
 6. **The Breakdown (C4):** leave the failure to the fixed line and the
    stage direction, so the model only answers and reacts?
+
+## Addendum 2026-09-28 (13:14) — the owner's ruling on improvisation
+
+During the prompt sweep (the discussion 2026-09-28 prompt-sweep, §3.7),
+after the agent had framed the invented place of the sign-on as a
+problem, the owner (verbatim):
+
+> "Let me clarify one thing to you: Invented places of any other detail
+> is not a bug, it is a feature. In this project we are probing the LLMs
+> ability to improvise a story based on somewhat vague guidance. So this
+> obsession you have developed with eliminating deviations from the
+> prompt, drop it."
+
+What it settles here:
+
+- **C7, "Invented facts", is not a challenge.** "Sector 9, Lab 7-B", "a
+  lab near Boston", an accident the premise leaves undefined — the model
+  making them up is what the project probes. Its "Next" candidates are
+  dropped; the one sentence already added to the premise (where the lab
+  stands: "near a wood and a swamp") stays, at the owner's word, **as
+  flavour** ("Keep it as flavour, record cases 1 and 2.", 13:15) — not as
+  a constraint.
+- **Open question 2 (§6) is answered:** no facts are added to stop
+  invention, and the sign-on is not made a fixed line for that purpose.
+- **The measure for every other challenge** is whether the story works
+  for the listener — whether it hangs together with what the listener has
+  heard, speaks to them, and holds attention — not whether the model stays
+  inside the prompt. What still counts (the agent's reading, given to the
+  owner and not contradicted) is what the listener hears as broken: the
+  show contradicting itself in its own words, or the rules of the game
+  told wrong.

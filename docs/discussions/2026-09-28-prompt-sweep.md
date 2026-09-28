@@ -6,10 +6,13 @@
 every prompt the show sends to the model, in search of the best wording;
 the owner leads the sweep, the agent explains what the model receives and
 why, and builds what the owner decides.
-**Status:** OPEN — four cases reviewed and changed on 2026-09-28: the
-event, the call, the Breakdown (the fork's `4d051ba`), and the system
-prompt (§3.4; the fork's working tree, uncommitted at this writing);
-every other case still to examine (§5, the checklist).
+**Status:** OPEN — six cases reviewed and changed on 2026-09-28: the
+event, the call, the Breakdown (the fork's `4d051ba`), the system prompt
+(§3.4, the fork's `432a378`), the sign-on and the orientation repeat
+(§3.5-§3.6; the fork's working tree, uncommitted at this writing); every
+other case still to examine (§5, the checklist). **The owner's ruling of
+13:14 (§3.7) governs the rest of the sweep:** invented details are a
+feature — the model's improvisation is what the project probes.
 
 **The owner's request (verbatim, 2026-09-28, 12:00):** "I want you to save
 to a discussion file the output you produced in sections: "A. The
@@ -962,6 +965,263 @@ touched; the two pinned system-message tests carry the owner's wording
 - **C3 in a first exchange** — "Quick—ask them how they found this
   frequency!" (check run 2, round 4): for case 8.
 
+*Case 0 was committed at the owner's order at 12:57 ("commit the fork,
+then commit zombie-radio."): the fork's `432a378`, this repository's
+`72919d9`. The two items above about invention — the lab's location and
+the accident's story — were later answered by the owner's ruling on
+improvisation (§3.7): invented details are a feature, not a defect.*
+
+### 3.5 Case 1, the sign-on — the place given to the model as flavour, in the premise
+
+> **The owner (12:57):** "Go with case 1, bring the sign-on"
+
+**What the agent showed** (in substance; the texts are in §4, case 1).
+
+*What it is.* Round 1 of every show, the first thing a listener hears:
+Samantha opens the broadcast and tells anyone listening who the cast
+are, where they are, and that the receiver is dead — the lab can transmit
+but not hear, and will call out when it works; a second voice adds a
+line. At the demo it is how the audience learns the rules of the game
+before the first call. From the model's side, round 1 is the only request
+with no history — the system message, then this one instruction — and
+whatever it says here stays in the history of every later request until
+the trim drops it (that is how "Sector 9" spread to later rounds).
+
+*How it is built.* `_orientation` (the fork's `app/show/director.py:192`),
+shared with the orientation repeat (case 2), assembles three pieces: the
+lead ("The broadcast begins. Samantha opens it and tells anyone
+listening, in their own words, <the receiver clause> who they are and
+where: <the facts>", line 206); the facts, from the cast sheet's front
+matter (`orientation:`), written by the story; and the shared tail —
+Samantha pinned first, then one of the others, up to `beat_max_lines` (2)
+lines; the orientation's overtone (neutral: calm, doubtful, urgent,
+curious, determined); a tone word.
+
+*The history, and why the receiver was said twice.* The owner's ruling
+in the 3.4c discussion (§14.10, 2026-09-26: "b, a sign-on round at the
+start", with the idea of repeating it periodically); the first build
+(step 3.4c.3, the fork's `4d0d7dd`) said only "opens it, telling anyone
+listening, in their own words: <facts>"; the driver test found the
+sign-on told the receiver facts in only 1 of 3 seeds, so the wording pass
+(`e261b5b`, 2026-09-26 17:32) added the receiver clause in front of the
+facts, which already said it too — 3 of 3 afterwards (the listener-memory
+experiment's findings). A deliberate repeat that measurably helped.
+
+*What it produced* (the same instruction in both runs; only the system
+message differs): with the committed premise, seed 42 said "We're
+broadcasting from Sector 9, Lab 7-B. The receiver's dead—we can only
+transmit. If you hear this, respond" in every run since 2026-09-26 17:05;
+seeds 7 and 2026 dodged the place ("We are scientists trapped in a
+besieged lab…", "We are the four trapped in the research lab…"); with the
+case-0 premise, seed 42 said "We are scientists trapped in a research lab
+during a zombie outbreak. Our radio receiver is dead—we can only
+transmit. If you can hear us, answer when we call." (run
+`2026-09-28T12-47-06`).
+
+*The agent's reading then.* What works: every seed says the receiver is
+dead and that the lab can only transmit — the clause doing its job; with
+the new premise, seed 42 also told the listener what to do. The main
+point, as the agent framed it: **the instruction asks for a place it
+never gives** — "who they are and **where**:", and the facts give no
+where beyond "a secret research lab"; the story does have one, in the
+agenda's third item ("a wood and a swamp, with smoke rising from the east
+wing"), but that reaches the model only when a contact draws it. Smaller
+points: "who they are" with "they" meaning the cast (the model copes: every
+sign-on speaks as "we"); the second line has no job of its own; the
+facts' own wording. Four options for the place: (1) the place in the
+orientation facts; (2) one sentence in the system message's premise (the
+boundary rule of case 0: a whole-run truth); (3) drop "and where"; (4) a
+fixed sign-on line. The agent recommended 2, with a check of the first
+two rounds on seeds 42, 7 and 2026.
+
+> **The owner (13:02):** "Go with 2, in your wording,  do not run the
+> live checks yet, let me review first"
+
+**Built** (the fork's working tree): after the premise's first sentence,
+"The lab is secret: the scientists do not know its name or address, only
+that it stands near a wood and a swamp." — the agent's example said
+"they"; the agent wrote "the scientists" so the pronoun could not be read
+as the lab, and said so; the agenda's "smoke rising from the east wing"
+left out. The two pinned system-message tests carry it. Suite 1109
+passed.
+
+> **The owner (13:04):** "Do not run more live checks until I tell you.
+> It's slowing us down too much. Instead, let's complete more of the
+> prompt sweep and we do a real run at the end."
+
+**The live check** — at the owner's order (13:10, below, after case 2):
+the fork's run `2026-09-28T13-10-44`, the same drill as the case-0 runs
+(seed 42, the scripted listener, the same temporary settings), with both
+case 1 and case 2 in place; the premise's new sentence in the prompt as
+the model read it; every token check equal. Its sign-on, against the
+morning's and case 0's:
+
+```
+11:50 (committed)  Samantha (urgent): We're broadcasting from Sector 9, Lab 7-B. The receiver's dead—we can only
+                     transmit. If you hear this, respond Over.
+                   Daniel (calm): Our power's holding, but the contamination levels are rising. Over.
+12:47 (case 0)     Samantha (calm): We are scientists trapped in a research lab during a zombie outbreak. Our radio
+                     receiver is dead—we can only transmit. If you can hear us, answer when we call. Over.
+                   Daniel (doubtful): This isn't a drill. The outbreak… it's spreading. Over.
+13:10 (cases 1-2)  Samantha (calm): We are scientists trapped in a lab near a wood and a swamp. Our radio is
+                     dead—only transmission. Over.
+                   Daniel (doubtful): The virus… it's mutating. We don't know how. Over.
+```
+
+The whole run, read against the two earlier ones (every round's plan the
+same in kind, speakers, tone and line count): the sign-on used the
+premise's place and says the lab can only transmit, but says "Our radio
+is dead" rather than the receiver and drops 12:47's "answer when we
+call"; the contact read best of the three — round 4 "Hello! We're
+here—thank you for tuning in. / The static's gone. We can hear you now. /
+Whoever you are, we need your help."; round 6, the last exchange, the
+first to use what Alfredo said: "Alfredo, you're in Austin with a truck.
+We need supplies—food, medicine, ammo." (the case-0 sentence at work) —
+though it still ends on a question; the aftermath "He's real. A real
+person. / We're broadcasting our fate to strangers." with no misreading;
+no receiver-and-transmitter confusion this time; the re-call odd ("This
+is a technical failure, not a lack of reception. Adjust your dial
+carefully.", tone word "pedantic" — case 13); the beats' reactions plain
+again ("We lost the receiver again.", "We'll keep trying."). The agent's
+verdict: better overall, one run each.
+
+> **The owner (13:14):** "Let me clarify one thing to you: Invented
+> places of any other detail is not a bug, it is a feature. In this
+> project we are probing the LLMs ability to improvise a story based on
+> somewhat vague guidance. So this obsession you have developed with
+> eliminating deviations from the prompt, drop it."
+
+The agent acknowledged it, and pointed out what it meant for the two
+changes then uncommitted: the place sentence of case 1 had been proposed
+to stop the invented place, so its reason was gone (it could stay as
+loose flavour, like the rest of the premise); the change of case 2 is of
+a different kind — a contradiction in the director's own wording, not the
+model deviating — and should stay.
+
+> **The owner (13:15):** "Keep it as flavour, record cases 1 and 2."
+
+**Decided:** the place sentence stays in the premise **as flavour**, not
+as a constraint; the sign-on's instruction is otherwise unchanged (the
+receiver clause kept — measured; "and where" now has something to draw
+on, and the model is free to add to it).
+
+### 3.6 Case 2, the orientation repeat — the receiver told as it went off
+
+> **The owner (13:04):** "…let's complete more of the prompt sweep and we
+> do a real run at the end." (case 2 was brought next, director only)
+
+**What the agent showed** (in substance; the texts are in §4, case 2).
+
+*What it is.* The "for listeners just tuning in" moment: every so often
+in the broadcast a cast member restates the situation — the owner's idea
+in the 3.4c discussion (§14.10): "what if instead of only making this
+opening round an "orientation round", we make orientation rounds happen
+periodically… We give to the LLM what it has to say, and we ask it to
+"word it as the character that answers would put it in its own words"".
+The reasons given then: the demo audience arrives in waves; in a long
+run the trim drops the sign-on, and a repeat puts the premise back into
+the recent script.
+
+*How it is built.* The same `_orientation`, with `sign_on=False`.
+`plan_round` checks, in order: after a listening round, after a last
+exchange, a call due, an aftermath due — and only if none applies, a
+repeat is due once `orientation_every` 20 ± 5 **free** rounds have passed
+since the last orientation; so it happens only in Broadcast, with the
+receiver off. Whoever has been silent longest opens it; up to 2 lines,
+the opener pinned. The lead (line 209): "For listeners just tuning in,
+<name> tells them, in their own words, that the lab's receiver is dead —
+they can only transmit, and will call out for listeners when it works —
+and who they are and where: <facts>"; the same facts and tail.
+
+*What it produced.* No run of the day had reached one; the owner's
+check-4 listen (the fork's run `2026-09-27T00-34-00`, 63 rounds) had
+five, at rounds 16, 25, 36, 52 and 62 (their lines in §4, case 2). The
+agent's reading: it mostly does its job — four of five say the receiver
+is dead, two say who the cast are, and round 16's second line states the
+rule exactly ("If you hear us, respond when the receiver's fixed."), in
+varied words, which was the point. Three observations: the invented place
+spread here (rounds 16 and 25, "Sector 9") — since ruled a feature
+(§3.5); one repeat said none of the facts (round 36, "If you're tuning in
+now, congratulations—we're still alive.", C17) — left alone, one in five;
+and **"dead" is not always true, and there the wording is the director's,
+not the model's.** The receiver goes off two ways — by a Breakdown (it
+burned out: "dead" is right) or by a Switch-off (Samantha switched it off
+to save it: it is off, not dead) — but the repeat always said "the lab's
+receiver is dead", and the story's facts said it again ("The radio's
+receiver is dead"). Round 62 came minutes after Samantha's fixed line
+"we're switching off the receiver to spare it for later", and Ralph said
+"receiver's dead": the listener hears the story contradict itself. The
+director already tells the two apart for the call (its fixed pair drawn
+from `after-breakdown` or `after-switch-off`). Options: (a) leave it; (b)
+word the receiver by how it went off — the clause chosen by the last
+receiver beat, and the receiver sentences taken out of the story's facts
+so the clause alone speaks for the receiver (the risk named: those
+sentences were in place when the wording pass measured the sign-on
+telling the receiver facts in 3 of 3 seeds; the clause, the part that
+fixed it, stays); (c) a fixed line (ends the "in their own words" idea;
+not recommended). The agent recommended b.
+
+> **The owner (13:07):** "Go with b, build it. Then let me review."
+
+**Built** (the fork's working tree):
+
+- `_orientation` looks at the last receiver beat (`_last_index(run,
+  _OFF)`, as the call does): after a Switch-off the clause reads "that the
+  lab's receiver is switched off to save it — they can only transmit, and
+  will call out for listeners when it is back on — and"; at the sign-on,
+  before any call and after a Breakdown it keeps "that the lab's receiver
+  is dead — they can only transmit, and will call out for listeners when
+  it works — and". The docstring says so; the two texts sit in the code
+  beside every other instruction text (wording, not numbers).
+- The story's `orientation:` facts lose their two receiver sentences and
+  say only who and where: "Four scientists, Daniel, Moira, Ralph and
+  Samantha, are trapped in a secret research lab, besieged by the dead
+  since the outbreak began, and broadcasting on the lab's shortwave
+  radio."
+- Tests: the story test asserts the facts no longer speak of the
+  receiver; a new director test plays 300 rounds with short contacts and
+  frequent repeats and checks every repeat says "dead" after a Breakdown
+  and "switched off" after a Switch-off, and that both occur. Suite 1110
+  passed.
+
+> **The owner (13:10):** "Let's do a quick live check of how the model
+> actually respond and compare with previous runs earlier today to see if
+> this changes have improved the story quality."
+
+The run is the one in §3.5 (`2026-09-28T13-10-44`). Its sign-on still
+says the lab can only transmit ("Our radio is dead—only transmission."),
+so taking the receiver sentences out of the facts did not lose it — one
+run. **The repeat itself was not exercised**: 12 rounds never reach one
+(about 20 free rounds are needed); forcing one with a low
+`orientation_every` was offered, and left for the real run at the end of
+the sweep.
+
+### 3.7 The owner's ruling on improvisation (2026-09-28, 13:14)
+
+> "Let me clarify one thing to you: Invented places of any other detail
+> is not a bug, it is a feature. In this project we are probing the LLMs
+> ability to improvise a story based on somewhat vague guidance. So this
+> obsession you have developed with eliminating deviations from the
+> prompt, drop it."
+
+What it changes for the rest of the sweep:
+
+- **Invention is not a defect.** A place, a name, a backstory, an
+  accident the premise leaves undefined — the model making them up is
+  what the project probes. The narration-quality discussion's C7
+  ("Invented facts") is no longer a challenge; the carried-forward items
+  of §3.4 about the location and the accident's story are closed by this
+  ruling.
+- **The measure of a line is whether the story works for the listener**
+  — whether it hangs together with what the listener has heard, speaks to
+  them, and holds attention — not whether it stays inside the prompt.
+- **What still counts as a problem** (the agent's reading of the ruling,
+  given to the owner at 13:14 and not contradicted) is what the listener
+  hears as broken:
+  the show contradicting itself in its own words (case 2: our instruction
+  said "dead" after Samantha had said "switched off"), or the rules of the
+  game told wrong. Wording added to pin facts down is not proposed.
+
 ## 4. The prompts as they stand now (the fork's `4d051ba`)
 
 *Every case, in the order a show meets them. For each: the code (current
@@ -972,7 +1232,8 @@ debug files); cases marked "director only" come from the director
 without the model (its instruction, and the fixed line where there is
 one) because that run did not reach them. The notes under each case are
 observations to take up when the sweep reaches it — not decisions. Case 0
-shows the system prompt as changed by §3.4; notes marked "since case 0"
+shows the system prompt as changed by §3.4 and §3.5; cases 1 and 2, as
+changed by §3.5-§3.6; notes marked "since case 0"
 quote the same round of the run `2026-09-28T12-47-06`, made with that
 system prompt.*
 
@@ -996,7 +1257,8 @@ removes, left out):
 
 ```
 You write a live radio play. Four scientists are trapped in a besieged research lab during a zombie outbreak,
-speaking over the lab's shortwave radio. The radio's receiver keeps failing: while it is down they can only
+speaking over the lab's shortwave radio. The lab is secret: the scientists do not know its name or address, only
+that it stands near a wood and a swamp. The radio's receiver keeps failing: while it is down they can only
 transmit, and when they get it working they call out for anyone listening to answer. A listener who answers is
 heard as a voice on the frequency, and the cast talk to them directly. The scientists try to explain to the
 listener over the radio the strange events that led to the lab's accident that produced the zombie infestation,
@@ -1019,61 +1281,91 @@ exhausted. Each transmission is one or two short spoken sentences ending with "O
 markdown, and nothing else in parentheses.
 ```
 
-*Status:* reviewed — the premise's last two sentences are new (§3.4):
-the listener who answers (the agent's draft, kept by the owner) and what
-the scientists tell the listeners (the owner's own). *Notes:* the cast
-are placeholders until the owner's character bibles (Task 4); the model
-is told it writes "the script" in "lines" and "transmissions" — the
-vocabulary the instructions may use; still nothing about the lab's
-location (carried to case 1; the narration-quality discussion, C7); the
-accident the premise mentions is not defined, so the model invents it
-(§3.4, carried forward).
+*Status:* reviewed — three premise sentences are new: the listener who
+answers (the agent's draft, kept by the owner) and what the scientists
+tell the listeners (the owner's own), both §3.4; and where the lab is,
+kept as flavour (§3.5). *Notes:* the cast are placeholders until the
+owner's character bibles (Task 4); the model is told it writes "the
+script" in "lines" and "transmissions" — the vocabulary the instructions
+may use; the accident the premise mentions is not defined, so the model
+invents it — a feature by the owner's ruling (§3.7).
 
-### 1. The sign-on — round 1 · `_orientation`, `director.py:192` (line 206) · to examine · run r1
+### 1. The sign-on — round 1 · `_orientation`, `director.py:192` (line 212) · **reviewed** (§3.5) · run r1 of `2026-09-28T13-10-44`
 
 ```
 USER (the last turn, exactly as sent):
   The broadcast begins. Samantha opens it and tells anyone listening, in their own words, that the lab's
   receiver is dead — they can only transmit, and will call out for listeners when it works — and who they are
   and where: Four scientists, Daniel, Moira, Ralph and Samantha, are trapped in a secret research lab, besieged
-  by the dead since the outbreak began, and broadcasting on the lab's shortwave radio. The radio's receiver is
-  dead: they can only transmit, not hear. When they get it working, they will call out for anyone listening, and
-  whoever hears them can answer then. Samantha speaks first, then Daniel, Moira or Ralph: the next two lines,
-  each with the emotion in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be:
-  stiff-upper-lip.
+  by the dead since the outbreak began, and broadcasting on the lab's shortwave radio. Samantha speaks first,
+  then Daniel, Moira or Ralph: the next two lines, each with the emotion in its voice, one of: calm, doubtful,
+  urgent, curious, determined. Let the tone be: stiff-upper-lip.
 → the round, as said:
-  Samantha (urgent): We're broadcasting from Sector 9, Lab 7-B. The receiver's dead—we can only transmit. If you
-  hear this, respond Over.
-  Daniel (calm): Our power's holding, but the contamination levels are rising. Over.
+  Samantha (calm): We are scientists trapped in a lab near a wood and a swamp. Our radio is dead—only
+  transmission. Over.
+  Daniel (doubtful): The virus… it's mutating. We don't know how. Over.
 ```
 
-*Notes:* present tense ("tells"), as an order — right here, since the
-model is meant to write it; the receiver facts are given twice (the
-"that the lab's receiver is dead…" clause and the story's facts); the
-model invents "Sector 9, Lab 7-B" and ends with "If you hear this,
-respond" while the receiver is dead — every seed-42 run opens with these
-same words (narration-quality C7, C15). *Since case 0 (§3.4):* with the
-new premise, the same instruction drew "Samantha (calm): We are
-scientists trapped in a research lab during a zombie outbreak. Our radio
-receiver is dead—we can only transmit. If you can hear us, answer when we
-call. Over." (run `2026-09-28T12-47-06`) — one run; the location question
-(b) of §3.4 comes here.
+*Status:* reviewed — the instruction itself unchanged except that the
+story's facts no longer repeat the receiver (case 2); the system
+message's premise gained the place sentence, kept as flavour (§3.5).
+*Before the sweep* (the fork's `4d051ba`, run `2026-09-28T11-50-15`), the
+facts also said "The radio's receiver is dead: they can only transmit,
+not hear. When they get it working, they will call out for anyone
+listening, and whoever hears them can answer then.", and seed 42 said
+"We're broadcasting from Sector 9, Lab 7-B. The receiver's dead—we can
+only transmit. If you hear this, respond Over." — the invented place is
+a feature by the owner's ruling (§3.7). *Notes:* this run's sign-on says
+"Our radio is dead" rather than the receiver, and does not tell the
+listener to answer when the lab calls (12:47's did) — one run each.
 
-### 2. The orientation repeat — every 20 ± 5 free rounds · `_orientation`, line 209 · to examine · director only
+### 2. The orientation repeat — every 20 ± 5 free rounds · `_orientation`, line 215 · **reviewed** (§3.6) · director only
+
+The instruction after a Switch-off, and after a Breakdown (or before any
+call), rendered by the director without the model on the shipped story
+(the tone words and openers are whatever that model-free run drew):
 
 ```
-instruction:
-  For listeners just tuning in, Ralph tells them, in their own words, that the lab's receiver is dead — they can
-  only transmit, and will call out for listeners when it works — and who they are and where: Four scientists,
-  Daniel, Moira, Ralph and Samantha, are trapped in a secret research lab, besieged by the dead since the
-  outbreak began, and broadcasting on the lab's shortwave radio. The radio's receiver is dead: they can only
-  transmit, not hear. When they get it working, they will call out for anyone listening, and whoever hears them
-  can answer then. Ralph speaks first, then Daniel, Moira or Samantha: the next two lines, each with the emotion
-  in its voice, one of: calm, doubtful, urgent, curious, determined. Let the tone be: rapid-fire.
+after a Switch-off:
+  For listeners just tuning in, Ralph tells them, in their own words, that the lab's receiver is switched off to
+  save it — they can only transmit, and will call out for listeners when it is back on — and who they are and
+  where: Four scientists, Daniel, Moira, Ralph and Samantha, are trapped in a secret research lab, besieged by
+  the dead since the outbreak began, and broadcasting on the lab's shortwave radio. Ralph speaks first, then
+  Daniel, Moira or Samantha: the next two lines, each with the emotion in its voice, one of: calm, doubtful,
+  urgent, curious, determined. Let the tone be: dispassionate.
+after a Breakdown (and before any call):
+  For listeners just tuning in, Samantha tells them, in their own words, that the lab's receiver is dead — they
+  can only transmit, and will call out for listeners when it works — and who they are and where: Four
+  scientists, Daniel, Moira, Ralph and Samantha, are trapped in a secret research lab, besieged by the dead
+  since the outbreak began, and broadcasting on the lab's shortwave radio. Samantha speaks first, then Daniel,
+  Moira or Ralph: the next two lines, each with the emotion in its voice, one of: calm, doubtful, urgent,
+  curious, determined. Let the tone be: irreverent.
 ```
 
-*Notes:* the same body as the sign-on, opened by whoever has been silent
-longest; a candidate for a fixed line, like the beats (C7).
+The five repeats of the owner's check-4 listen (the fork's run
+`2026-09-27T00-34-00`, before the change; round 62 came right after a
+Switch-off):
+
+```
+r16  Ralph (determined): We're trapped in Sector 9, Lab 7-B—besieged by the dead. The receiver's dead, so we can
+       only transmit. Over.
+     Daniel (calm): If you hear us, respond when the receiver's fixed. Over.
+r25  Samantha (urgent): We're trapped in a lab, overrun by the dead. The receiver's dead—we can only transmit. If
+       you hear this, respond Over.
+     Daniel (determined): Four scientists: Daniel, Moira, Ralph, and Samantha. Sector 9. Over.
+r36  Daniel (calm): If you're tuning in now, congratulations—we're still alive. Over.
+     Moira (doubtful): Don't get too hopeful. Over.
+r52  Ralph (calm): If you're here, you're listening to four scientists trapped in a lab—be sieged by the dead.
+       Over.
+     Daniel (determined): We'll call again when the receiver's fixed. Over.
+r62  Ralph (calm): If you're tuning in, you've caught us mid-broadcast—receiver's dead, but we'll keep trying.
+       Over.
+     Daniel (determined): We're not giving up. Over.
+```
+
+*Status:* reviewed — the receiver told as it went off; the story's facts
+say only who and where (§3.6). *Not yet heard with the change:* no run
+since has reached a repeat; for the real run at the end of the sweep.
 
 ### 3. A free round, plain — `_free`, `director.py:150` → `instruction_for` (`director.py:785`) · to examine · run r9
 
@@ -1341,8 +1633,8 @@ are the fallback, not the show; the sweep may decide whether they stay.
 | # | Case | Where (the fork, `4d051ba`) | State |
 |---|---|---|---|
 | 0 | The system prompt | `stories/lab-outbreak/cast_sheet.md`, `app/show/rules/format_moods.md` | **reviewed** (§3.4: the listener who answers; what the scientists tell the listeners) |
-| 1 | The sign-on | `director.py:206` | to examine |
-| 2 | The orientation repeat | `director.py:209` | to examine |
+| 1 | The sign-on | `director.py:212`; the premise in `cast_sheet.md` | **reviewed** (§3.5: the place as flavour) |
+| 2 | The orientation repeat | `director.py:204-210, 215`; the facts in `cast_sheet.md` | **reviewed** (§3.6: the receiver told as it went off) |
 | 3 | A free round, plain | `director.py:150`, `instruction_for` 785 | to examine |
 | 4 | A free round with an event | `director.py:173-180` | **reviewed** (case 1: (a) kept, (b) removed) |
 | 5 | The aftermath | `director.py:183` | to examine |
@@ -1401,6 +1693,13 @@ are the fallback, not the show; the sweep may decide whether they stay.
 - **The model carries habits across rounds:** after exchanges that end on
   a question, the last exchange asked questions too, though no instruction
   asked it to.
+- **Improvisation is the point** (the owner, 13:14, §3.7). The model
+  inventing places and details is what the project probes; judge a line
+  by whether the story works for the listener, not by whether it stays
+  inside the prompt.
+- **The director's own wording must not contradict the show** (case 2):
+  the instruction said "dead" after Samantha had said "switched off" —
+  the one kind of error that is ours, not the model's.
 - **The premise steers what the cast talk about** (case 0). One sentence
   saying what the scientists do on the radio — explain what happened, ask
   the listeners for help — brought the outbreak and supplies into the

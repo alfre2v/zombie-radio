@@ -87,7 +87,10 @@ detail.*
   2026-09-28] prompt-sweep: the event, the call and the Breakdown
   reviewed; then the system prompt, whose premise now says who a voice
   on the frequency is and what the scientists tell the listeners; the
-  rest to examine). How
+  sign-on (the lab's place in the premise, as flavour) and the
+  orientation repeat (the receiver told as it went off); the rest to
+  examine; the owner's ruling, 13:14: invented details are a feature —
+  the model's improvisation is what the project probes). How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
