@@ -78,7 +78,11 @@ detail.*
   the test by ear passed (2026-09-27), and its findings became step
   3.4c.6, fixed lines (`07669dc`), built and checked on the box. Then
   3.5, the close. **To decide after the day's work:**
-  whether to postpone the optional polish (the owner, 2026-09-27). How
+  whether to postpone the optional polish (the owner, 2026-09-27).
+  **Today, 2026-09-28, the timebox's last day** — the owner: "I want to
+  have a functional story narration before we close the time box.":
+  3.4c.7 and 3.4c.8, a check on the box and by ear, the bookkeeping,
+  then 3.5. How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
@@ -1102,6 +1106,52 @@ the agent keeps this current. These carry across arcs.*
             average (1.31-1.36 before), the call no longer asking the
             model. Follow-ups written: the event texts reworded as lines
             of dialog, and more agenda items (both the owner's).
+          - [ ] **3.4c.7 Fixed lines kept out of the model's own turns**
+            (the agent's idea, 2026-09-27; the owner, 2026-09-28: "It is
+            a great idea. Let's implement it. But before implementing,
+            record well this idea and the reason why we need to try
+            this."). **The idea:** in the script the model reads back,
+            its own turns hold only the lines it wrote; a fixed line is
+            quoted in a user turn, as something a character said.
+            **Why — the evidence.** In the owner's listen of 2026-09-27
+            (the fork's run `2026-09-27T02-06-50`), round 25: Ralph read
+            the event ("A rack falls in the virology lab, and one test
+            tube keeps rolling across the floor.") and Moira repeated it
+            word for word; round 24 opened by echoing round 23's last
+            line ("Of course it is." → "\*Of course\* it is."). The
+            messages the model received, rebuilt from the record with the
+            route's own code: every earlier event round's user turn says
+            "Moira has just told them on air: "…" Carry on from there.
+            Daniel speaks next: the next line", yet the assistant turn
+            after it — the record replayed as if the model had written it
+            — opens with that same line, then Daniel's: a reply that
+            repeats what was just quoted, and two lines where one was
+            asked. Nine such rounds taught the habit; the model then
+            repeated the event itself, and echoed the line before in plain
+            rounds. The owner's reading (verbatim, 2026-09-27): "I think
+            the model does not understand the introduced line as it did
+            not generated it." Measured over the driver runs and the
+            owner's listens: a round opening with the last line before it
+            2 of 179 rounds before fixed lines, 4 of 141 with; the model
+            repeating the event 0 of 29 before, 1 of 26 with — rare, but
+            heard. **The design** (the agent's picks, for review): the
+            assistant turn carries only the model's lines; fixed lines
+            said before them are quoted in the round's own instruction
+            (the events and the Switch-off's already are; the call's
+            instruction quotes its two lines); fixed lines said after
+            them (the Breakdown's closing) are quoted at the top of the
+            next user turn; a round with no model line joins the next
+            user turn, so user and assistant turns still alternate. **The
+            check:** the suite; three drives of the driver script, as for
+            3.4c.6 — every fixed line still in place, the echo counts
+            reported; then the owner by ear. The repeat guard (3.4c.8) is
+            the safety net for what remains.
+          - [ ] **3.4c.8 The repeat guard** (the agent's proposal, the
+            owner, 2026-09-27: "we will build the repeat guard
+            tomorrow"): a line the model writes that nearly repeats one
+            of the last few lines, fixed ones included, is dropped before
+            it reaches the page — not shown, not spoken, not in the
+            script, logged as dropped; the threshold in settings.
         *Done when* (its §17.12): (1) the suite and the three Node
         tests are green; (2) the driver test on the box — scripted
         conversations and a report with numbers, from which the owner
