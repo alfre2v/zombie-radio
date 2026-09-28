@@ -9,8 +9,9 @@ why, and builds what the owner decides.
 **Status:** OPEN — six cases reviewed and changed on 2026-09-28: the
 event, the call, the Breakdown (the fork's `4d051ba`), the system prompt
 (§3.4, the fork's `432a378`), the sign-on and the orientation repeat
-(§3.5-§3.6; the fork's working tree, uncommitted at this writing); every
-other case still to examine (§5, the checklist). **The owner's ruling of
+(§3.5-§3.6, the fork's `1ab5d6f`); every
+other case still to examine (§5, the checklist); the fixed lines audited
+and a past-tense A/B test rejected (§3.8). **The owner's ruling of
 13:14 (§3.7) governs the rest of the sweep:** invented details are a
 feature — the model's improvisation is what the project probes.
 
@@ -1222,6 +1223,139 @@ What it changes for the rest of the sweep:
   said "dead" after Samantha had said "switched off"), or the rules of the
   game told wrong. Wording added to pin facts down is not proposed.
 
+### 3.8 Back to fixed lines — an audit, and an A/B test of the past tense (13:18-13:39)
+
+*Cases 1 and 2 were committed at the owner's order at 13:18 ("Commit."):
+the fork's `1ab5d6f`, this repository's `11266e2`.*
+
+> **The owner (13:18):** "Ok, we are going too slow with this prompt
+> sweep. Let's change style of presentation: Show me a list of all the
+> cases with a brief explanation (one or 2 lines) so I can decide which
+> one to prioritize."
+
+The agent listed the thirteen cases left (3, 5, 6, 8-11, 13-17 and the
+shared tail), one or two lines each, with a priority led by the last
+exchange's questions.
+
+> **The owner (13:26):** "i do not care of the last contact end with a
+> question, that's ok, in the story they do not know the radio will fail
+> next.
+>
+> This exercise is not going well. Too slow, and you are fixating in
+> stupid details that have nothing to do with the story coherency.
+>
+> Let me go back to how I started this prompt sweep: fixed lines!
+>
+> How many scenarios do we have that involve fixed lines? Enumerate them
+> me briefly. Then double check that:
+>
+> 1. no fixed line makes it to the model as a dialog line (we found it
+> was confusing the model as it never actually generated those lines and
+> started to repeat the same lines). Make sure it just appears as a
+> recounted detail the prompt before the dialog.
+> 2. Make sure that when the fixed lines are used, the prompt does not
+> use present tense to refer to the context of the fixed lines, otherwise
+> that confuses the model.
+> 3. If you find deviations from these bring me the receipts, examples of
+> past actual runs, and the location in the code."
+
+**Ruled:** the last exchange may end on a question — in the story, the
+cast do not know the radio is about to fail. Case 11's open point is
+closed.
+
+**The fixed-line scenarios — four** (the fork's `app/show/director.py`):
+
+| # | Scenario | Fixed lines | Then the model | Code |
+|---|---|---|---|---|
+| 1 | An event | the event, read by the round's first speaker | at least one reaction, same round | `_free`, 173-180 |
+| 2 | The call | an announcement (Daniel, Moira or Ralph), then Samantha's call; the pair by whether the receiver broke or was switched off | no request in its round; it reaches the model in the next request (an exchange or a re-call), joined with "Then" | `_repair`, 246-258 |
+| 3 | The Breakdown | Samantha's line | one reaction | `_breakdown`, 342-351 |
+| 4 | The Switch-off | Samantha's line, nobody answered or the voice lost | one reaction | `_switch_off`, 408-413 |
+
+**Check 1 — no fixed line as a dialog line: passes.** Every request of the
+day's four runs after the fix (the fork's `2026-09-28T11-50-15`,
+`12-35-16`, `12-47-06`, `13-10-44`; 7 fixed lines each, covering all four
+scenarios; 12 requests each) was searched: fixed lines quoted in user
+turns 44 times per run, **in the model's own turns 0 times**. The code:
+`app/show/script.py`, `reply_text` (line 136) builds the model's turns
+from its own lines only; `assemble_messages` (line 193) joins a round
+with no model line (the call) into the next user turn.
+
+**Check 2 — no present tense for the fixed lines' context.** The part
+that quotes each fixed line is past everywhere ("has just told them on
+air", "has just called out"). Three places put the surrounding context in
+the present:
+
+- **A.** "Something happens that the listeners cannot see, and <name> has
+  just told them on air: …" — the event (line 175), the call (258), the
+  Breakdown (348); the formula the owner chose (§3.1-§3.3). No receipt of
+  harm since the fix: in the four runs the reactions react, none redoes
+  the event, the call or the Breakdown (13:10: "It's spreading. Not just
+  in the jars."; "Hello! We're here—thank you for tuning in."; "We lost
+  the receiver again.").
+- **B.** The call followed by silence (`_re_call`, line 379): "Then only
+  static answers. Samantha calls out once more to anyone listening,
+  asking them to answer now; the receiver is still on." — "only static
+  answers" and "the receiver is still on" are context in the present
+  ("Samantha calls out once more" is the order for the model's own line).
+  A weak receipt: both re-calls described the static instead of calling
+  out (11:50: "The receiver is functioning, but the input is only static.
+  We must be precise—if you answer, we can confirm."; 13:10: "This is a
+  technical failure, not a lack of reception. Adjust your dial
+  carefully.").
+- **C.** The Switch-off after the voice went quiet (line 408): "The voice
+  is gone." — director only; the nobody-answered version is already past
+  ("Nobody answered the call.").
+
+The one real receipt of present tense breaking a round is from before the
+fix: run `2026-09-28T10-28-57`, round 4 — the call told in the present
+("Daniel tells the listeners on air: "…" Then Samantha calls out to anyone
+listening: "…""), and the model redid it as its first exchange ("We've
+got the receiver—it's working! / Static's clearing. / Finally."); fixed by
+`4d051ba`. The agent proposed all three in the past tense: "Something
+happened that the listeners could not see, and …"; "Then only static
+answered."; "The voice went quiet."
+
+> **The owner (13:36):** "Let's conduct a quick A/B test before deciding:
+> Make your recommended fixes, then run the same simulation, and bring me
+> an easy to see comparison of the models output. And a final clear eval:
+> Did the quality improve, yes or no?"
+
+**The A/B test.** A = the committed wording (run `2026-09-28T13-10-44`,
+the fork's `1ab5d6f`); B = the past tense (run `2026-09-28T13-37-52`,
+built uncommitted: the five spots in `director.py` and the tests quoting
+them; suite 1110 passed). The same seed 42, scripted listener and
+temporary settings; the director's plan the same in all 12 rounds;
+round 1's prompt unchanged and its output byte-identical in both runs;
+the new wording in B's prompts, every token check equal. The model's own
+lines:
+
+| Round | A — present | B — past | Better |
+|---|---|---|---|
+| r2 event | It's spreading. Not just in the jars. | The heat—it's spreading. | tie |
+| r4 first exchange | Hello! We're here—thank you for tuning in. / The static's gone. We can hear you now. / Whoever you are, we need your help. | Hello! We're here—answer us now! / They're responding! / Quick—identify them! | **A** (B talks about the caller, not to them) |
+| r5 exchange | Alfredo, we need to know if you can transmit our messages. / Your radio would be vital to spreading our warnings. / Do you understand we're in peril? | Alfredo, we're in a lab besieged by the dead. Can you relay our calls? / Do you have a transmitter? / Quick—ask them! | **A** (B in the third person again) |
+| r6 last exchange | Alfredo, you're in Austin with a truck. We need supplies—food, medicine, ammo. / … | Alfredo, we're near a wood and a swamp, under siege. Your truck could help. / … | tie |
+| r7 Breakdown | We lost the receiver again. | We're sorry—this might be our last transmission. | tie |
+| r8 aftermath | He's real. A real person. / We're broadcasting our fate to strangers. | He's real. We're talking to someone outside. / He might not know what's happening here. | tie |
+| r9 free | We're sorry to burden you. / We don't know how long this will last. / The lab's power is failing. | We're so sorry we couldn't hear you earlier. / The static's back—we lost the link. / We'll keep trying. | A, slightly |
+| r11 re-call | This is a technical failure, not a lack of reception. Adjust your dial carefully. | The receiver is functional. Static remains, but we can receive. | tie (neither calls out) |
+| r12 Switch-off | We'll keep trying. | We'll keep the receiver ready. | tie |
+
+**The agent's eval: No** — B worse in the contact (rounds 4 and 5), tied
+elsewhere; the re-call it targeted still describes the static instead of
+calling out. One run each, and any wording change reshuffles the
+sampling, so B's slips may be noise — but nothing showed the past tense
+helping. Recommended: discard B.
+
+> **The owner (13:38):** "Yes, revert B."
+
+**Reverted** (the fork back to `1ab5d6f`, suite 1110 passed). The fixed
+lines' contexts stay as committed. Run `2026-09-28T13-37-52` stays on the
+laptop as the record of the test.
+
+> **The owner (13:39):** "Record it, then commit zombie-radio."
+
 ## 4. The prompts as they stand now (the fork's `4d051ba`)
 
 *Every case, in the order a show meets them. For each: the code (current
@@ -1526,10 +1660,9 @@ USER (the last turn, exactly as sent):
   Moira (determined): If you can transmit, tell us what we should say. Over.
 ```
 
-*Open:* it still asks questions — the habit of every exchange before it —
-though the microphone does not open after it. Telling it outright ("ask
-nothing, they cannot answer now") would be a new instruction sentence:
-the owner's call.
+*Closed* (§3.8): it still asks questions — the habit of every exchange
+before it — and that is fine: the owner, 13:26, "in the story they do not
+know the radio will fail next".
 
 ### 12. The Breakdown — `_breakdown`, `director.py:328` (lines 342-345) · **reviewed** (built from cases 3 and 6) · run r7
 
@@ -1643,7 +1776,7 @@ are the fallback, not the show; the sweep may decide whether they stay.
 | 8 | The first exchange | `director.py:303-305` | to examine |
 | 9 | A later exchange | `director.py:303-305`, `_restatement` 495 | to examine |
 | 10 | An exchange restating earlier callers | `_restatement` 498 | wording kept by the owner; names-only A later |
-| 11 | The last exchange | `director.py:322-323` | **reviewed** (new); open: it still asks questions |
+| 11 | The last exchange | `director.py:322-323` | **reviewed** (new); its questions are fine (§3.8, the owner) |
 | 12 | The Breakdown | `director.py:342-345` | **reviewed** (new) |
 | 13 | The re-call before anyone answered | `director.py:373` | to examine |
 | 14 | The re-call inside a contact | `director.py:379` | to examine |
