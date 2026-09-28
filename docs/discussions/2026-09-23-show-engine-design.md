@@ -793,6 +793,31 @@ The owner, 2026-09-23 (verbatim):
     goes on." in step 2.1b — with the bare sentence, the operator
     signed off in both live drives ("This is a dead end.",
     "Farewell, dear listeners…"); see the TODO's 2.1b.]*
+  *[note 2026-09-28: superseded by step 3.4c (done 2026-09-28; the
+  TODO's 3.4c entry and [discussion 2026-09-26] show-director-modes).
+  The listener's answer is no longer one line and one round: a
+  contact is a sequence of rounds. The kinds now are **orientation**
+  (the sign-on at round 1, then a repeat every 20 ± 5 free rounds),
+  **free** (with an event, an aftermath or a recollection in its
+  slot), **repair** (the call: the receiver back, the operator calls
+  out; the page listens), **exchange** (the listener's words
+  answered, the character they addressed first, 2-3 lines, an agenda
+  item; the page listens again), **last-exchange** (the contact's
+  N-th answer, N = 5 ± 1: answered, and the page does not listen),
+  **breakdown** (the receiver fails, straight after the last
+  exchange), **re-call** (a silence: the call or the question once
+  more) and **switch-off** (two silences in a row: the receiver
+  switched off to save it). The receiver story gives the listening
+  window its reason; the emotional overtone (positive, neutral,
+  negative) constrains each round's moods and tone word. **Fixed
+  lines** (step 3.4c.6): the lines the listener must not miss — an
+  event read out, the call, the Breakdown's and the Switch-off's key
+  lines — are said word for word by a cast member from the story's
+  texts, not written by the model; they are quoted in the next
+  instruction as already said, never replayed as the model's own
+  lines (step 3.4c.7). The old kinds (`invitation`, `answer`,
+  `static`) stay loadable for old runs. The wording of every prompt
+  as of 2026-09-28: [discussion 2026-09-28] prompt-sweep, §4.]*
 - **The instruction** (the `user` turn) is plain sentences with no
   label: "Offstage: …" for an event, "A voice on the frequency says:
   …" for a listener, then the constraint in words ("Ralph and Moira

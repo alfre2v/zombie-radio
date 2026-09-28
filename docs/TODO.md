@@ -26,7 +26,7 @@ this arc".
 
 ## Now — where the arc stands
 
-*Updated 2026-09-26. Read this section first; everything below it is
+*Updated 2026-09-28. Read this section first; everything below it is
 detail.*
 
 - **The critical path is Task 6b, the show engine,** built in the
@@ -83,14 +83,15 @@ detail.*
   have a functional story narration before we close the time box.":
   3.4c.7 and 3.4c.8, a check on the box and by ear, the bookkeeping,
   then 3.5. 3.4c.7 is done (`4d051ba`), and with it the owner's sweep
-  of every prompt the model receives has begun ([discussion
-  2026-09-28] prompt-sweep: the event, the call and the Breakdown
-  reviewed; then the system prompt, whose premise now says who a voice
-  on the frequency is and what the scientists tell the listeners; the
-  sign-on (the lab's place in the premise, as flavour) and the
-  orientation repeat (the receiver told as it went off); the rest to
-  examine; the owner's ruling, 13:14: invented details are a feature —
-  the model's improvisation is what the project probes). How
+  of every prompt the model receives ([discussion 2026-09-28]
+  prompt-sweep: the event, the call, the Breakdown, the system prompt,
+  the sign-on and the orientation repeat reviewed; the fixed lines
+  audited; the owner's ruling, 13:14: invented details are a feature —
+  the model's improvisation is what the project probes). **Step 3.4c is
+  done** (2026-09-28): the owner's listen (run `2026-09-28T13-43-28`) —
+  "Wow, big improvement in story coherence… All in all I am satisfied
+  with where we are."; 3.4c.8, the repeat guard, dropped (no repeats
+  heard or measured). **Next: 3.5, the close.** How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
@@ -842,7 +843,7 @@ the agent keeps this current. These carry across arcs.*
         *Done when:* the owner, talking to the show live, sees the words
         and their confidence and approves; then the branch is committed
         and pushed.
-      - [ ] **3.4c The listener's exchange — Contact mode, the receiver
+      - [x] **3.4c The listener's exchange — Contact mode, the receiver
         story, the emotional overtone** (added 2026-09-26 at the owner's
         call; discussed before any code in [discussion 2026-09-26]
         show-director-modes, from the owner's 2024 design). **Scope ruled
@@ -869,7 +870,12 @@ the agent keeps this current. These carry across arcs.*
         the agent's picks at build, recorded for review); **the build
         is under way** (the build plan below; 3.4c.1-3.4c.4 done), then a
         driver test on the box, and the owner by ear. Resolves the follow-up
-        "The listener's exchange is one line".
+        "The listener's exchange is one line". **Done 2026-09-28** (the
+        fork's `b988672` … `1ab5d6f` on `alfre2v/show-slice-3-browser`):
+        the four checks passed and the show re-proven by the owner's ear on
+        the timebox's last day (3.4c.5); 3.4c.6 and 3.4c.7 built; 3.4c.8
+        dropped; the follow-up deleted, SED §5.7's dated note and the
+        discussion's addendum written.
         - **To confirm when building:**
           - the re-call repeats the question that went unanswered
             ("Alfredo? Are you still there? We asked where you are.")
@@ -1016,7 +1022,7 @@ the agent keeps this current. These carry across arcs.*
             airborne, we might not make it."); markdown emphasis again
             ("it's \*us\*"); the sign-on again without the receiver
             facts. Committed on the owner's order.
-          - [ ] **3.4c.5 The four checks** (below), then the
+          - [x] **3.4c.5 The four checks** (below), then the
             bookkeeping: SED §5.7's dated note, the follow-up "The
             listener's exchange is one line" resolved, the discussion's
             addendum. **Under way (2026-09-26, evening):** check 1 green
@@ -1082,7 +1088,30 @@ the agent keeps this current. These carry across arcs.*
             just read the event text as one of the cast."; and
             "\*crackle\*" in almost every call. Read in the run: the
             Breakdown answered first in 0 of 6 and said the lab cannot
-            hear in 1 of 6. The fixes: step 3.4c.6.
+            hear in 1 of 6. The fixes: step 3.4c.6. **Re-proven by ear on
+            2026-09-28** (13:43-14:12, the owner in Chrome with the real
+            microphone, debug on; the fork's `1ab5d6f`, run
+            `2026-09-28T13-43-28`: 113 rounds, about 13 minutes of audio,
+            four contacts with 23 answers, four Breakdowns, one unanswered
+            call to the Switch-off, the sign-on and three orientation
+            repeats; 55 fixed lines, 215 model lines). The owner's verdict,
+            verbatim: "Wow, big improvement in story coherence. The system
+            prompt improvement is clearly strengthening the story
+            narrative... And the more the user adds details about zombies
+            the more the model plays along. Week parts still, the in the
+            exchange rounds the model never remembers who they spoke to
+            before, but if you ask about who contacted them, they suddenly
+            remember. So it is nemotron's limits. But this is not something
+            to fix today. All in all I am satisfied with where we are."
+            Repeats: "I did not see a single case of repetition in the app
+            run we did." — measured, 0 of 215 model lines at 0.9
+            similarity or more to one of the four lines before. Two
+            details asked about and left as they are (the owner): a
+            speaker twice in a row in rounds 103 and 106 (the grammar
+            allows it; "it adds a bit of unpredictability"), and an event
+            heard on the frequency after the Switch-off (round 112; noted
+            in the follow-up "Event texts reworded as lines of dialog").
+            The bookkeeping done the same day.
           - [x] **3.4c.6 Fixed lines** (`07669dc`; added 2026-09-27 after check 4,
             the owner's idea; shaped one decision at a time, the owner:
             "Go with all four as shown", "Go with beats.yaml, four
@@ -1178,12 +1207,34 @@ the agent keeps this current. These carry across arcs.*
             answered by name but still asked questions (an open point of
             the sweep); the Breakdown one clean beat. The sweep continues
             over every other prompt case (the discussion's checklist).
-          - [ ] **3.4c.8 The repeat guard** (the agent's proposal, the
+            **The sweep, the rest of 2026-09-28** ([discussion 2026-09-28]
+            prompt-sweep, §3.4-§3.8): the system prompt's premise says who
+            a voice on the frequency is, what the scientists tell the
+            listeners (the owner's own sentence) and where the lab stands,
+            as flavour (the fork's `432a378`); an orientation tells the
+            receiver as it went off — dead, or switched off after a
+            Switch-off (`1ab5d6f`); the owner's ruling (13:14): invented
+            details are a feature, the model's improvisation is what the
+            project probes; the last exchange may end on a question (the
+            owner: "in the story they do not know the radio will fail
+            next"); the fixed lines audited — none reaches the model's own
+            turns — and a past-tense rewording of their context tried in a
+            seeded A/B test and rejected. The remaining cases are not
+            planned; the owner's listen of 2026-09-28 closed the day's
+            goal (3.4c.5).
+          - [~] **3.4c.8 The repeat guard** — **dropped 2026-09-28** (the
+            owner: "Yes, repetitions seem to be gone: I did not see a
+            single case of repetition in the app run we did. So, we drop
+            the 3.4c.8, the repeat guard."; measured in the owner's
+            listen, 0 of 215 model lines at 0.9 similarity or more to one
+            of the four lines before). Was: the agent's proposal, the
             owner, 2026-09-27: "we will build the repeat guard
-            tomorrow"): a line the model writes that nearly repeats one
+            tomorrow" — a line the model writes that nearly repeats one
             of the last few lines, fixed ones included, is dropped before
             it reaches the page — not shown, not spoken, not in the
-            script, logged as dropped; the threshold in settings.
+            script, logged as dropped; the threshold in settings. Keeping
+            fixed lines out of the model's own turns (3.4c.7) removed the
+            cause.
         *Done when* (its §17.12): (1) the suite and the three Node
         tests are green; (2) the driver test on the box — scripted
         conversations and a report with numbers, from which the owner
