@@ -3,13 +3,12 @@
 > **EPHEMERAL.** Written 2026-09-28 ~12:15 CDT (Monday, the timebox's
 > last day), at about 90 % of the context window, before a manual
 > compaction the owner triggers; after it, the agent re-reads this first.
-> It supersedes handoff 5 (`2026-09-26-show-engine-session-handoff-5.md`),
-> which is now **stale** — do not read it as current state. Both
-> handoffs were written in this session: at the session's end, ask the
-> owner's permission to delete **both** (the owner's rule: "These handoff
-> documents stay in our discussion folder until the end of the session,
-> when we finish the session's work please ask the owner for permission
-> to delete any handoff documents you created.").
+> It supersedes handoff 5, which the owner had deleted in the next commit
+> ("you can delete the old handoff 5 now, then commit."). At the session's
+> end, ask the owner's permission to delete this one too (the owner's
+> rule: "These handoff documents stay in our discussion folder until the
+> end of the session, when we finish the session's work please ask the
+> owner for permission to delete any handoff documents you created.").
 >
 > **Read it all; verify against the repos; receipts or nothing.** The
 > TODO's "Now" section and its step 3.4c entry are the canonical state;
@@ -383,7 +382,7 @@ in "Then" makes the next one start in lower case (`script.py`,
 5. **At the day's end:** remind the owner of the **polish decision**
    (optional: dead-air static, the 1930s radio look with the gauge,
    prefetch, episodes — the agent's view: skip it for Task 4 and Task 7);
-   ask permission to **delete handoffs 5 and 6**.
+   ask permission to **delete handoff 6** (handoff 5 is already deleted).
 
 ### 7.2 After the timebox (the arc to 2026-10-08)
 
@@ -538,8 +537,9 @@ speaker. The discussion's §6 holds six open questions for the owner.
 1. This document, in full (§13 included).
 2. `git status -sb` and `git log --oneline -6` in both repositories; `git
    log --oneline origin/<branch>..HEAD` for what is unpushed (at writing:
-   the fork even with origin; zombie-radio one commit ahead once this
-   handoff is committed).
+   the fork even with origin; zombie-radio two commits ahead — this
+   handoff's commit and handoff 5's deletion — until the owner orders a
+   push).
 3. `docs/TODO.md` — "Now", then the 3.4c entry: 3.4c.5 (the four checks
    and the owner's verdict), 3.4c.6, 3.4c.7, 3.4c.8, "Done when", 3.5.
 4. `docs/discussions/2026-09-28-prompt-sweep.md` — §3 (the decisions),
@@ -570,7 +570,7 @@ anything else:
    (§2), what we did (§3), the engine as it stands (§4), the facts (§5),
    the rulings (§6), the board ahead (§7), the challenges (§8), the
    nuances and your mistakes (§9-§10), the techniques (§11), and the
-   details that must survive (§14). Handoff 5 is stale: do not use it.
+   details that must survive (§14). Handoff 5 is deleted.
 2. Follow its reading order (§12): git status and log in both
    repositories, docs/TODO.md's "Now" and the 3.4c entry, the prompt-sweep
    discussion (its §3-§5), the narration-quality discussion.
