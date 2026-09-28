@@ -225,6 +225,8 @@ reader's memory):
 
 ## Prefetch the next round — hide the silence between rounds
 
+- **Status 2026-09-28 — post-timebox, behind Task 4 and Task 7** (the
+  owner, ruling the polish at the timebox's close: "I want to pull forward items: "1. Dead-air static while a round is generated" and "2. The 1930s radio look, with your gauge" , right after Task 4, and leave the rest as post-timebox follow-ups behind Task 4 and Task 7.").
 - **The gap:** the `/show` page asks for round N+1 only when round
   N's audio has drained (the browser is the clock, SED), so every
   round boundary is silent while the model writes the first line
@@ -246,6 +248,30 @@ reader's memory):
   still queued (exact from the decoded clips); never after an
   invitation (the listening window is the gap). Measure first whether
   the model and the voice slow each other on the shared GPU.
+
+## Episodes — a story arc, with a recap between episodes (owner, 2026-09-23; post-timebox, 2026-09-28)
+
+- **The idea (the owner, 2026-09-23):** the show as a series of
+  episodes, each starting fresh with the cast sheet, a "previously
+  on…" recap and a new scene set for the model to improvise in; it ends
+  at a story beat, or at a size limit as a backstop ([discussion
+  2026-09-23] show-engine-design: the owner's words verbatim in §2.1,
+  the option — number 5 — in §2.2). The recap comes from the episode file, written in advance,
+  not from the model.
+- **What it gives:** a story arc instead of an endless loop; a clean
+  reset of the history between episodes — the trim's job, with no pause
+  mid-show; clean start and stop points for the talk; the canned
+  episode (Task 7) becomes one recorded episode.
+- **Where flagged:** the design discussion above (the stretch of the
+  timebox; the `{{ episode }}` placeholder in the cast sheet is already
+  there, empty); the TODO's polish list until 2026-09-28.
+- **Status 2026-09-28 — post-timebox, behind Task 4 and Task 7** (the
+  owner, ruling the polish at the timebox's close: "I want to pull forward items: "1. Dead-air static while a round is generated" and "2. The 1930s radio look, with your gauge" , right after Task 4, and leave the rest as post-timebox follow-ups behind Task 4 and Task 7.").
+- **Fix shape:** the minimal mechanism — the director knows it is in an
+  episode (a scene setup and a recap from an episode file), ends it at
+  a beat or a size limit, and starts the next fresh; one hand-written
+  episode ships; writing more stories is later show work (the spec's
+  post-release scaffolds). A day or more (estimate).
 
 ## Resume the same run after a page reload
 
@@ -1036,6 +1062,111 @@ reader's memory):
   caches — never by a setting to keep in sync, so an engine switch
   in Settings brings its table along, and an engine without one gets
   the base table.
+
+## The trim's thresholds in settings — the 90 % trigger and the 50 % target are hard-coded (owner, 2026-09-28)
+
+- **The gap:** the trim fires when the script reaches 90 % of
+  `show.context_budget` and cuts whole rounds from the middle until it
+  is back to 50 % — but those two numbers are constants in the fork's
+  `app/show/script.py` (`_TRIGGER = 0.9`, `_TARGET = 0.5`, lines
+  143-144; also `_KEEP_FIRST = 2`, `_KEEP_LAST = 4`, lines 141-142), against the rule
+  that every number is a setting.
+- **The owner (verbatim, 2026-09-28):** "I do agree we need to put
+  trim thresholds in settings." Not wanted: trimming deeper ("No, I do
+  not want to trim deeper, I want to keep as much context as
+  possible.") nor leaner instructions ("these are working fine").
+- **Where flagged:** the owner's listen of the installed `tz-0.2`
+  client, 2026-09-28 (run `2026-09-28T15-31-44` in
+  `~/TalkWithZombies-client/runs/`), while looking for a long gap.
+- **Trigger:** with the budget follow-ups below, or any change to the
+  trim.
+- **Fix shape:** `show.trim_trigger` (0.9), `show.trim_target` (0.5)
+  and the kept rounds at each end as settings, checked in
+  `ShowConfig`'s validators (target below trigger, both in 0-1); the
+  defaults unchanged.
+
+## A context budget near the full 16k (owner, 2026-09-28)
+
+- **The gap:** `show.context_budget` is 14,000 against the server's
+  16,384-token context (`zr_llama_ctx` in
+  `deploy/ansible/inventories/common_vars.yml`), so the trim fires at
+  12,600 tokens and cuts back to 7,000. Measured in the owner's listen
+  of 2026-09-28 (run `2026-09-28T15-31-44`, 189 rounds, about 21
+  minutes of audio): trims at rounds 79, 101, 133 and 169 — every 22-36
+  rounds, not the "roughly 50 rounds" estimated on 2026-09-23 ([discussion
+  2026-09-23] show-engine-design §2.2, at 16k and 125 tokens a round).
+  Rounds average 165 tokens since step 3.4c: exchanges 508, last
+  exchanges 425 (each restates the voice's earlier words, earlier
+  callers' words and an agenda item), free rounds 70-90; contact rounds
+  are 17 % of the rounds and more than half of the tokens. After each
+  trim the server re-read the whole remaining script (4,369-6,580
+  tokens; only 43 served from the cache — Nemotron is a hybrid model,
+  and llama.cpp cannot keep the cached start when the middle changes).
+  Replayed cold, round 169's 5,008-token request took 5.1 s of wall
+  time (1.7 s of prompt reading; the rest server overhead, not yet
+  explained) — close to the 2026-09-23 estimate of "around 5
+  seconds". Three of the four trims fell in contact rounds, right after
+  the listener spoke.
+- **The owner (verbatim, 2026-09-28):** "I want to explore pushing the
+  budget from 14k to near the full 16k."
+- **Trigger:** the owner's call, after the timebox.
+- **Fix shape:** the room a request needs above the budget — the
+  reply (`show.max_tokens`, 512) plus the next instruction (an exchange
+  instruction is about 500 tokens and grows with the restatement) plus
+  a margin — measured on the heaviest rounds, then the budget raised
+  to 16,384 minus that room; a long drive or listen to confirm no
+  request overflows the server's context, and the trims counted.
+
+## A 32k context, so the show forgets past callers less often (owner, 2026-09-28)
+
+- **The gap:** at 16k, a long show trims every few minutes (above),
+  and each trim drops the middle of the script — the contacts with
+  earlier callers among it; the contact instructions still restate
+  earlier callers' words, but the conversations themselves go.
+- **The owner (verbatim, 2026-09-28):** "Separately I want to explore
+  making the context 32k, so the model does not forget past user
+  interactions so frequently."
+- **Trigger:** the owner's call, after the timebox; independent of the
+  16k budget follow-up above.
+- **A data point:** on 2026-09-23 the A6000 box used 13.0 of 46 GB of
+  GPU memory, and even 64k was believed cheap on this hybrid model — not
+  measured ([discussion 2026-09-23] show-engine-design §2.4).
+- **Fix shape:** `zr_llama_ctx` 32768 in
+  `deploy/ansible/inventories/common_vars.yml` and a converge on the
+  box; `show.context_budget` raised to match (and the trim's
+  thresholds, once they are settings). To measure: the stack's memory
+  against the 24 GB target (at 16k, with one voice engine, 14.0 of
+  15.3 GiB on an A4000); the pause of a trim, since the whole remainder
+  is re-read and would be about twice as long; the model's quality
+  deep into a long context; the prompt reading per round as the script
+  grows (mostly served from the cache between trims).
+
+## A long silence between two lines of one round, not explained (owner, 2026-09-28)
+
+- **What was seen:** in the owner's listen of the installed `tz-0.2`
+  client (run `2026-09-28T15-31-44`), round 187, "a way too long gap"
+  between the event's reading and the first model line — "[The canned
+  peaches, the last luxury, have swollen lids.] Ralph (determined):
+  The canned peaches, the last luxury, have swollen lids. Over. /
+  Samantha (curious): Why are the peaches swollen? Over." No trim in
+  that round (the last was round 169).
+- **What was measured afterwards** (2026-09-28, through the tunnel):
+  round 187's own request, rebuilt from the record and replayed —
+  0.84 s in all (204 new prompt tokens read in 0.35 s, 8,530 from the
+  cache, 15 tokens written); Samantha's line synthesized three times
+  with her installed voice — 1.26-1.44 s; Ralph's line — 2.0 s to
+  synthesize, about four seconds of audio. Both of Samantha's parts
+  normally finish while Ralph's line plays: no gap expected.
+- **Not known:** where the time went — the run records token counts,
+  not clock times; the installed client had debug off; the server's
+  log was not kept. The tunnel is a suspect (the follow-up "SSH
+  keepalives and polling…"), not a finding.
+- **Trigger:** the next listen with a long gap.
+- **Fix shape:** listen with `debug: true` under `show:` in the
+  client's `settings.yaml` (the page's line under each round shows the
+  first line, the round and the first sound), or have the record keep
+  llama.cpp's own `prompt_ms` and `predicted_ms` (the server returns
+  them; the fork keeps only the token counts) — the owner's call.
 
 ## MassedCompute 50% code verification — parked
 

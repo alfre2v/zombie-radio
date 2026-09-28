@@ -32,7 +32,8 @@ this arc".
 *Updated 2026-09-28. Read this section first; everything below it is
 detail.*
 
-- **The critical path is Task 6b, the show engine,** built in the
+- **Task 6b, the show engine, is done (2026-09-28; the fork's
+  `tz-0.2`)** — it was the critical path, built in the
   fork TalkWithZombies under a timebox — clock started 2026-09-23
   14:46 CDT · checkpoint passed 2026-09-24 · **end moved to Monday
   2026-09-28** (the owner, 2026-09-25; it was 2026-09-26 14:46). Its
@@ -80,8 +81,10 @@ detail.*
   microphone passed, and the radio beats were reworded (`3c4154c`);
   the test by ear passed (2026-09-27), and its findings became step
   3.4c.6, fixed lines (`07669dc`), built and checked on the box. Then
-  3.5, the close. **To decide after the day's work:**
-  whether to postpone the optional polish (the owner, 2026-09-27).
+  3.5, the close. **The polish, ruled 2026-09-28:** the dead-air
+  static and the 1930s radio look with the gauge pulled forward, right
+  after Task 4; prefetch and episodes left as post-timebox follow-ups,
+  behind Task 4 and Task 7.
   **Today, 2026-09-28, the timebox's last day** — the owner: "I want to
   have a functional story narration before we close the time box.":
   3.4c.7 and 3.4c.8, a check on the box and by ear, the bookkeeping,
@@ -94,11 +97,17 @@ detail.*
   done** (2026-09-28): the owner's listen (run `2026-09-28T13-43-28`) —
   "Wow, big improvement in story coherence… All in all I am satisfied
   with where we are."; 3.4c.8, the repeat guard, dropped (no repeats
-  heard or measured). **Next: 3.5, the close.** How
+  heard or measured). **3.5, the close, done the same day:** both
+  pull requests merged (alfre2v/TalkWithZombies#4, `ca37199`;
+  this repository's #12, `2841065`), the fork tagged `tz-0.2`, the
+  installer pinned to it and re-proven by the owner — **the timebox
+  is closed; slice 3 and Task 6b are done.** How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
-- **The order after the timebox:** Tasks 5a / 5b / 5c in the new
+- **The order after the timebox:** Task 4, then right after it the
+  polish's two items pulled forward (the dead-air static, the 1930s
+  radio look with the gauge; the owner, 2026-09-28) → Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
   samples) → Task 7, the canned episode (a MUST for the talk) →
   Task 8, the close ritual. Hard deadline 2026-10-08; the talk at
@@ -240,7 +249,8 @@ the agent keeps this current. These carry across arcs.*
     so the box is set knowing what it contains. *Resolved
     2026-09-21: Placement 1, the browser as the clock — the
     cheapest, about a day ([ADR-0003]).*
-  - [ ] **6b — Build the show engine, as three slices. NEXT.**
+  - [x] **6b — Build the show engine, as three slices** — **done
+    2026-09-28** (the fork's `tz-0.2`, `ca37199`).
     **Read this first.** The design is decided and lives in
     [discussion 2026-09-23] show-engine-design — cited below as
     **SED §n** — with its roots in [ADR-0003], [spec §6], and the
@@ -643,7 +653,9 @@ the agent keeps this current. These carry across arcs.*
       cadence rules — keep the microphone, simplify when it opens) ·
       stop (the fallback: TalkWithMe 7.1 plus the canned episode).
 
-    - [ ] **Slice 3 — the browser.** Branch
+    - [x] **Slice 3 — the browser** — **done 2026-09-28**: merged as
+      alfre2v/TalkWithZombies#4 (`ca37199`) and this repository's #12
+      (`2841065`); the fork tagged `tz-0.2`. Branch
       `alfre2v/show-slice-3-browser`, cut from the fork's `master`
       (`5b2485f`, slice 2's merge) on the owner's Go. **Target: Monday
       2026-09-28** (the timebox's end, moved by the owner on
@@ -1246,26 +1258,56 @@ the agent keeps this current. These carry across arcs.*
         contact where the cast engages, and a call left unanswered
         until the Switch-off; the verdict recorded, then commit and
         push.
-      - [ ] **3.5 Close the timebox** — slice 3's pull request merged;
+      - [x] **3.5 Close the timebox** — slice 3's pull request merged;
         tag `tz-0.2`; the installer's `client_version` bumped to it and
         re-proven (fresh install, re-run `changed=0`, HTTP 200 — the
         owner's deploy); the spec's as-built entries for the engine.
+        **Done 2026-09-28:** the owner merged both pull requests
+        (alfre2v/TalkWithZombies#4 → `ca37199`; this repository's #12
+        → `2841065`); `tz-0.2`, an annotated tag on `ca37199`, pushed
+        on the owner's order; `client_version` → `"tz-0.2"`
+        (`deploy/ansible/client-talkwithme-mac.yml`, lint clean on the
+        `production` profile). The owner's re-proof on the laptop (the
+        old install moved aside): "All four checks pass, installed at
+        tz-0.2." — a fresh install, a re-run with `changed=0`, `git
+        describe` at `tz-0.2`, the show page answering HTTP 200 on a
+        test port. The spec: not as-built entries but a rewrite — the
+        product definition is now one linear description of the product
+        as built (this repository's `5692052`; the owner: "The
+        specification is not a log, it should read as the guide to
+        build the product."). Found in the owner's listen of the
+        installed client (run `2026-09-28T15-31-44`, 189 rounds): the
+        trim fires every 22-36 rounds and costs about 5 s, and one
+        unexplained long silence — recorded as follow-ups (the trim's
+        thresholds in settings; a budget near 16k; a 32k context; the
+        silence).
 
-    - [ ] **Polish — only if the checkpoint was green**, in this
-      order: dead-air static through a second AudioContext source
-      while a round is in flight; the 1930s radio look with the
-      owner's gauge (a "magic eye" or a VU needle driven by Web
-      Audio's analyser — the microphone while the button is held,
-      the actors' audio while it plays — SED §6.7); prefetch round
-      N+1 when the last line of N starts playing (design note: the
-      follow-up "Prefetch the next round"); episodes (SED §2, the
-      stretch).
+    - [ ] **Polish — two items, right after Task 4** (ruled
+      2026-09-28, at the timebox's close; the owner: "I want to pull forward items: "1. Dead-air static while a round is generated" and "2. The 1930s radio look, with your gauge" , right after Task 4, and leave the rest as post-timebox follow-ups behind Task 4 and Task 7."):
+      - [ ] **Dead-air static while a round is generated** — a soft,
+        looping radio hiss through a second AudioContext source,
+        generated in the browser, from the round's request until its
+        first line plays, off while the page listens (so Whisper does
+        not hear it). It covers the 3.7-4.9 s between rounds (measured
+        2026-09-25), a trim's pause (about 5 s, measured 2026-09-28)
+        and stalls. About 1-2 hours (estimate).
+      - [ ] **The 1930s radio look, with the owner's gauge** — the
+        `/show` page restyled as an old radio set (cabinet, lit dial,
+        period type, the captions as a panel) and a "magic eye" or a
+        VU needle driven by Web Audio's analyser — the microphone
+        while the button is held, the actors' audio while it plays
+        (SED §6.7). The gauge about an hour in a simple form; the look
+        open-ended (estimate).
+      - **Moved to follow-ups, post-timebox, behind Task 4 and Task 7:**
+        prefetch round N+1 (the follow-up "Prefetch the next round");
+        episodes (the follow-up "Episodes — a story arc, with a recap
+        between episodes").
 
 ## Other open tasks
 
 - [ ] **Task 4 — Real cast replaces placeholders.** Character
   bibles → the sections of TalkWithZombies' cast sheet ([spec
-  §5.3]; where they live in the fork — decided 2026-09-23: the
+  §5]; where they live in the fork — decided 2026-09-23: the
   cast entries of `stories/<story>/cast_sheet.md`, not the persona
   files — [discussion 2026-09-23] show-engine-design §4), keeping `/no_think`
   while on Nemotron (the chat template needs it even under the
