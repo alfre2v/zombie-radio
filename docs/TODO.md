@@ -85,7 +85,9 @@ detail.*
   then 3.5. 3.4c.7 is done (`4d051ba`), and with it the owner's sweep
   of every prompt the model receives has begun ([discussion
   2026-09-28] prompt-sweep: the event, the call and the Breakdown
-  reviewed; the rest to examine). How
+  reviewed; then the system prompt, whose premise now says who a voice
+  on the frequency is and what the scientists tell the listeners; the
+  rest to examine). How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
