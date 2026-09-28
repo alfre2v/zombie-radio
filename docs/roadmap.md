@@ -82,15 +82,15 @@ the prototype settles.
    ([ADR-0003]; its gate passed 2026-09-22), built under a 3-day
    timebox. Then the prototype as the experiment platform, with
    the real cast: in-prototype experiments in the new engine (LLM
-   audition [spec §7.3] · TTS comparison + VRAM budget [spec
-   §7.2], LuxTTS in the pool · the narrative-health probes
+   audition [spec §9] · TTS comparison + VRAM budget [spec
+   §9], LuxTTS in the pool · the narrative-health probes
    [discussion 2026-09-16]) and the canned episode, a MUST for
    demo day. Guardrails riding along: experiments keep the
    protocol skeleton; prompt work stays disposable until the
    audition; the spec is updated as a ledger during the build.
 3. *(further arcs emerge as the prototype teaches us)* — the
    **show arc** was named at this one's opening: story and episode
-   authoring (the trajectory scaffolds, [spec §5.2]) and the full
+   authoring (the trajectory scaffolds, [spec §2.2]) and the full
    demo rehearsal. Its director-design half moved into the MVP
    prototype on 2026-09-21.
 

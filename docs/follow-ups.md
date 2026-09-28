@@ -907,7 +907,7 @@ reader's memory):
   and brainstorm §3.
 - **Trigger:** time allows after the MVP's TTS path works
   end-to-end with an existing engine — explicitly a SOFT goal;
-  also triggered if the [spec §7.2] engine comparison experiment
+  also triggered if the [spec §9] engine comparison experiment
   finds the existing seven inadequate for 4 distinct character
   voices. *(Pointer corrected 2026-09-16: was "§8.4", a stale
   pre-spec number.)*
@@ -1095,7 +1095,7 @@ reader's memory):
   2026-09-25; found by the owner's questions about the show's
   accumulator, [discussion 2026-09-25] show-slice-3-browser-plan §8).
   **No longer candidates:** the `[Name]:`
-  output sanitizer (moot under [ADR-0003] — [spec §9]) and the
+  output sanitizer (moot under [ADR-0003] — [spec §10]) and the
   `max_turns_for_context` raise (done in our config, 6 → 50, on
   2026-09-18 — a setting, not a patch).
 - **Where flagged:** the remote-split spike (2026-09-16) designated

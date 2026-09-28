@@ -31,7 +31,7 @@ ambiguously stale — each file announces whether it may change.
 |---|---|---|
 | `decisions/` (ADRs) | "We chose X over Y because Z" | **Immutable once accepted**; superseded by a NEW ADR, never rewritten |
 | `discussions/` | How we reasoned to X — alternatives weighed, pushbacks, why-not | **Append-only after the decision lands**: reality reports back via dated addendum sections, never silent rewrites |
-| `specs/` | What we intend to build, per significant feature | Living during its arc; stamped BUILT-AND-SHIPPED (with as-built pointers) at arc close, then preserved as the record of intent |
+| `specs/` | What the product is and how it is built — one linear description, in the present tense, in the order someone would build it | **Living, rewritten in place** when the product changes; no dated entries, rulings or corrections in the body — the why and the when live in `decisions/`, `discussions/`, `experiments/` and the TODO, which the spec lists at its end (owner, 2026-09-28: "The specification is not a log, it should read as the guide to build the product.") |
 | `experiments/` | Empirical artifacts: measurements, comparisons, prototypes | Self-contained, preserved for provenance |
 | `runbooks/` | Procedures executed repeatedly (deploy, restore, rotate keys) | Living, undated; updated as the procedure evolves |
 | `reports/` | Incidents, recoveries, notable events — "this happened once" (vs a runbook's "do this each time") | Dated filename; **immutable once written** |
@@ -86,8 +86,9 @@ there; the fork's docs describe features, not decisions.
 Work happens in **arcs**: named, scoped efforts that open, run, and
 close. The lifecycle keeps the docs true.
 
-**Open**: roadmap entry at the top of the build order → write
-`docs/specs/<arc>.md` → rewrite `TODO.md` with the arc's sub-steps.
+**Open**: roadmap entry at the top of the build order → write or
+update the spec in `docs/specs/` → rewrite `TODO.md` with the arc's
+sub-steps.
 
 **During**: one discussion doc per major design question; an ADR per
 load-bearing decision; an experiment folder when a question needs
@@ -106,7 +107,7 @@ with the ledger entry linking it.
   verbatim)
 - TODO resets to the between-arcs skeleton
 - the build plan/journal gets its closing entry
-- the spec gets its BUILT-AND-SHIPPED stamp
+- the spec is checked against the code and rewritten where the product changed
 - a staleness sweep runs over the living docs (CLAUDE.md included),
   plus a self-generated list of "documents I would most likely forget
   to update", checked one by one

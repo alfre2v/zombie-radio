@@ -6,9 +6,12 @@
 ([discussion 2026-09-16]) and the deployment-first ruling
 ([discussion 2026-09-17]): the prototype is the experiment
 platform, and the deployment machinery is deliverable #1.
-**Spec:** `specs/product-definition.md` continues as the living
-LEDGER (inversion guardrail 3) — as-built entries land within a
-session of each settled decision; no new spec for this arc.
+**Spec:** `specs/product-definition.md` — since 2026-09-28 a linear
+description of the product as built, rewritten in place when the
+product changes (the owner: "The specification is not a log, it
+should read as the guide to build the product."); until then it was
+kept as a living ledger of as-built entries (inversion guardrail 3).
+No new spec for this arc.
 
 **Deliverables:** **D1** — deployment machinery (Ansible +
 Docker, cloud VM ≡ localhost) · **D2** — the running prototype
@@ -146,7 +149,7 @@ the agent keeps this current. These carry across arcs.*
 2. **Seed the character bibles** — EXECUTING SOON. Names,
    personalities, quirks, voice descriptions; rough is fine;
    model-neutral (guardrail 2). They become the sections of the
-   show's cast sheet ([spec §5.3]) — concretely, each character's
+   show's cast sheet ([spec §5]) — concretely, each character's
    entry under "The cast:" in the fork's
    `stories/lab-outbreak/cast_sheet.md`, arriving as a pull request
    ([discussion 2026-09-23] show-engine-design §4). Unblocks Task 5a.
@@ -240,7 +243,7 @@ the agent keeps this current. These carry across arcs.*
   - [ ] **6b — Build the show engine, as three slices. NEXT.**
     **Read this first.** The design is decided and lives in
     [discussion 2026-09-23] show-engine-design — cited below as
-    **SED §n** — with its roots in [ADR-0003], [spec §5.3], and the
+    **SED §n** — with its roots in [ADR-0003], [spec §6], and the
     lessons of
     [discussion 2026-09-22] grammar-and-prompt-cache-lessons (cited
     as **L §n**). This list is the ORDER and the STATE: each step
@@ -1273,7 +1276,7 @@ the agent keeps this current. These carry across arcs.*
 - [ ] **Task 5 — In-prototype experiments (deliverable D3;
   protocol skeleton per guardrail 1: question, timebox,
   pre-registered pick criteria, runlog).**
-  - [ ] **5a — LLM audition** ([spec §7.3]): the ranked five via
+  - [ ] **5a — LLM audition** ([spec §9]): the ranked five via
     one `-hf` flag each; identical scenario; scored on BOTH
     narrative-health axes; name-memory retest at the raised
     window. Picks the working default. Needs Task 4 bibles.
@@ -1284,7 +1287,7 @@ the agent keeps this current. These carry across arcs.*
     answered for Nemotron by identity and re-checked for any other
     finalist; the bounded-scratchpad cell rides along
     (follow-ups).
-  - [ ] **5b — TTS comparison + VRAM budget** ([spec §7.2]):
+  - [ ] **5b — TTS comparison + VRAM budget** ([spec §9]):
     engines via the parametrized role; **LuxTTS's ~1 GB claim is
     the first check**; picks two engines + Whisper size;
     measures the two-engine stack vs 24 GB target / 16 GB
@@ -1540,7 +1543,7 @@ ritual's migration to `task_history.md`.*
   file, unchanged):
 
 **NOT in this arc (deliberate boundary, 2026-09-17):** the
-ensemble-director design ([spec §5.3]), story/episode authoring,
+ensemble-director design ([spec §6]), story/episode authoring,
 and the full demo rehearsal — that is the next arc's material
 ("the show arc"), shaped by what this prototype teaches. This
 arc builds the platform, picks the components, and patches the
