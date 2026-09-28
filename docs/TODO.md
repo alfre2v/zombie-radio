@@ -83,7 +83,8 @@ detail.*
   3.4c.6, fixed lines (`07669dc`), built and checked on the box. Then
   3.5, the close. **The polish, ruled 2026-09-28:** the dead-air
   static and the 1930s radio look with the gauge pulled forward, right
-  after Task 4; prefetch and episodes left as post-timebox follow-ups,
+  after Task 4's reference voices (the owner, once Task 4 was split:
+  "After the reference voices"); prefetch and episodes left as post-timebox follow-ups,
   behind Task 4 and Task 7.
   **Today, 2026-09-28, the timebox's last day** — the owner: "I want to
   have a functional story narration before we close the time box.":
@@ -105,9 +106,11 @@ detail.*
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
-- **The order after the timebox:** Task 4, then right after it the
-  polish's two items pulled forward (the dead-air static, the 1930s
-  radio look with the gauge; the owner, 2026-09-28) → Tasks 5a / 5b / 5c in the new
+- **The order after the timebox:** Task 4's reference voices (the
+  owner's), then right after them the polish's two items pulled forward
+  (the dead-air static, the 1930s radio look with the gauge; the owner,
+  2026-09-28); Task 4's character bibles deferred by the owner (5a
+  needs them) → Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
   samples) → Task 7, the canned episode (a MUST for the talk) →
   Task 8, the close ritual. Hard deadline 2026-10-08; the talk at
@@ -126,7 +129,10 @@ detail.*
   criterion by ear (3.4) and the installer's re-proof (3.5).
 - **At a session's end:** a fresh-session handoff replaces any
   mid-session one, and a handoff is deleted only with the owner's
-  permission.
+  permission. The latest handoff stays until the next compaction, as
+  the template for the next one (the owner, 2026-09-28: "we keep the
+  session handoff until the next time we have to compact, to serve as
+  a template").
 
 **Notation recap** (full conventions in [docs/README.md](README.md)):
 `[ ]` open · `[x]` done (with commit SHA in parentheses) · `[~]`
@@ -1282,7 +1288,8 @@ the agent keeps this current. These carry across arcs.*
         thresholds in settings; a budget near 16k; a 32k context; the
         silence).
 
-    - [ ] **Polish — two items, right after Task 4** (ruled
+    - [ ] **Polish — two items, right after Task 4's reference voices**
+      (the owner, once Task 4 was split: "After the reference voices"; ruled
       2026-09-28, at the timebox's close; the owner: "I want to pull forward items: "1. Dead-air static while a round is generated" and "2. The 1930s radio look, with your gauge" , right after Task 4, and leave the rest as post-timebox follow-ups behind Task 4 and Task 7."):
       - [ ] **Dead-air static while a round is generated** — a soft,
         looping radio hiss through a second AudioContext source,
@@ -1305,7 +1312,18 @@ the agent keeps this current. These carry across arcs.*
 
 ## Other open tasks
 
-- [ ] **Task 4 — Real cast replaces placeholders.** Character
+- [ ] **Task 4 — Real cast replaces placeholders.** **Split in two
+  (the owner, 2026-09-28):** (1) **the character bibles** — not now:
+  "today has been all about improving the prompt, and right now the
+  narration holds together more or less, ok. I want to pivot to audio,
+  which is the weak spot now."; (2) **the reference voices** — one clip
+  per character, the owner's, next: each character's clip as
+  `Personas/<Name>/ref.wav` with its exact transcript in `ref.txt`, in
+  `~/TalkWithZombies-client/Personas/` (the dev clone reads the same
+  folder through its `personas_directory`); `Personas/` is gitignored in
+  the fork and the installer skips an existing persona folder. Several
+  clips per character by mood: the follow-up "Mood clips". The detail
+  as first written: character
   bibles → the sections of TalkWithZombies' cast sheet ([spec
   §5]; where they live in the fork — decided 2026-09-23: the
   cast entries of `stories/<story>/cast_sheet.md`, not the persona

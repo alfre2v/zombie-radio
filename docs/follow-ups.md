@@ -1282,6 +1282,63 @@ reader's memory):
   verify the VRAM claim first (it's the cheapest check and the
   biggest prize).
 
+## Mood clips — several reference clips per character, one per mood (owner, 2026-09-28)
+
+- **The idea (the owner, verbatim, 2026-09-28):** "In the near future,
+  I will want to have several audio clips per persona, difference on the
+  mood... So `Moira-happy.way`, `Moira-urgent.wav`, `Moira-afraid.wav`
+  ... I want to discuss how to change our code to implement this, but I
+  do not want to execute yet." The naming, ruled the same day:
+  "ref-afraid.wav next to ref.wav, record the shape as a follow-up."
+- **Already decided** ([discussion 2026-09-26] show-director-modes §11,
+  the owner, verbatim): "In the end the mood provided by the grammar
+  will have to be the signal carried around until the moment we send the
+  text to TTS, so we can decide what reference audio to send, and there
+  will have to be a different mapping to decide mood -> audio file, as I
+  will never manage to get it one to one." tts-serve needs no change:
+  every synthesis request carries its own reference clip, cached by its
+  content, so switching clips per line costs nothing extra; the emotion
+  lives in the clip ([discussion 2026-09-21] task6-recon-tts-serve, F3
+  and Q2).
+- **Where the mood stops today** (checked 2026-09-28 in the fork, at
+  `tz-0.2`): the parser sends each line's mood with its start event; the
+  page reads it (`static/show/show.js:252`) and shows it in the caption;
+  `speakLine(persona, text, hooks)` (`static/show/player.js:111`) posts
+  only `{text, persona_name}` to `/api/tts` (line 190); `TTSRequest`
+  (`app/models.py:56`) has no mood; the route loads the persona's one
+  `ref.wav` and `ref.txt`.
+- **The shape:**
+  1. **Files** — in each persona folder, `ref.wav` and `ref.txt` stay
+     the default voice; mood clips sit next to them as
+     `ref-<mood>.wav` with their exact transcript in `ref-<mood>.txt`
+     (e.g. `Personas/Moira/ref-afraid.wav`, `ref-afraid.txt`), `<mood>`
+     one of the story's fourteen. Any subset per character; clips can
+     arrive one at a time.
+  2. **The mapping, with fallbacks** — for a line in mood M: the
+     character's `ref-M` clip if it exists; else the clip of the mood M
+     falls back to (e.g. terrified → afraid, relieved → happy), then
+     that mood's own fallback; else the default `ref.wav`. The
+     mood-to-mood fallback belongs to the story (the moods are the
+     story's, `overtones.yaml`); the clips belong to the personas.
+  3. **The page sends the mood** — `speakLine(persona, text, mood)`
+     posts `{text, persona_name, mood}`; the voice queue already cuts
+     chunks at each line's end, so a chunk always has one mood.
+  4. **The TTS route picks the clip** — `TTSRequest` gains an optional
+     `mood`; the route resolves the clip and its transcript for the
+     persona and mood, with the fallbacks; without a mood, today's
+     behavior (upstream's chat UI unaffected).
+- **Risks** (§11 of the 3.4c discussion, plus): how much of a clip's
+  emotion carries into the cloned voice with Faster Qwen3-TTS is
+  unmeasured — test it as soon as one character has two clips; clips
+  from different speakers or recordings would make one character sound
+  like two people; clips at different loudness would make the voice jump
+  (normalize when preparing them).
+- **Where it sits:** Task 5b's "mood → clip map per character"; needs
+  the reference voices (Task 4, part 2) first.
+- **Trigger:** the owner's call, after the default clips are in place.
+- **Estimate:** 2-3 hours for the four pieces with tests (the agent's,
+  not measured).
+
 ## Voice-sample hygiene — famous-actor clips NEVER enter the repo
 
 - **The gap/rule:** the owner will likely source the four
