@@ -82,7 +82,10 @@ detail.*
   **Today, 2026-09-28, the timebox's last day** — the owner: "I want to
   have a functional story narration before we close the time box.":
   3.4c.7 and 3.4c.8, a check on the box and by ear, the bookkeeping,
-  then 3.5. How
+  then 3.5. 3.4c.7 is done (`4d051ba`), and with it the owner's sweep
+  of every prompt the model receives has begun ([discussion
+  2026-09-28] prompt-sweep: the event, the call and the Breakdown
+  reviewed; the rest to examine). How
   to drive the show yourself: the fork's
   `docs/runbooks/show-driver.md` (no browser) and
   `docs/runbooks/show-page.md` (the `/show` page).
@@ -1106,7 +1109,7 @@ the agent keeps this current. These carry across arcs.*
             average (1.31-1.36 before), the call no longer asking the
             model. Follow-ups written: the event texts reworded as lines
             of dialog, and more agenda items (both the owner's).
-          - [ ] **3.4c.7 Fixed lines kept out of the model's own turns**
+          - [x] **3.4c.7 Fixed lines kept out of the model's own turns**
             (the agent's idea, 2026-09-27; the owner, 2026-09-28: "It is
             a great idea. Let's implement it. But before implementing,
             record well this idea and the reason why we need to try
@@ -1146,6 +1149,30 @@ the agent keeps this current. These carry across arcs.*
             3.4c.6 — every fixed line still in place, the echo counts
             reported; then the owner by ear. The repeat guard (3.4c.8) is
             the safety net for what remains.
+            **Built, then reshaped with the owner case by case** (the
+            fork's `4d051ba`, 2026-09-28; the whole review in [discussion
+            2026-09-28] prompt-sweep). A real run of the first build
+            showed the word "round" reaching the model twice and the
+            call, folded into the next turn in the present tense, read as
+            an order to do it again; the owner: "Stop modifying the model
+            instructions. Instead I will do it case by case." The
+            outcome: the model's own turns hold only its lines; the call
+            is told as already said, in the words an event's reading
+            uses, and runs on with "Then" into the voice's answer or the
+            silence; an event round always leaves the model a line; the
+            Breakdown is split in two — the contact's last answer gets
+            the last exchange (answered, asking nothing, no listening
+            window), then the Breakdown as a receiver beat of its own
+            (the operator's fixed line told like an event's reading, then
+            a reaction, on `beat_max_lines`; `breakdown_lines` removed);
+            the RECEIVER sign stays lit through the last exchange (the
+            round summary's `receiver`); no instruction speaks of rounds.
+            Suite 1109 passed, Node 17 + 91 + 35. On the box (the fork's
+            run `2026-09-28T11-50-15`): the first exchange after the call
+            no longer re-announced the receiver; the last exchange
+            answered by name but still asked questions (an open point of
+            the sweep); the Breakdown one clean beat. The sweep continues
+            over every other prompt case (the discussion's checklist).
           - [ ] **3.4c.8 The repeat guard** (the agent's proposal, the
             owner, 2026-09-27: "we will build the repeat guard
             tomorrow"): a line the model writes that nearly repeats one
