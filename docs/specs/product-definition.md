@@ -1,9 +1,8 @@
 # Zombie-Radio — Product specification
 
 **Status:** living. This document describes the product as it is
-built — the fork TalkWithZombies at `alfre2v/radio-look`
-(`6800c00`; tag `tz-0.2` plus the page's looks) and this repository's
-deployment — in the order someone
+built — the fork TalkWithZombies at tag `tz-0.3` (`0ec33c1`)
+and this repository's deployment — in the order someone
 would build it again. It is rewritten in place when the product
 changes; it carries no history. Why each choice was made, and when,
 lives in the decisions, discussions and experiments listed in §11.
@@ -563,8 +562,8 @@ What the first release still needs, or has not settled:
 - **Who a returning caller is** — code telling the model which
   earlier caller a voice is, by name.
 - **The canned episode** and the demo runbook.
-- **Polish** — dead-air static while a round is generated, the 1930s
-  radio look, the next round prefetched, episodes.
+- **Polish** — dead-air static while a round is generated, the next
+  round prefetched, episodes.
 - **Operations** — a tunnel that reconnects by itself, and a fallback
   for the venue's network.
 

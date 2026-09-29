@@ -340,8 +340,8 @@ reader's memory):
   ([discussion 2026-09-25] show-slice-3-browser-plan; the page's
   microphone opens only during listening windows, as step 3.3 builds
   it).
-- **Trigger:** polish, after slice 3's exit criterion (step 3.4); before
-  the talk if time allows.
+- **Trigger:** polish, after slice 3's exit criterion (step 3.4 — met
+  2026-09-25); before the talk if time allows.
 
 ## Mac-local TTS probe with tts-serve's MLX engine (parked post-MVP)
 
@@ -362,6 +362,14 @@ reader's memory):
   it, read `rtf` from a few sentences; llama.cpp on Metal next.
 
 ## An "exchange" round — the director has one character address another
+
+- **Status 2026-09-28 — the name is taken; the idea stands.** Since
+  step 3.4c, "exchange" names the round where the cast answers a
+  listener (spec §6.4, Contact mode), and the round kinds named below
+  (free, invitation, answer, static) are director v1's, which step
+  3.4c reorganized into Broadcast and Contact. The idea — one character
+  addressing another, in order, in the free rounds of Broadcast —
+  needs a new name when it is taken up.
 
 - **The gap:** the characters report to the room; they rarely talk
   to each other. In the first real run of the show engine (the
@@ -489,9 +497,9 @@ reader's memory):
   (from step 3.4c on, themes kept as data — the follow-up "The tone
   themes as data — five uses waiting for them", use 2).
   Tests like the events'.
-- **Trigger:** after step 3.4c and slice 3's close; a candidate for the
-  show fixes before the talk or for the show arc (stories and
-  episodes) — the owner's call.
+- **Trigger:** after step 3.4c and slice 3's close (both done
+  2026-09-28); a candidate for the show fixes before the talk or for the
+  show arc (stories and episodes) — the owner's call.
 
 ## Scientific findings — the cast reports what the lab learns about the infection (owner, 2026-09-26; postponed from step 3.4c)
 
@@ -681,7 +689,7 @@ reader's memory):
   drops a listener who comes back later — or option A comes back for
   feature 5~~ — **fired 2026-09-26** (the driver test: B takes an
   anonymous returning voice for the most recent caller). Now: among
-  the show fixes before the talk, after slice 3 closes.
+  the show fixes before the talk (slice 3 closed 2026-09-28).
 
 ## Event texts reworded as lines of dialog — a personal account from the cast (owner, 2026-09-27)
 
@@ -742,6 +750,16 @@ reader's memory):
   owner reviews; a driver test before and after.
 
 ## Events the listener cannot hear — the characters react to what only the model was told (owner, 2026-09-25) — option 4 adopted
+
+- **Status 2026-09-28 — resolved; kept for its receipts.** After option
+  4, the fixed lines (step 3.4c.6, 2026-09-27; the fork's `07669dc`)
+  settled it: the round's first speaker now reads the event's own text
+  word for word on air, and the model reacts (spec §6.5) — a listener
+  hears every event told. Nothing here is open; the entry stays
+  because the TODO and [discussion 2026-09-23] show-engine-design cite
+  its A/B receipts — deleting it waits for the owner's word. What is
+  left of events is in the follow-ups "Event texts reworded as lines
+  of dialog" and "Events that stay on topic for a few rounds".
 
 - **Status 2026-09-25 (night) — the A/B test decided it: option 4, the
   wording.** Two driver drives on the box, seed 42, 30 rounds each at
@@ -1038,8 +1056,9 @@ reader's memory):
 - **The risk:** another TTS engine — on the owner's wishlist (this
   file: "Add new TTS engines", "LuxTTS landed upstream") — may react
   differently: read the marks aloud, pause on them, or ignore them.
-- **Trigger:** any TTS engine change, or the real reference voices
-  (Task 5b): re-run the three-line test and listen.
+- **Trigger:** any TTS engine change (Task 5b), or the real reference
+  voices (Task 4's first part, the owner's, next): re-run the
+  three-line test and listen.
 - **The test, to repeat it:** with the fork's app serving (the
   runbook `docs/runbooks/show-driver.md`), three
   `POST /api/tts` calls with `{"text": …, "persona_name": "Moira"}`;
@@ -1250,7 +1269,7 @@ reader's memory):
   with a Node test; our version, for whole lines, is the fork's
   `static/show/player.js` `sentencesOf` (step 3.2).
 
-## LuxTTS landed upstream — presumptive §7.2 candidate
+## LuxTTS landed upstream — presumptive candidate for the TTS comparison (Task 5b)
 
 - **The gap/news:** tts-serve v1.1 (2026-09-15) added **LuxTTS**
   (<https://github.com/ysharma3501/LuxTTS>): ZipVoice distilled
@@ -1271,14 +1290,15 @@ reader's memory):
   merge); agent verified against
   <https://github.com/scorbo2/tts-serve> README/v1.1 and
   `impl/server_luxTTS.md`.
-- **Trigger:** the §7.2 TTS comparison experiment scoping —
+- **Trigger:** the TTS comparison's scoping (Task 5b; the spec's §9,
+  "The voices" — it was §7.2 before the spec's rewrite of 2026-09-28) —
   LuxTTS enters the candidate pool automatically (it is now a
-  wrapped engine) and its VRAM/RTF claims are exactly what §7.2
+  wrapped engine) and its VRAM/RTF claims are exactly what Task 5b
   measures. Its Apache-2.0 weights also weaken the case for the
   Breeze TTS 2 soft-goal addition (non-commercial weights, same
   lightweight niche) — re-evaluate that entry when this trigger
   fires.
-- **Fix shape:** nothing to build — include in the §7.2 harness;
+- **Fix shape:** nothing to build — include in Task 5b's harness;
   verify the VRAM claim first (it's the cheapest check and the
   biggest prize).
 
@@ -1382,6 +1402,15 @@ reader's memory):
 - **Where flagged:** owner, 2026-09-16, while ruling on the
   action queue ([discussion 2026-09-16] prototype-first
   inversion).
+- **Status 2026-09-28 — the place is settled, outside both
+  repositories:** the clips go in `~/TalkWithZombies-client/Personas/<Name>/`
+  as `ref.wav` with `ref.txt` (the TODO's Task 4); the fork gitignores
+  `Personas/`, this repository never sees them, and the Mac installer
+  never overwrites an existing persona folder. What is left of the
+  fix shape below: the source clips and cleaned intermediates kept
+  somewhere private too, and a note of the expected layout for a cold
+  rebuild — the installer does not copy voices; they are placed by
+  hand.
 - **Trigger:** the moment the first sample file exists.
 - **Fix shape:** add a `.gitignore` block for the samples
   directory (e.g. `voices/` or `samples/` — name it when
