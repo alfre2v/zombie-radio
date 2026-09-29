@@ -11,8 +11,14 @@ the zips** — an experiment passed on 2026-09-29, with a script anyone can
 run (§11, the addendum of that day, has how to use it); the owner's
 shortlist of EARS voices is next, then the listening test (§9). How the
 chosen voices reach the app is decided: a casting script copies them into
-each character's folder, driven by a mapping file (§11.3, option A). This
-document is updated as the real audio files are tried: each
+each character's folder, driven by a mapping file (§11.3, option A).
+**Only the read `emo_*_sentences` clips are used — the unscripted
+`emo_*_freeform` ones are set aside, having no transcripts (the owner,
+2026-09-29; §11.4).** The owner's shortlist of 20 EARS speakers has every
+emotion fetched for review (§11.4); the casting script is built after the
+owner picks the four. **The casting script is built and a first cast is
+in the app** (§11.5): `tools/voices/cast.yaml` says who voices whom; one
+command recasts. This document is updated as the real audio files are tried: each
 finding lands as a dated addendum (§11), never as a silent rewrite.
 
 **The owner's request (verbatim, 2026-09-29):** "I think it is time to open a
@@ -675,4 +681,173 @@ its original as the record.
    everyone is scared.
 4. **The emotion mapping, row by row, by ear** — once the mood clips feature
    is on the table.
+
+### §11.4 2026-09-29 — the shortlist of 20: every read emotion fetched; the free-form clips set aside
+
+> **Decision — the `emo_*_freeform` clips are not used (the owner,
+> 2026-09-29).** EARS gives each speaker two versions of each emotion: the
+> read `emo_<emotion>_sentences` (the same three sentences for every
+> speaker, with a transcript in `transcripts.json`) and the unscripted
+> `emo_<emotion>_freeform` (an image described in that emotion, **no
+> transcript**). The voice engine needs an exact transcript with every
+> reference clip (§2), so only the `sentences` clips are fetched and used.
+> The agent: "The unscripted emo_*_freeform versions have no transcripts, so
+> I'd leave them out unless you want them". The owner (verbatim): "Correct,
+> we have no use for those now (maybe in the future), make sure that this
+> decision is prominently noted in our discussion file." **If they are
+> wanted later:** `--types 'emo_*_freeform'` fetches them (about 67 MB per
+> speaker; `p001`: 66.81 MB), and Whisper on the box can draft a transcript
+> for each, checked by hand.
+
+**Downloading decoupled from casting.** The owner (verbatim): "Important: I
+want to decouple the download of all the emotion audios for a few (more than
+4) people in the EARS database, from the step of building `Option A: a
+casting script, with the mapping as data`" — and: "Once we have the full
+emotions and transcripts downloaded, I'll review them, then we can proceed to
+build the casting script. I will make my final decision for the 4 voices using
+the index page of the experiment's fetch script." So the order is: fetch every
+emotion for a shortlist → the owner listens and picks four → then the casting
+script (§11.3) is built.
+
+**The owner's shortlist — 20 speakers** (all native American English, so
+all among the 95 of run 5):
+
+- **women (8):** p106, p100, p092, p063, p062, p059, p033, p026;
+- **men (12):** p102, p101, p095, p088, p087, p086, p085, p057, p054, p046,
+  p017, p007.
+
+**The fetch** (the experiment's run 7): every `emo_*_sentences` file for the
+20 — 23 emotions each, 460 files; neutral and fear already on disk (40
+files), so 420 fetched, **911.14 MB** by the dry run (at 14:05 CDT), CC BY-NC
+4.0; approved by the owner ("Fetch the files."). The run writes its own page,
+`datasets/ears/index-<start time>.html` — 20 rows, 23 columns — the page the
+owner uses to pick the four.
+
+**The result** (the experiment's run 7, 14:06:43-14:10:53 CDT): all 420
+files arrived with their CRC ok, none missing, 40 skipped as already here —
+**every one of the 20 speakers holds all 23 emotions, each with its
+transcript**; 48 kHz 32-bit float mono, as before. Lengths per emotion,
+across the 20 speakers (the experiment's `summarize_fetch.py`): medians
+from 8.1 s (confusion) to 15.7 s (realization); the shortest file 4.5 s
+(confusion), the longest 31.6 s (realization); the full table is in the
+runlog. 924.95
+MB transferred for 911.14 MB of files. **The owner's review page:**
+`/Users/alfredo/workspace/hackTNT_2026/zombie-radio-claude/docs/experiments/2026-09-29-ears-remote-fetch/datasets/ears/index-2026-09-29T14:06:44.html`
+— one row per speaker (with gender, age, native language, ethnicity), one
+column per emotion. Next: the owner picks the four; then the casting script
+(§11.3).
+
+### §11.5 2026-09-29 — the casting script, built; a first cast in the app
+
+**The owner's order (verbatim, 2026-09-29):** "Build the casting script, pick
+the first 4 of the list sorted asc, it should be super easy to change the
+picks from one moment to another, that's the point, I want to be free to try
+many voice actors and change them quickly." Then: "yes, run the cast, then
+document it and commit". The tool is option A of §11.3, built in the place
+proposed there, `tools/voices/`.
+
+**What the app reads, checked in the fork before building** (at `tz-0.3`):
+each persona is a folder, `Personas/<Name>/`, under the app's
+`personas_directory`; the fork's `app/services/persona_store.py` names its
+files — `prompt.md`, `language.txt`, `ref.wav` (the reference audio), `ref.txt`
+(its transcript), `memories.txt` — and ignores any other file in the folder.
+**The app reads `ref.wav` from disk on every voice request**
+(`encode_reference_audio` in `app/services/tts_client.py`), so a recast is
+heard from the next spoken line — no restart, even mid-show.
+
+**The first cast** — the first four of the owner's shortlist of 20, sorted
+ascending: **p007** and **p017** (men), **p026** and **p033** (women). The
+cast sheet does not state the characters' genders; the agent paired the men's
+voices with Daniel and Ralph and the women's with Moira and Samantha, by the
+characters' names — a line each in `cast.yaml` to change:
+
+| Character | EARS speaker | Clip | Length | Loudness (RMS, before → after) |
+|---|---|---|---|---|
+| Daniel | p007 (male, 36-45) | `emo_neutral_sentences` | 9.1 s | -40.9 → -22.5 dBFS |
+| Moira | p026 (female, 46-55) | `emo_neutral_sentences` | 10.0 s | -36.0 → -21.7 dBFS |
+| Ralph | p017 (male, 36-45) | `emo_neutral_sentences` | 10.7 s | -38.1 → -21.9 dBFS |
+| Samantha | p033 (female, 56-65) | `emo_neutral_sentences` | 11.6 s | -41.0 → -20.0 dBFS |
+
+Cast at 14:32:12 CDT into `~/TalkWithZombies-client/Personas/`; each new
+`ref.wav` checked with `afinfo`: 1 channel, 24,000 Hz, Int16. The EARS clips
+are quiet (-35 to -41 dBFS RMS); the script raises them toward -20 dBFS but
+never past a -1 dBFS peak, so where a clip has loud peaks it stops short: the
+four landed between -20.0 and -22.5 dBFS.
+
+**The two files:**
+
+- **`tools/voices/cast.yaml` — the only file to edit.** `source` (the
+  downloaded EARS files, the experiment's `datasets/ears`, relative to the
+  repository), `personas` (the installed client's folder, which the dev clone
+  reads too), `cast` (character → EARS speaker), `voice` (the clip that
+  becomes `ref.wav`: `emo_neutral_sentences`), `loudness_dbfs` (-20; `null`
+  leaves the level as recorded) and `peak_dbfs` (-1), and `moods` — §11.3's
+  draft mapping, one EARS emotion per show mood (the first of each row's
+  candidates), `urgent: null` (no clip; the app will fall back).
+- **`tools/voices/cast_voices.py` — the script.** Run with the repository's
+  environment (`uv run`; it needs PyYAML, which comes with ansible-core). For
+  each character:
+  1. it first checks, for the whole cast, that every persona folder exists
+     and every chosen clip and its transcript are downloaded — **if anything
+     is missing it stops before changing anything**;
+  2. on a character's first cast it keeps the placeholder voice:
+     `ref.wav` → `ref.placeholder.wav`, `ref.txt` → `ref.placeholder.txt`
+     (never again after that: a `ref.source` marks a cast folder);
+  3. it removes any earlier mood clips (`ref-*.wav`, `ref-*.txt`), so no clip
+     of a previous voice survives a recast;
+  4. it converts the chosen clip — reads the 32-bit float samples, scales
+     them to the loudness target within the peak limit, and resamples to
+     mono 24 kHz 16-bit with the Mac's `afconvert` — and writes `ref.wav`
+     (through a `.part` file, so the app never reads half a file), `ref.txt`
+     (the transcript) and `ref.source` (the time, the EARS credit, and which
+     clip became which file);
+  5. with `--with-moods`, it does the same for each mood of `cast.yaml`:
+     `ref-<mood>.wav` and `.txt` (unused by the app until the mood clips
+     feature is built — the follow-up "Mood clips").
+  It never touches `prompt.md`, `language.txt` or `memories.txt`, and never
+  creates a persona folder.
+
+**How to recast** — from the repository's root:
+
+1. Edit a line of `tools/voices/cast.yaml` — e.g. `Moira: p059`.
+2. Preview, nothing written:
+
+   ```bash
+   uv run python tools/voices/cast_voices.py --dry-run
+   ```
+
+3. Cast the whole cast, or only some characters:
+
+   ```bash
+   uv run python tools/voices/cast_voices.py
+   uv run python tools/voices/cast_voices.py --only Moira
+   uv run python tools/voices/cast_voices.py --only Moira,Ralph
+   ```
+
+4. With the mood clips too (for when the app uses them):
+
+   ```bash
+   uv run python tools/voices/cast_voices.py --with-moods
+   ```
+
+5. Listen: the next line the character speaks uses the new voice.
+
+**Any speaker whose clips are downloaded can be cast** — today the 20 of the
+shortlist (all 23 emotions) and the other 75 native American English
+speakers of run 5 (neutral and fear only; neutral is enough for `ref.wav`).
+Another speaker's clips come first with the experiment's `fetch_ears.py`
+(§11.1-§11.2). **To go back to the placeholder voice:** copy
+`ref.placeholder.wav` and `ref.placeholder.txt` over `ref.wav` and `ref.txt`
+by hand (the script has no switch for it).
+
+**Tested before the real cast** (14:28 CDT), on a copy of the installed
+Personas folder in the agent's scratch space: a first cast of all four (the
+placeholders kept, the format checked with `afinfo`); Moira recast to p059
+with `--with-moods` (13 mood clips written, urgent skipped); Moira recast
+back to p026 without moods (the 13 mood clips removed); the kept placeholder
+compared byte for byte with the installed original (`cmp`: identical).
+
+**Next:** the owner listens to the show with these voices and recasts at
+will; which clip gives each character's single voice — neutral, or one with
+more life — is §11.3's decision 3, now a one-line change of `voice:`.
 

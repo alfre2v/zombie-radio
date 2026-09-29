@@ -254,3 +254,79 @@ would fetch: 42.18 MB
 
 [5 requests, 0.040 MB transferred]
 ```
+
+**Run 7 — 2026-09-29, 14:05:13-14:10:53 CDT, every emotion for the owner's
+20 speakers.** The owner decoupled the download from the casting script
+(`docs/discussions/2026-09-29-voice-datasets-with-emotion.md` §11.4) and
+named the shortlist — women p106, p100, p092, p063, p062, p059, p033, p026;
+men p102, p101, p095, p088, p087, p086, p085, p057, p054, p046, p017, p007.
+Only the `sentences` clips: the unscripted `emo_*_freeform` ones have no
+transcript and are set aside (the owner: "Correct, we have no use for those
+now (maybe in the future)"). The dry run first, 14:05:13-14:05:26:
+
+```
+python3 fetch_ears.py --speakers 106,100,92,63,62,59,33,26,102,101,95,88,87,86,85,57,54,46,17,7 --types 'emo_*_sentences'
+```
+
+Full output: `raw/run7-dryrun-20-speakers.txt` — 420 files "(would
+fetch)", 40 "(already here)" (neutral and fear, from run 5), none missing;
+its last lines:
+
+```
+would fetch: 911.14 MB
+
+[81 requests, 0.344 MB transferred]
+```
+
+Then, on the owner's approval ("Fetch the files."), 14:06:43-14:10:53, exit
+0:
+
+```
+python3 fetch_ears.py --speakers 106,100,92,63,62,59,33,26,102,101,95,88,87,86,85,57,54,46,17,7 --types 'emo_*_sentences' --fetch
+```
+
+Full output: `raw/run7-fetch-20-speakers.txt` — 420 lines "CRC ok", 40
+"(already here)", no error; its last lines:
+
+```
+fetched: 911.14 MB
+page: /Users/alfredo/workspace/hackTNT_2026/zombie-radio-claude/docs/experiments/2026-09-29-ears-remote-fetch/datasets/ears/index-2026-09-29T14:06:44.html
+
+[2581 requests, 924.951 MB transferred]
+```
+
+Summarized by `python3 summarize_fetch.py raw/run7-fetch-20-speakers.txt`
+(`raw/run7-summary.txt`; the 40 files already here are not in it):
+
+```
+files with CRC ok: 420; speakers: 20
+formats (Hz, bits, channels, format): [('48000', '32', '1', '3')]
+emo_adoration_sentences: 20 files, 8.9-19.1 s, median 12.7 s
+emo_amazement_sentences: 20 files, 6.1-12.1 s, median 9.0 s
+emo_amusement_sentences: 20 files, 8.0-15.6 s, median 11.1 s
+emo_anger_sentences: 20 files, 9.0-17.2 s, median 12.7 s
+emo_confusion_sentences: 20 files, 4.5-15.7 s, median 8.1 s
+emo_contentment_sentences: 20 files, 6.9-14.0 s, median 9.2 s
+emo_cuteness_sentences: 20 files, 6.4-14.7 s, median 9.3 s
+emo_desire_sentences: 20 files, 8.4-14.8 s, median 11.1 s
+emo_disappointment_sentences: 20 files, 9.2-19.1 s, median 12.3 s
+emo_disgust_sentences: 20 files, 6.9-14.2 s, median 10.9 s
+emo_distress_sentences: 20 files, 7.3-17.5 s, median 11.3 s
+emo_embarassment_sentences: 20 files, 9.4-15.3 s, median 11.7 s
+emo_extasy_sentences: 20 files, 7.4-12.9 s, median 9.6 s
+emo_guilt_sentences: 20 files, 6.6-12.1 s, median 9.2 s
+emo_interest_sentences: 20 files, 6.8-14.6 s, median 10.0 s
+emo_pain_sentences: 20 files, 8.0-16.5 s, median 11.6 s
+emo_pride_sentences: 20 files, 9.6-17.6 s, median 14.1 s
+emo_realization_sentences: 20 files, 10.9-31.6 s, median 15.7 s
+emo_relief_sentences: 20 files, 8.6-14.6 s, median 10.7 s
+emo_sadness_sentences: 20 files, 8.3-16.6 s, median 12.8 s
+emo_serenity_sentences: 20 files, 8.2-17.8 s, median 12.5 s
+transferred beyond each file: 0.00-0.07 MB
+```
+
+Checked by listing each speaker's folder: all 20 hold 23
+`emo_*_sentences.wav` and 23 `emo_*_sentences.txt`. `du -sh
+datasets/ears`: 1.2G. The owner's review page:
+`datasets/ears/index-2026-09-29T14:06:44.html` — 20 rows, 23 columns.
+
