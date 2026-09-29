@@ -6,8 +6,11 @@ prototype · **Branch:** `alfre2v/voice-datasets`
 recorded in several emotions, as the source of the cast's reference clips;
 the owner asks and decides, the agent researches and verifies.
 **Status:** OPEN — four finalists (§6): **EARS**, **CREMA-D**,
-**JL-Corpus** and **Expresso**; nothing downloaded yet; the next step proposed is a listening
-test (§9). This document is updated as the real audio files are tried: each
+**JL-Corpus** and **Expresso**. **EARS single files can be fetched without
+the zips** — an experiment passed on 2026-09-29, with a script anyone can
+run (§11, the addendum of that day, has how to use it); the owner's
+shortlist of EARS voices is next, then the listening test (§9). This
+document is updated as the real audio files are tried: each
 finding lands as a dated addendum (§11), never as a silent rewrite.
 
 **The owner's request (verbatim, 2026-09-29):** "I think it is time to open a
@@ -380,3 +383,121 @@ speakers, Expresso on its demo page.
 ## §11. Addenda
 
 *Dated findings from trying the real audio files land here, newest last.*
+
+### §11.1 2026-09-29 — EARS: single files fetched out of the zips, without downloading them (experiment PASS)
+
+**Why.** The owner, shortlisting voices in the Hugging Face viewer, found it
+too slow; it paged through many voices the owner did not like; it could not
+line up the same file type across speakers; and it played lossy Ogg copies
+(verbatim: "I think it is time for an experiment: Let's create a new
+experiment folder in zombie-radio and write some python (or bash, whatever
+fits best) to see if we can actually fetch" — the speakers' metadata, the
+files' types, and a single file without the whole dataset).
+
+**The experiment:** `docs/experiments/2026-09-29-ears-remote-fetch/` — the
+script `fetch_ears.py` (Python 3, standard library only), the recipe and
+the runlog in its `README.md`, the criteria, predictions and verdict in its
+`findings.md`, the raw outputs in `raw/`.
+
+**The verdict: PASS** — the owner (verbatim): "This is a PASS indeed. Good
+job!" What it established:
+
+- **The speakers** — `speaker_statistics.json` in the EARS repository gives
+  each of the 107 speakers a gender (60 female, 43 male, 1 non-binary, 3
+  "prefer not to answer" — the owner: "we will not use them. We just need 4
+  that we like."), an age bracket (18-25 … 66-75), a native language (mostly
+  American English: 58 women and 37 men), an ethnicity, a height and a
+  weight.
+- **The files** — each speaker's zip holds 161 WAV files, named by type,
+  stored uncompressed. The emotional ones are `emo_<emotion>_sentences` (the
+  same three sentences for every speaker, read in that emotion) and
+  `emo_<emotion>_freeform` (an image described in that emotion, unscripted),
+  for 22 emotions plus neutral. **Two names are spelled unlike the paper:**
+  `embarassment` and `extasy`. The rest: six long unscripted talks
+  (`freeform_speech_01`…`06`, about 35 MB each), interjections, nonverbal
+  sounds (crying, screaming, yelling, laughter), the "rainbow" passage and
+  24 sentence files in seven reading styles (fast, highpitch, loud,
+  lowpitch, regular, slow, whisper), vegetative sounds, a song.
+- **A single file, fetched** — for `p001`, `emo_neutral_sentences` (9.3 s)
+  and `emo_fear_sentences` (11.4 s) arrived byte for byte as published (the
+  zip's CRC-32 checked), **48 kHz, 32-bit float, mono**, each at its own size
+  plus 0.03-0.05 MB; reading a 592 MB zip's table of contents costs about 5
+  requests and 40 KB. An `emo_*_sentences` file is 1.3-2.9 MB, about 7-15 s
+  — one continuous take, the length the voice engine wants (§2).
+
+**How it works.** The EARS files are GitHub release assets, one zip per
+speaker; their server answers HTTP range requests (a request for bytes
+*a*-*b* of a file returns only those bytes). A zip keeps its table of
+contents at its end, so the script opens each remote zip as a file whose
+reads become range requests, lets Python's `zipfile` read the table of
+contents, and copies out only the files asked for.
+
+**How to use the script** — from the experiment folder:
+
+```bash
+cd docs/experiments/2026-09-29-ears-remote-fetch
+```
+
+1. **Who the speakers are** — every speaker with gender, age bracket, native
+   language and ethnicity, and the counts:
+
+   ```bash
+   python3 fetch_ears.py --speakers-info
+   ```
+
+   Filters narrow any command: `--gender female` or `--gender male`;
+   `--age 36-45` (a bracket exactly as in the metadata); `--native english`
+   (any part of the native language, e.g. `"american english"`);
+   `--speakers 1,4,10-15` (speaker numbers or ranges; without it, every
+   speaker that passes the filters).
+
+2. **What files a speaker has** — every file of one speaker, with its size
+   and the emotion read from its name:
+
+   ```bash
+   python3 fetch_ears.py --list --speakers 1
+   ```
+
+   With several speakers (`--speakers 1-5`), it compares their sets of files
+   instead and names any file missing for some of them.
+
+3. **What a fetch would bring** — a dry run: each file and its size, and the
+   total, nothing downloaded:
+
+   ```bash
+   python3 fetch_ears.py --gender female --native "american english" --types emo_neutral_sentences,emo_fear_sentences
+   ```
+
+   `--types` takes file names without `.wav`, comma-separated, exactly as
+   `--list` prints them.
+
+4. **The fetch** — the same command with `--fetch`:
+
+   ```bash
+   python3 fetch_ears.py --types emo_neutral_sentences,emo_fear_sentences --speakers 1 --fetch
+   ```
+
+   Files land in `datasets/ears/<speaker>/<type>.wav`, with the transcript
+   beside each in `<type>.txt` when the type has one (the `sentences` files
+   do; the `freeform` ones do not). Each file is reported with its size, "CRC
+   ok", the bytes transferred, and its format and length.
+
+5. **Listen and compare** — every fetch rewrites
+   `datasets/ears/index.html`: every file fetched so far, one row per speaker
+   (with the speaker's metadata), one column per type. Open it in Chrome,
+   which plays 32-bit float WAV.
+
+Every run ends with its number of requests and bytes transferred. A dry run
+reads only tables of contents — under 1 MB even across 58 speakers.
+
+**Where the audio goes, and why it stays there.** `datasets/` inside the
+experiment folder, which the folder's own `.gitignore` excludes: EARS is CC
+BY-NC 4.0 and this repository is public, and voice clips never enter it
+(the follow-up "Voice-sample hygiene"). `--out <folder>` puts them anywhere
+else. The reference clips the show uses are later converted to mono 24 kHz
+16-bit and copied to `~/TalkWithZombies-client/Personas/<Name>/` (§2).
+
+**Next.** The owner's shortlist: the two emotions above, neutral and fear,
+for the native American English speakers — dry runs measured 250.09 MB for
+the 58 women and 154.64 MB for the 37 men (run 4); the fetch waits for the
+owner's word on those exact sizes.

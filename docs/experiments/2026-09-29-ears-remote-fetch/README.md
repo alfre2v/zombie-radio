@@ -64,3 +64,114 @@ byte for byte what EARS published.
 ## Runlog
 
 *Every command actually run, in order, with its output.*
+
+**Run 1 — 2026-09-29, 10:42:58 CDT, the speakers (a).** After the freeze
+(`2359962`), on the owner's order ("commit, then run the first two
+commands"):
+
+```
+python3 fetch_ears.py --speakers-info
+```
+
+Full output: `raw/run1-speakers-info.txt` (one line per speaker: id,
+gender, age bracket, native language, ethnicity). Its last lines:
+
+```
+107 speakers: 60 female, 43 male, 1 non-binary / third gender, 3 prefer not to answer
+
+[1 requests, 0.024 MB transferred]
+```
+
+Seen in the file: ages come as brackets (18-25 … 66-75); native languages
+are mostly American English, with British English (p008), German (p001),
+Mandarin (p005), Ukrainian (p013), Spanish (p042), Dari (p067) and Russian
+(p107); two speakers answered "prefer not to answer" to everything (p072,
+p103).
+
+**Run 2 — 2026-09-29, 10:43:04 CDT, one speaker's files (b).**
+
+```
+python3 fetch_ears.py --list --speakers 1
+```
+
+Full output: `raw/run2-list-p001.txt`. Its first and last lines:
+
+```
+p001: 161 WAV files, 592 MB
+...
+[5 requests, 0.040 MB transferred]
+```
+
+Seen in the file: 161 types for `p001` — 46 emotional files,
+`emo_<emotion>_sentences` and `emo_<emotion>_freeform` for 22 emotions plus
+neutral, the `sentences` files 1.30-2.89 MB; six `freeform_speech_01`…`06`
+of 34.6-35.8 MB; interjections (agreement, anger, congratulations, filler,
+greetings); nonverbal sounds (cheering, crying, laughter, screaming,
+yelling); `rainbow_01`…`08` and `sentences_01`…`24` read in the reading
+styles (fast, highpitch, loud, lowpitch, regular, slow, whisper); vegetative
+sounds (coughing, eating, sneezing, throat, yawning); one song
+(`melodic_happy_birthday`). No file is marked "(compressed)": the zip stores
+them uncompressed. Two emotion names are spelled in the files unlike in the
+paper: `embarassment` and `extasy`. The table of contents of a 592 MB zip
+was read with 5 requests and 40 KB.
+
+**Run 3 — 2026-09-29, 10:45:18 CDT, two files fetched (c).** On the owner's
+approval ("yes, fetch the two files for p001"; 3.99 MB, CC BY-NC 4.0):
+
+```
+python3 fetch_ears.py --types emo_neutral_sentences,emo_fear_sentences --speakers 1 --fetch
+```
+
+Full output (`raw/run3-fetch-p001.txt`):
+
+```
+p001/emo_neutral_sentences.wav  1.79 MB, CRC ok, 1.84 MB transferred  [48000 Hz, 32-bit, 1 ch, format 3, 9.3 s]
+p001/emo_fear_sentences.wav  2.20 MB, CRC ok, 2.23 MB transferred  [48000 Hz, 32-bit, 1 ch, format 3, 11.4 s]
+
+fetched: 3.99 MB
+index: /Users/alfredo/workspace/hackTNT_2026/zombie-radio-claude/docs/experiments/2026-09-29-ears-remote-fetch/datasets/ears/index.html
+
+[17 requests, 4.129 MB transferred]
+```
+
+Format 3 is IEEE float: 48 kHz, 32-bit float, mono. On disk (`ls -l`):
+`emo_neutral_sentences.wav` 1,793,994 bytes, `emo_fear_sentences.wav`
+2,197,966 bytes, with their transcripts beside them:
+`emo_neutral_sentences.txt` — "That wall in the living room is white. There
+is one more piece of bread in the pantry. The store closes at 8pm tonight.";
+`emo_fear_sentences.txt` — "Did you hear that sound? I'm afraid someone or
+something is outside. Oh my gosh, what is that? What do you think is going to
+happen if we don't run?". `git status --ignored` lists `datasets/` as ignored
+(`!!`).
+
+**The verdict — 2026-09-29, the owner (verbatim):** "This is a PASS indeed.
+Good job!" (`findings.md`).
+
+**Run 4 — 2026-09-29, 10:55:56-10:56:55 CDT, dry runs for the owner's
+shortlist.** The owner asked for the fetch the agent had proposed ("Ok,
+let's run the sampling command you propose for me to create my shortlist");
+the dry runs came first:
+
+```
+python3 fetch_ears.py --gender female --native "american english" --types emo_neutral_sentences,emo_fear_sentences
+python3 fetch_ears.py --gender male --native "american english" --types emo_neutral_sentences,emo_fear_sentences
+```
+
+Full outputs: `raw/run4-dryrun-female.txt`, `raw/run4-dryrun-male.txt`.
+Their last lines:
+
+```
+would fetch: 250.09 MB
+[233 requests, 0.950 MB transferred]
+
+would fetch: 154.64 MB
+[149 requests, 0.615 MB transferred]
+```
+
+116 files for 58 women and 74 for 37 men, none missing — both types exist in
+every one of those 95 zips. The agent had told the owner about 130 MB and
+140 MB, having miscounted the women (32 instead of 58); the fetch waits for
+the owner's word on the exact sizes. Speakers per age bracket, counted in
+`raw/run1-speakers-info.txt`: women 18-25: 13, 26-35: 12, 36-45: 7, 46-55:
+14, 56-65: 10, 66-75: 2; men 18-25: 12, 26-35: 9, 36-45: 8, 46-55: 4,
+56-65: 4.
