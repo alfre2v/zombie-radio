@@ -562,8 +562,8 @@ What the first release still needs, or has not settled:
 - **Who a returning caller is** — code telling the model which
   earlier caller a voice is, by name.
 - **The canned episode** and the demo runbook.
-- **Polish** — dead-air static while a round is generated, the 1930s
-  radio look, the next round prefetched, episodes.
+- **Polish** — dead-air static while a round is generated, the next
+  round prefetched, episodes.
 - **Operations** — a tunnel that reconnects by itself, and a fallback
   for the venue's network.
 

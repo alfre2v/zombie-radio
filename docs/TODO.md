@@ -29,111 +29,64 @@ this arc".
 
 ## Now — where the arc stands
 
-*Updated 2026-09-28. Read this section first; everything below it is
-detail.*
+*Updated 2026-09-28, night. Read this section first; everything below
+it is detail.*
 
-- **Task 6b, the show engine, is done (2026-09-28; the fork's
-  `tz-0.2`)** — it was the critical path, built in the
-  fork TalkWithZombies under a timebox — clock started 2026-09-23
-  14:46 CDT · checkpoint passed 2026-09-24 · **end moved to Monday
-  2026-09-28** (the owner, 2026-09-25; it was 2026-09-26 14:46). Its
-  design is fully decided
-  ([discussion 2026-09-23] show-engine-design); its ordered checklist
-  is the next section but one.
-- **Slice 1 is done and merged** (2026-09-24; ten real rounds ran on
-  the box through the app). **Slice 2 is built and the checkpoint
-  passed** (2026-09-24 ~18:57, about eight hours ahead of its clock:
-  6 of 6 criteria; **verdict: continue**). All six steps are done
-  and proven on the box: 2.1 director v1 (`ce8bd71`), 2.1b the
-  pacing knobs (`2f76b34`) and tone words that do not repeat
-  (`35f34e0`), 2.2 the trim (`57a08c9`, about 1.5 s once per trim),
-  2.3 the debug switch (`129d3de`), 2.4 the listener's turn on the
-  server (`d6ab1b9`), 2.5 the driver extended (`86dc1df`); both
-  repositories' pull requests are merged (alfre2v/TalkWithZombies#3,
-  this repository's #11, 2026-09-25). **Slice 3 is under way** on the
-  fork's `alfre2v/show-slice-3-browser` and this repository's
-  `alfre2v/show-slice-3`, to the plan of [discussion 2026-09-25]
-  show-slice-3-browser-plan (five steps; the show's frontend in its
-  own files, upstream's untouched): **3.1, the page with text only**
-  (`8bca58b`), **and 3.2, the voice** (`a2d942e`), **are done** and
-  proven on the box — the owner, by ear: "We can call this a
-  success". **3.3, the listener's turn** (`57dce7f`), **is done** —
-  checked live with a fake microphone; the real button is checked in
-  3.4. **The events A/B test is decided** (2026-09-25, night): events
-  are now worded for the broadcast — the first to speak tells the
-  listeners on air what is happening (the fork's `show.event_report`,
-  `c55d25b`, on by default; the owner: "B wins, flip the default and record it.";
-  the receipts in the follow-up "Events the listener cannot hear").
-  **3.4, the exit criterion by ear, is met** (the owner: "It does
-  what we planed. It is a success."), and **3.4b, the listener's words
-  in the captions with Whisper's confidence per word** (`500debe`),
-  **is done**. **The listener's exchange became step 3.4c**
-  (2026-09-26; the owner: "Let's make it 3.4c, but we need a complete
-  discussion before implementation."): shaped in [discussion
-  2026-09-26] show-director-modes — its scope and details ruled one
-  at a time; **the build is under way** in five sub-steps: 3.4c.1,
-  the story's data (the fork's `b988672`), 3.4c.2, the grammar and
-  the settings (`5c0c2a3`), 3.4c.3, the director and the record
-  (`4d0d7dd`), and 3.4c.4, the page and the driver (`90ec1e8`), are
-  done; 3.4c.5, the four checks, is under way — the driver test run
-  and the wording tuned from it (`e261b5b`); B versus A ruled (B for
-  3.4c; [experiment 2026-09-26] listener-memory-b-vs-a); the fake
-  microphone passed, and the radio beats were reworded (`3c4154c`);
-  the test by ear passed (2026-09-27), and its findings became step
-  3.4c.6, fixed lines (`07669dc`), built and checked on the box. Then
-  3.5, the close. **The polish, ruled 2026-09-28:** the dead-air
-  static and the 1930s radio look with the gauge pulled forward, right
-  after Task 4's reference voices (the owner, once Task 4 was split:
-  "After the reference voices"); prefetch and episodes left as post-timebox follow-ups,
-  behind Task 4 and Task 7. **The radio look was built the same
-  evening**, in parallel with the owner's search for the reference
-  voices (the owner: "You know what: we will work in parallel."): a
-  chooser at `/show`, two looks (`old-radio` on a photograph of a
-  1950 set, `amateur-radio-transmitter`) with a live gauge, the plain
-  page untouched (alfre2v/TalkWithZombies#5, open; details under
-  "Polish" below).
-  **Today, 2026-09-28, the timebox's last day** — the owner: "I want to
-  have a functional story narration before we close the time box.":
-  3.4c.7 and 3.4c.8, a check on the box and by ear, the bookkeeping,
-  then 3.5. 3.4c.7 is done (`4d051ba`), and with it the owner's sweep
-  of every prompt the model receives ([discussion 2026-09-28]
-  prompt-sweep: the event, the call, the Breakdown, the system prompt,
-  the sign-on and the orientation repeat reviewed; the fixed lines
-  audited; the owner's ruling, 13:14: invented details are a feature —
-  the model's improvisation is what the project probes). **Step 3.4c is
-  done** (2026-09-28): the owner's listen (run `2026-09-28T13-43-28`) —
-  "Wow, big improvement in story coherence… All in all I am satisfied
-  with where we are."; 3.4c.8, the repeat guard, dropped (no repeats
-  heard or measured). **3.5, the close, done the same day:** both
-  pull requests merged (alfre2v/TalkWithZombies#4, `ca37199`;
-  this repository's #12, `2841065`), the fork tagged `tz-0.2`, the
-  installer pinned to it and re-proven by the owner — **the timebox
-  is closed; slice 3 and Task 6b are done.** How
-  to drive the show yourself: the fork's
-  `docs/runbooks/show-driver.md` (no browser) and
-  `docs/runbooks/show-page.md` (the `/show` page).
-- **The order after the timebox:** Task 4's reference voices (the
-  owner's), then right after them the polish's two items pulled forward
-  (the dead-air static, the 1930s radio look with the gauge; the owner,
-  2026-09-28 — the radio look already built, in parallel; the static
-  still open); Task 4's character bibles deferred by the owner (5a
-  needs them) → Tasks 5a / 5b / 5c in the new
-  engine (5a needs the owner's character bibles, 5b the voice
-  samples) → Task 7, the canned episode (a MUST for the talk) →
-  Task 8, the close ritual. Hard deadline 2026-10-08; the talk at
-  the Austin Python Meetup is in October 2026. **Among the show
-  fixes before the talk:** names-only A — code states who the
-  voice is (the owner's ruling, 2026-09-26; shaped and estimated in
-  the follow-up "A listener memory keyed by identity").
-- **In parallel, the owner's long pole — Task 4:** the character
-  bibles (they land as the cast entries of the fork's
-  `stories/lab-outbreak/cast_sheet.md`) and the voice samples. No
-  dependency on the build; any day, box or no box.
-- **The box** (the A6000) **is up**: on 2026-09-24 a first wake
-  failed (Hyperstack had no A6000 in stock), a later one succeeded
-  on the same address, and the llama.cpp and Whisper images are now
-  pinned (owner action queue, item 5). Slice 3 needs it for its exit
-  criterion by ear (3.4) and the installer's re-proof (3.5).
+- **Task 6, the fork and the show engine, is done (2026-09-28).** The
+  engine (6b) was built in the fork TalkWithZombies under a timebox —
+  clock started 2026-09-23 14:46 CDT · checkpoint passed 2026-09-24
+  ~18:57 (6 of 6 criteria; verdict: continue) · closed Monday
+  2026-09-28 (the end the owner moved there on 2026-09-25; it was
+  2026-09-26 14:46). Three slices: the skeleton
+  (alfre2v/TalkWithZombies#2), the rules (#3), the browser (#4,
+  `ca37199`) — the page with text and voices, the listener's turn,
+  events worded for the broadcast (the owner: "B wins, flip the default
+  and record it."), the exit criterion by ear (the owner: "It does what
+  we planed. It is a success."), the listener's exchange (step 3.4c:
+  Broadcast and Contact, [discussion 2026-09-26]
+  show-director-modes), fixed lines, and the owner's sweep of every
+  prompt the model receives ([discussion 2026-09-28] prompt-sweep; the
+  owner's ruling, 13:14: invented details are a feature — the model's
+  improvisation is what the project probes). The owner's last listen
+  (run `2026-09-28T13-43-28`): "Wow, big improvement in story
+  coherence… All in all I am satisfied with where we are." Released as
+  the fork's `tz-0.2`; the installer pinned to it and re-proven by the
+  owner ("All four checks pass, installed at tz-0.2."). The whole
+  record, step by step, is under "Done in this arc", Task 6; the
+  design, [discussion 2026-09-23] show-engine-design.
+- **The show's looks, the same night — the fork's `tz-0.3`:** a
+  chooser at `/show` (the root `/` opens it), two looks — `old-radio`
+  on a photograph of a 1950 Philips Sirius, and
+  `amateur-radio-transmitter` — with a live gauge, the plain page
+  untouched, TalkWithMe's chat UI moved to `/talkwithme`
+  (alfre2v/TalkWithZombies#5, merged as `0ec33c1`). The installer's pin
+  to `tz-0.3` is this repository's #15, open; the owner's re-proof of
+  the install is pending. Details under "Open tasks", Polish. How to
+  drive the show: the fork's `docs/runbooks/show-page.md` (the page;
+  "Choosing a look") and `docs/runbooks/show-driver.md` (no browser).
+- **Next, in order:** Task 4's reference voices (the owner's) → the
+  dead-air static (the polish's other item; the radio look is built)
+  → Tasks 5a / 5b / 5c in the new engine (5a needs the character
+  bibles, 5b the voices) → Task 7, the canned episode (a MUST for the
+  talk) → Task 8, the close ritual. Hard deadline 2026-10-08; the talk
+  at the Austin Python Meetup is in October 2026. **Among the show
+  fixes before the talk:** names-only A — code states who the voice
+  is (the owner's ruling, 2026-09-26; shaped and estimated in the
+  follow-up "A listener memory keyed by identity"). Prefetch and
+  episodes wait as post-timebox follow-ups, behind Task 4 and Task 7.
+- **Task 4, split in two by the owner (2026-09-28):** the reference
+  voices first — one clip per character with its exact transcript, in
+  `~/TalkWithZombies-client/Personas/<Name>/` (owner action queue,
+  item 1); the character bibles deferred ("I want to pivot to audio,
+  which is the weak spot now.").
+- **Follow-ups written 2026-09-28**, from the owner's listen of the
+  installed `tz-0.2`: the trim's thresholds in settings; a context
+  budget near the full 16k; a 32k context; a long silence between two
+  lines of one round, not explained. Also that day: mood clips (several
+  reference clips per character); the three dropped page designs.
+- **The box** (the A6000 on Hyperstack) is woken per box session
+  (owner action queue, item 5); the choice left for after the timebox
+  — keep hibernating it or destroy it — is now due.
 - **At a session's end:** a fresh-session handoff replaces any
   mid-session one, and a handoff is deleted only with the owner's
   permission. The latest handoff stays until the next compaction, as
@@ -156,7 +109,13 @@ decision; the re-orientation surface when revisiting any topic.*
 *Actions only the owner can take. Items get DELETED when done;
 the agent keeps this current. These carry across arcs.*
 
-1. **Gather 4 reference voice samples** — EXECUTING SOON.
+1. **Gather 4 reference voice samples** — NEXT (Task 4's first part,
+   the owner, 2026-09-28). Where they go: each character's clip as
+   `ref.wav`, with its exact transcript in `ref.txt`, in
+   `~/TalkWithZombies-client/Personas/<Name>/` — outside both
+   repositories (the fork gitignores `Personas/`; the installer never
+   overwrites an existing persona folder), replacing the `say`-made
+   placeholders; mono 24 kHz 16-bit is the safest format.
    Famous-actor movie clips likely → **NEVER committed to the
    repo** (gitignore before the first file; hygiene entry +
    voice-isolation-tool search in follow-ups.md). Unblocks
@@ -167,8 +126,10 @@ the agent keeps this current. These carry across arcs.*
    LuxTTS needs no transcript, ≥3 s, ~10 s clones best). Whisper on
    the box can draft the transcripts. A second clip per actor in
    another emotional register is optional until stage directions
-   are wired to clip selection.
-2. **Seed the character bibles** — EXECUTING SOON. Names,
+   are wired to clip selection — its shape is the follow-up "Mood
+   clips" (`ref-<mood>.wav` next to `ref.wav`).
+2. **Seed the character bibles** — DEFERRED by the owner
+   (2026-09-28, Task 4's split: the voices first). Names,
    personalities, quirks, voice descriptions; rough is fine;
    model-neutral (guardrail 2). They become the sections of the
    show's cast sheet ([spec §5]) — concretely, each character's
@@ -183,7 +144,9 @@ the agent keeps this current. These carry across arcs.*
    Pre-decided: the **"canned episode" emergency mode is a
    MUST** (Task 7). Candidate on the radar: a tunnel that reconnects by
    itself (follow-ups, SSH keepalives — low priority).
-5. **The Hyperstack VM — hibernated, woken per box session.** Woken
+5. **The Hyperstack VM — hibernated, woken per box session.**
+   **Due now:** the timebox closed on 2026-09-28, so the choice it
+   waited for — keep hibernating the box or destroy it — is open. Woken
    from hibernation 2026-09-23 on the same IP; hibernation is a full
    shutdown with the disk kept, so the box boots cold and every
    service comes back by itself (the TTS warms up on first use).
@@ -217,9 +180,355 @@ the agent keeps this current. These carry across arcs.*
    llama.cpp build `b11096-c550d2f60` and the pinned Whisper digest;
    a second run changed nothing (`changed=0`).
 
-## The critical path — Task 6b
+## Open tasks
 
-- [ ] **Task 6 — The fork and the show engine: TalkWithZombies
+- [ ] **Task 4 — Real cast replaces placeholders.** **Split in two
+  (the owner, 2026-09-28):** (1) **the character bibles** — not now:
+  "today has been all about improving the prompt, and right now the
+  narration holds together more or less, ok. I want to pivot to audio,
+  which is the weak spot now."; (2) **the reference voices** — one clip
+  per character, the owner's, next: each character's clip as
+  `Personas/<Name>/ref.wav` with its exact transcript in `ref.txt`, in
+  `~/TalkWithZombies-client/Personas/` (the dev clone reads the same
+  folder through its `personas_directory`); `Personas/` is gitignored in
+  the fork and the installer skips an existing persona folder. Several
+  clips per character by mood: the follow-up "Mood clips". The detail
+  as first written: character
+  bibles → the sections of TalkWithZombies' cast sheet ([spec
+  §5]; where they live in the fork — decided 2026-09-23: the
+  cast entries of `stories/<story>/cast_sheet.md`, not the persona
+  files — [discussion 2026-09-23] show-engine-design §4), keeping `/no_think`
+  while on Nemotron (the chat template needs it even under the
+  grammar — [spec §4]); no heavy prompt tuning yet — guardrail 2 ·
+  voice samples → isolation tool first (follow-ups) → gitignore →
+  replace the `say`-generated ref.wavs in the persona
+  directories.
+- [ ] **Polish — two items, right after Task 4's reference voices**
+  (the owner, once Task 4 was split: "After the reference voices"; ruled
+  2026-09-28, at the timebox's close; the owner: "I want to pull forward items: "1. Dead-air static while a round is generated" and "2. The 1930s radio look, with your gauge" , right after Task 4, and leave the rest as post-timebox follow-ups behind Task 4 and Task 7."):
+  - [ ] **Dead-air static while a round is generated** — a soft,
+    looping radio hiss through a second AudioContext source,
+    generated in the browser, from the round's request until its
+    first line plays, off while the page listens (so Whisper does
+    not hear it). It covers the 3.7-4.9 s between rounds (measured
+    2026-09-25), a trim's pause (about 5 s, measured 2026-09-28)
+    and stalls. About 1-2 hours (estimate). Open since the looks
+    (2026-09-28): the looks only, or the plain page too — the plain
+    page changes only with the owner's word; and the looks' gauge
+    (`static/show/gauge.js`) taps every sound the page's audio
+    context plays, so a hiss there would move the magic eye and the
+    meters unless it is kept apart.
+  - [x] **The 1930s radio look, with the owner's gauge** (the
+    fork's `alfre2v/radio-look`, `8624662`..`6800c00`;
+    alfre2v/TalkWithZombies#5, merged as `0ec33c1`; tag `tz-0.3`)
+    — as planned: the
+    `/show` page restyled as an old radio set (cabinet, lit dial,
+    period type, the captions as a panel) and a "magic eye" or a
+    VU needle driven by Web Audio's analyser — the microphone
+    while the button is held, the actors' audio while it plays
+    (SED §6.7). The gauge about an hour in a simple form; the look
+    open-ended (estimate).
+    **Built 2026-09-28, the evening, ahead of the reference voices**
+    — the owner: "You know what: we will work in parallel. While I
+    work in finding the audios for the real voices, you will start
+    working on the polish: "The 1930s radio look, with the owner's
+    gauge". I think this one is isolated to the frontend, so it
+    carries little risk of impacting the app functionality already
+    working, only risk is that is looks ugly, then we discard it."
+    How it went, in order:
+    1. **Interchangeable looks** (the owner: "We do not need to
+       implement only one look, you can generate 5 proposals, show
+       me screenshots and then we decide which one to build.") —
+       each design in its own folder, chosen with
+       `/show?design=<name>`. The owner's two (`old-radio`,
+       `amateur-radio-transmitter`) and three of the agent's
+       (`broadcast-studio`, `lab-terminal`, `field-radio`) became
+       mock-ups (`8624662`), filled by a recorded stretch
+       (`?mock=1`: rounds 63-66 of run `2026-09-28T13-43-28`).
+    2. **The plain page untouched** — the owner's condition: "Do
+       not change the part that goes into today's functional show,
+       I want to have that boring view as a 100% functional view I
+       can always work with." `templates/show.html` and every
+       existing file of `static/show/` are unchanged; a design
+       gets the same elements with the same ids and works on them
+       from outside; tests pin both.
+    3. **A real photograph for the old radio** — two rounds of
+       drawn textures were rejected ("This is even worse. Can you
+       not get an actual photo of a real radio and use it as a
+       background or something instead of producing this more and
+       more cartoonish textures?"); 1930s photos on Wikimedia
+       Commons were too small, so the set is a 1950 Philips Sirius
+       BD 400 A (by "Bin im Garten", CC BY-SA 3.0; credited in the
+       design's `CREDITS.md` and on the page) (`077f824`).
+    4. **Two built, three dropped** (the owner: "Ok, let's not get
+       too carried away. I think one design with real photos is
+       enough. I actually want to keep your
+       `amateur-radio-transmitter` design. [...] Let's build these
+       2.") — the gauge (`static/show/gauge.js`: the voice's level,
+       or the microphone's while the button is held) drives the
+       old radio's magic eye and the transmitter's oscilloscope
+       trace and meters (`23472e5`); the old radio's keys moved to
+       its side panels, to the owner's placing (`0e0e27d`); the
+       transmitter's contents cleared its bevelled edge
+       (`6800c00`). The owner: "Very well done on the
+       amateur-radio-transmitter. Incredible." The three dropped
+       mock-ups stay in the branch's history (the follow-up "The
+       three dropped page designs").
+    5. **The chooser** (the owner: "when we open the show page
+       without any arguments, instead of directly showing the old
+       show page, we are given 3 screenshots to click") — `/show`
+       now shows a card per look with a live miniature, the plain
+       page last; `/show?design=plain` is the plain page. The root
+       `/` opens the chooser, and TalkWithMe's chat UI moved to
+       `/talkwithme`, linked from the chooser as "Or visit the old
+       TalkWithMe interface that this project is built upon" (the
+       owner's words) (`de91f49`).
+    Checked on the dev copy at `127.0.0.1:8010` by screenshots and
+    by the owner in the browser; the fork's suite 1129 passed and
+    the page's Node tests (a new `tests/test_show_gauge.js`, 8).
+    Released the same evening: PR #5 merged (`0ec33c1`), the tests
+    green on `master` (1129 passed; Node 17 / 91 / 35 / 8), the fork
+    tagged `tz-0.3` (annotated, on `0ec33c1`, pushed on the owner's
+    order: "Let's get the tz-0.3 tag and the installer pointed at
+    it."), the installer's `client_version` → `"tz-0.3"`; the
+    owner's re-proof of the install is pending. How to use it: the fork's `docs/runbooks/show-page.md`,
+    "Choosing a look".
+  - **Moved to follow-ups, post-timebox, behind Task 4 and Task 7:**
+    prefetch round N+1 (the follow-up "Prefetch the next round");
+    episodes (the follow-up "Episodes — a story arc, with a recap
+    between episodes").
+
+- [ ] **Task 5 — In-prototype experiments (deliverable D3;
+  protocol skeleton per guardrail 1: question, timebox,
+  pre-registered pick criteria, runlog).**
+  - [ ] **5a — LLM audition** ([spec §9]): the ranked five via
+    one `-hf` flag each; identical scenario; scored on BOTH
+    narrative-health axes; name-memory retest at the raised
+    window. Picks the working default. Needs Task 4 bibles.
+    **Runs in the fork's engine, after the timebox.** Added
+    2026-09-23: does each candidate write the screenplay format on
+    its own (if not, the grammar steers — ~10 % per token and style
+    drift)? The gate's "prose with and without the grammar" item is
+    answered for Nemotron by identity and re-checked for any other
+    finalist; the bounded-scratchpad cell rides along
+    (follow-ups).
+  - [ ] **5b — TTS comparison + VRAM budget** ([spec §9]):
+    engines via the parametrized role; **LuxTTS's ~1 GB claim is
+    the first check**; picks two engines + Whisper size;
+    measures the two-engine stack vs 24 GB target / 16 GB
+    aspiration. Needs Task 4 samples. Per-engine test items from
+    the field: ultra-short inputs (the "1." echo) and typographic
+    punctuation (`’`/`—` dropped the pause before "Over." on Faster
+    Qwen3-TTS, 2026-09-22 — the parser normalizes anyway).
+  - [ ] **5c — Narrative-health probe battery**
+    ([discussion 2026-09-16] taxonomy §5): the zero-code,
+    owner-run probes — `[Director]:` prefix (C6) · named
+    addressee (E2) · in-fiction phrasing (C8) · long-form escape
+    hatch (B4) · fixed responder (E1) — one variable flipped per
+    run against the same two-round protocol. Protocol-lite (a
+    dated runlog section, no full experiment folder). Does NOT
+    need the real cast. **Re-scoped 2026-09-23 to the fork's
+    engine:** the battery was written against TalkWithMe's
+    per-persona structure; under [ADR-0003] two probes are moot by
+    construction (the `[Director]:` prefix — the director now IS
+    the user turn; the fixed responder — the director picks the
+    speakers), and the others (named addressee, in-fiction
+    phrasing, long-form escape hatch) become director settings to
+    try. Runs after Task 6b, alongside 5a.
+- [ ] **Task 7 — The canned episode (owner MUST) + demo-day
+  protocol runbook.** Recorded from the working prototype; the
+  runbook promotion deferred from the last arc lands here. The
+  seed makes retakes reproducible: on one server slot, the same
+  request and seed gave the same words 80 minutes apart
+  (2026-09-22) — record with the settings it will be replayed
+  with.
+- [ ] **Task 8 — Close ritual in the closing PR.** Features
+  Shipped entry · task_history migration · TODO reset ·
+  staleness sweep (CLAUDE.md included) · spec check (it describes
+  the product as built — since 2026-09-28 a linear description, no
+  longer a ledger of as-built entries).
+
+## Done in this arc
+
+*Kept whole — each block moved here unchanged — for the close
+ritual's migration to `task_history.md`.*
+
+- [x] **Task 1 — Deployment machinery v1 (deliverable D1).**
+  DONE (2026-09-18, ~1.5 days of the 3-day timebox): all four
+  roles written; **proven live on a fresh A6000/R570 box** — full
+  stack from zero, one command, idempotent (changed=0); potholes
+  fixed in-role and journaled ([discussion 2026-09-18] arc-plan);
+  NEVER_COMMIT tripwire armed. **D2 acceptance MET the same day**
+  (4 distinct voices + mic loop on the deployed stack; 58 ms
+  CANADA-1 RTT, "almost natural" pauses). Remaining to close:
+  - [x] Reboot test PASSED (2026-09-18): full unattended
+    auto-rise in under a minute; client reconnected on a fresh
+    tunnel alone.
+  - [x] `runbooks/service-restart-sequence.md` rewritten around
+    the playbook (ruling-2 executed, 2026-09-18).
+  - [x] `deploy/ansible/README.md` written (2026-09-18).
+  - [x] Owner call RESOLVED (2026-09-18): destroying soon —
+    boxes are disposable now; rebuild is a proven ~15-min
+    command. (When destroyed: restore the hosts.yml sentinel —
+    the working tree goes clean by itself.)
+- [x] **Task 2 — Laptop client wiring + smoke gate.** DONE
+  2026-09-18: tunnel to the new box, `make check` three-ok,
+  TalkWithMe smoke passed, saved server config carried over
+  unchanged (same localhost ports as the experiment).
+- [x] **Task 3 — Cheap config wins, BEFORE experimenting.** DONE
+  (2026-09-18):
+  - [x] `max_turns_for_context` raised 6→50 (owner, 2026-09-18)
+    — and the C9 retest PASSED with it: keyword recall works;
+    coherence otherwise unchanged (see taxonomy evidence ledger).
+  - [x] Fresh rooms, Global System Prompt cleared — standing
+    practice since lab3.
+  - [x] Sampler params read (taxonomy D1, source audit — no box
+    needed): persona requests send ONLY max_tokens (live: 200, UI-editable) +
+    temperature (live: 0.8); everything else is llama-server
+    defaults; router uses temp 0.1. Residual RESOLVED
+    (2026-09-19, /props on the R550 box): `repeat_penalty: 1.0`
+    = off — the penalty-vs-"Over." worry is moot without a fork
+    ([discussion 2026-09-18] arc-plan journal has the full
+    defaults).
+- **Task 6, the parts already done** ([ADR-0002], [ADR-0003]).
+  *How it got here, in five steps:*
+  - **2026-09-18 — the trigger fired:** labels were back in the
+    show's output and SPOKEN (no Global System Prompt per lab3), so
+    the first patch was required and the fork moment arrived. First
+    disposition: fork thin, patch minimally (the `[Name]:`
+    sanitizer + the max-chars accumulator), offer both upstream
+    ([discussion 2026-09-18] arc-plan, Q1).
+  - **2026-09-21 — the disposition revised** after the
+    reconnaissance: no upstream-compatibility pretence — the clone
+    becomes a NEW app, **TalkWithZombies**, a real GitHub fork of
+    scorbo2/TalkWithMe at tag 7.1 with provenance and the MIT
+    attribution kept and labeled ([ADR-0002]). Contribution
+    candidates re-ranked: the deployment machinery (site.yml + the
+    Mac client installer) first, the accumulator second, the
+    sanitizer out; outreach deferred past the deadline
+    ([discussion 2026-09-19] upstream-contribution-strategy
+    addendum; [discussion 2026-09-21] task6-reconnaissance-brief
+    §1–§2).
+  - **2026-09-21 — the engine decided** ([ADR-0003]): one shared
+    script, a director in code, a screenplay grammar, the browser
+    as the clock. The sanitizer became moot by construction (no
+    `[Name]:` label left to strip); the accumulator is built in the
+    fork.
+  - **2026-09-22/23 — the gate passed and ADR-0003 was accepted**
+    (sub-item below).
+  - **2026-09-23 — the fork exists** (6a below):
+    `alfre2v/TalkWithZombies`, first tag `tz-0.1`, installed by
+    `make client-mac`. The show engine (6b) is next.
+  **REPOSITORY LAYOUT (owner decision 2026-09-21): two sibling
+  repositories.** `zombie-radio` stays the deployment and
+  documentation repo (the memory of record); `TalkWithZombies` is
+  a GitHub fork of scorbo2/TalkWithMe at tag 7.1, cloned beside
+  the other sibling clones at
+  `/Users/alfredo/workspace/hackTNT_2026/TalkWithZombies`. Glue:
+  the Mac installer already takes `client_repo` /
+  `client_version` / `client_dir` as variables
+  (`deploy/ansible/client-talkwithme-mac.yml:16-18`) — flip them
+  to the fork; ADD a pin for the fork tag the deployment was
+  proven against (the `zr_tts_serve_version` pattern); add a short
+  pointer section in the docs saying where each kind of document
+  lives (design and decisions here; the app's feature docs and
+  AGENTS.md there). *(Done 2026-09-23 — see 6a; the pointer
+  section is `docs/README.md` "Where things live".)* Rejected: a git submodule (nested detached
+  checkout, a second place recording the version, buys nothing at
+  deploy time since the installer clones from GitHub anyway); a
+  subtree merge (the app inside a docs/deployment repo, our hooks
+  and lint over its files, subtree splits to push anything back);
+  copying files without history (ruled out by the attribution
+  commitment).
+  - [x] **Reconnaissance brief FIRST** (`cfeed4d`, PR #6) (owner-ratified
+    2026-09-21; branch `alfre2v/task6-recon-brief`): a guided
+    tour of the fork-relevant anatomy of TalkWithMe (tag 7.1),
+    the tts-serve seam (tag 1.2), and the 2024 `zombie_radio_ai`
+    prototype — every claim with a file:line receipt. Four
+    units, each its own deliverable, dialog-driven: (1) the
+    TalkWithMe tour · (2) the tts-serve contract-and-extension-
+    points tour · (3) synthesis resolving the seam-question
+    ledger (S1, S2, …) · (4) the 2024 prototype integration
+    pass. Umbrella doc
+    `discussions/2026-09-21-task6-reconnaissance-brief.md` + one
+    tour doc per project; HTML derivatives (diagrams, annotated
+    excerpts, VS Code deep links) under
+    `visuals/task6-reconnaissance-brief/`. Unit 1 alone unblocks
+    the fork. Shape, method, cadence: [discussion 2026-09-18]
+    arc-plan Task notes. **State 2026-09-22:** units 1–2 toured;
+    unit 4 delivered as the prompt-structure + story-loop
+    discussions; answer pass complete (every S and Q ruled); HTML
+    visuals DROPPED (owner). Unit 3, the synthesis, landed as the
+    umbrella's §9 before PR #6 closed — the brief is complete.
+  - [x] **ADR-0003 gate on a live box** (branch
+    `alfre2v/adr-0003-gate`, 2026-09-22, Hyperstack A6000): **PASS**
+    on both on-box items — the screenplay grammar streams and binds
+    through the top-level `grammar` field of `/v1/chat/completions`;
+    one shared script per round costs about a quarter of the
+    per-persona structure's prompt time (reason corrected: a
+    host-RAM prompt cache rescues per-persona prompts, which pay
+    instead in state swaps and a per-request toll); the grammar costs
+    0.3 % per token. The audition item was answered for this model by
+    identity (same prompt and seed → the same text with and without
+    the grammar, 20 of 20 rounds). A second run measured an
+    `(emotion)` tag: 0.5 % per token when taught, 10.4 % when forced
+    (E1 PASS; adoption is the owner's call, follow-ups). **ADR-0003
+    accepted 2026-09-23** (Validation section). Records:
+    `experiments/2026-09-22-adr-0003-gate/`,
+    `experiments/2026-09-22-emotion-grammar-cost/`; lessons:
+    [discussion 2026-09-22] grammar-and-prompt-cache-lessons.
+    Deployment by-products: tts-serve pin 1.2 proven; the base
+    role's apt lock wait bounded with a clear error (`9fbbeb3`).
+  - [x] **6a — Fork TalkWithZombies ([ADR-0002]) — done
+    2026-09-23** (fork: PR alfre2v/TalkWithZombies#1, merge
+    `1d41bab`, tag `tz-0.1`; this repository: branch
+    `alfre2v/talkwithzombies-fork`).
+    - **The fork:** `alfre2v/TalkWithZombies`, public, parent
+      scorbo2/TalkWithMe, created with `gh repo fork
+      --default-branch-only` (only `master`, which was exactly tag
+      7.1 = `93df6ca`; upstream's `7.2-dev-branch` and issue branch
+      not copied). A master-only fork copies no tags, so upstream's
+      `7.1` tag was pushed to the fork as the fork-point marker.
+    - **The clone:** `/Users/alfredo/workspace/hackTNT_2026/TalkWithZombies`;
+      remotes `origin` (the fork) and `upstream` (scorbo2, fetch
+      only — its push URL is set to `NO_PUSH_TO_UPSTREAM`); its own
+      `.venv` on Python 3.12.14.
+    - **Provenance and house rules** (`00eaf85`): the README's new
+      top section ("Forked from TalkWithMe" by Steve Corbett, tag
+      7.1, MIT `LICENSE` byte-identical to upstream's, where things
+      live); `AGENTS.md` gains the house rules above upstream's
+      text; a one-line `CLAUDE.md` (`@AGENTS.md`) — step 6's
+      assumption corrected: Claude Code reads `CLAUDE.md`, not
+      `AGENTS.md`, so the import is what makes a fresh session of
+      the lead see the rules.
+    - **Suite green from the start** (`c46c3bf`): 2 of 781 upstream
+      tests failed on the untouched 7.1 code — `mimetypes` answers
+      `.weba` for `audio/webm` on newer Pythons. Pinned to `webm`
+      (OpenAI's transcription API rejects `weba`; our Whisper ignores
+      the name — tested live). Now 781 passed, both Node tests pass.
+      Upstream bug report candidate (follow-ups).
+    - **Fork tags:** own version line with a `tz-` prefix, never
+      upstream's bare numbers (upstream's next release will be `7.2`,
+      with different code). `tz-0.1` = the merged setup PR.
+    - **The installer** (`deploy/ansible/client-talkwithme-mac.yml`,
+      filename kept): `client_repo` → the fork, `client_version` →
+      `tz-0.1`, `client_dir` → `~/TalkWithZombies-client` (the old
+      `~/TalkWithMe-client` stays as the 7.1 fallback). The pin
+      lives in the playbook, not in `common_vars.yml`: the client
+      playbook is inventory-free by design. Step 5: `allow_tool_calls`
+      was already false (the code's default and our seeded personas);
+      `enable_persona_memories: false` added to the seeded
+      `settings.yaml`.
+    - **Proof:** lint clean (`production`); fresh install
+      `changed=8` in 21 s; re-run `changed=0`; the installed app at
+      `tz-0.1` answers HTTP 200 on a test port and lists exactly the
+      four cast personas.
+    - *Acceptance:* all met — `gh repo view` names
+      scorbo2/TalkWithMe as parent; the "forked from" section and
+      the unchanged `LICENSE` are on `master`; `make client-mac`
+      installs the fork at its pinned tag, re-run `changed=0`,
+      HTTP 200.
+- [x] **Task 6 — The fork and the show engine: TalkWithZombies
   ([ADR-0002], [ADR-0003]).** 6a (the fork) is done — its record and
   the road here are under "Done in this arc". The timebox's terms
   follow, then 6b's checklist.
@@ -1295,347 +1604,6 @@ the agent keeps this current. These carry across arcs.*
         thresholds in settings; a budget near 16k; a 32k context; the
         silence).
 
-    - [ ] **Polish — two items, right after Task 4's reference voices**
-      (the owner, once Task 4 was split: "After the reference voices"; ruled
-      2026-09-28, at the timebox's close; the owner: "I want to pull forward items: "1. Dead-air static while a round is generated" and "2. The 1930s radio look, with your gauge" , right after Task 4, and leave the rest as post-timebox follow-ups behind Task 4 and Task 7."):
-      - [ ] **Dead-air static while a round is generated** — a soft,
-        looping radio hiss through a second AudioContext source,
-        generated in the browser, from the round's request until its
-        first line plays, off while the page listens (so Whisper does
-        not hear it). It covers the 3.7-4.9 s between rounds (measured
-        2026-09-25), a trim's pause (about 5 s, measured 2026-09-28)
-        and stalls. About 1-2 hours (estimate).
-      - [x] **The 1930s radio look, with the owner's gauge** (the
-        fork's `alfre2v/radio-look`, `8624662`..`6800c00`;
-        alfre2v/TalkWithZombies#5, open) — as planned: the
-        `/show` page restyled as an old radio set (cabinet, lit dial,
-        period type, the captions as a panel) and a "magic eye" or a
-        VU needle driven by Web Audio's analyser — the microphone
-        while the button is held, the actors' audio while it plays
-        (SED §6.7). The gauge about an hour in a simple form; the look
-        open-ended (estimate).
-        **Built 2026-09-28, the evening, ahead of the reference voices**
-        — the owner: "You know what: we will work in parallel. While I
-        work in finding the audios for the real voices, you will start
-        working on the polish: "The 1930s radio look, with the owner's
-        gauge". I think this one is isolated to the frontend, so it
-        carries little risk of impacting the app functionality already
-        working, only risk is that is looks ugly, then we discard it."
-        How it went, in order:
-        1. **Interchangeable looks** (the owner: "We do not need to
-           implement only one look, you can generate 5 proposals, show
-           me screenshots and then we decide which one to build.") —
-           each design in its own folder, chosen with
-           `/show?design=<name>`. The owner's two (`old-radio`,
-           `amateur-radio-transmitter`) and three of the agent's
-           (`broadcast-studio`, `lab-terminal`, `field-radio`) became
-           mock-ups (`8624662`), filled by a recorded stretch
-           (`?mock=1`: rounds 63-66 of run `2026-09-28T13-43-28`).
-        2. **The plain page untouched** — the owner's condition: "Do
-           not change the part that goes into today's functional show,
-           I want to have that boring view as a 100% functional view I
-           can always work with." `templates/show.html` and every
-           existing file of `static/show/` are unchanged; a design
-           gets the same elements with the same ids and works on them
-           from outside; tests pin both.
-        3. **A real photograph for the old radio** — two rounds of
-           drawn textures were rejected ("This is even worse. Can you
-           not get an actual photo of a real radio and use it as a
-           background or something instead of producing this more and
-           more cartoonish textures?"); 1930s photos on Wikimedia
-           Commons were too small, so the set is a 1950 Philips Sirius
-           BD 400 A (by "Bin im Garten", CC BY-SA 3.0; credited in the
-           design's `CREDITS.md` and on the page) (`077f824`).
-        4. **Two built, three dropped** (the owner: "Ok, let's not get
-           too carried away. I think one design with real photos is
-           enough. I actually want to keep your
-           `amateur-radio-transmitter` design. [...] Let's build these
-           2.") — the gauge (`static/show/gauge.js`: the voice's level,
-           or the microphone's while the button is held) drives the
-           old radio's magic eye and the transmitter's oscilloscope
-           trace and meters (`23472e5`); the old radio's keys moved to
-           its side panels, to the owner's placing (`0e0e27d`); the
-           transmitter's contents cleared its bevelled edge
-           (`6800c00`). The owner: "Very well done on the
-           amateur-radio-transmitter. Incredible." The three dropped
-           mock-ups stay in the branch's history (the follow-up "The
-           three dropped page designs").
-        5. **The chooser** (the owner: "when we open the show page
-           without any arguments, instead of directly showing the old
-           show page, we are given 3 screenshots to click") — `/show`
-           now shows a card per look with a live miniature, the plain
-           page last; `/show?design=plain` is the plain page. The root
-           `/` opens the chooser, and TalkWithMe's chat UI moved to
-           `/talkwithme`, linked from the chooser as "Or visit the old
-           TalkWithMe interface that this project is built upon" (the
-           owner's words) (`de91f49`).
-        Checked on the dev copy at `127.0.0.1:8010` by screenshots and
-        by the owner in the browser; the fork's suite 1129 passed and
-        the page's Node tests (a new `tests/test_show_gauge.js`, 8).
-        Released the same evening: PR #5 merged (`0ec33c1`), the tests
-        green on `master` (1129 passed; Node 17 / 91 / 35 / 8), the fork
-        tagged `tz-0.3` (annotated, on `0ec33c1`, pushed on the owner's
-        order: "Let's get the tz-0.3 tag and the installer pointed at
-        it."), the installer's `client_version` → `"tz-0.3"`; the
-        owner's re-proof of the install is pending. How to use it: the fork's `docs/runbooks/show-page.md`,
-        "Choosing a look".
-      - **Moved to follow-ups, post-timebox, behind Task 4 and Task 7:**
-        prefetch round N+1 (the follow-up "Prefetch the next round");
-        episodes (the follow-up "Episodes — a story arc, with a recap
-        between episodes").
-
-## Other open tasks
-
-- [ ] **Task 4 — Real cast replaces placeholders.** **Split in two
-  (the owner, 2026-09-28):** (1) **the character bibles** — not now:
-  "today has been all about improving the prompt, and right now the
-  narration holds together more or less, ok. I want to pivot to audio,
-  which is the weak spot now."; (2) **the reference voices** — one clip
-  per character, the owner's, next: each character's clip as
-  `Personas/<Name>/ref.wav` with its exact transcript in `ref.txt`, in
-  `~/TalkWithZombies-client/Personas/` (the dev clone reads the same
-  folder through its `personas_directory`); `Personas/` is gitignored in
-  the fork and the installer skips an existing persona folder. Several
-  clips per character by mood: the follow-up "Mood clips". The detail
-  as first written: character
-  bibles → the sections of TalkWithZombies' cast sheet ([spec
-  §5]; where they live in the fork — decided 2026-09-23: the
-  cast entries of `stories/<story>/cast_sheet.md`, not the persona
-  files — [discussion 2026-09-23] show-engine-design §4), keeping `/no_think`
-  while on Nemotron (the chat template needs it even under the
-  grammar — [spec §4]); no heavy prompt tuning yet — guardrail 2 ·
-  voice samples → isolation tool first (follow-ups) → gitignore →
-  replace the `say`-generated ref.wavs in the persona
-  directories.
-- [ ] **Task 5 — In-prototype experiments (deliverable D3;
-  protocol skeleton per guardrail 1: question, timebox,
-  pre-registered pick criteria, runlog).**
-  - [ ] **5a — LLM audition** ([spec §9]): the ranked five via
-    one `-hf` flag each; identical scenario; scored on BOTH
-    narrative-health axes; name-memory retest at the raised
-    window. Picks the working default. Needs Task 4 bibles.
-    **Runs in the fork's engine, after the timebox.** Added
-    2026-09-23: does each candidate write the screenplay format on
-    its own (if not, the grammar steers — ~10 % per token and style
-    drift)? The gate's "prose with and without the grammar" item is
-    answered for Nemotron by identity and re-checked for any other
-    finalist; the bounded-scratchpad cell rides along
-    (follow-ups).
-  - [ ] **5b — TTS comparison + VRAM budget** ([spec §9]):
-    engines via the parametrized role; **LuxTTS's ~1 GB claim is
-    the first check**; picks two engines + Whisper size;
-    measures the two-engine stack vs 24 GB target / 16 GB
-    aspiration. Needs Task 4 samples. Per-engine test items from
-    the field: ultra-short inputs (the "1." echo) and typographic
-    punctuation (`’`/`—` dropped the pause before "Over." on Faster
-    Qwen3-TTS, 2026-09-22 — the parser normalizes anyway).
-  - [ ] **5c — Narrative-health probe battery**
-    ([discussion 2026-09-16] taxonomy §5): the zero-code,
-    owner-run probes — `[Director]:` prefix (C6) · named
-    addressee (E2) · in-fiction phrasing (C8) · long-form escape
-    hatch (B4) · fixed responder (E1) — one variable flipped per
-    run against the same two-round protocol. Protocol-lite (a
-    dated runlog section, no full experiment folder). Does NOT
-    need the real cast. **Re-scoped 2026-09-23 to the fork's
-    engine:** the battery was written against TalkWithMe's
-    per-persona structure; under [ADR-0003] two probes are moot by
-    construction (the `[Director]:` prefix — the director now IS
-    the user turn; the fixed responder — the director picks the
-    speakers), and the others (named addressee, in-fiction
-    phrasing, long-form escape hatch) become director settings to
-    try. Runs after Task 6b, alongside 5a.
-- [ ] **Task 7 — The canned episode (owner MUST) + demo-day
-  protocol runbook.** Recorded from the working prototype; the
-  runbook promotion deferred from the last arc lands here. The
-  seed makes retakes reproducible: on one server slot, the same
-  request and seed gave the same words 80 minutes apart
-  (2026-09-22) — record with the settings it will be replayed
-  with.
-- [ ] **Task 8 — Close ritual in the closing PR.** Features
-  Shipped entry · task_history migration · TODO reset ·
-  staleness sweep (CLAUDE.md included) · spec ledger audit
-  (every settled decision has its as-built entry).
-
-## Done in this arc
-
-*Kept whole — each block moved here unchanged — for the close
-ritual's migration to `task_history.md`.*
-
-- [x] **Task 1 — Deployment machinery v1 (deliverable D1).**
-  DONE (2026-09-18, ~1.5 days of the 3-day timebox): all four
-  roles written; **proven live on a fresh A6000/R570 box** — full
-  stack from zero, one command, idempotent (changed=0); potholes
-  fixed in-role and journaled ([discussion 2026-09-18] arc-plan);
-  NEVER_COMMIT tripwire armed. **D2 acceptance MET the same day**
-  (4 distinct voices + mic loop on the deployed stack; 58 ms
-  CANADA-1 RTT, "almost natural" pauses). Remaining to close:
-  - [x] Reboot test PASSED (2026-09-18): full unattended
-    auto-rise in under a minute; client reconnected on a fresh
-    tunnel alone.
-  - [x] `runbooks/service-restart-sequence.md` rewritten around
-    the playbook (ruling-2 executed, 2026-09-18).
-  - [x] `deploy/ansible/README.md` written (2026-09-18).
-  - [x] Owner call RESOLVED (2026-09-18): destroying soon —
-    boxes are disposable now; rebuild is a proven ~15-min
-    command. (When destroyed: restore the hosts.yml sentinel —
-    the working tree goes clean by itself.)
-- [x] **Task 2 — Laptop client wiring + smoke gate.** DONE
-  2026-09-18: tunnel to the new box, `make check` three-ok,
-  TalkWithMe smoke passed, saved server config carried over
-  unchanged (same localhost ports as the experiment).
-- [x] **Task 3 — Cheap config wins, BEFORE experimenting.** DONE
-  (2026-09-18):
-  - [x] `max_turns_for_context` raised 6→50 (owner, 2026-09-18)
-    — and the C9 retest PASSED with it: keyword recall works;
-    coherence otherwise unchanged (see taxonomy evidence ledger).
-  - [x] Fresh rooms, Global System Prompt cleared — standing
-    practice since lab3.
-  - [x] Sampler params read (taxonomy D1, source audit — no box
-    needed): persona requests send ONLY max_tokens (live: 200, UI-editable) +
-    temperature (live: 0.8); everything else is llama-server
-    defaults; router uses temp 0.1. Residual RESOLVED
-    (2026-09-19, /props on the R550 box): `repeat_penalty: 1.0`
-    = off — the penalty-vs-"Over." worry is moot without a fork
-    ([discussion 2026-09-18] arc-plan journal has the full
-    defaults).
-- **Task 6, the parts already done** ([ADR-0002], [ADR-0003]).
-  *How it got here, in five steps:*
-  - **2026-09-18 — the trigger fired:** labels were back in the
-    show's output and SPOKEN (no Global System Prompt per lab3), so
-    the first patch was required and the fork moment arrived. First
-    disposition: fork thin, patch minimally (the `[Name]:`
-    sanitizer + the max-chars accumulator), offer both upstream
-    ([discussion 2026-09-18] arc-plan, Q1).
-  - **2026-09-21 — the disposition revised** after the
-    reconnaissance: no upstream-compatibility pretence — the clone
-    becomes a NEW app, **TalkWithZombies**, a real GitHub fork of
-    scorbo2/TalkWithMe at tag 7.1 with provenance and the MIT
-    attribution kept and labeled ([ADR-0002]). Contribution
-    candidates re-ranked: the deployment machinery (site.yml + the
-    Mac client installer) first, the accumulator second, the
-    sanitizer out; outreach deferred past the deadline
-    ([discussion 2026-09-19] upstream-contribution-strategy
-    addendum; [discussion 2026-09-21] task6-reconnaissance-brief
-    §1–§2).
-  - **2026-09-21 — the engine decided** ([ADR-0003]): one shared
-    script, a director in code, a screenplay grammar, the browser
-    as the clock. The sanitizer became moot by construction (no
-    `[Name]:` label left to strip); the accumulator is built in the
-    fork.
-  - **2026-09-22/23 — the gate passed and ADR-0003 was accepted**
-    (sub-item below).
-  - **2026-09-23 — the fork exists** (6a below):
-    `alfre2v/TalkWithZombies`, first tag `tz-0.1`, installed by
-    `make client-mac`. The show engine (6b) is next.
-  **REPOSITORY LAYOUT (owner decision 2026-09-21): two sibling
-  repositories.** `zombie-radio` stays the deployment and
-  documentation repo (the memory of record); `TalkWithZombies` is
-  a GitHub fork of scorbo2/TalkWithMe at tag 7.1, cloned beside
-  the other sibling clones at
-  `/Users/alfredo/workspace/hackTNT_2026/TalkWithZombies`. Glue:
-  the Mac installer already takes `client_repo` /
-  `client_version` / `client_dir` as variables
-  (`deploy/ansible/client-talkwithme-mac.yml:16-18`) — flip them
-  to the fork; ADD a pin for the fork tag the deployment was
-  proven against (the `zr_tts_serve_version` pattern); add a short
-  pointer section in the docs saying where each kind of document
-  lives (design and decisions here; the app's feature docs and
-  AGENTS.md there). *(Done 2026-09-23 — see 6a; the pointer
-  section is `docs/README.md` "Where things live".)* Rejected: a git submodule (nested detached
-  checkout, a second place recording the version, buys nothing at
-  deploy time since the installer clones from GitHub anyway); a
-  subtree merge (the app inside a docs/deployment repo, our hooks
-  and lint over its files, subtree splits to push anything back);
-  copying files without history (ruled out by the attribution
-  commitment).
-  - [x] **Reconnaissance brief FIRST** (`cfeed4d`, PR #6) (owner-ratified
-    2026-09-21; branch `alfre2v/task6-recon-brief`): a guided
-    tour of the fork-relevant anatomy of TalkWithMe (tag 7.1),
-    the tts-serve seam (tag 1.2), and the 2024 `zombie_radio_ai`
-    prototype — every claim with a file:line receipt. Four
-    units, each its own deliverable, dialog-driven: (1) the
-    TalkWithMe tour · (2) the tts-serve contract-and-extension-
-    points tour · (3) synthesis resolving the seam-question
-    ledger (S1, S2, …) · (4) the 2024 prototype integration
-    pass. Umbrella doc
-    `discussions/2026-09-21-task6-reconnaissance-brief.md` + one
-    tour doc per project; HTML derivatives (diagrams, annotated
-    excerpts, VS Code deep links) under
-    `visuals/task6-reconnaissance-brief/`. Unit 1 alone unblocks
-    the fork. Shape, method, cadence: [discussion 2026-09-18]
-    arc-plan Task notes. **State 2026-09-22:** units 1–2 toured;
-    unit 4 delivered as the prompt-structure + story-loop
-    discussions; answer pass complete (every S and Q ruled); HTML
-    visuals DROPPED (owner). Unit 3, the synthesis, landed as the
-    umbrella's §9 before PR #6 closed — the brief is complete.
-  - [x] **ADR-0003 gate on a live box** (branch
-    `alfre2v/adr-0003-gate`, 2026-09-22, Hyperstack A6000): **PASS**
-    on both on-box items — the screenplay grammar streams and binds
-    through the top-level `grammar` field of `/v1/chat/completions`;
-    one shared script per round costs about a quarter of the
-    per-persona structure's prompt time (reason corrected: a
-    host-RAM prompt cache rescues per-persona prompts, which pay
-    instead in state swaps and a per-request toll); the grammar costs
-    0.3 % per token. The audition item was answered for this model by
-    identity (same prompt and seed → the same text with and without
-    the grammar, 20 of 20 rounds). A second run measured an
-    `(emotion)` tag: 0.5 % per token when taught, 10.4 % when forced
-    (E1 PASS; adoption is the owner's call, follow-ups). **ADR-0003
-    accepted 2026-09-23** (Validation section). Records:
-    `experiments/2026-09-22-adr-0003-gate/`,
-    `experiments/2026-09-22-emotion-grammar-cost/`; lessons:
-    [discussion 2026-09-22] grammar-and-prompt-cache-lessons.
-    Deployment by-products: tts-serve pin 1.2 proven; the base
-    role's apt lock wait bounded with a clear error (`9fbbeb3`).
-  - [x] **6a — Fork TalkWithZombies ([ADR-0002]) — done
-    2026-09-23** (fork: PR alfre2v/TalkWithZombies#1, merge
-    `1d41bab`, tag `tz-0.1`; this repository: branch
-    `alfre2v/talkwithzombies-fork`).
-    - **The fork:** `alfre2v/TalkWithZombies`, public, parent
-      scorbo2/TalkWithMe, created with `gh repo fork
-      --default-branch-only` (only `master`, which was exactly tag
-      7.1 = `93df6ca`; upstream's `7.2-dev-branch` and issue branch
-      not copied). A master-only fork copies no tags, so upstream's
-      `7.1` tag was pushed to the fork as the fork-point marker.
-    - **The clone:** `/Users/alfredo/workspace/hackTNT_2026/TalkWithZombies`;
-      remotes `origin` (the fork) and `upstream` (scorbo2, fetch
-      only — its push URL is set to `NO_PUSH_TO_UPSTREAM`); its own
-      `.venv` on Python 3.12.14.
-    - **Provenance and house rules** (`00eaf85`): the README's new
-      top section ("Forked from TalkWithMe" by Steve Corbett, tag
-      7.1, MIT `LICENSE` byte-identical to upstream's, where things
-      live); `AGENTS.md` gains the house rules above upstream's
-      text; a one-line `CLAUDE.md` (`@AGENTS.md`) — step 6's
-      assumption corrected: Claude Code reads `CLAUDE.md`, not
-      `AGENTS.md`, so the import is what makes a fresh session of
-      the lead see the rules.
-    - **Suite green from the start** (`c46c3bf`): 2 of 781 upstream
-      tests failed on the untouched 7.1 code — `mimetypes` answers
-      `.weba` for `audio/webm` on newer Pythons. Pinned to `webm`
-      (OpenAI's transcription API rejects `weba`; our Whisper ignores
-      the name — tested live). Now 781 passed, both Node tests pass.
-      Upstream bug report candidate (follow-ups).
-    - **Fork tags:** own version line with a `tz-` prefix, never
-      upstream's bare numbers (upstream's next release will be `7.2`,
-      with different code). `tz-0.1` = the merged setup PR.
-    - **The installer** (`deploy/ansible/client-talkwithme-mac.yml`,
-      filename kept): `client_repo` → the fork, `client_version` →
-      `tz-0.1`, `client_dir` → `~/TalkWithZombies-client` (the old
-      `~/TalkWithMe-client` stays as the 7.1 fallback). The pin
-      lives in the playbook, not in `common_vars.yml`: the client
-      playbook is inventory-free by design. Step 5: `allow_tool_calls`
-      was already false (the code's default and our seeded personas);
-      `enable_persona_memories: false` added to the seeded
-      `settings.yaml`.
-    - **Proof:** lint clean (`production`); fresh install
-      `changed=8` in 21 s; re-run `changed=0`; the installed app at
-      `tz-0.1` answers HTTP 200 on a test port and lists exactly the
-      four cast personas.
-    - *Acceptance:* all met — `gh repo view` names
-      scorbo2/TalkWithMe as parent; the "forked from" section and
-      the unchanged `LICENSE` are on `master`; `make client-mac`
-      installs the fork at its pinned tag, re-run `changed=0`,
-      HTTP 200.
 - [x] **Task 7b — `client-talkwithme-mac.yml`: standalone Mac client-install
   playbook (tangential nice-to-have; NOT MVP).** DONE 2026-09-19
   (branch `alfre2v/client-talkwithme-mac`): built to every
@@ -1722,8 +1690,10 @@ engine is next (Task 6b).
 
 - Hard deadline **2026-10-08** (the talk at the Austin Python Meetup
   is in October 2026): ~3 weeks out at
-  arc open; the prototype is the critical path, and D1's 3-day
-  timebox is its first checkpoint.
+  arc open, when the prototype was the critical path and D1's 3-day
+  timebox its first checkpoint; ten days out on 2026-09-28, with the
+  show engine and its looks done and Task 7, the canned episode (a
+  MUST), still open.
 - Keep the last 2–3 branches, local and remote (owner rule,
   2026-09-16).
 - Ops rules that carry over: never hibernate a show box · proven

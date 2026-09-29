@@ -14,8 +14,10 @@ internal name for projects built hackathon-style in 2026, not an
 event.
 
 The MVP is defined in `specs/product-definition.md` — written by the
-**Product definition** arc and kept since as a living ledger of what
-the prototype settles.
+**Product definition** arc, kept as a living ledger of what the
+prototype settled, and rewritten on 2026-09-28 as one linear
+description of the product as built, updated in place when the
+product changes.
 
 ### Context and prior art
 
@@ -80,14 +82,18 @@ the prototype settles.
    could be shaped without it — so the prototype becomes
    **TalkWithZombies** ([ADR-0002]) running the new engine
    ([ADR-0003]; its gate passed 2026-09-22), built under a 3-day
-   timebox. Then the prototype as the experiment platform, with
+   timebox — **done 2026-09-28** (the clock ran from 2026-09-23, its
+   end moved once by the owner), released as the fork's `tz-0.2`;
+   the show page's looks followed the same night as `tz-0.3`. Then
+   the prototype as the experiment platform, with
    the real cast: in-prototype experiments in the new engine (LLM
    audition [spec §9] · TTS comparison + VRAM budget [spec
    §9], LuxTTS in the pool · the narrative-health probes
    [discussion 2026-09-16]) and the canned episode, a MUST for
    demo day. Guardrails riding along: experiments keep the
    protocol skeleton; prompt work stays disposable until the
-   audition; the spec is updated as a ledger during the build.
+   audition; the spec was kept as a ledger during the build and
+   rewritten as a linear description at its end (2026-09-28).
 3. *(further arcs emerge as the prototype teaches us)* — the
    **show arc** was named at this one's opening: story and episode
    authoring (the trajectory scaffolds, [spec §2.2]) and the full
@@ -111,7 +117,15 @@ the prototype settles.
   multi-listener staging makes server-side STT a bottleneck.
 - **An announcer voice** — parked 2026-09-23, surfaced while
   designing the show engine's director ([discussion 2026-09-23]
-  show-engine-design, decision 5). Today the director's events
+  show-engine-design, decision 5). **Status 2026-09-28:** its premise
+  has changed — since the fixed lines (2026-09-27) a cast member
+  reads each event aloud on air, word for word, so events are no
+  longer hidden; and the 1930s radio look, one of its triggers, was
+  built without it. An announcer would now be a matter of style — a
+  period voice outside the cast — not of hearing the events; the
+  owner has also weighed a narrator against the broadcast's frame
+  (the follow-up "Events the listener cannot hear", option 1). The
+  original note (2026-09-23) follows unchanged. Today the director's events
   ("Offstage: something is scratching at the loading dock door")
   are never spoken: they reach the model as instructions, and the
   audience learns of them only through the characters' reactions.
