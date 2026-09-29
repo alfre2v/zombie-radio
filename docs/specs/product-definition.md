@@ -1,8 +1,9 @@
 # Zombie-Radio — Product specification
 
 **Status:** living. This document describes the product as it is
-built — the fork TalkWithZombies at `alfre2v/show-slice-3-browser`
-(`1ab5d6f`) and this repository's deployment — in the order someone
+built — the fork TalkWithZombies at `alfre2v/radio-look`
+(`6800c00`; tag `tz-0.2` plus the page's looks) and this repository's
+deployment — in the order someone
 would build it again. It is rewritten in place when the product
 changes; it carries no history. Why each choice was made, and when,
 lives in the decisions, discussions and experiments listed in §11.
@@ -86,7 +87,8 @@ has finished playing).
         │    line by line (§6)
         └─ page /show at http://localhost — the clock: plays the lines,
              asks for the next round, hold-to-talk (a browser secure
-             context, so the microphone needs no TLS)
+             context, so the microphone needs no TLS); plain or in a
+             look (§6.10)
         ⇅ SSH tunnel over the internet (§8.3)
 [GPU box (Linux — cloud instance or home GPU box)]
    ├─ LLM: llama.cpp server (OpenAI-compatible API, GBNF grammars)   :8080
@@ -107,10 +109,11 @@ after the request, and a four-line round takes about 1.4-2.0 s.
   `github.com/alfre2v/TalkWithZombies`) — a real fork of
   scorbo2/TalkWithMe at tag 7.1 (MIT; provenance and notice kept),
   free to diverge from upstream. Upstream's chat UI stays as a
-  rehearsal and debugging tool; the show lives in its own files
-  (`app/show/`, `app/routers/show.py`, `static/show/`,
-  `templates/show.html`, `stories/`). Released as tags named
-  `tz-<n>`.
+  rehearsal and debugging tool, at `/talkwithme`; the root `/` opens
+  the show. The show lives in its own files (`app/show/`,
+  `app/routers/show.py`, `static/show/`, `templates/show.html`,
+  `templates/show_design.html`, `templates/show_choose.html`,
+  `stories/`). Released as tags named `tz-<n>`.
 - **zombie-radio** (this repository) — the deployment (`deploy/`,
   the `Makefile`), the documentation, the decisions and the
   experiments.
@@ -383,7 +386,46 @@ line under each round with what the director chose. The run's seed
 and seeds every model request, so a run replays exactly on the same
 box and build.
 
-### §6.10 Settings
+### §6.10 The page and its looks
+
+The page comes in looks; the show is the same in each. `/show`
+opens a chooser: a card per look, each a live miniature of that look
+playing a recorded stretch of a run, and the plain page last; below
+the cards, a link to upstream's chat UI at `/talkwithme`. The root
+`/` redirects to `/show`.
+
+- **The plain page** — `/show?design=plain` (and any name that is
+  not a look): `templates/show.html` with `static/show/`'s scripts
+  and stylesheet — the text of the script, every control at hand. It
+  is the working page, and the looks never change it: tests pin its
+  HTML and its element ids.
+- **A look** — `/show?design=<name>`, one folder per look in
+  `static/show/designs/<name>/`: a `design.yaml` (its title, a line
+  about it, its place in the chooser), a `design.css`, optionally a
+  `design.js` and images with their credits.
+  `templates/show_design.html` carries the plain page's elements with
+  the same ids, so the same scripts run the show; the look restyles
+  and rearranges those elements and adds its own drawing on top.
+- **The gauge** — `static/show/gauge.js`, loaded in every look: it
+  taps the page's audio from outside (the voice's output, and the
+  microphone while the button is held) through Web Audio analysers,
+  and publishes the level, smoothed, each frame, as CSS variables
+  (`--level`, `--level-voice`, `--level-mic`) and to the look's
+  script.
+- **The two looks:** `old-radio`, a photograph of a 1950 Philips
+  Sirius BD 400 A (Wikimedia Commons, CC BY-SA 3.0, credited on the
+  page) with the transcript on the speaker cloth, the magic eye as
+  the receiver's light and the gauge, the dial lit while on air, a
+  knob per character glowing while that character speaks, and the
+  keys on the side panels; and `amateur-radio-transmitter`, a rack
+  drawn in CSS with the transcript on an oscilloscope whose trace
+  follows the gauge, a meter for the voice and one for the
+  microphone, and a desk microphone.
+- **A preview** — `&mock=1` on any look fills it from
+  `static/show/designs/mock.js` (a recorded stretch, no server
+  calls), for the chooser's miniatures and for designing.
+
+### §6.11 Settings
 
 Every number is a setting, under `show:` in the fork's
 `settings.yaml` (`ShowConfig` in `app/config.py`): the story, the

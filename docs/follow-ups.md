@@ -1339,6 +1339,38 @@ reader's memory):
 - **Estimate:** 2-3 hours for the four pieces with tests (the agent's,
   not measured).
 
+## The three dropped page designs — kept in the fork's history, not in its tree (owner, 2026-09-28)
+
+- **The statement:** five looks for the show page were drawn as
+  mock-ups on 2026-09-28 (the fork's `alfre2v/radio-look`, commit
+  `8624662`, "Five show page designs as mock-ups"): the owner's two,
+  `old-radio` and `amateur-radio-transmitter`, and three of the
+  agent's — `broadcast-studio` (a 1940s station's control room: an
+  ON AIR light box, a console with a VU meter per character, the
+  transcript as a typed script on a clipboard), `lab-terminal` (the
+  lab's own early-1980s terminal: amber phosphor on a curved screen,
+  the transcript as its log) and `field-radio` (a WWII backpack radio
+  in olive drab, the transcript on a torn message pad, a handset
+  beside the PRESS TO TALK button). The owner kept two (the
+  owner, verbatim: "Ok, let's not get too carried away. I think one
+  design with real photos is enough. I actually want to keep your
+  `amateur-radio-transmitter` design. [...] Let's build these 2.");
+  the other three were removed from the tree in `23472e5`.
+- **Where flagged:** the TODO's polish item "The 1930s radio look,
+  with the owner's gauge"; alfre2v/TalkWithZombies#5.
+- **Trigger:** the owner wants another look — for the talk, for
+  variety, or to replace one.
+- **The fix shape:** bring a mock-up's folder back from `8624662`
+  (`git show 8624662:static/show/designs/<name>/design.css`, and the
+  same for its `design.js`), add a `design.yaml` (title, about, order)
+  so the chooser lists it, and build it on the gauge the way the two
+  kept looks are built (`static/show/gauge.js`: the `--level`
+  variables and `onGaugeLevel`); the plain page stays untouched. The
+  fork's `tests/test_routers_show.py` runs its checks on every look in
+  the folder, and pins the list of looks and the chooser's order —
+  add the new name to both. Mock-ups were drawn without the gauge or checks on small
+  windows, so count a few hours per look (the agent's estimate).
+
 ## Voice-sample hygiene — famous-actor clips NEVER enter the repo
 
 - **The gap/rule:** the owner will likely source the four

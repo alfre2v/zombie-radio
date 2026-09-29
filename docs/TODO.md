@@ -85,7 +85,13 @@ detail.*
   static and the 1930s radio look with the gauge pulled forward, right
   after Task 4's reference voices (the owner, once Task 4 was split:
   "After the reference voices"); prefetch and episodes left as post-timebox follow-ups,
-  behind Task 4 and Task 7.
+  behind Task 4 and Task 7. **The radio look was built the same
+  evening**, in parallel with the owner's search for the reference
+  voices (the owner: "You know what: we will work in parallel."): a
+  chooser at `/show`, two looks (`old-radio` on a photograph of a
+  1950 set, `amateur-radio-transmitter`) with a live gauge, the plain
+  page untouched (alfre2v/TalkWithZombies#5, open; details under
+  "Polish" below).
   **Today, 2026-09-28, the timebox's last day** — the owner: "I want to
   have a functional story narration before we close the time box.":
   3.4c.7 and 3.4c.8, a check on the box and by ear, the bookkeeping,
@@ -109,7 +115,8 @@ detail.*
 - **The order after the timebox:** Task 4's reference voices (the
   owner's), then right after them the polish's two items pulled forward
   (the dead-air static, the 1930s radio look with the gauge; the owner,
-  2026-09-28); Task 4's character bibles deferred by the owner (5a
+  2026-09-28 — the radio look already built, in parallel; the static
+  still open); Task 4's character bibles deferred by the owner (5a
   needs them) → Tasks 5a / 5b / 5c in the new
   engine (5a needs the owner's character bibles, 5b the voice
   samples) → Task 7, the canned episode (a MUST for the talk) →
@@ -1298,13 +1305,77 @@ the agent keeps this current. These carry across arcs.*
         not hear it). It covers the 3.7-4.9 s between rounds (measured
         2026-09-25), a trim's pause (about 5 s, measured 2026-09-28)
         and stalls. About 1-2 hours (estimate).
-      - [ ] **The 1930s radio look, with the owner's gauge** — the
+      - [x] **The 1930s radio look, with the owner's gauge** (the
+        fork's `alfre2v/radio-look`, `8624662`..`6800c00`;
+        alfre2v/TalkWithZombies#5, open) — as planned: the
         `/show` page restyled as an old radio set (cabinet, lit dial,
         period type, the captions as a panel) and a "magic eye" or a
         VU needle driven by Web Audio's analyser — the microphone
         while the button is held, the actors' audio while it plays
         (SED §6.7). The gauge about an hour in a simple form; the look
         open-ended (estimate).
+        **Built 2026-09-28, the evening, ahead of the reference voices**
+        — the owner: "You know what: we will work in parallel. While I
+        work in finding the audios for the real voices, you will start
+        working on the polish: "The 1930s radio look, with the owner's
+        gauge". I think this one is isolated to the frontend, so it
+        carries little risk of impacting the app functionality already
+        working, only risk is that is looks ugly, then we discard it."
+        How it went, in order:
+        1. **Interchangeable looks** (the owner: "We do not need to
+           implement only one look, you can generate 5 proposals, show
+           me screenshots and then we decide which one to build.") —
+           each design in its own folder, chosen with
+           `/show?design=<name>`. The owner's two (`old-radio`,
+           `amateur-radio-transmitter`) and three of the agent's
+           (`broadcast-studio`, `lab-terminal`, `field-radio`) became
+           mock-ups (`8624662`), filled by a recorded stretch
+           (`?mock=1`: rounds 63-66 of run `2026-09-28T13-43-28`).
+        2. **The plain page untouched** — the owner's condition: "Do
+           not change the part that goes into today's functional show,
+           I want to have that boring view as a 100% functional view I
+           can always work with." `templates/show.html` and every
+           existing file of `static/show/` are unchanged; a design
+           gets the same elements with the same ids and works on them
+           from outside; tests pin both.
+        3. **A real photograph for the old radio** — two rounds of
+           drawn textures were rejected ("This is even worse. Can you
+           not get an actual photo of a real radio and use it as a
+           background or something instead of producing this more and
+           more cartoonish textures?"); 1930s photos on Wikimedia
+           Commons were too small, so the set is a 1950 Philips Sirius
+           BD 400 A (by "Bin im Garten", CC BY-SA 3.0; credited in the
+           design's `CREDITS.md` and on the page) (`077f824`).
+        4. **Two built, three dropped** (the owner: "Ok, let's not get
+           too carried away. I think one design with real photos is
+           enough. I actually want to keep your
+           `amateur-radio-transmitter` design. [...] Let's build these
+           2.") — the gauge (`static/show/gauge.js`: the voice's level,
+           or the microphone's while the button is held) drives the
+           old radio's magic eye and the transmitter's oscilloscope
+           trace and meters (`23472e5`); the old radio's keys moved to
+           its side panels, to the owner's placing (`0e0e27d`); the
+           transmitter's contents cleared its bevelled edge
+           (`6800c00`). The owner: "Very well done on the
+           amateur-radio-transmitter. Incredible." The three dropped
+           mock-ups stay in the branch's history (the follow-up "The
+           three dropped page designs").
+        5. **The chooser** (the owner: "when we open the show page
+           without any arguments, instead of directly showing the old
+           show page, we are given 3 screenshots to click") — `/show`
+           now shows a card per look with a live miniature, the plain
+           page last; `/show?design=plain` is the plain page. The root
+           `/` opens the chooser, and TalkWithMe's chat UI moved to
+           `/talkwithme`, linked from the chooser as "Or visit the old
+           TalkWithMe interface that this project is built upon" (the
+           owner's words) (`de91f49`).
+        Checked on the dev copy at `127.0.0.1:8010` by screenshots and
+        by the owner in the browser; the fork's suite 1129 passed and
+        the page's Node tests (a new `tests/test_show_gauge.js`, 8).
+        Not yet on the box's installed client: that waits for PR #5's
+        merge and, if the owner wants it, a tag and the installer's
+        pin. How to use it: the fork's `docs/runbooks/show-page.md`,
+        "Choosing a look".
       - **Moved to follow-ups, post-timebox, behind Task 4 and Task 7:**
         prefetch round N+1 (the follow-up "Prefetch the next round");
         episodes (the follow-up "Episodes — a story arc, with a recap
