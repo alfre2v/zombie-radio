@@ -1340,6 +1340,12 @@ reader's memory):
      that mood's own fallback; else the default `ref.wav`. The
      mood-to-mood fallback belongs to the story (the moods are the
      story's, `overtones.yaml`); the clips belong to the personas.
+     **Where the clips come from (2026-09-29):** a casting script copies
+     the chosen EARS clips into each persona folder, driven by a mapping
+     file — the cast, the clip for `ref.wav`, and each show mood's EARS
+     emotion, drafted with a confidence per mood ([discussion 2026-09-29]
+     voice-datasets-with-emotion §11.3, option A; the owner's ruling:
+     "go with A").
   3. **The page sends the mood** — `speakLine(persona, text, mood)`
      posts `{text, persona_name, mood}`; the voice queue already cuts
      chunks at each line's end, so a chunk always has one mood.

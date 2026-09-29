@@ -9,7 +9,9 @@ the owner asks and decides, the agent researches and verifies.
 **JL-Corpus** and **Expresso**. **EARS single files can be fetched without
 the zips** — an experiment passed on 2026-09-29, with a script anyone can
 run (§11, the addendum of that day, has how to use it); the owner's
-shortlist of EARS voices is next, then the listening test (§9). This
+shortlist of EARS voices is next, then the listening test (§9). How the
+chosen voices reach the app is decided: a casting script copies them into
+each character's folder, driven by a mapping file (§11.3, option A). This
 document is updated as the real audio files are tried: each
 finding lands as a dated addendum (§11), never as a silent rewrite.
 
@@ -538,4 +540,139 @@ native American English (and `p001`), neutral and fear.
 
 **Where the shortlist stands:** the owner is listening, in
 `index_all_speakers_2emo.html`, for voices to keep.
+
+### §11.3 2026-09-29 — from the chosen voices to the app: a casting script with the mapping as data (option A)
+
+**The owner's question (verbatim, 2026-09-29):** "Once I have decided on the
+4 persons to use as our characters, I don't want to move all the audios by
+hand to our reference audios folder, also we have not defined well the
+mapping of emotions in EARS agains our own. Ideally I would like to have a
+mapping of emotions done, so you can write a little script to move the files
+with their correct names to the appropriate folder in our app...
+Alternatively, we could leave the files where they are, and make our app look
+for them in the folder structure of downloaded audios in the experiment
+folder. Let's discuss, no implementation yet."
+
+**The owner's ruling (verbatim, 13:41 CDT):** "go with A, let's discard B, I
+was wrong to propose B. I like your proposal for option A, and your emotion
+mapping (the yaml file and the mapping draft)." Nothing is built yet; this
+section is the design, recorded before the build.
+
+#### Where the app looks today, and what it can use
+
+- **The app reads one fixed place:** `Personas/<Name>/` under its
+  `personas_directory` — `~/TalkWithZombies-client/Personas/` for the
+  installed client, and the dev clone reads the same folder. From there it
+  uses **only `ref.wav` and `ref.txt`**.
+- **Mood clips are not built yet.** `ref-<mood>.wav` is only a design, in the
+  follow-up "Mood clips" (about 2-3 hours in the fork). Until that is built,
+  each character has **one voice**, and the only question is which EARS clip
+  becomes each character's `ref.wav`.
+
+#### Option B, discarded — the app reads the experiment folder
+
+The agent advised against it, for four reasons, and the owner discarded it:
+
+1. **It ties two repositories together.** The app (the fork,
+   TalkWithZombies) would depend on the folder layout of an experiment in
+   zombie-radio. The installed client would need a path into the owner's
+   zombie-radio working copy — and so would the demo laptop.
+2. **The files have the wrong names and format.** They are named by EARS
+   type (`emo_fear_sentences`), not by the show's moods, so the
+   EARS-to-show mapping would have to live inside the app; and they are
+   48 kHz 32-bit float.
+3. **That format costs on every line.** The app sends the reference clip
+   with every voice request, through the tunnel. At 48 kHz 32-bit float the
+   clip is **4 times larger** than at 24 kHz 16-bit: 192,000 bytes against
+   48,000 bytes per second of audio (48,000 samples × 4 bytes, against
+   24,000 × 2). The follow-up "Measure TTS synthesis time against text
+   length" already suspects this upload as a fixed cost per request —
+   believed, not measured.
+4. **An experiment folder is frozen once its verdict lands** — the
+   convention of `docs/experiments/README.md`: "an experiment folder is never
+   edited after its verdict lands, except to fix a factual transcription
+   error". The agent's admission: runs 5 and 6 and the script's change of
+   2026-09-29 (§11.2) were already made in the experiment folder after its
+   PASS, stretching that rule; the tooling that follows should live outside
+   it.
+
+#### Option A, adopted — a casting script, with the mapping as data
+
+A small script **assembles each character's folder** from the downloaded
+EARS files:
+
+- **It converts each clip** to mono 24 kHz 16-bit with the Mac's own
+  `afconvert` — proper resampling (48 kHz to 24 kHz needs a low-pass filter;
+  dropping every other sample would alias), and no new dependency. It can
+  also **bring all clips to the same loudness**, the open question §8,
+  item 6.
+- **It writes `ref.wav` and `ref.txt`** — the transcript comes with the clip
+  (the `.txt` written by the fetch, from EARS's `transcripts.json`). Later,
+  once mood clips exist in the app, it writes `ref-<mood>.wav` and
+  `ref-<mood>.txt` too.
+- **It touches nothing else** in the folder: `prompt.md` stays as it is. It
+  can keep the old `say`-made `ref.wav` as `ref.placeholder.wav`, so the
+  placeholder voice can come back.
+
+**The mapping is one small file the owner reviews**, in three parts — the
+cast (the owner's choice, after listening), the clip that becomes each
+character's single voice, and the show's moods mapped to EARS emotions (used
+once mood clips exist):
+
+```yaml
+cast:              # the owner's choice, after listening
+  Daniel: p0xx
+  Moira: p0xx
+  Ralph: p0xx
+  Samantha: p0xx
+voice: emo_neutral_sentences   # the clip that becomes ref.wav
+moods:             # show mood -> EARS emotion (used once mood clips exist)
+  calm: neutral
+  afraid: fear
+  terrified: distress
+  angry: anger
+  sad: sadness
+  ...
+```
+
+**The emotion mapping — the agent's first draft** (from §6.5's EARS column),
+accepted by the owner as the draft, to be settled by ear:
+
+| Show mood | EARS | Confidence |
+|---|---|---|
+| calm | neutral (or serenity) | good |
+| happy | amusement, contentment | good |
+| excited | extasy, amazement | fair |
+| hopeful | interest? contentment? | weak |
+| relieved | relief | good |
+| doubtful | confusion | good |
+| curious | interest | good |
+| urgent | *no emotion fits*; an idea: EARS's **reading styles**, `sentences_NN_loud` or `sentences_NN_fast` | untested |
+| determined | pride? | weak |
+| sad | sadness | good |
+| afraid | fear | good |
+| terrified | distress (or fear) | fair |
+| angry | anger | good |
+| exhausted | pain? disappointment? | weak |
+
+The names on the EARS side are the files' own spellings (`extasy`, and
+`embarassment` should it ever be used) — §11.1. **Gaps are fine:** the
+mood-clip design already falls back from a missing mood to a near mood, then
+to `ref.wav` (the follow-up "Mood clips", the mapping with fallbacks).
+
+**Where it would live:** outside the experiment folder, as a small tool in
+zombie-radio — for example `tools/voices/`: the casting script, the mapping
+file, and a copy of `fetch_ears.py` as the working tool; the experiment keeps
+its original as the record.
+
+#### The decisions still to take, one at a time
+
+1. ~~Copying (A) or reading in place (B)~~ — **A**, the owner, 2026-09-29.
+2. **Where the tool and the mapping live** — the proposal above,
+   `tools/voices/`.
+3. **Which clip is each character's single `ref.wav` for now** — neutral,
+   or something with more life, such as the fear clip, for a show where
+   everyone is scared.
+4. **The emotion mapping, row by row, by ear** — once the mood clips feature
+   is on the table.
 
