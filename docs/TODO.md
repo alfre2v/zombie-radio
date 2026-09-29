@@ -1372,9 +1372,12 @@ the agent keeps this current. These carry across arcs.*
         Checked on the dev copy at `127.0.0.1:8010` by screenshots and
         by the owner in the browser; the fork's suite 1129 passed and
         the page's Node tests (a new `tests/test_show_gauge.js`, 8).
-        Not yet on the box's installed client: that waits for PR #5's
-        merge and, if the owner wants it, a tag and the installer's
-        pin. How to use it: the fork's `docs/runbooks/show-page.md`,
+        Released the same evening: PR #5 merged (`0ec33c1`), the tests
+        green on `master` (1129 passed; Node 17 / 91 / 35 / 8), the fork
+        tagged `tz-0.3` (annotated, on `0ec33c1`, pushed on the owner's
+        order: "Let's get the tz-0.3 tag and the installer pointed at
+        it."), the installer's `client_version` → `"tz-0.3"`; the
+        owner's re-proof of the install is pending. How to use it: the fork's `docs/runbooks/show-page.md`,
         "Choosing a look".
       - **Moved to follow-ups, post-timebox, behind Task 4 and Task 7:**
         prefetch round N+1 (the follow-up "Prefetch the next round");
