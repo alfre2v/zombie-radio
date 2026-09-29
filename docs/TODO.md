@@ -192,7 +192,12 @@ the agent keeps this current. These carry across arcs.*
   `~/TalkWithZombies-client/Personas/` (the dev clone reads the same
   folder through its `personas_directory`); `Personas/` is gitignored in
   the fork and the installer skips an existing persona folder. Several
-  clips per character by mood: the follow-up "Mood clips". The detail
+  clips per character by mood: the follow-up "Mood clips". **Where the
+  clips may come from (2026-09-29):** datasets of real voices recorded
+  in several emotions, instead of clips hunted one by one and cleaned of
+  background noise — four finalists, EARS, CREMA-D, JL-Corpus and
+  Expresso, and a listening test proposed ([discussion 2026-09-29]
+  voice-datasets-with-emotion, OPEN). The detail
   as first written: character
   bibles → the sections of TalkWithZombies' cast sheet ([spec
   §5]; where they live in the fork — decided 2026-09-23: the
