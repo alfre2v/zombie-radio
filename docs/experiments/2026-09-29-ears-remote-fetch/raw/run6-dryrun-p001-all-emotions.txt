@@ -1,0 +1,27 @@
+p001/emo_adoration_sentences.wav  2.41 MB  (would fetch)
+p001/emo_amazement_sentences.wav  1.68 MB  (would fetch)
+p001/emo_amusement_sentences.wav  1.79 MB  (would fetch)
+p001/emo_anger_sentences.wav  2.22 MB  (would fetch)
+p001/emo_confusion_sentences.wav  1.30 MB  (would fetch)
+p001/emo_contentment_sentences.wav  1.58 MB  (would fetch)
+p001/emo_cuteness_sentences.wav  1.79 MB  (would fetch)
+p001/emo_desire_sentences.wav  2.19 MB  (would fetch)
+p001/emo_disappointment_sentences.wav  2.19 MB  (would fetch)
+p001/emo_disgust_sentences.wav  2.20 MB  (would fetch)
+p001/emo_distress_sentences.wav  2.04 MB  (would fetch)
+p001/emo_embarassment_sentences.wav  2.20 MB  (would fetch)
+p001/emo_extasy_sentences.wav  1.82 MB  (would fetch)
+p001/emo_fear_sentences.wav  2.20 MB  (already here)
+p001/emo_guilt_sentences.wav  1.48 MB  (would fetch)
+p001/emo_interest_sentences.wav  1.81 MB  (would fetch)
+p001/emo_neutral_sentences.wav  1.79 MB  (already here)
+p001/emo_pain_sentences.wav  2.00 MB  (would fetch)
+p001/emo_pride_sentences.wav  2.69 MB  (would fetch)
+p001/emo_realization_sentences.wav  2.89 MB  (would fetch)
+p001/emo_relief_sentences.wav  2.02 MB  (would fetch)
+p001/emo_sadness_sentences.wav  2.13 MB  (would fetch)
+p001/emo_serenity_sentences.wav  1.76 MB  (would fetch)
+
+would fetch: 42.18 MB
+
+[5 requests, 0.040 MB transferred]

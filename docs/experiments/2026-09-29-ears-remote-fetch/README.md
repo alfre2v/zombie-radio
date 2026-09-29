@@ -52,9 +52,16 @@ From this folder, with Python 3.12 (standard library only):
    `python3 fetch_ears.py --types emo_neutral_sentences,emo_fear_sentences --speakers 1-5`.
 4. The fetch itself, after the owner's approval: the same with `--fetch`;
    files land in `datasets/ears/<speaker>/<type>.wav`, with the transcript in
-   `<type>.txt` when the type has one, and `datasets/ears/index.html` — every
-   fetched file as a grid of players, one row per speaker, one column per
-   type — to compare voices side by side (Chrome plays 32-bit float WAV).
+   `<type>.txt` when the type has one. Files already there at their full size
+   are not fetched again ("already here"). Each fetch writes a page of its
+   own, `datasets/ears/index-<start time>.html` (e.g.
+   `index-2026-09-29T11:30:11.html`; `-2`, `-3` … on a clash) — this run's
+   files as a grid of players, one row per speaker, one column per type — to
+   compare voices side by side (Chrome plays 32-bit float WAV).
+5. Every emotion for a few speakers — `--types` takes patterns:
+   `python3 fetch_ears.py --speakers 12,34,56,78 --types 'emo_*_sentences'`
+   (a dry run), then the same with `--fetch`. About 46 MB per speaker for
+   all 23 (`p001`: 46.18 MB).
 
 Every run ends with the number of requests and the bytes transferred, the
 evidence that a zip was not downloaded. The zip module checks each fetched
@@ -175,3 +182,75 @@ the owner's word on the exact sizes. Speakers per age bracket, counted in
 `raw/run1-speakers-info.txt`: women 18-25: 13, 26-35: 12, 36-45: 7, 46-55:
 14, 56-65: 10, 66-75: 2; men 18-25: 12, 26-35: 9, 36-45: 8, 46-55: 4,
 56-65: 4.
+
+**Run 5 — 2026-09-29, 11:09:12-11:11:48 CDT, the shortlist's clips
+fetched.** On the owner's order, after the exact sizes ("commit the docs,
+then fetch both groups"; 404.73 MB, CC BY-NC 4.0):
+
+```
+python3 fetch_ears.py --gender female --native "american english" --types emo_neutral_sentences,emo_fear_sentences --fetch
+python3 fetch_ears.py --gender male --native "american english" --types emo_neutral_sentences,emo_fear_sentences --fetch
+```
+
+The women done at 11:10:48, the men at 11:11:48, both exiting 0. Full
+outputs: `raw/run5-fetch-female.txt`, `raw/run5-fetch-male.txt`. Their last
+lines:
+
+```
+fetched: 250.09 MB
+[903 requests, 254.403 MB transferred]
+
+fetched: 154.64 MB
+[571 requests, 157.337 MB transferred]
+```
+
+Summarized by the committed `summarize_fetch.py`
+(`python3 summarize_fetch.py raw/run5-fetch-female.txt raw/run5-fetch-male.txt`;
+output in `raw/run5-summary.txt`):
+
+```
+files with CRC ok: 190; speakers: 95
+formats (Hz, bits, channels, format): [('48000', '32', '1', '3')]
+emo_fear_sentences: 95 files, 8.2-18.8 s, median 11.6 s
+emo_neutral_sentences: 95 files, 7.5-14.8 s, median 9.7 s
+transferred beyond each file: 0.00-0.07 MB
+```
+
+No error and no missing file in either output. `du -sh datasets/ears`:
+391M — the 95 speakers and `p001` from run 3, with `index.html` listing all
+96.
+
+**Change — 2026-09-29, ~11:30 CDT, the script (recipe steps 4-5 amended).**
+On the owner's order: "yes, add the `emo_*_sentences` convenience so we can
+get all emotions like: `python3 fetch_ears.py --speakers 12,34,56,78 --types
+'emo_*_sentences' --fetch`"; and, for the page: "No, no javascript. This is a
+one time run script. Instead let's differentiate the index.html by the
+datetime it was initiated, so a new run produces:
+`index-2026-09-29T11:30:11.html` (and if there are collisions in the seconds
+- unlikely - just add a `-2`, `-3`, etc... )". The owner had renamed the page
+of runs 3 and 5 to `datasets/ears/index_all_speakers_2emo.html`. What
+changed: `--types` takes patterns (`*`, `?`, `[…]`, matched against each
+speaker's files); a file already on disk at its full size is skipped
+("already here"); each fetch writes `index-<start time>.html` listing that
+run's files — fetched or already here — instead of rewriting `index.html`
+from everything on disk. Checked offline: the pattern `emo_*_sentences`
+picks `emo_extasy_sentences`; a type named twice is kept once; a pattern
+matching nothing is reported; page names on a clash come out `…-3.html` for
+the third. The frozen criteria covered runs 1-5; the change is a
+convenience, not a new question.
+
+**Run 6 — 2026-09-29, 11:35:29 CDT, a dry run with the pattern.**
+
+```
+python3 fetch_ears.py --types 'emo_*_sentences' --speakers 1
+```
+
+Full output: `raw/run6-dryrun-p001-all-emotions.txt` — 23 files listed,
+`emo_fear_sentences` and `emo_neutral_sentences` "(already here)", the other
+21 "(would fetch)"; its last lines:
+
+```
+would fetch: 42.18 MB
+
+[5 requests, 0.040 MB transferred]
+```

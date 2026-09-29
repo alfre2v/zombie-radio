@@ -7,9 +7,13 @@ Standard library only. Nothing is downloaded without --fetch.
   python3 fetch_ears.py --list --speakers 1
   python3 fetch_ears.py --types emo_neutral_sentences,emo_fear_sentences --speakers 1-5          (a dry run)
   python3 fetch_ears.py --types emo_neutral_sentences,emo_fear_sentences --speakers 1-5 --fetch
+  python3 fetch_ears.py --types 'emo_*_sentences' --speakers 12,34 --fetch                      (every emotion)
+
+Each fetch writes a page of players for its own files, datasets/ears/index-<start time>.html.
 """
 
 import argparse
+import fnmatch
 import html
 import io
 import json
@@ -19,6 +23,7 @@ import struct
 import sys
 import urllib.request
 import zipfile
+from datetime import datetime
 from pathlib import Path
 
 RAW = "https://raw.githubusercontent.com/facebookresearch/ears_dataset/main"
@@ -176,19 +181,33 @@ def show_types(speakers):
                 print(f"  {t}: {n} of {len(speakers)} speakers")
 
 
-def fetch(speakers, types, out, stats, do_fetch):
+def resolve(patterns, found):
+    chosen = []
+    for pat in patterns:
+        hits = sorted(fnmatch.filter(found, pat)) if any(c in pat for c in "*?[") else [pat]
+        chosen += [t for t in hits if t not in chosen] or [pat]
+    return chosen
+
+
+def fetch(speakers, patterns, out, stats, do_fetch):
+    started = datetime.now()
     transcripts = get_json("transcripts.json") if do_fetch else {}
     plan_bytes = 0
+    done = []
     for s in speakers:
         with open_zip(s) as zf:
             found = members(zf)
-            for t in types:
+            for t in resolve(patterns, found):
                 info = found.get(t)
                 if info is None:
                     print(f"{s}/{t}: not in the zip")
                     continue
-                plan_bytes += info.compress_size
                 target = out / s / f"{t}.wav"
+                if target.exists() and target.stat().st_size == info.file_size:
+                    print(f"{s}/{t}.wav  {info.file_size / 1e6:.2f} MB  (already here)")
+                    done.append((s, t))
+                    continue
+                plan_bytes += info.compress_size
                 if not do_fetch:
                     print(f"{s}/{t}.wav  {info.file_size / 1e6:.2f} MB  (would fetch)")
                     continue
@@ -205,21 +224,29 @@ def fetch(speakers, types, out, stats, do_fetch):
                          f'{w["seconds"]:.1f} s') if w else "not a WAV header I can read"
                 print(f"{s}/{t}.wav  {info.file_size / 1e6:.2f} MB, CRC ok, "
                       f"{(Stats.transferred - before) / 1e6:.2f} MB transferred  [{shape}]")
+                done.append((s, t))
     print(f"\n{'fetched' if do_fetch else 'would fetch'}: {plan_bytes / 1e6:.2f} MB")
-    if do_fetch:
-        write_index(out, stats)
+    if do_fetch and done:
+        write_index(out, stats, done, started)
 
 
-def write_index(out, stats):
-    files = sorted(out.glob("p[0-9][0-9][0-9]/*.wav"))
-    speakers = sorted({f.parent.name for f in files})
-    types = sorted({f.stem for f in files})
+def page_path(out, started):
+    stamp = started.strftime("%Y-%m-%dT%H:%M:%S")
+    path, n = out / f"index-{stamp}.html", 1
+    while path.exists():
+        n += 1
+        path = out / f"index-{stamp}-{n}.html"
+    return path
+
+
+def write_index(out, stats, done, started):
+    speakers = sorted({s for s, _ in done})
+    types = sorted({t for _, t in done})
     rows = []
     for s in speakers:
         cells = []
         for t in types:
-            f = out / s / f"{t}.wav"
-            cells.append(f'<td><audio controls preload="none" src="{s}/{t}.wav"></audio></td>' if f.exists()
+            cells.append(f'<td><audio controls preload="none" src="{s}/{t}.wav"></audio></td>' if (s, t) in done
                          else "<td></td>")
         label = html.escape(describe(stats[s])) if s in stats else ""
         rows.append(f"<tr><th>{s}<br><small>{label}</small></th>{''.join(cells)}</tr>")
@@ -229,15 +256,16 @@ def write_index(out, stats):
             "small{font-weight:normal;color:#555}</style>"
             "<p>EARS (CC BY-NC 4.0) — Richter et al., Interspeech 2024. Local files, not for redistribution.</p>"
             f"<table><tr><th>speaker</th>{head}</tr>{''.join(rows)}</table>")
-    (out / "index.html").write_text(page, encoding="utf-8")
-    print(f"index: {out / 'index.html'}")
+    path = page_path(out, started)
+    path.write_text(page, encoding="utf-8")
+    print(f"page: {path}")
 
 
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--speakers-info", action="store_true", help="list speakers with their metadata")
     p.add_argument("--list", action="store_true", help="list the WAV files in the chosen speakers' zips")
-    p.add_argument("--types", help="comma-separated file types, e.g. emo_fear_sentences")
+    p.add_argument("--types", help="comma-separated types or patterns, e.g. emo_fear_sentences or 'emo_*_sentences'")
     p.add_argument("--speakers", help="e.g. 1,2,5-9 (default: all, after the filters)")
     p.add_argument("--gender", choices=["female", "male"])
     p.add_argument("--age", help='an age bracket as in the metadata, e.g. "26-35"')

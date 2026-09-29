@@ -485,7 +485,8 @@ cd docs/experiments/2026-09-29-ears-remote-fetch
 5. **Listen and compare** — every fetch rewrites
    `datasets/ears/index.html`: every file fetched so far, one row per speaker
    (with the speaker's metadata), one column per type. Open it in Chrome,
-   which plays 32-bit float WAV.
+   which plays 32-bit float WAV. *(Changed the same day: each fetch now
+   writes a page of its own — §11.2.)*
 
 Every run ends with its number of requests and bytes transferred. A dry run
 reads only tables of contents — under 1 MB even across 58 speakers.
@@ -501,3 +502,40 @@ else. The reference clips the show uses are later converted to mono 24 kHz
 for the native American English speakers — dry runs measured 250.09 MB for
 the 58 women and 154.64 MB for the 37 men (run 4); the fetch waits for the
 owner's word on those exact sizes.
+
+### §11.2 2026-09-29 — the script: every emotion by pattern, a page per run
+
+**The owner (verbatim):** "yes, add the `emo_*_sentences` convenience so we
+can get all emotions like: `python3 fetch_ears.py --speakers 12,34,56,78
+--types 'emo_*_sentences' --fetch`" — and, asked whether the page of 96
+speakers would be lost when more emotions are fetched: "No, no javascript.
+This is a one time run script. Instead let's differentiate the index.html by
+the datetime it was initiated". The owner kept the first page as
+`datasets/ears/index_all_speakers_2emo.html`: the 58 women and 37 men of
+native American English (and `p001`), neutral and fear.
+
+**What changed** (the experiment's runlog has the detail):
+
+- **Every emotion of a few speakers** — `--types` takes patterns; after a
+  shortlist:
+
+  ```bash
+  python3 fetch_ears.py --speakers 12,34,56,78 --types 'emo_*_sentences'
+  python3 fetch_ears.py --speakers 12,34,56,78 --types 'emo_*_sentences' --fetch
+  ```
+
+  The first is the dry run with the exact size; about 46 MB per speaker for
+  all 23 (`p001`: 46.18 MB); the pattern needs no knowledge of the two odd
+  spellings (`embarassment`, `extasy`). `'emo_*_freeform'` brings the
+  unscripted versions (`p001`: 66.81 MB; no transcripts).
+- **Nothing fetched twice** — a file already on disk at its full size is
+  listed as "already here" and skipped.
+- **A page per run** — each fetch writes
+  `datasets/ears/index-<start time>.html` (e.g.
+  `index-2026-09-29T11:30:11.html`; `-2`, `-3` … if two runs start in the
+  same second) with that run's files only — one row per speaker, one column
+  per type. Earlier pages are never touched.
+
+**Where the shortlist stands:** the owner is listening, in
+`index_all_speakers_2emo.html`, for voices to keep.
+
