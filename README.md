@@ -109,6 +109,44 @@ TalkWithZombies' story (`stories/<story>/overtones.yaml`, under
 speaks with a new voice from its next line. Every step, with what to
 expect: [the runbook](docs/runbooks/cast-voices.md).
 
+**Who voices whom, and how to tell.** Two files keep track of which EARS
+speaker is behind each character:
+
+- [`tools/voices/cast.yaml`](tools/voices/cast.yaml) — **the decision**,
+  in git (so every past cast is in its history): `cast:` maps each
+  character to an EARS speaker (`Daniel: p007`), and `voice:` names the
+  recording that becomes the character's `ref.wav`.
+- `~/TalkWithZombies-client/Personas/<Name>/ref.source` — **what was
+  actually written**, beside the audio (outside git): when the character
+  was cast, the EARS credit, and one line per file — `ref.wav <-
+  p007/emo_neutral_sentences`, `ref-fear.wav <- p007/emo_fear_sentences`,
+  … It is rewritten at every cast, so it always describes the files in
+  that folder. If it disagrees with `cast.yaml` (edited, not yet recast),
+  `ref.source` is the truth about what the app speaks with.
+
+To see the current cast at a glance:
+
+```bash
+for f in ~/TalkWithZombies-client/Personas/*/ref.source; do echo "$f: $(sed -n 2p "$f")"; done
+```
+
+Its output on 2026-09-30 (paths shortened), after the first cast:
+
+```
+…/Daniel/ref.source: ref.wav <- p007/emo_neutral_sentences
+…/Moira/ref.source: ref.wav <- p026/emo_neutral_sentences
+…/Ralph/ref.source: ref.wav <- p017/emo_neutral_sentences
+…/Samantha/ref.source: ref.wav <- p033/emo_neutral_sentences
+```
+
+How `cast_voices.py` uses `cast.yaml`, for Daniel: it reads the
+speaker's clips from `source:` + the speaker
+(`../zombie-radio-datasets/ears/p007/`), writes into `personas:` + the
+character's name (`~/TalkWithZombies-client/Personas/Daniel/`, which must
+exist), turns the `voice:` recording into `ref.wav` and `ref.txt`, with
+`--all-emotions` every `emo_<emotion>_sentences` into
+`ref-<emotion>.wav` and `.txt`, and records it all in `ref.source`.
+
 ## Documentation
 
 This repo's memory of record lives in [`docs/`](docs/README.md) —

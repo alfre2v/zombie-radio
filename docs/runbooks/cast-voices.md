@@ -30,6 +30,75 @@ hackTNT_2026/                              (the folder holding the clones side b
   its exact transcript in `ref.txt`, and reads it again on every line it
   speaks — a recast is heard from the next line, without restarting.
 
+## Who voices whom — where it is kept
+
+Two files say which EARS speaker is behind each character; keep both in
+mind.
+
+| | What it says | Where | In git? |
+|---|---|---|---|
+| `tools/voices/cast.yaml` | **the decision**: `cast:` maps each character to an EARS speaker (`Daniel: p007`); `voice:` names the recording that becomes `ref.wav` | this repository | **yes** — every past cast is in its history (`git log -p tools/voices/cast.yaml`) |
+| `Personas/<Name>/ref.source` | **what was actually written**: when, the EARS credit, and one line per file | each persona's folder in the client, beside the audio | no |
+
+A `ref.source` after a cast with `--all-emotions` (Daniel's, from the test
+of 2026-09-30 on a copy of the Personas folder; 25 lines — the header,
+`ref.wav`, and the 23 recordings):
+
+```
+cast 2026-09-30T14:55:31 from EARS, CC BY-NC 4.0 (Richter et al., Interspeech 2024)
+ref.wav <- p007/emo_neutral_sentences
+ref-adoration.wav <- p007/emo_adoration_sentences
+ref-amazement.wav <- p007/emo_amazement_sentences
+...
+ref-serenity.wav <- p007/emo_serenity_sentences
+```
+
+It is rewritten at every cast, so it always describes exactly the files in
+its folder. **If the two disagree** — `cast.yaml` edited but the character
+not recast — `ref.source` is the truth about what the app speaks with, and
+`cast.yaml` only the intention. The current cast at a glance:
+
+```bash
+for f in ~/TalkWithZombies-client/Personas/*/ref.source; do echo "$f: $(sed -n 2p "$f")"; done
+```
+
+Its output on 2026-09-30 (paths shortened), after the first cast:
+
+```
+…/Daniel/ref.source: ref.wav <- p007/emo_neutral_sentences
+…/Moira/ref.source: ref.wav <- p026/emo_neutral_sentences
+…/Ralph/ref.source: ref.wav <- p017/emo_neutral_sentences
+…/Samantha/ref.source: ref.wav <- p033/emo_neutral_sentences
+```
+
+**How `cast_voices.py` uses `cast.yaml`**, followed for Daniel:
+
+```yaml
+source: ../zombie-radio-datasets/ears        # where the EARS downloads are (relative to the checkout)
+personas: ~/TalkWithZombies-client/Personas  # where the app's personas are
+cast:
+  Daniel: p007                               # which EARS speaker voices which character
+voice: emo_neutral_sentences                 # which recording becomes ref.wav
+```
+
+1. **Who, and from where:** `cast` gives Daniel → p007; the clips are read
+   from `source` + the speaker: `../zombie-radio-datasets/ears/p007/`.
+2. **To where:** `personas` + the character's name:
+   `~/TalkWithZombies-client/Personas/Daniel/` — the folder must exist (the
+   script never creates a persona), and the name must match it exactly.
+3. **The voice:** the `voice` recording becomes `ref.wav` —
+   `p007/emo_neutral_sentences.wav` → `Daniel/ref.wav`, its transcript →
+   `ref.txt`.
+4. **With `--all-emotions`:** every `emo_<emotion>_sentences.wav` in
+   `p007/` that has its `.txt` becomes `Daniel/ref-<emotion>.wav` and
+   `.txt`.
+5. **Recorded:** all of it in `Daniel/ref.source`.
+
+`--only Moira` limits a run to the characters named; everything else comes
+from `cast.yaml`. Which of the show's moods is spoken with which recording
+is neither file's business: it is the story's (`voices` in TalkWithZombies'
+`stories/<story>/overtones.yaml`).
+
 ## Before you start
 
 - A Mac with Python 3.12 and [uv](https://docs.astral.sh/uv/) (the cast

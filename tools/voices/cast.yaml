@@ -1,4 +1,4 @@
-# Who voices each character. Change a line, then: uv run python tools/voices/cast_voices.py
+# Who voices each character. Change a line, then: uv run python tools/voices/cast_voices.py --all-emotions
 source: ../zombie-radio-datasets/ears
 personas: ~/TalkWithZombies-client/Personas
 

@@ -1359,3 +1359,55 @@ recording the story names that a persona lacks (a typo, or an emotion not
 downloaded) falls back to `ref.wav`, and the debug line shows which clip
 spoke.
 
+### §11.10 2026-09-30 — who voices whom: where it is kept, and how the casting reads it
+
+**The owner (verbatim):** "How do you keep track of the source of each audio
+file (I mean where is the information kept for what person in EARs we select
+for all the audios of one of our app's personas)? I see a file `ref.source`
+which does have `p007/emo_neutral_sentences`. How does the tool
+cast_voices.py knows what EARS dataset persons to copy from and to which app
+Persona?" — and then: "I want this clarification about how we keep track of
+what person from EARS goes to what app persona in the top README as well as
+the runbook, and discussion doc. I will forget this very soon and need to
+keep the info at hand."
+
+**Two files keep track:**
+
+| | What it says | Where | In git? |
+|---|---|---|---|
+| `tools/voices/cast.yaml` | **the decision**: `cast:` maps each character to an EARS speaker (`Daniel: p007`); `voice:` names the recording that becomes `ref.wav` | zombie-radio | **yes** — every past cast is in its history |
+| `Personas/<Name>/ref.source` | **what was actually written**: when, the EARS credit, one line per file (`ref.wav <- p007/emo_neutral_sentences`, `ref-fear.wav <- p007/emo_fear_sentences`, …) | each persona's folder in the client, beside the audio | no |
+
+`ref.source` is rewritten at every cast, so it always describes the files in
+its folder; when the two disagree (`cast.yaml` edited, the character not yet
+recast), `ref.source` is the truth about what the app speaks with. Daniel's,
+on 2026-09-30, from the first cast: `cast 2026-09-29T14:32:13 from EARS, CC
+BY-NC 4.0 (Richter et al., Interspeech 2024)` / `ref.wav <-
+p007/emo_neutral_sentences`. The current cast at a glance:
+`for f in ~/TalkWithZombies-client/Personas/*/ref.source; do echo "$f: $(sed -n 2p "$f")"; done` — its output on 2026-09-30 (paths shortened):
+
+```
+…/Daniel/ref.source: ref.wav <- p007/emo_neutral_sentences
+…/Moira/ref.source: ref.wav <- p026/emo_neutral_sentences
+…/Ralph/ref.source: ref.wav <- p017/emo_neutral_sentences
+…/Samantha/ref.source: ref.wav <- p033/emo_neutral_sentences
+```
+
+
+**How `cast_voices.py` reads `cast.yaml`**, for Daniel: `cast` gives Daniel
+→ p007; the clips are read from `source` + the speaker
+(`../zombie-radio-datasets/ears/p007/`) and written into `personas` + the
+character's name (`~/TalkWithZombies-client/Personas/Daniel/`, which must
+exist and match the name exactly); the `voice` recording becomes `ref.wav`
+and `ref.txt`; with `--all-emotions` every `emo_<emotion>_sentences` that has
+its transcript becomes `ref-<emotion>.wav` and `.txt`; all of it is recorded
+in `ref.source`. `--only` limits a run to the characters named. Which mood is
+spoken with which recording is neither file's business — it is the story's
+(§11.9).
+
+**Where it is kept at hand:** `README.md`, "Voices for the cast" (the two
+files, the one-line check, the path for Daniel); the runbook
+`docs/runbooks/cast-voices.md`, a section "Who voices whom — where it is
+kept" (the table, a real `ref.source`, the five steps). Also fixed the same
+day: `cast.yaml`'s first line now says to run the cast with `--all-emotions`.
+
