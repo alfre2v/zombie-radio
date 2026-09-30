@@ -920,3 +920,15 @@ The review pages are now in
 `/Users/alfredo/workspace/hackTNT_2026/zombie-radio-datasets/ears/` — the
 owner's pick page: `index-2026-09-29T14:06:44.html`.
 
+**The procedure, in one place (2026-09-30).** The owner (verbatim): "I just
+realized we need to document all the steps that need to be run to download
+audios from EARS and deploying them in the TalkWithZombies Personas folder.
+I believe we have these steps documented completely in
+`docs/discussions/2026-09-29-voice-datasets-with-emotion.md`. Correct? If not
+it is priority one to document this well." Not quite: every step was here,
+but spread across §11.1, §11.2, §11.5 and §11.6, some with superseded paths.
+The living procedure is now the runbook `docs/runbooks/cast-voices.md` —
+every command in order, from looking at the speakers to hearing a new voice —
+summarized in this repository's `README.md`, "Voices for the cast", and
+pointed to from TalkWithZombies' README.
+
