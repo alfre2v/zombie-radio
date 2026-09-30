@@ -18,7 +18,9 @@ each character's folder, driven by a mapping file (§11.3, option A).
 emotion fetched for review (§11.4); the casting script is built after the
 owner picks the four. **The casting script is built and a first cast is
 in the app** (§11.5): `tools/voices/cast.yaml` says who voices whom; one
-command recasts. This document is updated as the real audio files are tried: each
+command recasts. **Since 2026-09-30 the downloads live outside the
+repository**, in `zombie-radio-datasets/` beside the checkout, and the
+fetch script's working copy is `tools/voices/fetch_ears.py` (§11.6). This document is updated as the real audio files are tried: each
 finding lands as a dated addendum (§11), never as a silent rewrite.
 
 **The owner's request (verbatim, 2026-09-29):** "I think it is time to open a
@@ -850,4 +852,71 @@ compared byte for byte with the installed original (`cmp`: identical).
 **Next:** the owner listens to the show with these voices and recasts at
 will; which clip gives each character's single voice — neutral, or one with
 more life — is §11.3's decision 3, now a one-line change of `voice:`.
+
+### §11.6 2026-09-30 — the downloads moved out of the repository, to `zombie-radio-datasets/`
+
+**The owner (verbatim):** "I am having second thoughts in the location I
+chose for the audio sample downloaded. Maybe we should move all the heavy
+downloads to a folder at the same depth level as the zombie-radio top folder,
+maybe named zombie-radio-datasets. What do you think?" — and, after the
+agent's answer: "yes, do it in that shape".
+
+**Why, the agent's answer:**
+
+1. **Branch-proof.** Inside the repository, the audio was protected only on
+   branches carrying the experiment's `.gitignore`; on the branch
+   `alfre2v/demo-goals` (cut from `main` on 2026-09-30, before this branch
+   was merged) git listed the experiment folder as untracked, the 1.2 GB of
+   CC BY-NC audio with it. A folder outside the checkout is outside git
+   entirely.
+2. **Safe from clean-ups.** `git clean -xdf` deletes ignored files too, and a
+   deleted and re-cloned checkout would lose them.
+3. **One home for every dataset** — CREMA-D, JL-Corpus or Expresso would sit
+   beside EARS: `zombie-radio-datasets/ears/`, `…/crema-d/`, and so on.
+4. **The experiment's rule.** An experiment folder is frozen once its
+   verdict lands; downloads that grow with every fetch do not belong in one.
+5. **Lighter editors** — no 1,000+ WAV files inside the project.
+
+**What was done** (2026-09-30):
+
+- **The move:** `docs/experiments/2026-09-29-ears-remote-fetch/datasets/ears/`
+  → `/Users/alfredo/workspace/hackTNT_2026/zombie-radio-datasets/ears/`, one
+  `mv` on the same disk: 1.2 GB, 96 speaker folders, and the owner's two
+  review pages (`index_all_speakers_2emo.html`,
+  `index-2026-09-29T14:06:44.html`), which keep working — their players use
+  relative paths. The emptied `datasets/` folder in the experiment was
+  removed. The checkout's own folder is named `zombie-radio-claude`; the
+  datasets folder sits beside it.
+- **`zombie-radio-datasets/README.txt`** — what the folder holds, where the
+  clips come from, the citation, and the licence (CC BY-NC 4.0, not for
+  redistribution): outside the repository, the only place that says so.
+- **The fetch script became a tool:** `tools/voices/fetch_ears.py`, a copy of
+  the experiment's, as §11.3 had proposed; it differs only in its usage text
+  and its default output, `<the checkout>/../zombie-radio-datasets/ears` —
+  found relative to the repository, so the path holds on any machine with the
+  same side-by-side layout. The experiment keeps its original, unchanged, as
+  the record.
+- **`tools/voices/cast.yaml`:** `source: ../zombie-radio-datasets/ears`
+  (relative to the repository).
+- **Checked:** `cast_voices.py --dry-run` found the four characters' clips;
+  `fetch_ears.py --types emo_neutral_sentences,emo_fear_sentences,emo_anger_sentences --speakers 7`
+  (a dry run, 40 KB read) reported all three "(already here)" at the new
+  path.
+
+**The commands now** — from the repository's root (they replace, for later
+use, the `cd` into the experiment folder of §11.1 and §11.2; the earlier
+addenda keep their paths as history):
+
+```bash
+python3 tools/voices/fetch_ears.py --speakers-info --gender female --native "american english"
+python3 tools/voices/fetch_ears.py --list --speakers 7
+python3 tools/voices/fetch_ears.py --speakers 7,17 --types 'emo_*_sentences'
+python3 tools/voices/fetch_ears.py --speakers 7,17 --types 'emo_*_sentences' --fetch
+uv run python tools/voices/cast_voices.py --dry-run
+uv run python tools/voices/cast_voices.py --only Moira
+```
+
+The review pages are now in
+`/Users/alfredo/workspace/hackTNT_2026/zombie-radio-datasets/ears/` — the
+owner's pick page: `index-2026-09-29T14:06:44.html`.
 

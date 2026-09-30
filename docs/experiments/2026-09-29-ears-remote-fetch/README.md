@@ -330,3 +330,11 @@ Checked by listing each speaker's folder: all 20 hold 23
 datasets/ears`: 1.2G. The owner's review page:
 `datasets/ears/index-2026-09-29T14:06:44.html` — 20 rows, 23 columns.
 
+**Note — 2026-09-30, the downloads moved (not a run).** At the owner's
+request, `datasets/ears/` was moved out of this folder to
+`zombie-radio-datasets/ears/`, beside the checkout, outside git; the emptied
+`datasets/` was removed. This folder's `fetch_ears.py` is unchanged — the
+record; its default output (`datasets/ears` here) no longer holds the files.
+The working copy, with the new default, is `tools/voices/fetch_ears.py`.
+Details: `docs/discussions/2026-09-29-voice-datasets-with-emotion.md` §11.6.
+

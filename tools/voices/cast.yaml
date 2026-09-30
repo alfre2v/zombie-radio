@@ -1,5 +1,5 @@
 # Who voices each character. Change a line, then: uv run python tools/voices/cast_voices.py
-source: docs/experiments/2026-09-29-ears-remote-fetch/datasets/ears
+source: ../zombie-radio-datasets/ears
 personas: ~/TalkWithZombies-client/Personas
 
 cast:
