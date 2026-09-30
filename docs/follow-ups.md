@@ -1304,6 +1304,13 @@ reader's memory):
 
 ## Mood clips — several reference clips per character, one per mood (owner, 2026-09-28)
 
+- **Status 2026-09-30 — the shape is agreed, and it supersedes the one
+  below:** the clips are named after what was recorded (`ref-fear.wav`,
+  not `ref-afraid.wav`), the story declares the complete mood → clip map
+  (`voices` in `overtones.yaml`), the page names the clip, and the voice
+  route falls back only to `ref.wav` ([discussion 2026-09-29]
+  voice-datasets-with-emotion §11.8). The design below is kept as history.
+
 - **The idea (the owner, verbatim, 2026-09-28):** "In the near future,
   I will want to have several audio clips per persona, difference on the
   mood... So `Moira-happy.way`, `Moira-urgent.wav`, `Moira-afraid.wav`

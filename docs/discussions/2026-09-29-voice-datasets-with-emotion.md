@@ -1102,3 +1102,191 @@ cast's voices, 6 to 12 times smaller than the WAV; still not adopted (the
 measurement found no gain on this link), and adopting it would need the
 fork's change described above.
 
+### §11.8 2026-09-30 — the voices follow the mood: the shape, agreed
+
+**The owner (verbatim):** "bring me the shape of the mood clips feature".
+Goal 2 of the demo ([discussion 2026-09-30] demo-goals §1: "Emotional voices
+in support of the narration") needs it: each character has had one neutral
+reference clip since the first cast (§11.5), and the app never tells the
+voice engine a line's mood. Nothing is built yet; this section is the shape,
+recorded before the build.
+
+#### What happens today (the fork at `tz-0.3`)
+
+1. The director streams each line with its **mood**: the `start` event
+   carries it (`static/show/show.js:252`) and the caption shows it —
+   "Moira (*afraid*)".
+2. The page then calls `speakLine(persona, text, hooks)`
+   (`static/show/player.js:111`); **the mood is dropped there** —
+   `synthesize` posts only `{text, persona_name}` to `/api/tts`
+   (`player.js:187-190`).
+3. The route `/api/tts` (`app/routers/tts.py`, `tts_proxy`) always sends the
+   persona's single `ref.wav` and `ref.txt` to tts-serve. `TTSRequest`
+   (`app/models.py:56`) has only `text` and `persona_name`. TalkWithMe's chat
+   UI (`static/tts.js`) uses the same route.
+
+#### The problem the shape had to solve — "fallbacks"
+
+The owner, on the agent's first shape (verbatim): "I cannot provide an
+answer, I do not understand the problem. what do you mean by fallbacks? Be
+more explicative, give me filenames, example code changes, etc." The
+agent's explanation, in short: **a fallback answers one question — what
+voice do we use when a line's mood has no clip of its own?** The story gives
+the director 14 moods (the fork's `stories/lab-outbreak/overtones.yaml`:
+positive — happy, hopeful, excited, relieved; neutral — calm, doubtful,
+urgent, curious, determined; negative — sad, afraid, terrified, angry,
+exhausted); EARS has 22 emotions, and they are not the same list — no EARS
+emotion fits `urgent` (§11.3). So when the director writes "Ralph (urgent):
+Seal the east door, now! Over." and no urgent clip exists, Ralph could sound
+(a) neutral — his `ref.wav`, flat for an urgent line — or (b) like a near
+mood — afraid, tenser. Choosing (b) means writing "urgent is near afraid"
+somewhere. The agent offered two places:
+
+- **Place 1 — the story** (the design of the follow-up "Mood clips",
+  2026-09-28): `overtones.yaml` declares `fallbacks: {urgent: afraid, …}`,
+  and the voice route follows the chain on every request — so `/api/tts`, a
+  route the chat UI shares, would have to load the show's story, and two
+  files (the story's fallbacks, the casting's clips) would have to agree.
+- **Place 2 — the casting** (the agent's first recommendation):
+  `tools/voices/cast.yaml` points two moods at one EARS emotion
+  (`afraid: fear`, `urgent: fear`), the casting script writes a
+  `ref-urgent.wav` too, and the route only looks for the exact file, else
+  `ref.wav`.
+
+#### The owner's counterproposal, and the agent's refinements
+
+**The owner (verbatim, thinking out loud):** "No, I do not like "Place 2:
+the casting (my recommendation)". Why? Because it is not clear what ears
+emotion maps to what app mood, except if we go to a tool script... I do not
+like that the map for something as central to the app as voice emotion be
+defined in such an unexpected place. Let me do a counterproposal: What if in
+`stories/lab-outbreak/overtones.yaml`, instead of that `fallbacks` dict (that
+in 1 month I will not remember what maps to what), what if instead we map all
+`app mood` --> `audio file name`, for each overtone, as in:
+`neutral: moods: [calm, doubtful, urgent, curious, determined] fallbacks:
+{urgent: "ref-afraid.wav", doubtful: "ref-neutral.wav", ...}` That way we
+have a complete information of the mapping (we do not rely on the fact that
+some ear emotions seem to map better or worse to our moods, we declare it
+all)".
+
+**The agent agreed with the core** — the complete mood-to-voice map belongs
+in the story, where the moods are defined — and pushed back on three details:
+
+1. **Name the files after what was recorded, not after a mood.** A file
+   called `ref-afraid.wav` is named after a show mood, so someone still has to
+   decide which EARS recording goes into it — a second, hidden mapping in
+   `cast.yaml` (`afraid: fear`); reading "urgent" would take two hops across
+   two files. Named after the recording — `ref-fear.wav`, `ref-distress.wav`,
+   `ref-anger.wav` — the story's map reads in one hop, mood → recording, and
+   the casting needs no map at all.
+2. **Call the map `voices`, not `fallbacks`.** It is no longer a list of
+   exceptions but the complete declaration — every mood → the recording its
+   lines are spoken with — and the story loader refuses a story where a mood
+   has no entry, so "declare it all" is enforced by a test, not by memory.
+   `ref.wav` means the neutral voice.
+3. **Keep the voice route unaware of the story.** The show resolves the map
+   and the page names the clip; `/api/tts` only checks the name and uses the
+   file.
+
+**The owner (verbatim):** "yes, I agree with all your refinements. Well done.
+this way the audio files stay close to the dataset and the mapping is ours to
+change as we wish, this makes it way simpler to move to a separate dataset
+with different emotions or filenames too. I am ok with the limitation that
+you correctly identified: "one map for all four characters. If one speaker's
+fear clip is weak, you can't send only that character to another recording".
+That is acceptable for now."
+
+#### The shape, agreed
+
+**The map — in the story** (the fork's `stories/lab-outbreak/overtones.yaml`),
+one `voices` entry per mood, beside the overtone's moods; a first draft from
+§11.3's mapping (the files named after the EARS recordings, in their own
+spellings):
+
+```yaml
+positive:
+  moods: [happy, hopeful, excited, relieved]
+  voices: {happy: ref-amusement.wav, hopeful: ref-interest.wav,
+           excited: ref-extasy.wav, relieved: ref-relief.wav}
+neutral:
+  moods: [calm, doubtful, urgent, curious, determined]
+  voices: {calm: ref.wav, doubtful: ref-confusion.wav, urgent: ref-fear.wav,
+           curious: ref-interest.wav, determined: ref-pride.wav}
+negative:
+  moods: [sad, afraid, terrified, angry, exhausted]
+  voices: {sad: ref-sadness.wav, afraid: ref-fear.wav, terrified: ref-distress.wav,
+           angry: ref-anger.wav, exhausted: ref-pain.wav}
+```
+
+— `urgent` now sounds afraid (`ref-fear.wav`), where §11.3 had left it
+without a clip; every entry is the owner's to change, a line each.
+
+**A persona's folder, after casting:**
+
+```
+~/TalkWithZombies-client/Personas/Ralph/
+  ref.wav, ref.txt                     <- neutral: the default voice, and "calm"
+  ref-fear.wav, ref-fear.txt           <- used by "afraid" and "urgent"
+  ref-distress.wav, ref-distress.txt   <- used by "terrified"
+  ref-anger.wav, ...                   <- one file per recording the story names
+```
+
+**The pieces:**
+
+1. **The story loader** (the fork's `app/show/story.py`) reads each
+   overtone's `voices`, checks that every mood of the overtone has an entry
+   and that each entry is a plain file name (`ref.wav` or `ref-<word>.wav`),
+   and refuses the story otherwise.
+2. **The switch — `show.mood_voices`** (the owner's decision 2: "An on/off
+   switch: show.mood_voices in settings"), in `ShowConfig`, default on: off,
+   every line uses `ref.wav`, as today — an A/B by ear without recasting.
+3. **The page learns the map once** — the run's start reply
+   (`/api/show/start`) carries the story's mood → clip map and the switch —
+   and, for each line, looks up its mood and posts
+   `{text, persona_name, reference: "ref-fear.wav"}`
+   (`player.js`: `speakLine(persona, text, hooks, reference)`; every chunk of
+   a line keeps its line's clip, so a line split into two or three requests
+   keeps one voice).
+4. **The voice route stays generic** (`app/routers/tts.py`, `app/models.py`):
+   `TTSRequest` gains an optional `reference`; the route accepts only a name
+   matching `^ref(-[a-z]+)?\.wav$` — no paths, so nothing like `../` can
+   reach outside the persona's folder — and uses that file with its `.txt`
+   if both exist in the persona's folder; **otherwise `ref.wav`**, as today
+   — the one remaining fallback, for a recording not cast yet. Without a
+   `reference` (TalkWithMe's chat UI), nothing changes. Each clip is a new
+   reference for tts-serve, encoded once — a clip's first use was measured no
+   slower (§11.7).
+5. **Which clip spoke, in the debug line** (the owner's decision 3: "Show
+   which clip spoke, in the debug line"): the route's reply names the clip it
+   used, and the debug line under each round shows it — to check by ear that
+   "afraid" really used the fear recording.
+6. **The casting script** (zombie-radio's `tools/voices/cast_voices.py`)
+   reads the story's `voices` to know which recordings to copy, and writes
+   each as recorded — EARS `emo_fear_sentences` → `ref-fear.wav`, with
+   `ref-fear.txt` — so the story stays the single source of truth;
+   `cast.yaml` loses its `moods:` section and keeps who voices whom, the
+   neutral clip and the loudness. Earlier mood clips (`ref-*.wav`) are
+   removed on a recast, as today.
+7. **Tests, in the fork's style:** the loader (a complete `voices` accepted;
+   a missing entry or an unsafe name refused); the route (a named clip that
+   exists → that clip; one that does not → `ref.wav`; no `reference` →
+   `ref.wav`; an unsafe name → `ref.wav`; the chat UI's request unchanged);
+   the page (Node: the clip reaches the request body, every chunk of a line
+   carries it; the switch off → no `reference` sent).
+
+**The limitation, accepted:** one map for all four characters — if one
+speaker's fear clip is weak, that character cannot be sent alone to another
+recording. A per-character exception could come later.
+
+**What the shape makes easy** (the owner's point): the files stay named as
+the dataset names them, and the mapping is the story's to change — moving to
+another dataset with other emotions or file names means recasting and editing
+the story's `voices`, nothing in the code.
+
+**Then:** cast with the moods; listen to the same show with `mood_voices` on
+and off — the first real test of goal 2 (how much of a clip's emotion carries
+into the cloned voice is unmeasured; the owner's ear is the measurement); a
+new fork tag (`tz-0.4`) and the installer's pin. **Estimate:** about 2-3 hours
+in the fork and the casting script, with tests (the agent's), on a fork branch
+`alfre2v/mood-clips`.
+
