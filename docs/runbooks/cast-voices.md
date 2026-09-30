@@ -13,11 +13,12 @@ hackTNT_2026/                              (the folder holding the clones side b
 ├── zombie-radio-claude/                   this repository's checkout (any name) — the tools
 │   └── tools/voices/
 │       ├── fetch_ears.py                  downloads EARS clips
+│       ├── screen_voices.py               checks each clip says its transcript, and its pitch
 │       ├── cast.yaml                      who voices whom — the only file you edit
 │       └── cast_voices.py                 writes the voices into the app
 └── zombie-radio-datasets/                 the downloads, outside git
     ├── README.txt                         what is here, and the licence
-    └── ears/<speaker>/<type>.wav, .txt    one folder per EARS speaker; index-*.html pages
+    └── ears/<speaker>/<type>.wav, .txt    one folder per EARS speaker; index-*.html and screen-*.html pages
 
 ~/TalkWithZombies-client/Personas/<Name>/  the app's personas: ref.wav, ref.txt (and ref.source)
 ```
@@ -191,6 +192,64 @@ page of your favourites (step 4); rename a page to keep it recognizable (the
 first one of this project is `index_all_speakers_2emo.html`). The pages play
 the original lossless clips (32-bit float WAV); they were used in Chrome,
 other browsers untested.
+
+## 4b. Screen the speakers you liked
+
+EARS's speakers did not always read just their sentence: some said
+something before it (an aside, "Appreciate it", "I'm amazed."), read a
+sentence twice, or read another passage; some raise their voice far above
+their normal pitch in certain emotions. The voice engine clones from a clip
+**and** its transcript together, so a clip whose words do not match its
+transcript can make a line come out badly, and a man's recording that
+climbs into a woman's range can make his cloned voice drift feminine —
+both happened in the first shows (2026-09-30). Screen a speaker before
+casting them:
+
+```bash
+python3 tools/voices/screen_voices.py --speakers 85,54,88
+```
+
+For each speaker and each read emotion downloaded, it:
+
+- has the box's Whisper transcribe the clip (through the tunnel, like the
+  app — `make ssh-tunnel ENV=cloud` first) and compares the words with the
+  transcript, reading "I'm" and "I am", "8pm" and "8 p.m." as the same;
+- estimates the clip's pitch and compares it with the speaker's neutral
+  clip.
+
+A clip is **flagged** for:
+
+- **stray speech** — 2 or more words heard before or after the transcript
+  (`--extra-words`);
+- **weak match** — under 0.80 of the words matching (`--min-match`):
+  paraphrase or garbling;
+- **pitch climbs** — more than 1.5 times the neutral pitch (`--pitch-rise`).
+  The estimate is rough: a climb of exactly ×2.00 may be the estimator
+  mistaking a pitch for its double — listen before believing it.
+
+It prints each speaker's line and every flagged clip with what Whisper
+heard, for example (the test of 2026-09-30):
+
+```
+p017: 23 clips, 3 flagged; pitch neutral 89 Hz, highest 222 Hz
+   confusion     stray speech, pitch climbs: match 0.93, extra 2 before / 0 after, pitch x2.50
+      heard: Appreciate it Huh, what is going on over here? What is this? Where are we going?
+```
+
+and writes, next to the clips, `screen-<start time>.json` (every clip's
+result) and **`screen-<start time>.html`: a page of players for the flagged
+clips**, the transcript beside what Whisper heard, the stray words
+highlighted — to confirm each flag by ear. About 20 seconds per speaker (23
+clips); `--emotions fear,distress` screens only those.
+
+**What to do with a flag:**
+
+- on a recording no mood uses, nothing;
+- on a speaker you are considering, prefer another;
+- on a cast character's recording that a mood uses: recast, remap the mood
+  in the story, or correct the transcript to what was said (in the
+  downloaded copy, `zombie-radio-datasets/ears/<speaker>/emo_<emotion>_sentences.txt`,
+  then recast so the correction reaches the persona).
 
 ## 5. Choose the cast
 

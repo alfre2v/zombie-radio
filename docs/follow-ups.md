@@ -1428,6 +1428,46 @@ reader's memory):
 
 ## A cloned line came out badly degraded, once — Samantha, in the first show with mood voices (owner, 2026-09-30) — postponed
 
+- **Status 2026-09-30, evening — suspect 1 confirmed, and screened for.** The
+  owner heard Daniel's voice drift feminine on "Daniel (terrified): That
+  figure, it's not human. Over." (the fork's run `2026-09-30T16-47-31`, round
+  45, mood terrified → `ref-distress.wav`, from p007 — the right clip was
+  sent), and found the cause by listening (verbatim): "the audio of Daniel's
+  `ref-distress.wav` have an artifact in the beginning, the voice actor said
+  something in low voice just before reading the transcript." Whisper heard
+  it: "*can just eat all of them.* Oh God, I'm not sure…" — words the
+  transcript does not have. p007's negative recordings also pitch into a
+  woman's range (median, by a rough standard-library estimate: neutral 133
+  Hz; fear 235, anger 211, distress 190 — Moira's neutral voice is 195-200).
+  The owner (verbatim): "I think we need to replace Daniel."
+  **The screening** (2026-09-30, 17:09-17:12 CDT, on the owner's go): for 14
+  speakers — the ten other men of the shortlist, the current cast (p026,
+  p017, p063) and p007 as the control — each of the 13 recordings the story
+  uses was transcribed by the box's Whisper (`/v1/audio/transcriptions`, no
+  voice-activity filter, language en) and compared word by word with its
+  transcript, and the neutral and four negative recordings were
+  pitch-estimated (autocorrelation, 50 ms frames, voiced frames only) — 182
+  requests, from the downloaded originals converted to 16 kHz. The control
+  was flagged (6 extra words at the start), as it must be. **Stray speech
+  found:** p007 distress ("can just eat all of them."), **p017 (Ralph)
+  confusion** ("Appreciate it" — Ralph's *doubtful* lines), **p063
+  (Samantha) pride** ("I'm amazed." — Samantha's *determined* lines), p046
+  confusion (its first sentence read twice), p101 realization (a different,
+  longer passage). Every other flag was a false alarm — "I'm" heard as "I
+  am" at the start of anger and relief. EARS speakers also paraphrase a
+  little ("too many shrimp" read "so much shrimp"). **Men whose negative
+  recordings stay low** (highest negative median): p054 118 Hz, p088 131,
+  p085 133 — and no stray speech; the rest reach 167-222 Hz. **Still to
+  decide:** Daniel's new speaker (the owner's pick; p054 sits as low as
+  Ralph's p017, 89 Hz neutral); and the two cast clips with stray speech —
+  the simplest fix is to correct their transcripts to what was said.
+  **The method is the fix for suspect 1:** screen a speaker before casting
+  them — now the tool `tools/voices/screen_voices.py` (the runbook
+  `docs/runbooks/cast-voices.md`, step 4b; [discussion 2026-09-29]
+  voice-datasets-with-emotion §11.12). **Done the same evening:** Daniel
+  recast with p085 (the owner's pick); the two transcript fixes wait for the
+  owner to confirm the flags by ear.
+
 - **What was heard:** the owner's first listen to the mood voices
   (2026-09-30, the fork's `alfre2v/mood-clips` on the dev server, run
   `2026-09-30T15-23-48` in the fork's `runs/`, 31 rounds, 19 lines by
@@ -1472,6 +1512,47 @@ reader's memory):
      script of [discussion 2026-09-29] voice-datasets-with-emotion §11.7 is
      the pattern) — the same degradation every time points at the clip,
      once only at randomness.
+
+## Keep every synthesized chunk in debug mode, and send a seed with every voice request (owner, 2026-09-30) — decided, not built
+
+- **The gap:** the voice server's audio for each chunk goes to the page,
+  plays, and is forgotten — debug mode keeps only the model's side
+  (`runs/<run-id>/debug/rNNN.txt`, `.request.json`). When a line goes wrong
+  (Daniel's "Candles!" in a woman's voice, 2026-09-30, run
+  `2026-09-30T17-28-18` round 9), the audio heard is gone. And the app sends
+  the voice server **no seed**, so every synthesis is random and a bad line
+  cannot be reproduced.
+- **The owner's question (verbatim):** "What do we do with the received
+  audios for each round in debug mode. We should save them so we can trace
+  back this problems." **Decisions (verbatim):** "yes to 1 and 2, seed
+  always; record the follow-up. But do not execute yet".
+- **The shape agreed:**
+  1. **In debug mode, keep every chunk with its round** —
+     `runs/<run-id>/debug/audio/r009-l2-c1-Daniel-ref-extasy.wav` (round,
+     line, chunk, persona, clip used) and a `.json` beside it: the text
+     sent, the persona, the clip asked for and the clip used, the voice
+     server's `time_used`, the seed. How: with debug on, the page tags each
+     voice request (e.g. `debug: "2026-09-30T17-28-18/r009-l2-c1"`); the
+     voice route checks the tag strictly (the run id's own pattern, numbers
+     only — nothing that can name another folder) and writes the audio it
+     returns into that run's `debug/audio/`. Debug off, or TalkWithMe's chat
+     UI (no tag): nothing changes. About 35-45 MB per 50-round run, in
+     `runs/` (gitignored).
+  2. **A seed with every voice request, always** — derived from the run's
+     seed and the chunk's position (round, line, chunk), recorded in the
+     `.json`; tts-serve's Faster Qwen3-TTS accepts `seed`. Any saved line can
+     then be replayed exactly (same clip, text and seed → the same audio),
+     and a run with a pinned seed reproduces its voices, not only its words.
+  3. Optional: a link from the debug line to the round's audio folder.
+- **Where it sits:** the fork (TalkWithZombies): `static/show/player.js`
+  and `show.js` (the tag, the seed), `app/models.py` (`TTSRequest`: `debug`,
+  `seed`), `app/routers/tts.py` (the save, the seed passed to
+  `synthesize`), tests; the runbook `docs/runbooks/show-page.md`. About 1.5-2
+  hours with tests (the agent's estimate).
+- **Trigger:** the owner's go — "do not execute yet" (2026-09-30, before a
+  context compaction). Related: the replay test proposed for "Candles!" (the
+  line sent 4 times with Daniel's clip and once with Samantha's) — not run;
+  with this built, the next incident arrives with its own evidence.
 
 ## The three dropped page designs — kept in the fork's history, not in its tree (owner, 2026-09-28)
 

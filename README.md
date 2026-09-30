@@ -58,7 +58,7 @@ Austin Python Meetup in October 2026.
 
 The four characters speak with real human voices, cloned from short
 reference clips of the [EARS](https://github.com/facebookresearch/ears_dataset)
-dataset (CC BY-NC 4.0 — never committed here). Two tools in
+dataset (CC BY-NC 4.0 — never committed here). Three tools in
 [`tools/voices/`](tools/voices/) take them from the dataset to the
 TalkWithZombies client, run from this repository's root:
 
@@ -72,10 +72,13 @@ python3 tools/voices/fetch_ears.py --gender female --native "american english" -
 # 3. Download every emotion for the speakers you liked, and write a page of players for them
 python3 tools/voices/fetch_ears.py --speakers 7,17,26,33 --types 'emo_*_sentences' --fetch
 
-# 4. Choose the cast in tools/voices/cast.yaml, then preview what the cast would write
+# 4. Screen them: does each clip say its transcript, and stay in the speaker's pitch? (Whisper, through the tunnel)
+python3 tools/voices/screen_voices.py --speakers 7,17,26,33
+
+# 5. Choose the cast in tools/voices/cast.yaml, then preview what the cast would write
 uv run python tools/voices/cast_voices.py --all-emotions --dry-run
 
-# 5. Cast: write each character's voice, and every emotion it recorded, into the app's Personas folder
+# 6. Cast: write each character's voice, and every emotion it recorded, into the app's Personas folder
 uv run python tools/voices/cast_voices.py --all-emotions
 ```
 
@@ -96,7 +99,11 @@ untested.
 
 In order: look at the speakers; download two clips each for a
 shortlist, and listen on the page of players the fetch writes; download
-every emotion for your favourites; choose the cast in
+every emotion for your favourites; screen them — some EARS speakers say
+something before their sentence, or climb far above their normal pitch in
+some emotions, and either can spoil a cloned line (the screening flags
+those clips and writes a page of players to confirm them by ear,
+`screen-<start time>.html`); choose the cast in
 [`tools/voices/cast.yaml`](tools/voices/cast.yaml); cast. Each fetch
 works as a dry run without `--fetch`. The clips land in
 `../zombie-radio-datasets/`, beside this checkout; the voices land in

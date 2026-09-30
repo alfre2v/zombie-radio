@@ -1504,3 +1504,57 @@ voice for a different voice now." Also the owner, after the remaps: "Wow,
 the show is very good now. What a difference since we started. The emotions
 work very well, and I have not seen more incidents of voice degradation."
 
+### §11.12 2026-09-30 — screening the voices: stray speech and pitch, a tool; Daniel recast
+
+**Why.** The owner heard Daniel's voice drift feminine on a terrified line
+and found the cause by ear (verbatim): "the audio of Daniel's
+`ref-distress.wav` have an artifact in the beginning, the voice actor said
+something in low voice just before reading the transcript." Measured the
+same hour: p007's negative recordings also pitch into a woman's range. The
+owner: "I think we need to replace Daniel." A first screening in the agent's
+scratch space (14 speakers, 182 requests to the box's Whisper) found stray
+speech in five clips, two of them in the current cast — the follow-up "A
+cloned line came out badly degraded, once" has the results. The owner
+(verbatim): "Yes, we need to save this method to screen voices to check if
+they are really following the transcript, the number of deviations I've
+found is noticeable. Therefore we need some automated method to narrow our
+search space. Please incorporate this script into our project and document
+well how to use it."
+
+**The tool:** `tools/voices/screen_voices.py` (standard library only,
+`python3`). For each speaker and each read emotion downloaded, it has the
+box's Whisper transcribe the clip (`/v1/audio/transcriptions` through the
+tunnel, language en, no voice-activity filter so a quiet aside is kept) and
+compares the words with the transcript — contractions and times read alike
+("I'm" = "I am", "8pm" = "8 p.m.", "75%" = "75 percent"), which removes the
+false alarms of the first screening; and it estimates the clip's pitch
+(autocorrelation, 50 ms frames, voiced frames only) against the speaker's
+neutral clip. Flags: **stray speech** (2 or more words before or after the
+transcript), **weak match** (under 0.80), **pitch climbs** (over 1.5 times
+the neutral) — all three thresholds are options. It prints a line per
+speaker and each flagged clip with what Whisper heard, and writes a JSON of
+every result and **a page of players for the flagged clips**
+(`screen-<start time>.html`, next to the clips) to confirm each by ear.
+Documented in the runbook `docs/runbooks/cast-voices.md` (step 4b, with
+what to do with a flag) and in the README's "Voices for the cast" (step 4).
+
+**The tool's test** (17:29-17:30 CDT, 1 min 42 s, 115 clips): p007, p017,
+p063, p026, p085, every read emotion. The three known cases flagged as
+stray speech — p007 distress (6 words before), p017 confusion ("Appreciate
+it"), p063 pride ("I'm amazed.") — and **the two false alarms gone** (p026
+anger and p063 relief, "I'm" heard "I am"). New: **p063 disappointment**,
+5 stray words before (a recording no mood uses). Pitch climbs flagged
+mostly in expressive emotions (confusion, interest, cuteness, extasy);
+some at exactly ×2.00, which may be the estimator doubling a pitch — to
+confirm by ear. p085 (Daniel's new voice): one flag, confusion ×1.75 — the
+recording his *doubtful* lines use.
+
+**Daniel recast** (17:27:44 CDT): p007 → **p085** (male, 26-35, American
+English), the owner's pick from the screening's low-pitched men (p054, p085,
+p088); `cast.yaml`, `Daniel: p085`; every emotion, 24 files, all from p085.
+**Pending:** the transcripts of Ralph's (p017) confusion and Samantha's
+(p063) pride clips, to correct to what was said — after the owner confirms
+the flags by ear, on the page of players the agent built for them
+(`zombie-radio-datasets/ears/stray-speech-2026-09-30.html`, with two false
+alarms for comparison).
+
