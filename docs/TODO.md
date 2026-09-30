@@ -354,7 +354,9 @@ the agent keeps this current. These carry across arcs.*
   seed makes retakes reproducible: on one server slot, the same
   request and seed gave the same words 80 minutes apart
   (2026-09-22) — record with the settings it will be replayed
-  with.
+  with. **Before demo day, re-examine** the follow-up "Compressed
+  reference clips, switchable on and off" (the owner, 2026-09-30): if
+  the venue's uplink is slow, build the switch and turn it on.
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes
