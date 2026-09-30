@@ -932,3 +932,173 @@ every command in order, from looking at the speakers to hearing a new voice —
 summarized in this repository's `README.md`, "Voices for the cast", and
 pointed to from TalkWithZombies' README.
 
+### §11.7 2026-09-30 — the reference clip's size and format: measured against the delay between lines
+
+**The owner, after the first show with the EARS voices (verbatim):** "Wow,
+this is really good. Our hard work is paying off. The audio quality of the
+voices is amazing. I notice a bit more delay between audio lines, I suppose
+because the wav files need to be re-sent again and again and they are bigger
+now. Can you list the size of all the audio files we are sending for each
+character? Is there any way we could reduce the size of the audio files? Do
+you know if the tts-serve engines support some lossy encoding like mp3 or
+ogg? This is discussion only, do not implement anything without my
+approval." Then: "run the two-minute measurement first, let's hear the server
+response to mp3 and ogg, then decide which is best."
+
+**The clips the app sends** (the client's `Personas/`, 2026-09-30; all mono
+24 kHz 16-bit WAV — the format did not change, the clips got longer):
+
+| Character | `ref.wav` (EARS) | `ref.placeholder.wav` (`say`) |
+|---|---|---|
+| Daniel | 439,270 bytes, 9.1 s | 276,762 bytes, 5.7 s |
+| Moira | 482,212 bytes, 10.0 s | 249,384 bytes, 5.1 s |
+| Ralph | 516,988 bytes, 10.7 s | 246,580 bytes, 5.1 s |
+| Samantha | 561,868 bytes, 11.6 s | 289,892 bytes, 6.0 s |
+
+The app base64-encodes the clip into the JSON of **every** synthesis
+request (the fork's `app/services/tts_client.py`; tts-serve has no
+upload-once option — `docs/discussions/2026-09-21-task6-recon-tts-serve.md`,
+F1), so about 4/3 of these sizes travel per request, and a line can take two
+or three requests (the voice accumulator's chunks of about 100 characters).
+
+**Two suspects, before measuring** (the agent's): (1) the upload — about
+590-750 KB per request now against 330-390 KB before; (2) the engine — a
+voice-cloning model conditions each sentence on the reference, so a clip
+twice as long might synthesize slower. tts-serve reports its own synthesis
+time (`time_used`) in each reply, which tells the two apart.
+
+**The measurement** (2026-09-30, 13:00:19-13:00:47 CDT, through the tunnel to
+the A6000; tts-serve 1.2, Faster Qwen3-TTS, `Qwen/Qwen3-TTS-12Hz-1.7B-Base`).
+The capabilities document the box serves states the reference formats
+`["wav", "mp3", "ogg", "flac"]` and "~3 s is enough for high-quality
+cloning". Moira's clips, encoded on the laptop with Homebrew's `ffmpeg`
+(9.0.1; it has no Vorbis encoder, so "ogg" is Opus in Ogg):
+
+```bash
+ffmpeg -hide_banner -loglevel error -y -i new.wav -c:a flac new.flac
+ffmpeg -hide_banner -loglevel error -y -i new.wav -c:a libmp3lame -b:a 64k new.mp3
+ffmpeg -hide_banner -loglevel error -y -i new.wav -c:a libopus -b:a 48k new-48k.ogg
+ffmpeg -hide_banner -loglevel error -y -i new.wav -c:a libopus -b:a 32k new-32k.ogg
+```
+
+— `new.wav` is Moira's `ref.wav` (482,212 bytes), `placeholder.wav` her
+`ref.placeholder.wav` (249,384): FLAC 220,923 bytes, MP3 80,492, Opus 48 kbps
+56,589, Opus 32 kbps 38,484. Each reference sent twice (the first request of
+a new clip includes its one-time encoding), the same sentence and seed,
+straight to `/synthesize` as the app sends it — the script, `measure.py`:
+
+```python
+import base64, json, sys, time, urllib.request
+TEXT = "Did you hear that? Something is scratching at the loading dock door, and it is not the wind. Over."
+REFS = [("placeholder.wav", "placeholder.txt"), ("new.wav", "new.txt"), ("new.flac", "new.txt"),
+        ("new.mp3", "new.txt"), ("new-48k.ogg", "new.txt"), ("new-32k.ogg", "new.txt")]
+print(f"{'reference':16} {'file KB':>8} {'req KB':>7} {'try':>3} {'wall s':>7} {'server s':>8} {'other s':>7} {'audio s':>7}")
+for ref, txt in REFS:
+    raw = open(ref, "rb").read()
+    body = json.dumps({"text": TEXT, "audio_base64": base64.b64encode(raw).decode(), "reference_text": open(txt).read().strip(),
+                       "language": "en", "seed": 42}).encode()
+    for attempt in (1, 2):
+        req = urllib.request.Request("http://localhost:8001/synthesize", data=body, headers={"Content-Type": "application/json"})
+        t0 = time.perf_counter()
+        try:
+            with urllib.request.urlopen(req, timeout=120) as r:
+                out = json.loads(r.read())
+        except urllib.error.HTTPError as e:
+            print(f"{ref:16} HTTP {e.code}: {e.read()[:300]}"); break
+        wall = time.perf_counter() - t0
+        wav = base64.b64decode(out["audio_base64"])
+        open(f"out-{ref.replace('.', '_')}-{attempt}.wav", "wb").write(wav)
+        used = out.get("time_used")
+        dur = out.get("duration", (len(wav) - 44) / 48000)
+        print(f"{ref:16} {len(raw)/1000:8.0f} {len(body)/1000:7.0f} {attempt:3} {wall:7.2f} {used if used is None else f'{used:8.2f}'} "
+              f"{'' if used is None else f'{wall-used:7.2f}'} {dur:7.2f}")
+    sys.stdout.flush()
+```
+
+Its output (wall = measured on the laptop; server = the reply's
+`time_used`; other = wall − server: transport, base64 and decoding; audio =
+the reply's length, from its byte count at 24 kHz 16-bit):
+
+```
+reference         file KB  req KB try  wall s server s other s audio s
+placeholder.wav       249     333   1    2.54     2.03    0.51    5.68
+placeholder.wav       249     333   2    2.46     1.84    0.62    5.68
+new.wav               482     643   1    2.24     1.71    0.52    5.20
+new.wav               482     643   2    2.31     1.71    0.60    5.20
+new.flac              221     295   1    2.47     1.75    0.71    5.20
+new.flac              221     295   2    2.23     1.71    0.51    5.20
+new.mp3                80     108   1    2.21     1.75    0.46    5.12
+new.mp3                80     108   2    2.15     1.69    0.46    5.12
+new-48k.ogg            57      76   1    2.66     2.05    0.60    6.00
+new-48k.ogg            57      76   2    2.54     1.97    0.57    6.00
+new-32k.ogg            38      52   1    2.30     1.80    0.50    5.20
+new-32k.ogg            38      52   2    2.19     1.72    0.48    5.20
+```
+
+**What it shows:**
+
+- **All four formats work** — the box decoded MP3 and Ogg/Opus without an
+  error.
+- **The upload size barely matters on this link:** the part outside
+  synthesis stays around **0.5 s** whether the request is 52 KB or 643 KB —
+  a fixed cost per request, not bandwidth.
+- **The longer clip does not slow the engine:** the new 10 s WAV
+  synthesized in 1.71 s, against 1.84-2.03 s for the 5 s placeholder; a new
+  clip's first use is not slower either.
+- **Neither suspect explains a longer gap** — two tries per variant:
+  indicative, not solid. **The agent's guess, not measured:** the real
+  voices speak a little faster (5.2 s against 5.7 s of audio for this
+  sentence), so each chunk plays for less time and hides less of the next
+  chunk's ~2.3 s — more of it is heard as silence. The client's run with
+  debug on (its per-round timings) could confirm it.
+
+**Do the other engines take MP3 and Ogg too?** The owner (verbatim): "is
+this mp3 and ogg support only for the fast qwen TTS engine, or present in
+more of the backend TTS engines that tts-serve supports?" In tts-serve 1.2
+(the local clone, `b1f06b7`, the version on the box), **all eight engines
+declare the same formats** — `["wav", "mp3", "ogg", "flac"]` in each
+`impl/server_*.py`: Chatterbox, OmniVoice, Qwen3-TTS, Faster Qwen3-TTS,
+dots.tts, IndexTTS, LuxTTS and the Mac's MLX Qwen3-TTS. The support is shared
+machinery: every engine validates the clip with `soundfile` (`sf.info`);
+Qwen3-TTS and its MLX version decode it in memory (`sf.read`); Faster
+Qwen3-TTS, IndexTTS, dots.tts, Chatterbox and LuxTTS load it from a file
+staged by `tts-engine-common`, always named `.wav` — its comment: "The .wav
+extension is cosmetic — the loader sniffs the header, so MP3/OGG/FLAC bytes
+work fine." **Proven only for Faster Qwen3-TTS** (this measurement); for the
+other seven it is the code's claim; how OmniVoice loads the clip was not
+found in that search. MP3 and Opus also depend on the `soundfile` build each
+engine installs.
+
+**How much smaller** a reference could be: FLAC about 46 % of the WAV
+(lossless — the same voice, guaranteed), MP3 64 kbps about 17 %, Opus 32
+kbps about 8 %. Using one would need a small change in the fork — the app
+reads a file named exactly `ref.wav` (it only base64-encodes the bytes, so an
+MP3 saved under that name would pass through, but mislabelled); the clean
+way accepts `ref.mp3` / `ref.ogg` / `ref.flac` beside it, and the casting
+script would encode accordingly.
+
+**The agent's recommendation:** keep WAV for now — on this link a smaller
+reference does not help. A compressed reference is a cheap margin for a slow
+connection (a crowded venue's Wi-Fi on demo day), **if the cloned voice does
+not change** — which needs the owner's ear.
+
+**The listening test, pending.** The owner (verbatim): "One thing you forgot
+is that the voice quality might have changed with the compression. Did you
+save the audio response for each request? I could do a quick voice
+synthesizing quality test for ogg and mp3, for one voice only, just to
+discard any glaring problems." The twelve replies were saved (`out-<reference>-<try>.wav`)
+with a page of players comparing each reference and the voice cloned from it,
+in the agent's scratch folder — outside the repository (the voice is derived
+from an EARS clip, CC BY-NC 4.0), and not kept after the session.
+
+**The listening test — passed** (2026-09-30). The owner listened to the
+comparison page — Moira's voice cloned from the WAV, FLAC, MP3 (64 kbps) and
+Ogg/Opus (48 and 32 kbps) references, the same sentence and seed — and
+(verbatim): "The quick quality voice test is successful, I do not notice any
+voice degradation." One voice, one sentence, by ear: enough to rule out
+glaring problems, which was its purpose. **Consequence:** a compressed
+reference — MP3, or Opus down to 32 kbps — is an acceptable option for the
+cast's voices, 6 to 12 times smaller than the WAV; still not adopted (the
+measurement found no gain on this link), and adopting it would need the
+fork's change described above.
+
