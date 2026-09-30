@@ -1492,3 +1492,15 @@ and three unconnected sentences give a reading rhythm, not a speaking one.
    including angry and fearful; each clip means cutting one actor out of a
    conversation and transcribing it.
 
+**Samantha recast** (16:46:49 CDT): p033 → **p063** (female, 36-45,
+American English), every emotion (`cast.yaml`, `Samantha: p063`;
+`cast_voices.py --all-emotions --only Samantha` — 24 files, all from p063;
+her `ref.wav` 8.9 s, raised from -38.4 to -23.8 dBFS, peak-limited). Why: the
+owner's first remedy for the plain, "falling asleep" voice and the degraded
+line. After listening, the owner (verbatim): "I actually prefer Samantha now,
+she sounds louder and have more emotion." New problem, the owner: "the voices
+of Samantha and Moira are too similar […] I might have to replace Moira's
+voice for a different voice now." Also the owner, after the remaps: "Wow,
+the show is very good now. What a difference since we started. The emotions
+work very well, and I have not seen more incidents of voice degradation."
+
