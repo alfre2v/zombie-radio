@@ -143,8 +143,11 @@ voice: emo_neutral_sentences
 - `loudness_dbfs` (-20) and `peak_dbfs` (-1) — the loudness target, so the
   four voices sound equally loud; `loudness_dbfs: null` keeps each clip's
   own level.
-- `moods` — each show mood's EARS emotion, used only with `--with-moods`
-  (step 6).
+- Which show mood is spoken with which recording is **not** here: it is
+  the story's, in TalkWithZombies' `stories/<story>/overtones.yaml`, under
+  `voices` (`afraid: ref-fear.wav`). This file only says whose voice; the
+  casting copies every recording (step 6, "With every emotion"), so a
+  mood can be remapped in the story at any time without recasting.
 - `source` and `personas` — where the downloads and the app's personas are;
   leave them unless your layout differs.
 
@@ -153,16 +156,20 @@ voice: emo_neutral_sentences
 A dry run first — what would be written, nothing changed:
 
 ```bash
-uv run python tools/voices/cast_voices.py --dry-run
+uv run python tools/voices/cast_voices.py --all-emotions --dry-run
 ```
 
-Then the cast — the whole cast, or only some characters:
+Then the cast — the whole cast, or only some characters — each with its
+voice and every emotion it recorded (see "With every emotion" below):
 
 ```bash
-uv run python tools/voices/cast_voices.py
-uv run python tools/voices/cast_voices.py --only Moira
-uv run python tools/voices/cast_voices.py --only Moira,Ralph
+uv run python tools/voices/cast_voices.py --all-emotions
+uv run python tools/voices/cast_voices.py --all-emotions --only Moira
+uv run python tools/voices/cast_voices.py --all-emotions --only Moira,Ralph
 ```
+
+Without `--all-emotions` only `ref.wav` is written — every mood then falls
+back to it, and the voices carry no emotion of their own.
 
 For each character it prints the clip, its length and its loudness before
 and after. What it does:
@@ -179,13 +186,20 @@ and after. What it does:
   and `ref.source` (where the voice came from, with the EARS credit);
 - never touches `prompt.md`, `language.txt` or `memories.txt`.
 
-**With mood clips** — `ref-<mood>.wav` and `.txt` for each mood of
-`cast.yaml`; the app does not use them until the "Mood clips" feature is
-built (`docs/follow-ups.md`):
+**With every emotion** (`--all-emotions`) — every read emotion the
+speaker recorded, copied as recorded and named after it: `ref-fear.wav` and
+`ref-fear.txt` from `emo_fear_sentences`, `ref-distress.wav` from
+`emo_distress_sentences`, and so on — all 23 with EARS, neutral included,
+about 12 MB per character. `ref.wav`, the voice, is written as always.
 
-```bash
-uv run python tools/voices/cast_voices.py --with-moods
-```
+The app speaks each line with the recording its mood names in the story's
+`voices`, when `show.mood_voices` is on (the TalkWithZombies runbook
+`docs/runbooks/show-page.md`, "The voice"). Because every recording is
+there, remapping a mood in the story needs no recast; a recording the story
+names that a persona lacks falls back to `ref.wav` (the debug line shows
+which clip spoke). An emotion that is not downloaded for the speaker is
+simply not copied — the script says how many it found; fetch the rest
+(step 4) and recast.
 
 ## 7. Check
 
@@ -196,8 +210,9 @@ afinfo ~/TalkWithZombies-client/Personas/Moira/ref.wav
 ```
 
 Expect `ref.wav`, `ref.txt`, `ref.source` (and `ref.placeholder.*` after the
-first cast); `ref.source` naming the speaker and the clip; `afinfo` reporting
-`1 ch, 24000 Hz, Int16` and a length of about 7-15 s.
+first cast; with `--all-emotions`, a `ref-<emotion>.wav` and `.txt` for each
+of the 23 read emotions); `ref.source` naming the speaker and each clip;
+`afinfo` reporting `1 ch, 24000 Hz, Int16` and a length of about 7-15 s.
 
 ## 8. Listen
 

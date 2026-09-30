@@ -11,20 +11,3 @@ cast:
 voice: emo_neutral_sentences
 loudness_dbfs: -20
 peak_dbfs: -1
-
-# show mood -> EARS emotion; written as ref-<mood>.wav only with --with-moods
-moods:
-  calm: neutral
-  happy: amusement
-  excited: extasy
-  hopeful: interest
-  relieved: relief
-  doubtful: confusion
-  curious: interest
-  urgent: null
-  determined: pride
-  sad: sadness
-  afraid: fear
-  terrified: distress
-  angry: anger
-  exhausted: pain

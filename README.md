@@ -73,10 +73,10 @@ python3 tools/voices/fetch_ears.py --gender female --native "american english" -
 python3 tools/voices/fetch_ears.py --speakers 7,17,26,33 --types 'emo_*_sentences' --fetch
 
 # 4. Choose the cast in tools/voices/cast.yaml, then preview what the cast would write
-uv run python tools/voices/cast_voices.py --dry-run
+uv run python tools/voices/cast_voices.py --all-emotions --dry-run
 
-# 5. Cast: write each character's voice into the app's Personas folder
-uv run python tools/voices/cast_voices.py
+# 5. Cast: write each character's voice, and every emotion it recorded, into the app's Personas folder
+uv run python tools/voices/cast_voices.py --all-emotions
 ```
 
 **Listen before you choose — the page of players.** Every fetch ends by
@@ -100,9 +100,14 @@ every emotion for your favourites; choose the cast in
 [`tools/voices/cast.yaml`](tools/voices/cast.yaml); cast. Each fetch
 works as a dry run without `--fetch`. The clips land in
 `../zombie-radio-datasets/`, beside this checkout; the voices land in
-`~/TalkWithZombies-client/Personas/<Name>/ref.wav`, and the app speaks
-with a new voice from its next line. Every step, with what to expect:
-[the runbook](docs/runbooks/cast-voices.md).
+`~/TalkWithZombies-client/Personas/<Name>/` — `ref.wav`, the voice, and
+with `--all-emotions` one `ref-<emotion>.wav` per recorded emotion
+(`ref-fear.wav`, `ref-distress.wav`, … 23 with EARS). Which recording each
+of the show's moods is spoken with is not decided here but in
+TalkWithZombies' story (`stories/<story>/overtones.yaml`, under
+`voices`), so a mood can be remapped there without recasting. The app
+speaks with a new voice from its next line. Every step, with what to
+expect: [the runbook](docs/runbooks/cast-voices.md).
 
 ## Documentation
 

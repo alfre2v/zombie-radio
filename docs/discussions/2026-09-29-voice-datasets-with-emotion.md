@@ -1290,3 +1290,72 @@ new fork tag (`tz-0.4`) and the installer's pin. **Estimate:** about 2-3 hours
 in the fork and the casting script, with tests (the agent's), on a fork branch
 `alfre2v/mood-clips`.
 
+### §11.9 2026-09-30 — built; the casting copies every emotion, decoupled from the story
+
+**Built** in the fork on `alfre2v/mood-clips` (§11.8's seven pieces: the
+story's `voices`, the loader's check, `show.mood_voices`, the start reply's
+map, the page naming the clip, the voice route's safe lookup, the debug
+line's `voices`), with tests: the fork's suite 1129 → 1148, the page's Node
+tests 35 → 38. Not yet committed at the time of this note.
+
+**The owner's edit to the map (verbatim):** "Heads up: I made a small edit to
+overtones.yaml, to remove the mapping urgent to fear, I do not think was
+appropriate, but the rest is good" — `urgent: ref.wav`, where §11.8's draft
+had `urgent: ref-fear.wav`. Checked: the story loads, all 14 moods keep a
+voice.
+
+**No test pins the shipped mapping.** The owner (verbatim): "Please do not
+hardcore tests to the particular mapping of emotions, that will change,
+instead mock the file if your tests rely in a particular mapping." Two
+assertions had pinned it (the shipped story's `calm`, `urgent`, `afraid`;
+the start reply's `calm`, `afraid`, `terrified`). Now the shipped-story test
+checks only the map's shape — every mood has a voice, each a valid clip name
+— and the start-reply test writes a made-up mapping into its temporary copy
+of the story and checks the reply carries exactly that. The loader's and the
+route's tests already used their own made-up story and clip files.
+
+**The coupling, and its removal.** The owner (verbatim): "Wait, I do not
+understand the coupling you introduced in between zombie-radio's
+`tools/voices/cast_voices.py` and the TalkWithZombies overtones. Walk me
+through how you use the info in overtones inside `cast_voices.py`". As first
+built (§11.8, piece 6), `cast.yaml` pointed at the client's story
+(`story: ~/TalkWithZombies-client/stories/lab-outbreak/overtones.yaml`), and
+`--with-moods` read the clip names under its `voices`, turned each
+`ref-<emotion>.wav` into the EARS file `emo_<emotion>_sentences`, and copied
+only those — so the tool depended on the story's path, the story file's
+shape, and the naming convention, and remapping a mood to a recording not yet
+copied needed a recast. The agent's alternative: **copy all 23 read emotions
+for every character, always**, each named after its recording; the casting
+then needs no story at all. The owner (verbatim): "Bingo!, you finally
+understood the decoupling of the mapping with the file names. Took you a
+while, but I am patient with my robot buddy 😛 Yes". Asked where the tool
+would then write (verbatim: "if you remove the path to the TalkWithZombies
+client, how would the tool know where to copy the files to?"): `cast.yaml`
+keeps its `personas:` line — the destination, there since the first cast;
+only `story:`, the line the mapping was read from, goes.
+
+**What changed** (2026-09-30):
+
+- `tools/voices/cast_voices.py`: `--with-moods` became **`--all-emotions`** —
+  every `emo_<emotion>_sentences` downloaded for the speaker (with its
+  transcript) is converted and written as `ref-<emotion>.wav` and `.txt`; the
+  script says how many it found. It no longer reads the story.
+- `tools/voices/cast.yaml`: the `story:` line removed; who voices whom, the
+  voice clip, the loudness and `personas:` remain.
+- `docs/runbooks/cast-voices.md`: step 5 says the mapping is the story's, not
+  `cast.yaml`'s; step 6's "With mood clips" became **"With every emotion"**;
+  step 7's expectations follow. The fork's `docs/runbooks/show-page.md` points
+  to "With every emotion".
+- **Checked** on a copy of the Personas folder in the agent's scratch space:
+  Ralph (p017) and Daniel (p007) with `--all-emotions` — 23 recordings each
+  (adoration … serenity, neutral included), each with its transcript, 13 MB
+  and 12 MB.
+
+**What it gives:** the story maps moods to recordings; the casting copies
+every recording; neither knows the other. Remapping a mood — as the owner did
+for `urgent` — is one line in the story and nothing else. The one shared
+thing is the naming convention: `ref-<emotion>.wav` is what was recorded. A
+recording the story names that a persona lacks (a typo, or an emotion not
+downloaded) falls back to `ref.wav`, and the debug line shows which clip
+spoke.
+
