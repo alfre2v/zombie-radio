@@ -1426,6 +1426,53 @@ reader's memory):
 - **Estimate:** about 1-2 hours in the fork plus 30 minutes in the casting
   script, with tests (the agent's, not measured).
 
+## A cloned line came out badly degraded, once — Samantha, in the first show with mood voices (owner, 2026-09-30) — postponed
+
+- **What was heard:** the owner's first listen to the mood voices
+  (2026-09-30, the fork's `alfre2v/mood-clips` on the dev server, run
+  `2026-09-30T15-23-48` in the fork's `runs/`, 31 rounds, 19 lines by
+  Samantha): "It works! However, there was one instance of severe voice
+  degradation with Samantha's voice. Her is the more plain voice, I think,
+  the other are more vibrant." Which line is not known — the owner: "I do
+  not remember the exact line that had the problem."
+- **Checked, and ruled out:** that her reference clips are too long (the
+  owner's first guess). Across all 24 clips, Samantha (EARS p033): 7.3-16.0
+  s, median 11.6 s; Daniel 6.3-15.8 s (median 10.4), Moira 8.1-16.6 s
+  (10.9), Ralph 6.4-16.2 s (11.5); the nine clips she used in that run are
+  within the others' range each.
+- **The suspects, most likely first** (the agent's reasoning, not measured):
+  1. **A clip whose transcript does not match what was said** — the voice
+     engine clones from the clip and its exact transcript together; EARS's
+     transcripts are the sentences the speakers were asked to read, so a
+     changed word, a laugh or a restart in one recording would mislead the
+     engine for that mood's lines only;
+  2. **a very short line** ("Do you have any of those? Over.") — ultra-short
+     inputs have glitched before (the "1." echo, the TODO's Task 5b notes);
+  3. **the engine's randomness** — it samples, so a line can come out
+     garbled once and fine the next time;
+  4. **her loudness boost** — p033 recorded the quietest of the four (-41
+     dBFS RMS), raised about 21 dB to -20, the most of anyone, which also
+     raises any background hiss — more likely to affect her whole voice than
+     one line.
+- **Why postponed:** the owner (verbatim): "Let's postpone investigations
+  in this direction, as it is not clear to me we would have a good remedy
+  for it. At the moment it seems to be a sparse problem. My first try would
+  be to replace Samanthat's voice by another more vibrant one. She seems to
+  be falling asleep."
+- **Trigger:** it happens again — **note the line's text, or the round's
+  number from the debug line**, whose "voices" names the clip that spoke.
+- **The two quick tests, then:**
+  1. **The transcripts, checked by Whisper:** transcribe each character's
+     `ref*.wav` with the box's Whisper (`localhost:8002` through the tunnel)
+     and compare with its `.txt` — 24 short requests per character; a
+     mismatch points at suspect 1, and the fix is that clip's transcript
+     corrected by hand or the mood remapped in the story.
+  2. **The line replayed:** the same text, sent to `/synthesize` three times
+     with the clip that spoke and once with `ref.wav` (the measurement
+     script of [discussion 2026-09-29] voice-datasets-with-emotion §11.7 is
+     the pattern) — the same degradation every time points at the clip,
+     once only at randomness.
+
 ## The three dropped page designs — kept in the fork's history, not in its tree (owner, 2026-09-28)
 
 - **The statement:** five looks for the show page were drawn as

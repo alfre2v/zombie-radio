@@ -1411,3 +1411,84 @@ files, the one-line check, the path for Daniel); the runbook
 kept" (the table, a real `ref.source`, the five steps). Also fixed the same
 day: `cast.yaml`'s first line now says to run the cast with `--all-emotions`.
 
+### §11.11 2026-09-30 — the first listen with mood voices: it works; the mapping reworked; EARS sounds calm
+
+**The setup** (15:21-15:24 CDT): every character cast with all 23 recordings
+(`cast_voices.py --all-emotions`, 23 each, 12-13 MB per character, each
+`ref.wav` unchanged); the fork's dev server on `alfre2v/mood-clips` (port
+8010) with `debug: true` and no pinned seed for the test (restored after);
+the start reply carried the 14 moods' clips. The owner's run:
+`2026-09-30T15-23-48` in the fork's `runs/`, 31 rounds, seed 1541690589.
+
+**The verdict (verbatim):** "It works! However, there was one instance of
+severe voice degradation with Samantha's voice. Her is the more plain voice,
+I think, the other are more vibrant. Of maybe because the voice actor speaks
+slower the reference audio is too long." Her clips are not longer than the
+others' (checked: median 11.6 s against 10.4-11.5 s); the line was not
+noted, and the investigation is postponed — the follow-up "A cloned line
+came out badly degraded, once". The owner's first remedy (verbatim): "My
+first try would be to replace Samanthat's voice by another more vibrant one.
+She seems to be falling asleep." — pending the owner's pick.
+
+**"I did not see almost any negative emotions!"** The owner (verbatim): "I
+did not see almost any negative emotions! Is something wrong with our
+overtone switching to negative? This show was all positive and nice. This is
+not the vibe of this show. […] Did you change the seed for this run?" Counted
+from the runs' records:
+
+| Run | Rounds | Negative rounds | Lines in negative moods |
+|---|---|---|---|
+| `2026-09-30T15-23-48` — mood voices, random seed | 31 | 11 (35 %) | 26 of 88 (30 %) |
+| `2026-09-30T12-42-08` — `tz-0.3`, no mood voices, random seed | 34 | 12 (35 %) | 26 of 78 (33 %) |
+| `2026-09-28T13-43-28` — the owner's long listen, seed 42 | 113 | 53 (47 %) | 130 of 270 (48 %) |
+
+The overtone works, and the director behaved as before: a short show spends
+much of its time out of the negative (it opens neutral with the orientation,
+and a contact is positive or neutral by design, the story's `kinds`); the
+drift's weights (1 positive : 2 neutral : 3 negative) darken a longer show.
+The seed was random for this test (as announced); the long listen
+remembered was seed 42. **What made the show sound positive was the
+mapping:** the neutral overtone (14 of 31 rounds) spoke `determined` with
+`ref-pride.wav` (9 lines — pleased, confident), `curious` with
+`ref-interest.wav` (bright), and `urgent` and `calm` with the neutral
+`ref.wav` (16 lines — the "sleepy" reading voice): nothing tense.
+
+**The owner's remaps** (all in the fork's `stories/lab-outbreak/overtones.yaml`,
+no recast needed — every recording is in every persona's folder):
+
+- `urgent: ref-anger.wav` (was `ref.wav`) — the owner: "You were right that
+  In the overtone `urgent` should go to some other emotion than the plain
+  voice. It was used a lot in this show." Then: "I changed it to anger."
+- `hopeful: ref-amazement.wav` and `curious: ref-realization.wav` (both were
+  `ref-interest.wav`).
+
+Checked: the story loads with all 14 moods, every named clip exists for all
+four characters, the story and router tests pass. **The map now:** calm
+`ref.wav`; happy amusement; hopeful amazement; excited extasy; relieved
+relief; doubtful confusion; urgent anger; curious realization; determined
+pride; sad sadness; afraid fear; terrified distress; angry anger; exhausted
+pain — twelve recordings, only `ref-anger.wav` shared (urgent, angry).
+**Not assigned:** adoration, contentment, cuteness, desire, disappointment,
+disgust, embarassment, guilt, serenity (and `ref-neutral.wav`, the same
+recording as `ref.wav`).
+
+**The owner on EARS (verbatim):** "That still leave one angry emotion shared
+among our moods but I could not find a better candidate, the thing about
+theEARS dataset is that the voices are too calm, and a bit unnatural rhythm,
+in general, probably due to the strange studio settings it was recorded, I
+am assuming the people who donated their voices are not familiar with
+studios." **The agent's reading:** the speakers were volunteers, not actors,
+asked to *read* three unrelated sentences in each emotion in an anechoic
+chamber — acted emotion from non-actors reading aloud comes out restrained,
+and three unconnected sentences give a reading rhythm, not a speaking one.
+**Two livelier sources, for after the demo:**
+
+1. **EARS's own free-form clips** (`emo_<emotion>_freeform`) — the same
+   speakers describing an image in that emotion, unscripted, with a natural
+   rhythm; set aside on 2026-09-29 for lack of transcripts ("maybe in the
+   future", §11.4) — Whisper on the box could draft them, checked by hand;
+   `fetch_ears.py --types 'emo_*_freeform'`, about 67 MB per speaker.
+2. **Expresso** (§6.4) — trained voice actors, improvised dialogue
+   including angry and fearful; each clip means cutting one actor out of a
+   conversation and transcribing it.
+
