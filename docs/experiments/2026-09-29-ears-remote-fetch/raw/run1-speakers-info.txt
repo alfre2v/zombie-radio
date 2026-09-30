@@ -1,0 +1,111 @@
+p001  male, 36-45, german, white or caucasian
+p002  female, 46-55, american english, white or caucasian
+p003  female, 26-35, american english, black or african american
+p004  male, 18-25, american english, white or caucasian
+p005  male, 18-25, mandarin, asian
+p006  female, 36-45, american english, hispanic or latino
+p007  male, 36-45, american english, white or caucasian
+p008  male, 56-65, british english, white or caucasian
+p009  male, 18-25, american english, white or caucasian
+p010  male, 36-45, american english, black or african american
+p011  female, 18-25, american english, white or caucasian
+p012  female, 26-35, american english, hispanic or latino
+p013  female, 26-35, ukrainian, white or caucasian
+p014  female, 26-35, american english, white or caucasian
+p015  female, 46-55, american english, white or caucasian
+p016  male, 18-25, american english, white or caucasian
+p017  male, 36-45, american english, white or caucasian
+p018  female, 46-55, american english, white or caucasian
+p019  male, 18-25, american english, white or caucasian
+p020  male, 26-35, prefer not to answer, black or african american
+p021  female, 66-75, american english, white or caucasian
+p022  male, 36-45, american english, white or caucasian
+p023  male, 26-35, american english, white or caucasian
+p024  female, 36-45, american english, white or caucasian
+p025  male, 46-55, american english, white or caucasian
+p026  female, 46-55, american english, white or caucasian
+p027  female, 46-55, american english, white or caucasian
+p028  female, 18-25, american english, white or caucasian
+p029  female, 26-35, american english, black or african american
+p030  female, 26-35, american english, white or caucasian
+p031  male, 18-25, american english, hispanic or latino
+p032  female, 56-65, american english, white or caucasian
+p033  female, 56-65, american english, white or caucasian
+p034  female, 56-65, american english, white or caucasian
+p035  female, 18-25, american english, white or caucasian
+p036  female, 26-35, american english, black or african american
+p037  female, 46-55, american english, white or caucasian
+p038  male, 26-35, american english, hispanic or latino
+p039  male, 26-35, american english, white or caucasian
+p040  male, 18-25, american english, white or caucasian
+p041  female, 18-25, american english, black or african american
+p042  male, 18-25, spanish, hispanic or latino
+p043  female, 18-25, american english, black or african american
+p044  female, 46-55, american english, white or caucasian
+p045  female, 18-25, american english, black or african american
+p046  male, 26-35, american english, white or caucasian
+p047  female, 56-65, american english, white or caucasian
+p048  female, 56-65, american english, white or caucasian
+p049  male, 36-45, american english, white or caucasian
+p050  female, 56-65, american english, white or caucasian
+p051  female, 46-55, american english, white or caucasian
+p052  female, 18-25, american english, black or african american
+p053  female, 18-25, american english, white or caucasian
+p054  male, 46-55, american english, white or caucasian
+p055  female, 46-55, american english, white or caucasian
+p056  female, 18-25, american english, white or caucasian
+p057  male, 18-25, american english, white or caucasian
+p058  female, 26-35, american english, white or caucasian
+p059  female, 26-35, american english, white or caucasian
+p060  male, 26-35, american english, hispanic or latino
+p061  female, 56-65, american english, white or caucasian
+p062  female, 18-25, american english, hispanic or latino
+p063  female, 36-45, american english, white or caucasian
+p064  female, 36-45, american english, white or caucasian
+p065  male, 56-65, american english, white or caucasian
+p066  female, 46-55, american english, white or caucasian
+p067  female, 18-25, dari, asian
+p068  female, 18-25, american english, hispanic or latino
+p069  female, 46-55, american english, white or caucasian
+p070  female, 36-45, american english, white or caucasian
+p071  male, 18-25, american english, black or african american
+p072  prefer not to answer, prefer not to answer, prefer not to answer, prefer not to answer
+p073  female, 18-25, american english, black or african american
+p074  male, 18-25, american english, white or caucasian
+p075  female, 18-25, american english, black or african american
+p076  male, 26-35, american english, white or caucasian
+p077  male, 46-55, american english, white or caucasian
+p078  prefer not to answer, 18-25, american english, white or caucasian
+p079  female, 46-55, american english, white or caucasian
+p080  female, 26-35, american english, black or african american
+p081  male, 18-25, american english, white or caucasian
+p082  female, 26-35, american english, black or african american
+p083  female, 26-35, american english, black or african american
+p084  female, 66-75, american english, white or caucasian
+p085  male, 26-35, american english, white or caucasian
+p086  male, 18-25, american english, white or caucasian
+p087  male, 56-65, american english, white or caucasian
+p088  male, 18-25, american english, white or caucasian
+p089  female, 26-35, american english, asian
+p090  male, 56-65, american english, white or caucasian
+p091  male, 26-35, american english, white or caucasian
+p092  female, 36-45, american english, white or caucasian
+p093  female, 56-65, american english, white or caucasian
+p094  male, 36-45, american english, hispanic or latino
+p095  male, 36-45, american english, white or caucasian
+p096  non-binary / third gender, 18-25, american english, white or caucasian
+p097  male, 56-65, american english, white or caucasian
+p098  female, 46-55, american english, black or african american
+p099  female, 46-55, american english, black or african american
+p100  female, 36-45, american english, white or caucasian
+p101  male, 46-55, american english, black or african american
+p102  male, 26-35, american english, white or caucasian
+p103  prefer not to answer, prefer not to answer, prefer not to answer, prefer not to answer
+p104  female, 56-65, american english, white or caucasian
+p105  male, 36-45, american english, black or african american
+p106  female, 56-65, american english, white or caucasian
+p107  male, 36-45, russian, asian
+
+107 speakers: 60 female, 43 male, 1 non-binary / third gender, 3 prefer not to answer
+
+[1 requests, 0.024 MB transferred]

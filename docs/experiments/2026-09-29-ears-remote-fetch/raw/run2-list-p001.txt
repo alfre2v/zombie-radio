@@ -1,0 +1,164 @@
+p001: 161 WAV files, 592 MB
+  emo_adoration_freeform                     3.01 MB  emotion "adoration", freeform
+  emo_adoration_sentences                    2.41 MB  emotion "adoration", sentences
+  emo_amazement_freeform                     2.72 MB  emotion "amazement", freeform
+  emo_amazement_sentences                    1.68 MB  emotion "amazement", sentences
+  emo_amusement_freeform                     3.02 MB  emotion "amusement", freeform
+  emo_amusement_sentences                    1.79 MB  emotion "amusement", sentences
+  emo_anger_freeform                         2.90 MB  emotion "anger", freeform
+  emo_anger_sentences                        2.22 MB  emotion "anger", sentences
+  emo_confusion_freeform                     2.87 MB  emotion "confusion", freeform
+  emo_confusion_sentences                    1.30 MB  emotion "confusion", sentences
+  emo_contentment_freeform                   2.90 MB  emotion "contentment", freeform
+  emo_contentment_sentences                  1.58 MB  emotion "contentment", sentences
+  emo_cuteness_freeform                      2.88 MB  emotion "cuteness", freeform
+  emo_cuteness_sentences                     1.79 MB  emotion "cuteness", sentences
+  emo_desire_freeform                        2.98 MB  emotion "desire", freeform
+  emo_desire_sentences                       2.19 MB  emotion "desire", sentences
+  emo_disappointment_freeform                2.94 MB  emotion "disappointment", freeform
+  emo_disappointment_sentences               2.19 MB  emotion "disappointment", sentences
+  emo_disgust_freeform                       2.76 MB  emotion "disgust", freeform
+  emo_disgust_sentences                      2.20 MB  emotion "disgust", sentences
+  emo_distress_freeform                      2.66 MB  emotion "distress", freeform
+  emo_distress_sentences                     2.04 MB  emotion "distress", sentences
+  emo_embarassment_freeform                  2.88 MB  emotion "embarassment", freeform
+  emo_embarassment_sentences                 2.20 MB  emotion "embarassment", sentences
+  emo_extasy_freeform                        2.83 MB  emotion "extasy", freeform
+  emo_extasy_sentences                       1.82 MB  emotion "extasy", sentences
+  emo_fear_freeform                          3.00 MB  emotion "fear", freeform
+  emo_fear_sentences                         2.20 MB  emotion "fear", sentences
+  emo_guilt_freeform                         2.88 MB  emotion "guilt", freeform
+  emo_guilt_sentences                        1.48 MB  emotion "guilt", sentences
+  emo_interest_freeform                      2.87 MB  emotion "interest", freeform
+  emo_interest_sentences                     1.81 MB  emotion "interest", sentences
+  emo_neutral_freeform                       2.98 MB  emotion "neutral", freeform
+  emo_neutral_sentences                      1.79 MB  emotion "neutral", sentences
+  emo_pain_freeform                          2.35 MB  emotion "pain", freeform
+  emo_pain_sentences                         2.00 MB  emotion "pain", sentences
+  emo_pride_freeform                         2.89 MB  emotion "pride", freeform
+  emo_pride_sentences                        2.69 MB  emotion "pride", sentences
+  emo_realization_freeform                   3.28 MB  emotion "realization", freeform
+  emo_realization_sentences                  2.89 MB  emotion "realization", sentences
+  emo_relief_freeform                        2.87 MB  emotion "relief", freeform
+  emo_relief_sentences                       2.02 MB  emotion "relief", sentences
+  emo_sadness_freeform                       2.87 MB  emotion "sadness", freeform
+  emo_sadness_sentences                      2.13 MB  emotion "sadness", sentences
+  emo_serenity_freeform                      3.47 MB  emotion "serenity", freeform
+  emo_serenity_sentences                     1.76 MB  emotion "serenity", sentences
+  freeform_speech_01                        34.58 MB  
+  freeform_speech_02                        34.68 MB  
+  freeform_speech_03                        35.56 MB  
+  freeform_speech_04                        35.75 MB  
+  freeform_speech_05                        34.74 MB  
+  freeform_speech_06                        34.62 MB  
+  interjection_agreement                     2.15 MB  
+  interjection_anger                         2.62 MB  
+  interjection_congratulations               4.51 MB  
+  interjection_filler                        1.92 MB  
+  interjection_greetings                     2.20 MB  
+  melodic_happy_birthday                     3.14 MB  
+  nonverbal_cheering                         2.60 MB  
+  nonverbal_crying                           1.97 MB  
+  nonverbal_laughter_closed                  2.07 MB  
+  nonverbal_laughter_open                    1.99 MB  
+  nonverbal_screaming                        1.93 MB  
+  nonverbal_yelling                          2.24 MB  
+  rainbow_01_fast                            1.40 MB  
+  rainbow_01_highpitch                       1.47 MB  
+  rainbow_01_loud                            1.76 MB  
+  rainbow_01_lowpitch                        1.65 MB  
+  rainbow_01_regular                         1.48 MB  
+  rainbow_01_slow                            2.27 MB  
+  rainbow_01_whisper                         1.50 MB  
+  rainbow_02_fast                            1.64 MB  
+  rainbow_02_highpitch                       1.85 MB  
+  rainbow_02_loud                            2.07 MB  
+  rainbow_02_lowpitch                        2.19 MB  
+  rainbow_02_regular                         2.05 MB  
+  rainbow_02_slow                            2.90 MB  
+  rainbow_02_whisper                         2.13 MB  
+  rainbow_03_fast                            2.08 MB  
+  rainbow_03_highpitch                       2.38 MB  
+  rainbow_03_loud                            2.42 MB  
+  rainbow_03_lowpitch                        2.52 MB  
+  rainbow_03_regular                         2.39 MB  
+  rainbow_03_slow                            3.24 MB  
+  rainbow_03_whisper                         2.77 MB  
+  rainbow_04_fast                            2.03 MB  
+  rainbow_04_highpitch                       2.62 MB  
+  rainbow_04_loud                            2.40 MB  
+  rainbow_04_lowpitch                        2.51 MB  
+  rainbow_04_regular                         2.48 MB  
+  rainbow_04_slow                            3.06 MB  
+  rainbow_04_whisper                         2.84 MB  
+  rainbow_05_fast                            2.22 MB  
+  rainbow_05_highpitch                       2.60 MB  
+  rainbow_05_loud                            2.60 MB  
+  rainbow_05_lowpitch                        2.88 MB  
+  rainbow_05_regular                         2.55 MB  
+  rainbow_05_slow                            3.28 MB  
+  rainbow_05_whisper                         2.79 MB  
+  rainbow_06_fast                            1.60 MB  
+  rainbow_06_highpitch                       1.86 MB  
+  rainbow_06_loud                            1.84 MB  
+  rainbow_06_lowpitch                        2.02 MB  
+  rainbow_06_regular                         1.84 MB  
+  rainbow_06_slow                            2.50 MB  
+  rainbow_06_whisper                         2.07 MB  
+  rainbow_07_fast                            2.37 MB  
+  rainbow_07_highpitch                       2.55 MB  
+  rainbow_07_loud                            2.69 MB  
+  rainbow_07_lowpitch                        3.22 MB  
+  rainbow_07_regular                         2.93 MB  
+  rainbow_07_slow                            3.93 MB  
+  rainbow_07_whisper                         2.93 MB  
+  rainbow_08_fast                            2.59 MB  
+  rainbow_08_highpitch                       3.02 MB  
+  rainbow_08_loud                            3.12 MB  
+  rainbow_08_lowpitch                        3.24 MB  
+  rainbow_08_regular                         2.97 MB  
+  rainbow_08_slow                            4.11 MB  
+  rainbow_08_whisper                         3.54 MB  
+  sentences_01_fast                          1.96 MB  
+  sentences_01_highpitch                     2.35 MB  
+  sentences_01_loud                          2.48 MB  
+  sentences_01_lowpitch                      2.38 MB  
+  sentences_01_regular                       2.41 MB  
+  sentences_01_slow                          2.88 MB  
+  sentences_01_whisper                       2.60 MB  
+  sentences_02_fast                          2.29 MB  
+  sentences_02_highpitch                     2.63 MB  
+  sentences_02_loud                          2.73 MB  
+  sentences_02_lowpitch                      2.85 MB  
+  sentences_02_regular                       3.50 MB  
+  sentences_02_slow                          3.43 MB  
+  sentences_02_whisper                       2.93 MB  
+  sentences_03_whisper                       2.82 MB  
+  sentences_04_whisper                       3.07 MB  
+  sentences_05_loud                          2.41 MB  
+  sentences_06_loud                          3.11 MB  
+  sentences_07_slow                          3.24 MB  
+  sentences_08_slow                          3.14 MB  
+  sentences_09_fast                          2.20 MB  
+  sentences_10_fast                          2.24 MB  
+  sentences_11_highpitch                     2.12 MB  
+  sentences_12_highpitch                     2.37 MB  
+  sentences_13_lowpitch                      2.72 MB  
+  sentences_14_lowpitch                      2.49 MB  
+  sentences_15_regular                       1.85 MB  
+  sentences_16_regular                       1.99 MB  
+  sentences_17_regular                       2.31 MB  
+  sentences_18_regular                       2.39 MB  
+  sentences_19_regular                       2.15 MB  
+  sentences_20_regular                       2.59 MB  
+  sentences_21_regular                       2.27 MB  
+  sentences_22_regular                       2.77 MB  
+  sentences_23_regular                       2.54 MB  
+  sentences_24_regular                       2.04 MB  
+  vegetative_coughing                        1.95 MB  
+  vegetative_eating                          2.03 MB  
+  vegetative_sneezing                        1.95 MB  
+  vegetative_throat                          1.86 MB  
+  vegetative_yawning                         1.77 MB  
+
+[5 requests, 0.040 MB transferred]

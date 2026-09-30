@@ -1340,6 +1340,12 @@ reader's memory):
      that mood's own fallback; else the default `ref.wav`. The
      mood-to-mood fallback belongs to the story (the moods are the
      story's, `overtones.yaml`); the clips belong to the personas.
+     **Where the clips come from (2026-09-29):** a casting script copies
+     the chosen EARS clips into each persona folder, driven by a mapping
+     file — the cast, the clip for `ref.wav`, and each show mood's EARS
+     emotion, drafted with a confidence per mood ([discussion 2026-09-29]
+     voice-datasets-with-emotion §11.3, option A; the owner's ruling:
+     "go with A").
   3. **The page sends the mood** — `speakLine(persona, text, mood)`
      posts `{text, persona_name, mood}`; the voice queue already cuts
      chunks at each line's end, so a chunk always has one mood.
@@ -1358,6 +1364,60 @@ reader's memory):
 - **Trigger:** the owner's call, after the default clips are in place.
 - **Estimate:** 2-3 hours for the four pieces with tests (the agent's,
   not measured).
+
+## Compressed reference clips, switchable on and off — MP3 or Ogg/Opus instead of WAV (owner, 2026-09-30) — re-examine before demo day
+
+- **The ask (the owner, verbatim, 2026-09-30):** "what I do want out of
+  this is a clear follow up task to remind me to execute on the option (can
+  be switched on/off) to provide ogg/mp3 compression for our audio samples,
+  to be re-examined before the demo day (possibly)."
+- **Why it may matter:** the app sends each character's reference clip,
+  base64-encoded, with **every** synthesis request, and a line can take two
+  or three requests. The EARS clips are WAV, 439-562 KB — about 590-750 KB
+  per request. On the owner's connection that cost is lost in a fixed
+  ~0.5 s per request, but on a slow uplink — a crowded venue's Wi-Fi on demo
+  day — it could add a second or more to every request. Compressed, the same
+  clip is 6 to 12 times smaller.
+- **What is already known** ([discussion 2026-09-29]
+  voice-datasets-with-emotion §11.7, measured 2026-09-30 on the A6000):
+  tts-serve's Faster Qwen3-TTS accepts WAV, FLAC, MP3 and Ogg/Opus
+  references (all eight tts-serve engines declare them; proven only on this
+  one); Moira's 482 KB WAV became FLAC 221 KB, MP3 64 kbps 80 KB, Opus
+  48 kbps 57 KB, Opus 32 kbps 38 KB; the synthesis time did not change; and
+  the owner's listening test found **no audible degradation** in the cloned
+  voice ("The quick quality voice test is successful, I do not notice any
+  voice degradation."). Encoding on the Mac: Homebrew's `ffmpeg`
+  (`libmp3lame`, `libopus`; no Vorbis encoder, so "ogg" means Opus).
+- **Where flagged:** the owner's first show with the EARS voices,
+  2026-09-30, hearing a bit more delay between lines (§11.7 of the
+  discussion — the delay itself is not explained by the clip's size).
+- **Trigger:** **before demo day** — the owner's call, ideally once the
+  venue's network is known: if its uplink is slow (a speed test on the
+  laptop at the venue, or on the fallback hotspot), switch it on.
+- **The fix shape — a switch in one place, off by default:**
+  1. **The switch:** one line in `tools/voices/cast.yaml`, e.g.
+     `reference_format: wav` (or `mp3`, `ogg`), with the bitrate beside it
+     (`reference_kbps: 48`); switching it on or off is that line plus a
+     recast (`uv run python tools/voices/cast_voices.py`).
+  2. **The casting script** encodes accordingly — WAV as today (`afconvert`),
+     MP3 or Ogg/Opus with `ffmpeg` — writes `ref.<ext>`, and removes any
+     other `ref.wav` / `ref.mp3` / `ref.ogg`, so a character only ever has
+     one reference (and `ref.source` records the format).
+  3. **The fork** looks for the reference as `ref.wav`, `ref.mp3`, `ref.ogg`
+     or `ref.flac`, whichever exists — today it reads a fixed `ref.wav`
+     (`app/services/persona_store.py`, `REFERENCE_AUDIO_FILENAME`, the scan
+     at line 291), and the Personas editor's upload and the legacy migration
+     accept only `.wav` (`app/routers/personas.py:113`,
+     `persona_store.py:807`); the TTS route passes the bytes through
+     unchanged (`encode_reference_audio` only base64-encodes them). Tests in
+     the fork's style; the placeholder voices keep working (WAV).
+  4. **Verify:** a recast in each format and one show line per format by
+     ear; a request timed on a throttled or slow link to confirm the gain.
+- **Alternative, not preferred:** the app itself encoding `ref.wav` to Opus
+  when it loads it (a setting in the fork) — it would need an audio encoder
+  inside the app, where the casting script already has one.
+- **Estimate:** about 1-2 hours in the fork plus 30 minutes in the casting
+  script, with tests (the agent's, not measured).
 
 ## The three dropped page designs — kept in the fork's history, not in its tree (owner, 2026-09-28)
 

@@ -110,7 +110,9 @@ decision; the re-orientation surface when revisiting any topic.*
 the agent keeps this current. These carry across arcs.*
 
 1. **Gather 4 reference voice samples** — NEXT (Task 4's first part,
-   the owner, 2026-09-28). Where they go: each character's clip as
+   the owner, 2026-09-28). **Under way (2026-09-29):** EARS voices, a
+   first cast in the app, recast at will with `tools/voices/cast.yaml`
+   (Task 4). Where they go: each character's clip as
    `ref.wav`, with its exact transcript in `ref.txt`, in
    `~/TalkWithZombies-client/Personas/<Name>/` — outside both
    repositories (the fork gitignores `Personas/`; the installer never
@@ -192,7 +194,18 @@ the agent keeps this current. These carry across arcs.*
   `~/TalkWithZombies-client/Personas/` (the dev clone reads the same
   folder through its `personas_directory`); `Personas/` is gitignored in
   the fork and the installer skips an existing persona folder. Several
-  clips per character by mood: the follow-up "Mood clips". The detail
+  clips per character by mood: the follow-up "Mood clips". **Where the
+  clips may come from (2026-09-29):** datasets of real voices recorded
+  in several emotions, instead of clips hunted one by one and cleaned of
+  background noise — four finalists, EARS, CREMA-D, JL-Corpus and
+  Expresso, and a listening test proposed ([discussion 2026-09-29]
+  voice-datasets-with-emotion, OPEN). **A first cast is in the app
+  (2026-09-29, 14:32 CDT):** EARS voices chosen from the owner's shortlist
+  of 20 — Daniel p007, Moira p026, Ralph p017, Samantha p033 — written by
+  the casting script `tools/voices/cast_voices.py` from
+  `tools/voices/cast.yaml`; one edited line and one command recast a
+  character, heard from the next spoken line (the discussion's §11.5). The
+  placeholder voices are kept as `ref.placeholder.wav`. The detail
   as first written: character
   bibles → the sections of TalkWithZombies' cast sheet ([spec
   §5]; where they live in the fork — decided 2026-09-23: the
@@ -341,7 +354,9 @@ the agent keeps this current. These carry across arcs.*
   seed makes retakes reproducible: on one server slot, the same
   request and seed gave the same words 80 minutes apart
   (2026-09-22) — record with the settings it will be replayed
-  with.
+  with. **Before demo day, re-examine** the follow-up "Compressed
+  reference clips, switchable on and off" (the owner, 2026-09-30): if
+  the venue's uplink is slow, build the switch and turn it on.
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes

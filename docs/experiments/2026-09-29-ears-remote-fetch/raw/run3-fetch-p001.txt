@@ -1,0 +1,7 @@
+p001/emo_neutral_sentences.wav  1.79 MB, CRC ok, 1.84 MB transferred  [48000 Hz, 32-bit, 1 ch, format 3, 9.3 s]
+p001/emo_fear_sentences.wav  2.20 MB, CRC ok, 2.23 MB transferred  [48000 Hz, 32-bit, 1 ch, format 3, 11.4 s]
+
+fetched: 3.99 MB
+index: /Users/alfredo/workspace/hackTNT_2026/zombie-radio-claude/docs/experiments/2026-09-29-ears-remote-fetch/datasets/ears/index.html
+
+[17 requests, 4.129 MB transferred]

@@ -54,6 +54,56 @@ Austin Python Meetup in October 2026.
   minutes; the app runs on a Mac laptop and reaches them through an
   SSH tunnel.
 
+## Voices for the cast
+
+The four characters speak with real human voices, cloned from short
+reference clips of the [EARS](https://github.com/facebookresearch/ears_dataset)
+dataset (CC BY-NC 4.0 — never committed here). Two tools in
+[`tools/voices/`](tools/voices/) take them from the dataset to the
+TalkWithZombies client, run from this repository's root:
+
+```bash
+# 1. Look at the speakers: gender, age, native language (here, the native American English women)
+python3 tools/voices/fetch_ears.py --speakers-info --gender female --native "american english"
+
+# 2. Download a neutral and a fearful clip for each of them, and write a page of players to listen
+python3 tools/voices/fetch_ears.py --gender female --native "american english" --types emo_neutral_sentences,emo_fear_sentences --fetch
+
+# 3. Download every emotion for the speakers you liked, and write a page of players for them
+python3 tools/voices/fetch_ears.py --speakers 7,17,26,33 --types 'emo_*_sentences' --fetch
+
+# 4. Choose the cast in tools/voices/cast.yaml, then preview what the cast would write
+uv run python tools/voices/cast_voices.py --dry-run
+
+# 5. Cast: write each character's voice into the app's Personas folder
+uv run python tools/voices/cast_voices.py
+```
+
+**Listen before you choose — the page of players.** Every fetch ends by
+writing a web page next to the clips it downloaded, named by the time
+the fetch started — for example
+`../zombie-radio-datasets/ears/index-2026-09-29T14:06:44.html` — and
+prints its path on the last lines (`page: …`). Open it in Chrome: one
+row per speaker, labelled with their gender, age bracket, native
+language and ethnicity; one column per emotion fetched; a player in
+every cell. So you can hear the same emotion — fear, say — from ten
+speakers in a row, or one speaker across all 23 emotions, without
+hunting for files. Each fetch writes a new page and never touches the
+earlier ones, so the page of a broad shortlist (step 2) stays next to
+the page of your favourites (step 3). The pages play the original
+lossless clips (32-bit float WAV); they were used in Chrome, other browsers
+untested.
+
+In order: look at the speakers; download two clips each for a
+shortlist, and listen on the page of players the fetch writes; download
+every emotion for your favourites; choose the cast in
+[`tools/voices/cast.yaml`](tools/voices/cast.yaml); cast. Each fetch
+works as a dry run without `--fetch`. The clips land in
+`../zombie-radio-datasets/`, beside this checkout; the voices land in
+`~/TalkWithZombies-client/Personas/<Name>/ref.wav`, and the app speaks
+with a new voice from its next line. Every step, with what to expect:
+[the runbook](docs/runbooks/cast-voices.md).
+
 ## Documentation
 
 This repo's memory of record lives in [`docs/`](docs/README.md) —
