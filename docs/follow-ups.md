@@ -1549,6 +1549,16 @@ reader's memory):
   `seed`), `app/routers/tts.py` (the save, the seed passed to
   `synthesize`), tests; the runbook `docs/runbooks/show-page.md`. About 1.5-2
   hours with tests (the agent's estimate).
+- **Status 2026-09-30, 18:10 — the go is given** (the owner: "Ok, we are
+  going to build that feature", after the voices became unstable and the
+  engine was shown healthy — byte-identical to its 13:00 reply for the same
+  clip, text and seed). Found since: tts-serve picks a random seed in
+  **1..1000** per request when none is sent, and **echoes the seed** in its
+  reply — record the echoed one; a derived seed must stay within 1..1000.
+  Every line's stream events already carry `message_id =
+  "<run-id>-r<NNN>-l<L>"` (the fork's `app/routers/show.py:227`), so the page
+  knows the round and line when it requests the voice. The build spec:
+  `docs/discussions/2026-09-30-show-engine-session-handoff-8.md` §13.3.
 - **Trigger:** the owner's go — "do not execute yet" (2026-09-30, before a
   context compaction). Related: the replay test proposed for "Candles!" (the
   line sent 4 times with Daniel's clip and once with Samantha's) — not run;

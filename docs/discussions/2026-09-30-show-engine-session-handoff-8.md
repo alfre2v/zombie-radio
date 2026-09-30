@@ -9,6 +9,10 @@
 > work please ask the owner for permission to delete any handoff documents you created." — **at the session's end, ask
 > before deleting handoffs 6, 7 and 8; the owner already declined once ("no, do not delete the handoffs for now").**
 >
+> **§13 (added 18:10) overrides §2 and §5 where they differ — read it: Daniel is back to p007, a transcript was
+> corrected, the voice-instability question is open, and the debug-audio feature has the owner's go (its build spec is
+> §13.3).**
+>
 > **Read it all; verify against the repos; receipts or nothing.** The TODO's "Now" is the arc's canonical state, but it
 > is **behind** (it predates the mood voices, see §5); the discussion
 > `docs/discussions/2026-09-29-voice-datasets-with-emotion.md` §11 (addenda §11.1-§11.12) is the full record of the
@@ -303,7 +307,9 @@ Daniel (p085). Re-orient before doing anything else:
 
 1. Read docs/discussions/2026-09-30-show-engine-session-handoff-8.md IN FULL — §0 is binding (how we work, the box
    and laptop rules in §0.1), then the exact state (§2), what happened (§3), the voice system as built (§4), the open
-   threads (§5), facts (§6), nuances and mistakes (§7-§8), techniques (§9).
+   threads (§5), facts (§6), nuances and mistakes (§7-§8), techniques (§9) — and §13, the addendum after 17:45, which
+   overrides §2 and §5 where they differ (Daniel back to p007, the voice-instability question, the build spec of the
+   debug-audio-and-seed feature, which has my go).
 2. Follow its reading order (§10): both repos' status and log, PRs #18 and #8, the dev server on port 8010, the
    voice-datasets discussion §11.8-§11.12, the three voice follow-ups, the cast-voices runbook, the demo goals.
 3. Then give me a compact summary — the clock, the tunnel (probe it first), both PRs, the dev server and its
@@ -335,3 +341,109 @@ stage hosts.yml, scratch files only in the scratchpad.
   replace Daniel." · "recast Daniel with p085".
 - On debug audio: "We should save them so we can trace back this problems." · "yes to 1 and 2, seed always; record
   the follow-up. But do not execute yet".
+
+## 13. Addendum, 18:10 CDT — after 17:45 (overrides §2 and §5 where they differ)
+
+### 13.1 State changes
+
+- **zombie-radio**: `db97a71` (the handoff commit) pushed to PR #18. The commit of this addendum adds `cast.yaml`
+  (**Daniel: p007**) and this section.
+- **Daniel back to p007** (17:46:05, `--all-emotions --only Daniel`). The owner (verbatim): "I think I want to go back
+  to the previous Daniel. […] I like that his voice is way different than Ralph, and if the TTS is going to make voices
+  feminine sometimes it's less notable with his old voice." **The current cast: Daniel p007, Moira p026, Ralph p017,
+  Samantha p063.**
+- **p007's distress transcript corrected** (17:51, outside git, in the datasets folder). The owner: "fix Daniel's
+  transcript now, but make sure to leave a note next to the changed transcript explaining why we deviated from the
+  original dataset." In `/Users/alfredo/workspace/hackTNT_2026/zombie-radio-datasets/ears/p007/`:
+  `emo_distress_sentences.txt` (corrected: "Can just eat all of them. Oh God, I'm not sure if we're gonna make this
+  flight on time. …" — Whisper's text, the aside confirmed by the owner's ear), `emo_distress_sentences.txt.original`
+  (EARS's), `emo_distress_sentences.CORRECTION.txt` (what, why, source, how it reaches the app, how to undo, the
+  re-fetch warning). **The convention for the next corrections** (p017 confusion, p063 pride — still waiting for the
+  owner's ear check): the same three files, and a line in `zombie-radio-datasets/README.txt`, section "Corrected
+  transcripts" (added now). Daniel recast at 17:51:29; `screen_voices.py --speakers 7 --emotions distress,neutral` →
+  **0 flagged** (was 6 extra words). **Not yet in the repo's docs**: record the correction and Daniel's return in the
+  voice-datasets discussion (a dated addendum) at the next commit.
+
+### 13.2 The voice-instability question (open)
+
+- **The report** (~17:53, verbatim): "Oh, wow, now things are much worse in the TTS. Instability in all the voices. I
+  do not think it has anything to do with the transcript change in Daniel... Maybe your audio normalization is making
+  things bad."
+- **Evidence gathered**: Moira's and Ralph's clips unchanged since 15:21-15:22, Samantha's since 16:46 — all sounded
+  good after ("the show is very good now"); the normalization unchanged since 2026-09-29; the dev server continuous
+  since 15:22, its voice requests 200.
+- **Seeds**: the app sends **none** (checked: `app/routers/tts.py`, `app/services/tts_client.py`, `app/models.py`,
+  `static/show/player.js`; `tts.parameters` is `{}` in both `settings.yaml`). tts-serve picks one per request —
+  `seed = req.seed if req.seed is not None else random.randint(SEED_MIN, SEED_MAX)` (1..1000,
+  `impl/server_fasterQwen3TTS.py:458`), `torch.manual_seed(seed)` inside the synthesis lock (line 497) — and **echoes
+  the seed in its reply**. The owner asked "Did you change anything related to a seed for the TTS server?" — no.
+- **The engine is healthy** (the one-request test, ~18:05): Moira's `ref.wav`, the 13:00 sentence, seed 42 →
+  **byte-identical** to the 13:00 reply (249,644 bytes, 5.20 s; server 1.73 s). Files in the scratchpad's `refs/`
+  (`out-new_wav-2.wav`, `out-now-seed42.wav`).
+- **The owner's observation (verbatim)**: "when I reload the page from `http://127.0.0.1:8010/show` and pick the skin
+  page again, the voices stabilities are perfect. But if instead I just reload the skin page
+  `http://127.0.0.1:8010/show?design=old-radio` and run the show again there, the instability appears". **No mechanism
+  found**: the page sends only `{text, persona_name, reference}` per chunk. Hypotheses: (1) **randomness** — a random
+  seed per chunk and a new story per run, a streak read as a pattern (leading); (2) **a real difference in requests
+  after a reload** (e.g. cached old scripts sending no `reference` — would sound calmer, not unstable). Checks: compare
+  `/api/tts` request bodies in both paths (Chrome's Network tab, or the built-in browser); properly: the feature below.
+- **The owner's decision**: "Ok, we are going to build that feature" — after the compaction.
+
+### 13.3 Build spec — keep every chunk's audio in debug mode, and a seed with every voice request (the owner's go)
+
+The follow-up "Keep every synthesized chunk in debug mode, and send a seed with every voice request" (in
+`docs/follow-ups.md`) has the agreed shape; the details found since:
+
+- **Where**: the fork. **Ask the owner** whether it goes on `alfre2v/mood-clips` (PR #8, not merged; the same page
+  code) or a new branch cut from it. Tests in the fork's style; no test pins the story's mapping.
+- **Knowing the chunk's place early**: every line's stream events already carry `message_id =
+  "<run-id>-r<NNN>-l<L>"` (the fork's `app/routers/show.py:227`) — the page has the round and line numbers when it
+  requests the voice, before the round's summary; the chunk number is the index in `speakLine`'s parts
+  (`static/show/player.js`).
+- **The seed, always**: derive it from the run's seed and the chunk's place (round, line, chunk) — **within 1..1000**,
+  the server's range (`SEED_MIN`/`SEED_MAX`; a value outside is refused) — send it with every chunk. The voice payload
+  builder (`app/services/tts_client.py`, `advertised()` / the parameters loop near line 508) passes any parameter the
+  capabilities advertise, and `seed` is advertised. The reply echoes the seed used — record that one.
+- **The save, debug only**: with `show.debug`, the page adds a tag to each voice request
+  (e.g. `debug: "2026-09-30T17-28-18/r009-l2-c1"`); `TTSRequest` gains optional `debug` and `seed`; the route checks the
+  tag strictly (the run id's own pattern, numbers only, the run's folder must exist — nothing can name another folder)
+  and writes `runs/<run-id>/debug/audio/r009-l2-c1-<Persona>-<clip stem>.wav` (the reply's audio, decoded) and a `.json`
+  beside it: the text, the persona, the clip asked for and used, the seed (echoed), `time_used`, the sample rate. Debug
+  off, or no tag (TalkWithMe's chat UI): nothing changes. ~35-45 MB per 50-round run (`runs/` is gitignored).
+- **Replay**: document how to resend one chunk from its `.json` (the clip, the text, the seed) — the recipe of
+  the one-request test above; maybe a small script.
+- **Docs**: the fork's runbook `docs/runbooks/show-page.md` ("The debug line" and the audio folder); zombie-radio's
+  follow-up marked built; the voice-datasets discussion (an addendum). Estimate 1.5-2 h with tests.
+- **Then use it**: run the show both ways (via the chooser; reloading the look's page) with debug on and compare the
+  saved chunks and their requests — settle §13.2.
+
+### 13.4 The screening tool — how to use it (the owner: "I have no idea how to use it")
+
+Documented in the runbook `docs/runbooks/cast-voices.md`, **step 4b** (why, what it checks, the flags, an example
+output, what to do with a flag), the README's "Voices for the cast" (step 4), and the discussion's §11.12. In short,
+with the tunnel open, from the repo's root:
+
+```bash
+python3 tools/voices/screen_voices.py --speakers 62,59,106
+python3 tools/voices/screen_voices.py --speakers 7 --emotions distress,fear
+```
+
+It prints a line per speaker and each flagged clip (stray speech, weak match, pitch climbs) with what Whisper heard,
+and writes `screen-<start time>.json` and a page of players for the flagged clips (`screen-<start time>.html`) in
+`zombie-radio-datasets/ears/`. ~20 s per speaker. Use it before casting anyone (e.g. Moira's replacement).
+
+### 13.5 The open threads, in order now
+
+1. **Build §13.3** (go given; ask the branch first).
+2. **Use it to settle §13.2** (the instability, the reload observation).
+3. **The owner's ear check** of the stray-speech page, then correct p017 confusion and p063 pride with the §13.1
+   convention, and recast Ralph and Samantha.
+4. **Moira's replacement** (too similar to Samantha p063): screen the candidates first (§5 item 2).
+5. **Record** Daniel's return and the transcript correction in the voice-datasets discussion.
+6. **Merge PR #8 and #18; `tz-0.4`; the installer's pin; the owner's re-proof**; then the TODO's "Now", Task 4, and
+   the spec's mood voices.
+7. At the end of listening: stop the dev server, restore the fork's dev settings (§2); the client's
+   `show: debug: true`.
+8. The rest of the board (§5): goal 4 (the 3090), goal 1 (names-only A, trim settings), Task 7 (the canned episode,
+   a MUST), the static, the compressed-reference switch before demo day.
+
