@@ -29,64 +29,65 @@ this arc".
 
 ## Now — where the arc stands
 
-*Updated 2026-09-28, night. Read this section first; everything below
+*Updated 2026-10-01, evening. Read this section first; everything below
 it is detail.*
 
-- **Task 6, the fork and the show engine, is done (2026-09-28).** The
-  engine (6b) was built in the fork TalkWithZombies under a timebox —
-  clock started 2026-09-23 14:46 CDT · checkpoint passed 2026-09-24
-  ~18:57 (6 of 6 criteria; verdict: continue) · closed Monday
-  2026-09-28 (the end the owner moved there on 2026-09-25; it was
-  2026-09-26 14:46). Three slices: the skeleton
-  (alfre2v/TalkWithZombies#2), the rules (#3), the browser (#4,
-  `ca37199`) — the page with text and voices, the listener's turn,
-  events worded for the broadcast (the owner: "B wins, flip the default
-  and record it."), the exit criterion by ear (the owner: "It does what
-  we planed. It is a success."), the listener's exchange (step 3.4c:
-  Broadcast and Contact, [discussion 2026-09-26]
-  show-director-modes), fixed lines, and the owner's sweep of every
-  prompt the model receives ([discussion 2026-09-28] prompt-sweep; the
-  owner's ruling, 13:14: invented details are a feature — the model's
-  improvisation is what the project probes). The owner's last listen
-  (run `2026-09-28T13-43-28`): "Wow, big improvement in story
-  coherence… All in all I am satisfied with where we are." Released as
-  the fork's `tz-0.2`; the installer pinned to it and re-proven by the
-  owner ("All four checks pass, installed at tz-0.2."). The whole
-  record, step by step, is under "Done in this arc", Task 6; the
-  design, [discussion 2026-09-23] show-engine-design.
-- **The show's looks, the same night — the fork's `tz-0.3`:** a
-  chooser at `/show` (the root `/` opens it), two looks — `old-radio`
-  on a photograph of a 1950 Philips Sirius, and
-  `amateur-radio-transmitter` — with a live gauge, the plain page
-  untouched, TalkWithMe's chat UI moved to `/talkwithme`
-  (alfre2v/TalkWithZombies#5, merged as `0ec33c1`). The installer's pin
-  to `tz-0.3` is this repository's #15, open; the owner's re-proof of
-  the install is pending. Details under "Open tasks", Polish. How to
-  drive the show: the fork's `docs/runbooks/show-page.md` (the page;
-  "Choosing a look") and `docs/runbooks/show-driver.md` (no browser).
-- **Next, in order:** Task 4's reference voices (the owner's) → the
-  dead-air static (the polish's other item; the radio look is built)
-  → Tasks 5a / 5b / 5c in the new engine (5a needs the character
-  bibles, 5b the voices) → Task 7, the canned episode (a MUST for the
-  talk) → Task 8, the close ritual. Hard deadline 2026-10-08; the talk
-  at the Austin Python Meetup is in October 2026. **Among the show
-  fixes before the talk:** names-only A — code states who the voice
-  is (the owner's ruling, 2026-09-26; shaped and estimated in the
-  follow-up "A listener memory keyed by identity"). Prefetch and
-  episodes wait as post-timebox follow-ups, behind Task 4 and Task 7.
-- **Task 4, split in two by the owner (2026-09-28):** the reference
-  voices first — one clip per character with its exact transcript, in
-  `~/TalkWithZombies-client/Personas/<Name>/` (owner action queue,
-  item 1); the character bibles deferred ("I want to pivot to audio,
-  which is the weak spot now.").
-- **Follow-ups written 2026-09-28**, from the owner's listen of the
-  installed `tz-0.2`: the trim's thresholds in settings; a context
-  budget near the full 16k; a 32k context; a long silence between two
-  lines of one round, not explained. Also that day: mood clips (several
-  reference clips per character); the three dropped page designs.
-- **The box** (the A6000 on Hyperstack) is woken per box session
-  (owner action queue, item 5); the choice left for after the timebox
-  — keep hibernating it or destroy it — is now due.
+- **The demo's four goals** (the owner, 2026-09-30; the README's "What
+  the demo shows"; [discussion 2026-09-30] demo-goals): 1. story
+  coherence and improvisation — **largely met** (one show fix before
+  the talk: names-only A); 2. emotional voices in support of the
+  narration — **met** (2026-09-30, below); 3. automated deployment to a
+  cloud GPU — **met** (since 2026-09-18); 4. automated deployment to a
+  local GPU (the 3090) — **built, never run**.
+- **The engine and the looks** — Task 6 done 2026-09-28 (the fork's
+  `tz-0.2`, "Done in this arc"); the looks the same night — a chooser at
+  `/show`, `old-radio` and `amateur-radio-transmitter` with a live gauge
+  (the fork's `tz-0.3`; the installer pinned to it, #15).
+- **The voices (Task 4's reference voices; goal 2), 2026-09-29 to
+  09-30:** real human voices from the EARS dataset, every one of a
+  speaker's 23 recordings cast, the story choosing one per mood; a
+  screening tool for flawed takes; every chunk the voice says kept in
+  debug mode, and the run's seed for the voice as a switch
+  ([discussion 2026-09-29] voice-datasets-with-emotion §11). Released as
+  the fork's **`tz-0.4`**; the installer pinned to it (#19) and
+  **re-proven by the owner on 2026-09-30** (the client moved to `tz-0.4`,
+  a second run `changed=0`). The owner: "as far as I am concerned we
+  have achieved TTS of voices with emotions with great success." The
+  recasts left (Daniel, Moira) and two transcript fixes are **postponed
+  past the demo** (the follow-up "Recast Daniel and Moira…").
+- **The context, 2026-10-01 (open: this repository's #20, the fork's
+  #9):** the model's context **32k** (`zr_llama_ctx` 32768, deployed by
+  the owner; the stack 14,477 MiB on the GPU); the show's budget 34,000,
+  the trim's numbers as settings, a start check against the server's
+  real context; **a flaw in the trim found and fixed** — every call in a
+  trimmed stretch went uncounted and the error grew with each trim; now
+  exact to a few tokens. Trims about 3-4 times rarer than at 16k
+  ([discussion 2026-10-01] the-app-from-the-outside §2). **After both
+  merge:** tag `tz-0.5`, pin the installer, the owner's re-proof.
+- **Also written:** [discussion 2026-10-01] judge-in-the-loop — a fast
+  model answering the director's typed questions about the dialogue,
+  parked for after the demo (roadmap); [discussion 2026-10-01]
+  the-app-from-the-outside — how the app counts its tokens and trims,
+  and every endpoint to test it without the page.
+- **Next** — the agent's recommended order (2026-09-30), not yet ruled
+  by the owner beyond its first pick (the 32k work, done): goal 4, **the
+  3090** (owner action queue, item 3) → **names-only A** (the follow-up
+  "A listener memory keyed by identity") → **sound effects**, if wanted:
+  a library generated offline by an SFX model and played under the
+  events (an idea of 2026-09-30; a research pass first; it would absorb
+  the dead-air static) → **Task 7, the canned episode** (a MUST; record
+  it with `show.debug` on, and say any bad line again with the fork's
+  `scripts/replay_chunk.py --seed N`) → **Task 9, the talk** → the
+  compressed reference clips, if the venue's uplink is slow → Task 8,
+  the close ritual. Hard deadline 2026-10-08; the talk at the Austin
+  Python Meetup in October 2026.
+- **Deferred past the demo (the owner, 2026-10-01):** Task 5, the
+  in-prototype experiments, and the character bibles — moved to the
+  follow-up "In-prototype experiments and the character bibles —
+  deferred past the demo".
+- **The box** (the A6000 on Hyperstack, kept up for live tests):
+  the choice to keep it or destroy it is due (owner action queue,
+  item 5).
 - **At a session's end:** a fresh-session handoff replaces any
   mid-session one, and a handoff is deleted only with the owner's
   permission. The latest handoff stays until the next compaction, as
@@ -109,8 +110,11 @@ decision; the re-orientation surface when revisiting any topic.*
 *Actions only the owner can take. Items get DELETED when done;
 the agent keeps this current. These carry across arcs.*
 
-1. **Gather 4 reference voice samples** — NEXT (Task 4's first part,
-   the owner, 2026-09-28). **Under way (2026-09-29):** EARS voices, a
+1. **Gather 4 reference voice samples** — **DONE for the demo
+   (2026-09-30):** the EARS cast with every emotion, released as
+   `tz-0.4` (Task 4); the recasts left are postponed past the demo. Kept
+   until the owner deletes it. NEXT (Task 4's first part, the owner,
+   2026-09-28). **Under way (2026-09-29):** EARS voices, a
    first cast in the app, recast at will with `tools/voices/cast.yaml`
    (Task 4). Where they go: each character's clip as
    `ref.wav`, with its exact transcript in `ref.txt`, in
@@ -131,18 +135,23 @@ the agent keeps this current. These carry across arcs.*
    are wired to clip selection — its shape is the follow-up "Mood
    clips" (`ref-<mood>.wav` next to `ref.wav`).
 2. **Seed the character bibles** — DEFERRED by the owner
-   (2026-09-28, Task 4's split: the voices first). Names,
+   (2026-09-28, Task 4's split: the voices first); **past the demo**
+   (2026-10-01; the follow-up "In-prototype experiments and the
+   character bibles — deferred past the demo"). Names,
    personalities, quirks, voice descriptions; rough is fine;
    model-neutral (guardrail 2). They become the sections of the
    show's cast sheet ([spec §5]) — concretely, each character's
    entry under "The cast:" in the fork's
    `stories/lab-outbreak/cast_sheet.md`, arriving as a pull request
    ([discussion 2026-09-23] show-engine-design §4). Unblocks Task 5a.
-3. **Check the home 3090 box's NVIDIA driver** — DEPRIORITIZED
+3. **Check the home 3090 box's NVIDIA driver** — **due: the local GPU
+   is the demo's goal 4 (the owner, 2026-09-30)**, built and never run;
+   this check comes first. Until 2026-09-30: DEPRIORITIZED
    (cloud-only demo), but note: it partially revives the day we
    test the playbook's localhost target ([discussion 2026-09-17]
    ruling 4).
-4. **Demo-day logistics radar** — POSTPONED until the MVP works.
+4. **Demo-day logistics radar** — POSTPONED until the MVP works — **it
+   works now (2026-10-01): due.**
    Pre-decided: the **"canned episode" emergency mode is a
    MUST** (Task 7). Candidate on the radar: a tunnel that reconnects by
    itself (follow-ups, SSH keepalives — low priority).
@@ -212,7 +221,10 @@ the agent keeps this current. These carry across arcs.*
   2026-09-30; released as the fork's `tz-0.4`, an annotated tag on
   `1b7e70e`, pushed — the merge identical to the tested branch head, the
   fork's tests green on it: 1186 passed, Node 42 / 17 / 91 / 8; the
-  installer pinned to `tz-0.4`, the owner's re-proof pending) — the
+  installer pinned to `tz-0.4` (#19) and re-proven by the owner on
+  2026-09-30: the client moved to `tz-0.4` — the only change, "Clone
+  TalkWithZombies at the pinned version" — a second run `changed=0`,
+  `git describe` `tz-0.4`) — the
   owner: "Wow, the show is very good now." The cast: Daniel p007, Moira
   p026, Ralph p017, Samantha p063 (recast 2026-09-30). **Still open:**
   Daniel and Moira to be recast — Moira sounds too like the new Samantha,
@@ -330,43 +342,12 @@ the agent keeps this current. These carry across arcs.*
     episodes (the follow-up "Episodes — a story arc, with a recap
     between episodes").
 
-- [ ] **Task 5 — In-prototype experiments (deliverable D3;
-  protocol skeleton per guardrail 1: question, timebox,
-  pre-registered pick criteria, runlog).**
-  - [ ] **5a — LLM audition** ([spec §9]): the ranked five via
-    one `-hf` flag each; identical scenario; scored on BOTH
-    narrative-health axes; name-memory retest at the raised
-    window. Picks the working default. Needs Task 4 bibles.
-    **Runs in the fork's engine, after the timebox.** Added
-    2026-09-23: does each candidate write the screenplay format on
-    its own (if not, the grammar steers — ~10 % per token and style
-    drift)? The gate's "prose with and without the grammar" item is
-    answered for Nemotron by identity and re-checked for any other
-    finalist; the bounded-scratchpad cell rides along
-    (follow-ups).
-  - [ ] **5b — TTS comparison + VRAM budget** ([spec §9]):
-    engines via the parametrized role; **LuxTTS's ~1 GB claim is
-    the first check**; picks two engines + Whisper size;
-    measures the two-engine stack vs 24 GB target / 16 GB
-    aspiration. Needs Task 4 samples. Per-engine test items from
-    the field: ultra-short inputs (the "1." echo) and typographic
-    punctuation (`’`/`—` dropped the pause before "Over." on Faster
-    Qwen3-TTS, 2026-09-22 — the parser normalizes anyway).
-  - [ ] **5c — Narrative-health probe battery**
-    ([discussion 2026-09-16] taxonomy §5): the zero-code,
-    owner-run probes — `[Director]:` prefix (C6) · named
-    addressee (E2) · in-fiction phrasing (C8) · long-form escape
-    hatch (B4) · fixed responder (E1) — one variable flipped per
-    run against the same two-round protocol. Protocol-lite (a
-    dated runlog section, no full experiment folder). Does NOT
-    need the real cast. **Re-scoped 2026-09-23 to the fork's
-    engine:** the battery was written against TalkWithMe's
-    per-persona structure; under [ADR-0003] two probes are moot by
-    construction (the `[Director]:` prefix — the director now IS
-    the user turn; the fixed responder — the director picks the
-    speakers), and the others (named addressee, in-fiction
-    phrasing, long-form escape hatch) become director settings to
-    try. Runs after Task 6b, alongside 5a.
+- [~] **Task 5 — In-prototype experiments (deliverable D3) — deferred
+  past the demo (the owner, 2026-10-01: "Yes, defer").** 5a (the LLM
+  audition), 5b (the TTS comparison and the VRAM budget) and 5c (the
+  narrative-health probes) moved whole, with their notes, to the
+  follow-up "In-prototype experiments and the character bibles —
+  deferred past the demo" (`docs/follow-ups.md`).
 - [ ] **Task 7 — The canned episode (owner MUST) + demo-day
   protocol runbook.** Recorded from the working prototype; the
   runbook promotion deferred from the last arc lands here. The
@@ -376,6 +357,20 @@ the agent keeps this current. These carry across arcs.*
   with. **Before demo day, re-examine** the follow-up "Compressed
   reference clips, switchable on and off" (the owner, 2026-09-30): if
   the venue's uplink is slow, build the switch and turn it on.
+- [ ] **Task 9 — Prepare the talk** (the owner, 2026-10-01: "Yes, add
+  this: Add a task for preparing the talk itself"). The slides and the
+  talk's script for the Austin Python Meetup (October 2026) — the
+  content is the owner's; the agent helps with material, figures and
+  checks. What to highlight is already listed: the four goals and where
+  each stands ([discussion 2026-09-30] demo-goals §1, §3) and the pool of
+  creative goals the owner marked as "current features we can highlight
+  in the talk" (§6: behind the curtain — the director, the grammar, the
+  debug files; the show never dies on stage; the same seed replays the
+  same show; the period looks; built with an AI pair and a memory that
+  survives; what it costs). After Task 7: the canned episode is the
+  talk's safety net. Evidence to draw on: the experiments, the
+  discussions, the measurements (the 32k context, the trim's fix, the
+  voices).
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes

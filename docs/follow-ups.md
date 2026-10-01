@@ -1633,6 +1633,71 @@ reader's memory):
      the pattern) — the same degradation every time points at the clip,
      once only at randomness.
 
+## In-prototype experiments and the character bibles — deferred past the demo (owner, 2026-10-01)
+
+- **The statement:** the MVP arc's Task 5 — the in-prototype
+  experiments (deliverable D3: an LLM audition, a TTS comparison with
+  the VRAM budget, the narrative-health probes) — and the character
+  bibles (owner action queue, item 2; Task 4's first part, deferred by
+  the owner on 2026-09-28) are not for the demo. The owner (verbatim,
+  2026-10-01), on the agent's proposal: "Yes, defer: "Defer Task 5 (the
+  experiments: an LLM audition, a TTS engine comparison, the narrative
+  probes) and the character bibles past the demo"". The agent's reasons:
+  none of them is a demo goal; a week is not enough for an audition done
+  properly; the bibles were already deferred; deferring them formally
+  keeps the TODO honest about what is planned.
+- **Where flagged:** `docs/TODO.md` (Task 5, now `[~]` with a pointer
+  here; the owner action queue, item 2); the agent's recap of 2026-09-30
+  and the doc refreshes held for the next significant branch.
+- **Trigger:** after the demo (2026-10-08) — the next arc's planning.
+- **What has changed since they were written** (2026-09-16 to
+  09-23): the cast now has real voices with emotions (EARS, `tz-0.4`),
+  so 5b's "needs Task 4 samples" is met — though a TTS comparison now
+  has to compare emotional cloning, not one clip; the model's context is
+  32k (`tz-0.5`), which changes 5a's "name-memory retest at the raised
+  window"; the bibles would land as each character's entry in the fork's
+  `stories/lab-outbreak/cast_sheet.md` (the owner action queue, item 2,
+  has the shape).
+- **Task 5 as it stood in the TODO, moved whole:**
+
+  - [ ] **Task 5 — In-prototype experiments (deliverable D3;
+    protocol skeleton per guardrail 1: question, timebox,
+    pre-registered pick criteria, runlog).**
+    - [ ] **5a — LLM audition** ([spec §9]): the ranked five via
+      one `-hf` flag each; identical scenario; scored on BOTH
+      narrative-health axes; name-memory retest at the raised
+      window. Picks the working default. Needs Task 4 bibles.
+      **Runs in the fork's engine, after the timebox.** Added
+      2026-09-23: does each candidate write the screenplay format on
+      its own (if not, the grammar steers — ~10 % per token and style
+      drift)? The gate's "prose with and without the grammar" item is
+      answered for Nemotron by identity and re-checked for any other
+      finalist; the bounded-scratchpad cell rides along
+      (follow-ups).
+    - [ ] **5b — TTS comparison + VRAM budget** ([spec §9]):
+      engines via the parametrized role; **LuxTTS's ~1 GB claim is
+      the first check**; picks two engines + Whisper size;
+      measures the two-engine stack vs 24 GB target / 16 GB
+      aspiration. Needs Task 4 samples. Per-engine test items from
+      the field: ultra-short inputs (the "1." echo) and typographic
+      punctuation (`’`/`—` dropped the pause before "Over." on Faster
+      Qwen3-TTS, 2026-09-22 — the parser normalizes anyway).
+    - [ ] **5c — Narrative-health probe battery**
+      ([discussion 2026-09-16] taxonomy §5): the zero-code,
+      owner-run probes — `[Director]:` prefix (C6) · named
+      addressee (E2) · in-fiction phrasing (C8) · long-form escape
+      hatch (B4) · fixed responder (E1) — one variable flipped per
+      run against the same two-round protocol. Protocol-lite (a
+      dated runlog section, no full experiment folder). Does NOT
+      need the real cast. **Re-scoped 2026-09-23 to the fork's
+      engine:** the battery was written against TalkWithMe's
+      per-persona structure; under [ADR-0003] two probes are moot by
+      construction (the `[Director]:` prefix — the director now IS
+      the user turn; the fixed responder — the director picks the
+      speakers), and the others (named addressee, in-fiction
+      phrasing, long-form escape hatch) become director settings to
+      try. Runs after Task 6b, alongside 5a.
+
 ## Recast Daniel and Moira, and correct two stray-speech transcripts (owner, 2026-09-30) — postponed past the demo
 
 - **The statement:** three voice chores are left from the casting, and
