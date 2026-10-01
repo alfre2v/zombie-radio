@@ -370,10 +370,13 @@ of `context_budget` (34,000 tokens), whole rounds leave the model's
 reading, from the middle outwards — never the first `trim_keep_first` (2)
 or the last `trim_keep_last` (4) — each taking its share off the size,
 until the estimate is back to `trim_target` (50 %); the next round's count
-is the real size. A round with no model request (the Repair) has no count,
-and its share counts as 0, so a trim that takes it cuts somewhat below its
-target. The server then reads the shortened script from the start: a pause
-of about 8.4 s at 32k (13,922 tokens), once every 100 rounds or more. When
+is the real size. A round with no model request (the Repair) has no count:
+the round after it counts its share from the last size the server reported,
+so it takes in the Repair's tokens too, and the trim fires only before a
+round that asks the model — the trim's estimate is exact to a few tokens,
+and it lands up to one round under its target. The server then reads the
+shortened script from the start: a pause of about 8.4 s at 32k (13,922
+tokens), once every 100 rounds or more. When
 a run opens, the app asks the model server its context (llama.cpp's
 `/props`) and refuses the run if `trim_trigger × context_budget +
 instruction_room` (1,000, for the next instruction) `+ max_tokens` does

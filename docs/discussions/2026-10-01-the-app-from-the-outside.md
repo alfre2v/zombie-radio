@@ -141,8 +141,9 @@ after every round.**
    its reply. The largest share in 82 recorded runs (1,824 rounds, measured
    2026-10-01): **741 tokens**, an exchange (an exchange's instruction restates
    the caller's words, earlier callers' words and an agenda item).
-4. **Before planning each round, the trim reads the last reported size**
-   (`trim()`, called by the round route, `app/routers/show.py`):
+4. **Before each round that asks the model, the trim reads the last reported
+   size** (`trim()`, called by the round route, `app/routers/show.py`, once the
+   director has planned the round):
    - below `trim_trigger × context_budget` (0.9 × 34,000 = **30,600**):
      nothing happens;
    - at or above it, the rounds the model still reads become candidates, except
@@ -160,21 +161,27 @@ after every round.**
    server's next count is the real size, and the next decision starts from it.
    An error never adds up.
 
-**Two rounds without a count.**
+**The Repair, the one round without a count.** The Repair (the call) sends the
+model no request — both of its lines are fixed — so the server reports no size
+after it, and its own share is unknown (`None`, counted as 0). Its lines still
+reach the model: its instruction, which quotes them, joins the next round's user
+turn (`assemble_messages()`). Two rules keep the count whole:
 
-- **A round with no model request** — the Repair, both of its lines fixed — has
-  no `timings`: the size is unknown after it, and the trim skips that round.
-  Its lines still reach the model: its instruction, which quotes its two fixed
-  lines, joins the next round's user turn (`assemble_messages()`).
-- **Its share, and the share of the round after it, are unknown** (`None`), and
-  the trim counts an unknown share as 0. So when trimmed rounds include them,
-  **the trim removes more than it estimates and cuts below its target.** Seen in
-  both drives of 2026-10-01: aiming at 15,500 (50 % of 31,000) it landed at
-  12,269; aiming at 17,000 (50 % of 34,000) it landed at 14,017. The next
-  round's share shows the correction as a negative number (−2,837 and −2,966).
-  Harmless — the model reads a little less for a while — and the count is right
-  again from the next round. (A possible refinement, not built: estimate an
-  unknown share as the average share.)
+- **The round after a Repair counts its share from the last size the server
+  reported** — the one from before the Repair (`known_size()` in
+  `app/show/script.py`: it steps back over rounds without a count) — so its share
+  takes in the Repair's tokens and its own.
+- **The trim fires only before a round that asks the model** — the director
+  plans the round first, and the trim runs only if the plan has a model request
+  (`plan.max_lines`) — so no trim ever falls between the last reported size and
+  the round that counts from it. Nor right after a Repair: the size is unknown
+  there, and the trim waits for the next round with a count.
+
+With both, the trim's estimate of what remains is **exact to a few tokens**, and
+it lands up to one round under its target — it removes whole rounds and stops at
+the first that brings the estimate to the target or below. That was not so
+until the evening of 2026-10-01: §2.7 tells how the flaw was found, measured and
+fixed.
 
 **Not the tally:** the **token check** in the debug files (`show.debug` on) is a
 separate verification: after each round the app renders the prompt itself
@@ -272,7 +279,83 @@ logged no error. For comparison, at 16k with a 14,000 budget (the owner's
 listen of 2026-09-28, run `2026-09-28T15-31-44`): trims at rounds 79, 101, 133
 and 169 — every 22-36 rounds — each about 5 s (5,008 tokens re-read, 5.1 s).
 **Now: trims about 3-4 times rarer, each about 60 % longer; the model keeps about
-2.2 times as much of the show.**
+2.2 times as much of the show.** (These two drives ran before the fix of §2.7: their
+trims landed about 3,000 below the target. With the fix, the drive
+`2026-10-01T17-48-37` — 270 rounds at 34,000 — trimmed before rounds 115 and 246
+and landed at 16,608 and 16,722 against 17,000.)
+
+### §2.7 A flaw in the trim, found, measured and fixed (2026-10-01, evening)
+
+**How it was found.** Writing §2.3, the agent noticed in the record that the
+round after the first trim had a **negative share** (−2,837): the trim had
+removed more than it estimated. Its first account of the cause was too tangled;
+the owner (verbatim): "This is a horrible explanation. Can you not make it
+simpler? What is the source of the error? I feel you need to divide this by each
+type of round: what is the error introduced if trim triggers there? ... I feel
+we are missing something, if only we trigger the trim in the right round we may
+be able to avoid all this complexity. No?" — and, before that, on how much it
+mattered: "this is the one that worries me the most... I know, cutting more is
+not going to stop the show or produce an error, but it makes the show forget
+more lines that we intended. Do you have an estimation of how bad the drift
+towards trimming more is? Does it increases the more you trim? Or is the error
+a constant (I doubt it)?"
+
+**The source, simply.** To decide how many rounds to remove, the trim needs each
+round's weight — its share, recorded when it was played as "the size after less
+the size before", both sizes from the server. The server reports a size only
+when it is asked to write something, and the Repair asks it nothing. So right
+after a Repair no size was reported, and **two rounds per call had no recorded
+weight**: the Repair and the round after it. Round by round:
+
+| Round | Recorded weight | Real weight (about) | Wrong by |
+|---|---|---|---|
+| free, orientation, Breakdown, Switch-off, an exchange or re-call not after a Repair | right | 100-700 | 0 |
+| the Repair | none (counted 0) | ~130 | ~130 |
+| the round after a Repair (the first exchange, or a re-call) | none (counted 0) | ~500-700 | ~500-700 |
+| the round after a trim | the trim's own error, negative | ~150 | a later trim repeated it |
+
+Every call in the stretch a trim removed went uncounted — about 600-850 tokens —
+so the trim kept cutting. **The error was not constant** (the owner's doubt was
+right): it grew with the calls in the removed stretch, and it **compounded**: the
+round after a trim carried the shortfall as a negative share, the next trim was
+likely to remove that round (it sits in the middle of what remains), and
+subtracting a negative weight made it cut more again.
+
+**The owner's idea, and the fix.** Triggering the trim in the right round does
+not cure the error alone — the missing weights come with whichever calls lie in
+the removed stretch, whenever the trim fires — but it removes the one hard case
+of the fix: if a trim could fall just before a Repair, "the last size the server
+reported" would predate the trim and be wrong. So the fix is the two rules of
+§2.3: the round after a Repair counts from the last reported size (the agent's
+"counting back" — only for getting that size, from before the Repair), and the
+trim fires only before rounds that ask the model (the owner's idea). Built in the
+fork on `alfre2v/context-32k` (alfre2v/TalkWithZombies#9): `known_size()` in
+`app/show/script.py`; in `app/routers/show.py` the director plans before the
+trim, and the trim runs only when `plan.max_lines`; three tests (the step back
+over a Repair, never over a trim; no trim before a round without a request; the
+share of the round after a Repair). The director reads neither the trim's marks
+nor the sizes, so planning first changes nothing else.
+
+**The measurement.** On the owner's suggestion — many trims in the time of one,
+with a small budget instead of a smaller deployed context (the trim works against
+the app's budget; the box kept its 32k) — the same 280-round drive (seed 42, the
+same 42 listener answers) at a budget of 8,000 (target 4,000), before and after
+the fix. The trim's landing: what the round after it read, less that round's
+instruction (counted by the server's `/tokenize`):
+
+| | Before the fix (run `2026-10-01T17-57-41`; 130 rounds, cut by a tunnel drop) | After (run `2026-10-01T18-03-25`; 280 rounds) |
+|---|---|---|
+| Trims | 6 | 12 |
+| The trim's estimate against the real size after it | off by 641 to 4,218 tokens | off by 1 to 3 tokens, every trim |
+| Negative shares among the removed rounds | −527, −1,543, −1,575, −2,814, −3,557 — growing | none |
+| Landing against the 4,000 target | −678 to −1,815, mean −1,025 (17-45 % of what it meant to keep) | −5 to −619, mean −174 (at most part of one round) |
+| The driver's report | — | 6 of 6 |
+
+Before the fix, from the fourth trim on, the inflated estimate stayed above the
+target (6,080; 7,465; 7,462) and the trim cut until no candidate was left. At the
+real budget, the two drives before the fix landed 3,082 and 3,293 below 17,000;
+the drive with it, 392 and 278 below. **The show now forgets what the trim
+intends, and no more.**
 
 ## §3. Part B — the endpoints, and what each is good for
 
@@ -721,6 +804,7 @@ microphone, the browser's cache (a reload must fetch new scripts: Cmd+Shift+R)
 - **`GET /api/settings` does not show the show's settings** (§3.6).
 - **A `GET` that changes state:** `GET /api/session/load-room/{room}` (§3.7) —
   upstream's; worth knowing before calling it "to look".
-- **The trim cuts below its target** when the trimmed rounds include a Repair
-  (§2.3) — harmless; a refinement noted, not built.
+- **The trim cut below its target, more with each trim** — every call in the
+  removed stretch went uncounted, and the error carried into the next trim —
+  found, measured and fixed the same evening (§2.7).
 - **The driver's report predated the fixed lines** (§4.2) — fixed.
