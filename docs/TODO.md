@@ -55,15 +55,20 @@ it is detail.*
   have achieved TTS of voices with emotions with great success." The
   recasts left (Daniel, Moira) and two transcript fixes are **postponed
   past the demo** (the follow-up "Recast Daniel and Moira…").
-- **The context, 2026-10-01 (open: this repository's #20, the fork's
-  #9):** the model's context **32k** (`zr_llama_ctx` 32768, deployed by
+- **The context, 2026-10-01 (this repository's #20, the fork's #9):** the model's context **32k** (`zr_llama_ctx` 32768, deployed by
   the owner; the stack 14,477 MiB on the GPU); the show's budget 34,000,
   the trim's numbers as settings, a start check against the server's
   real context; **a flaw in the trim found and fixed** — every call in a
   trimmed stretch went uncounted and the error grew with each trim; now
   exact to a few tokens. Trims about 3-4 times rarer than at 16k
-  ([discussion 2026-10-01] the-app-from-the-outside §2). **After both
-  merge:** tag `tz-0.5`, pin the installer, the owner's re-proof.
+  ([discussion 2026-10-01] the-app-from-the-outside §2). **Released
+  2026-10-01** as the fork's **`tz-0.5`**, an annotated tag on `9b3a329`
+  (alfre2v/TalkWithZombies#9 and this repository's #20 merged; the merge
+  identical to the tested branch head `8a32bd7`, the fork's tests green
+  on it: 1210 passed, Node 42 / 17 / 91 / 8); the installer pinned to
+  it; **the owner's re-proof pending**. The installed client needs the
+  box at 32k: its 34,000 budget does not fit a 16k context, and the
+  start check would refuse every run.
 - **Also written:** [discussion 2026-10-01] judge-in-the-loop — a fast
   model answering the director's typed questions about the dialogue,
   parked for after the demo (roadmap); [discussion 2026-10-01]
