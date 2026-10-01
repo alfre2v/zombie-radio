@@ -1,7 +1,7 @@
 # Zombie-Radio — Product specification
 
 **Status:** living. This document describes the product as it is
-built — the fork TalkWithZombies at tag `tz-0.4` (`1b7e70e`)
+built — the fork TalkWithZombies at tag `tz-0.5` (`9b3a329`)
 and this repository's deployment — in the order someone
 would build it again. It is rewritten in place when the product
 changes; it carries no history. Why each choice was made, and when,
