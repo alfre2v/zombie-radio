@@ -1513,6 +1513,44 @@ reader's memory):
      the pattern) — the same degradation every time points at the clip,
      once only at randomness.
 
+## Recast Daniel and Moira, and correct two stray-speech transcripts (owner, 2026-09-30) — postponed past the demo
+
+- **The statement:** three voice chores are left from the casting, and
+  the owner postponed them all on the evening of 2026-09-30, after the
+  live checks of the voices kept in debug mode (verbatim):
+  "I can live with the audio instabilities for the moment. I wan to make progress in other areas. We postpone recasting more voices, as far as I am concerned we have achieved TTS of voices with emotions with great success. The remaining boring "find and clear the audio samples" do not interest me for the demo."
+  1. **Daniel (p007)** — two of his clips spoil his lines: his *afraid*
+     clip (`ref-fear.wav`, EARS p007 fear) is pitched in a woman's range
+     (246 Hz), and lines cloned from it land anywhere from a man's voice
+     to a woman's depending on the seed (107-235 Hz over four seeds); his
+     *determined* clip (`ref-pride.wav`, p007 pride) has stray words at
+     its start, which the screening tool missed. The live show will now
+     and then give Daniel a woman's voice on those two moods — accepted.
+  2. **Moira (p026)** sounds too like the new Samantha (p063) (the owner,
+     §11.11). Candidates named then: p062, p059, p106, p033.
+  3. **Two transcripts with stray speech** in the current cast: Ralph's
+     *doubtful* clip (p017 confusion, "Appreciate it" before) and
+     Samantha's *determined* clip (p063 pride, "I'm amazed." before) — to
+     correct after the owner's ear check of
+     `zombie-radio-datasets/ears/stray-speech-2026-09-30.html`, with the
+     convention of §11.13 (`.txt.original`, `.CORRECTION.txt`, a line in
+     the datasets' `README.txt`).
+- **Where flagged:** [discussion 2026-09-29] voice-datasets-with-emotion
+  §11.11-§11.14; the follow-up "Keep every synthesized chunk in debug
+  mode…" (the live runs that found Daniel's two clips).
+- **Trigger:** after the demo (2026-10-08), or a bad voice the owner
+  will not accept in a recording. For the canned episode (Task 7) a
+  recast is not needed: record with `show.debug` on, and say any bad
+  line again with the fork's `scripts/replay_chunk.py --seed N` until it
+  sounds right.
+- **The fix shape:** screen the candidates (`python3
+  tools/voices/screen_voices.py --speakers 62,59,106`), listen to every
+  emotion the story's `voices` use, the negative ones above all (the
+  screening misses quiet stray speech: the ear stays the last check);
+  change a line of `tools/voices/cast.yaml` and run `uv run python
+  tools/voices/cast_voices.py --all-emotions --only <Name>`; the runbook
+  `docs/runbooks/cast-voices.md`.
+
 ## Keep every synthesized chunk in debug mode, and send a seed with every voice request (owner, 2026-09-30) — built (the fork's `799d005`, alfre2v/TalkWithZombies#8)
 
 - **The gap:** the voice server's audio for each chunk goes to the page,

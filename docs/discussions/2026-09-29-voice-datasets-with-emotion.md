@@ -25,8 +25,9 @@ fetch script's working copy is `tools/voices/fetch_ears.py` (§11.6). **On
 to a recording (§11.8-§11.9, the fork's alfre2v/TalkWithZombies#8) — and
 the cast became Daniel p007, Moira p026, Ralph p017, Samantha p063
 (§11.11-§11.13); a screening tool checks a speaker's clips for stray speech
-and pitch (§11.12); **Daniel and Moira are to be recast** (§11.11,
-§11.13). This document is updated as the real audio files are tried: each
+and pitch (§11.12); Daniel and Moira were to be recast (§11.11, §11.13) —
+**postponed past the demo, the voices with emotion called a success by the
+owner (§11.14).** This document is updated as the real audio files are tried: each
 finding lands as a dated addendum (§11), never as a silent rewrite.
 
 **The owner's request (verbatim, 2026-09-29):** "I think it is time to open a
@@ -1667,3 +1668,14 @@ already pending (§11.11) — screening the candidates and listening to every
 emotion a mood uses (the story's `voices`), the negative ones above all.
 Still pending from §11.12: the transcripts of p017 confusion and p063
 pride, after the owner's ear check.
+
+### §11.14 2026-09-30 — the recasts postponed past the demo; the voices with emotion called a success
+
+After §11.13, the same evening, the owner (verbatim): "I can live with the audio instabilities for the moment. I wan to make progress in other areas. We postpone recasting more voices, as far as I am concerned we have achieved TTS of voices with emotions with great success. The remaining boring "find and clear the audio samples" do not interest me for the demo."
+The recasts of Daniel and Moira and the two pending transcript corrections
+(p017 confusion, p063 pride) wait until after the demo — the follow-up
+"Recast Daniel and Moira, and correct two stray-speech transcripts" holds
+them, with their fix. Daniel's two known bad clips (§11.13) are accepted
+for now. The demo's goal 2, "emotional voices in support of the
+narration", is met by the owner's verdict. The cast for the demo: Daniel
+p007, Moira p026, Ralph p017, Samantha p063.

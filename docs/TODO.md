@@ -217,7 +217,10 @@ the agent keeps this current. These carry across arcs.*
   first (`tools/voices/screen_voices.py`) and then by ear; the transcripts
   of Ralph's confusion and Samantha's pride clips to correct after the
   owner's ear check ([discussion 2026-09-29] voice-datasets-with-emotion
-  §11.11-§11.13). The detail
+  §11.11-§11.13). **Postponed past the demo (2026-09-30, evening)** — the
+  owner: "I can live with the audio instabilities for the moment. I wan to make progress in other areas. We postpone recasting more voices, as far as I am concerned we have achieved TTS of voices with emotions with great success. The remaining boring "find and clear the audio samples" do not interest me for the demo." The reference voices are done for the demo; the
+  chores wait in the follow-up "Recast Daniel and Moira, and correct two
+  stray-speech transcripts" (§11.14). The detail
   as first written: character
   bibles → the sections of TalkWithZombies' cast sheet ([spec
   §5]; where they live in the fork — decided 2026-09-23: the
