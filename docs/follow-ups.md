@@ -1206,6 +1206,80 @@ reader's memory):
   deep into a long context; the prompt reading per round as the script
   grows (mostly served from the cache between trims).
 
+## Resume does not re-check the model server's context (owner, 2026-10-01) — low priority
+
+- **The gap:** since 2026-10-01 (the fork's `f9aa73d`,
+  alfre2v/TalkWithZombies#9) a run opens only if the show's budget fits
+  the model server's context: `POST /api/show/start` asks llama.cpp's
+  `/props` for `n_ctx` and refuses the run when `trim_trigger ×
+  context_budget + instruction_room + max_tokens` does not fit
+  ([discussion 2026-10-01] the-app-from-the-outside §2.4). **Resume does
+  not go through `/start`:** it continues the same run — the page's
+  `resumeShow()` calls `runShow()`, which goes straight back to
+  `POST /api/show/round` — so the check is not made again.
+- **When it matters:** only if the box is **redeployed with a smaller
+  context while a show is paused** — for example, a target that needs
+  `zr_llama_ctx` 16384 (a 3090 that cannot fit 32k, overridden in its
+  `99-local.yml`) taking over mid-show. Then the first request larger
+  than the new context fails with the model server's own error (not
+  observed here), the page marks the round "(this round failed: …)",
+  and every Resume fails the same way until the app is restarted with a
+  smaller budget or the box gets a larger context. A mid-show redeploy is
+  not a case the show meets today.
+- **The owner (verbatim, 2026-10-01):** "I think (6) "Resume doesn't
+  re-check the server's context" is low priority for us, we should
+  document in follow ups but mark as low priority."
+- **Where flagged:** the agent's answer to the owner's question whether
+  `server_context()` is called once or periodically ([discussion
+  2026-10-01] the-app-from-the-outside §2.4).
+- **Trigger:** a target deployed with a smaller context than the others,
+  or any change that makes the server's context vary during a show.
+- **Fix shape:** the running app remembers which runs it has checked;
+  a round for a run it has not checked (a Resume, or a run continued
+  after the app restarted) checks `/props` first — or, simpler, every
+  round checks it — one tiny request each
+  (`server_context()` in the fork's `app/services/llm.py` and
+  `context_problem()` in `app/routers/show.py` already exist); on a
+  mismatch, the round fails with the same message as the start, instead
+  of the model server's error.
+
+## The settings API does not show the show's settings (owner, 2026-10-01) — after the demo
+
+- **The gap:** `GET /api/settings` returns only `llm`, `tts`, `stt` and
+  `general` (the fork's `SettingsResponse` in `app/models.py`) — **not
+  `show:`**, and not `mcp:` either: both are "yaml-only" by design
+  (`ShowConfig`'s docstring: "The show engine's settings — yaml-only,
+  like mcp."). Found in the endpoint survey ([discussion 2026-10-01]
+  the-app-from-the-outside §3.6), where the reply's `llm.max_tokens`
+  (200, the chat's) could be mistaken for the show's (512).
+- **What it costs:** nothing in the app can say which show settings a
+  **running** app loaded — the budget and the trim's numbers, the seed,
+  `debug`, `mood_voices`, `voice_seed`, the pacing. `settings.yaml` says
+  what is in the file, which is not always what is running: the settings
+  are read when the app starts, so an edit since then is not in effect
+  (exactly the case of 2026-10-01, when a temporary budget of 40,000 was
+  removed from the file while the running app still had it). Today the
+  only views of the running values are partial: a run's start reply
+  (`seed`, `debug`, `voice_seed`, the voices) and its record. FastAPI's
+  `/docs` page cannot show them either, and TalkWithMe's settings page
+  never shows them.
+- **What is safe already:** saving from the chat's settings page
+  (`PUT /api/settings`) keeps the `show:` section in `settings.yaml` —
+  the fork's `tests/test_show_config.py`,
+  `test_save_then_load_keeps_the_show_section`.
+- **The owner (verbatim, 2026-10-01):** "(7) GET /api/settings doesn't
+  show the show's settings" is more serious, but I do not mind to
+  postpone it until after the demo day. But we should record it well!"
+- **Trigger:** after the demo (2026-10-08); sooner if a test or a listen
+  is misread because the running settings differ from the file.
+- **Fix shape:** a read-only `show` section in `GET /api/settings`'s
+  reply (and `mcp`, for completeness), or a separate
+  `GET /api/show/settings` returning the running `ShowConfig` — readable
+  with `curl` and on `/docs`; not editable through the API (the show's
+  settings stay yaml-only, edited in the file and applied by a restart),
+  so the chat's settings page and its `PUT` are untouched. Tests: the
+  reply carries the loaded values, not the file's.
+
 ## A long silence between two lines of one round, not explained (owner, 2026-09-28)
 
 - **What was seen:** in the owner's listen of the installed `tz-0.2`
