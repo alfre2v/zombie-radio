@@ -1513,7 +1513,7 @@ reader's memory):
      the pattern) — the same degradation every time points at the clip,
      once only at randomness.
 
-## Keep every synthesized chunk in debug mode, and send a seed with every voice request (owner, 2026-09-30) — decided, not built
+## Keep every synthesized chunk in debug mode, and send a seed with every voice request (owner, 2026-09-30) — built (the fork's `799d005`, alfre2v/TalkWithZombies#8)
 
 - **The gap:** the voice server's audio for each chunk goes to the page,
   plays, and is forgotten — debug mode keeps only the model's side
@@ -1563,6 +1563,75 @@ reader's memory):
   context compaction). Related: the replay test proposed for "Candles!" (the
   line sent 4 times with Daniel's clip and once with Samantha's) — not run;
   with this built, the next incident arrives with its own evidence.
+- **Status 2026-09-30, 19:42 — built and checked live; the seed is a
+  switch, off by default.** In the fork, `799d005` on
+  `alfre2v/mood-clips` (alfre2v/TalkWithZombies#8):
+  1. **Debug keeps every chunk, as shaped.** With `show.debug` on, the
+     page tags each chunk's voice request with its run and place
+     (`debug: "<run-id>/r009-l2-c1"`, the place read from the line's
+     `message_id`), and the voice route keeps it in
+     `runs/<run-id>/debug/audio/`: `r009-l2-c1-Daniel-ref-fear.wav` (the
+     audio as the engine returned it) and a `.json` (the text, the
+     persona, the language, the clip asked for and used, the clip's file,
+     SHA-256 and transcript, `seed_asked`, the engine's reply without the
+     audio: the seed it used, `time_used`, the sample rate). The tag is
+     checked strictly (the run id's pattern, now one definition in the
+     fork's `app/show/script.py`, and a run folder that exists); debug
+     off or no tag keeps nothing, with the same single request per chunk
+     (the owner asked for that check — "I want you to double check that
+     when debug is off, we are not doing unnecessary round trips of
+     requests" — and the live runs below confirm it). The audio is 48 KB
+     per second of speech; a 50-round run keeps an estimated 35-45 MB.
+  2. **The seed — changed from "always" to a switch.** A seed per chunk
+     (from the run's seed and the chunk's place) was built first; the
+     owner (verbatim): "I want to have a way to switch ON/OFF this TTS
+     seed that you are sending now, in case it proof to add to the
+     instability of the voices... I am not 100% percent sure that the
+     strategy you picked to rotate the seed, and when to keep it the same
+     is correct. And less if this strategy will prove correct for other
+     TTS engines which we may support in the future." Then, once a replay
+     showed the engine's echoed seed is enough to say any kept chunk
+     again: "Ok, so then, all this new functionality you created when
+     voice_seed is not off is wrong, no? [...] I do not see how is any of
+     the other strategies you made to rotate the seed is going to be
+     helpful." The agent agreed that no seed strategy steadies a voice —
+     a seed makes it reproducible (the same clip, text and seed give the
+     same audio, byte for byte, a bad chunk as much as a good one) — and
+     proposed one seed per run; the owner: "on/off with the run's seed,
+     go ahead." **`show.voice_seed`** (off by default): on, every chunk
+     is asked for with the run's seed, so with `show.seed` set a run is
+     said the same way twice, voice included; off, none is sent, as
+     before. The app fits the seed into the range the engine advertises
+     for `seed` (`fit_seed` in the fork's `app/services/tts_client.py`:
+     kept within the range, wrapped around outside — 4000000001 becomes 1
+     in Faster Qwen3-TTS's 1..1000), and sends none to an engine that
+     advertises no `seed`; a request's seed wins over a `seed` in
+     `tts.parameters`.
+  3. **Replay:** `scripts/replay_chunk.py` in the fork says a kept chunk
+     again through the app's `/api/tts` (the seed the page sent, or the
+     one the engine said it used; `--seed N` tries another) and tells
+     whether it is byte-identical. The link from the debug line (item 3
+     of the shape) was not built.
+
+  **Checked live** on the dev server, the owner playing in Chrome:
+
+  | Run | Settings | Result |
+  |---|---|---|
+  | `2026-09-30T18-51-36` | debug on, requests sent by the agent | a tagged chunk kept, an untagged one not; 4000000001 reached the engine as 1; both kept chunks replayed byte-identical |
+  | `2026-09-30T19-08-07` | debug on, seed off | 7 rounds, 15 lines: 16 chunks kept for 16 `POST /api/tts`, every line's text and speaker matching `script.json`; 16 different seeds picked by the engine |
+  | `2026-09-30T19-20-04` | debug on, seed on | 17 rounds, 37 lines: 39 chunks kept for 39 requests; every chunk asked for the run's seed (1696878277), and the engine used 277 on all 39 |
+  | `2026-09-30T19-32-32` | debug off, seed off — the demo's configuration | 19 rounds, 49 lines, a full contact: only `script.json` written, no `debug/` folder; 50 requests for the 50 chunks the page's `chunks()` gives; the owner: "it sounded normal, very well actually" |
+
+  With debug and the seed both off, the voice seeds are not kept anywhere
+  (the run's own seed always is, in `script.json`): a bad line in such a
+  run cannot be said again exactly. **Not shown live yet:** a whole show
+  said twice byte-identical with `show.seed` and `voice_seed` on — to do
+  when it is needed (Task 7, the canned episode). What the kept chunks
+  found at once — Daniel's two bad lines, both his clips' doing — is in
+  [discussion 2026-09-29] voice-datasets-with-emotion §11.13. **For Task 7**
+  (the agent's suggestion): record the canned episode with debug on, and
+  say again any line that comes out wrong with `replay_chunk.py --seed N`
+  until it sounds right.
 
 ## The three dropped page designs — kept in the fork's history, not in its tree (owner, 2026-09-28)
 

@@ -20,7 +20,13 @@ owner picks the four. **The casting script is built and a first cast is
 in the app** (§11.5): `tools/voices/cast.yaml` says who voices whom; one
 command recasts. **Since 2026-09-30 the downloads live outside the
 repository**, in `zombie-radio-datasets/` beside the checkout, and the
-fetch script's working copy is `tools/voices/fetch_ears.py` (§11.6). This document is updated as the real audio files are tried: each
+fetch script's working copy is `tools/voices/fetch_ears.py` (§11.6). **On
+2026-09-30 the voices began to follow the mood** — the story maps each mood
+to a recording (§11.8-§11.9, the fork's alfre2v/TalkWithZombies#8) — and
+the cast became Daniel p007, Moira p026, Ralph p017, Samantha p063
+(§11.11-§11.13); a screening tool checks a speaker's clips for stray speech
+and pitch (§11.12); **Daniel and Moira are to be recast** (§11.11,
+§11.13). This document is updated as the real audio files are tried: each
 finding lands as a dated addendum (§11), never as a silent rewrite.
 
 **The owner's request (verbatim, 2026-09-29):** "I think it is time to open a
@@ -1558,3 +1564,106 @@ the flags by ear, on the page of players the agent built for them
 (`zombie-radio-datasets/ears/stray-speech-2026-09-30.html`, with two false
 alarms for comparison).
 
+
+### §11.13 2026-09-30 — Daniel back to p007, a transcript corrected; the voices kept in debug mode; Daniel's two bad clips; Daniel to be recast
+
+**Daniel back to p007** (17:46:05 CDT, `--all-emotions --only Daniel`;
+`cast.yaml`, `Daniel: p007`). The owner (verbatim): "I think I want to go
+back to the previous Daniel. […] I like that his voice is way different
+than Ralph, and if the TTS is going to make voices feminine sometimes it's
+less notable with his old voice." The cast: **Daniel p007, Moira p026,
+Ralph p017, Samantha p063.**
+
+**p007's distress transcript corrected** (17:51, outside git). The owner:
+"fix Daniel's transcript now, but make sure to leave a note next to the
+changed transcript explaining why we deviated from the original dataset."
+In `zombie-radio-datasets/ears/p007/`: `emo_distress_sentences.txt` now
+says what was said — "Can just eat all of them." before the sentence
+(Whisper's words, the aside confirmed by the owner's ear) —
+`emo_distress_sentences.txt.original` keeps EARS's, and
+`emo_distress_sentences.CORRECTION.txt` says what, why, how it reaches the
+app, how to undo it, and that a re-fetch would bring the original back.
+**The convention for every correction:** those three files, and a line in
+`zombie-radio-datasets/README.txt`, section "Corrected transcripts".
+Daniel recast at 17:51:29; `screen_voices.py --speakers 7 --emotions
+distress,neutral` → 0 flagged (6 stray words before).
+
+**"Instability in all the voices"** (~17:53, the owner, verbatim): "Oh,
+wow, now things are much worse in the TTS. Instability in all the voices.
+I do not think it has anything to do with the transcript change in
+Daniel... Maybe your audio normalization is making things bad." Checked:
+Moira's and Ralph's clips unchanged since 15:21-15:22, Samantha's since
+16:46, the normalization since 2026-09-29; the app sent the voice server
+**no seed** (tts-serve then picks one in 1..1000 per request and echoes
+it); the engine healthy — Moira's `ref.wav`, the 13:00 sentence, seed 42
+→ byte-identical to the 13:00 reply. The owner's observation (verbatim):
+"when I reload the page from `http://127.0.0.1:8010/show` and pick the
+skin page again, the voices stabilities are perfect. But if instead I just
+reload the skin page `http://127.0.0.1:8010/show?design=old-radio` and run
+the show again there, the instability appears". No mechanism found; it was
+not tested separately afterwards (the debug runs below did not note which
+way the page was opened), and the two bad lines found since are both the
+clips' doing.
+
+**The voices kept in debug mode** — the follow-up "Keep every synthesized
+chunk in debug mode, and send a seed with every voice request" (the
+owner's go, 18:10: "Ok, we are going to build that feature"), built in the
+fork's `799d005` (alfre2v/TalkWithZombies#8): with `show.debug` on, every
+chunk's audio and a `.json` of what made it go to
+`runs/<run-id>/debug/audio/`; `scripts/replay_chunk.py` says one again;
+`show.voice_seed` (off by default) sends the run's seed with every chunk.
+The seed changed shape on the way — from a seed per chunk "always" to a
+switch with one seed per run — in the owner's words, recorded with the
+four live runs in the follow-up's status. The finding that settled it: a
+seed makes a voice reproducible, not steadier — the same clip, text and
+seed give the same audio, byte for byte, a bad chunk as much as a good
+one.
+
+**Daniel's afraid line** (run `2026-09-30T19-08-07`, debug on, seed off).
+The owner (verbatim): "I found one case of voice instability, with Daniel
+as before, line: "Daniel (afraid): It's watching us. Over." .. It sounds
+like a girl." The kept chunk, `r007-l1-c1-Daniel-ref-fear.wav`: his
+`ref-fear.wav` (p007 fear), seed 86 picked by the engine. Replayed through
+the app with four seeds (4 requests, ~2.4 s of synthesis), median pitch by
+the agent's rough estimator (autocorrelation over voiced frames):
+
+| Audio | Median pitch | Length |
+|---|---|---|
+| The show's chunk, seed 86 | 182 Hz | 1.92 s |
+| Replay, seed 86 | byte-identical | 1.92 s |
+| Replay, seed 1 | 235 Hz | 1.04 s (short: words may be lost) |
+| Replay, seed 42 | 160 Hz | 1.36 s |
+| Replay, seed 500 | 107 Hz | 2.24 s |
+| Daniel's reference clip `ref-fear.wav` | 246 Hz | |
+| Daniel's reference clip `ref.wav` | 138 Hz | |
+
+A man speaks at roughly 85-180 Hz, a woman at 165-255 Hz. p007's fear
+recording sits in a woman's range, and the seed decides where in the
+range between a man and a woman each line cloned from it lands. The agent
+built a page of players for the owner's ear (in its scratch space, not
+kept). **The cause is the clip, not the seed:** a seed that suits this
+line may not suit the next.
+
+**Daniel's determined line** (run `2026-09-30T19-20-04`, debug on, seed
+on). The owner (verbatim): "Another Daniel case of instability with line
+"Daniel (determined): Charlie, do you know of a place called 'the lab near
+the wood and swamp, smoke from the east wing'? Over." I think this is a
+rabbit hole we cannot pursue much longer." The kept chunk,
+`r012-l2-c1-Daniel-ref-pride.wav` (his `ref-pride.wav`, p007 pride; seed
+277), measures 130 Hz, a man's — pitch does not explain it. The owner,
+listening to the clip (verbatim): "Yeah, mystery solved on this one: the
+pride emotion reference audio for Daniel contain spurious words in the
+very beginning of the sample... I guess I will have to change the voice
+for Daniel... Well, I do not want to lose more time on this right now."
+**The screening tool missed it:** its 17:29 report has p007 pride with a
+word match of 1.00 and no stray words — Whisper's text begins with the
+transcript ("That was all me. I'm the one who found the project…") and
+leaves out the words before it. The screening narrows the search; the ear
+on the page of players stays the last check.
+
+**Decided:** the investigation of the voices' instability stops here (the
+owner, above). **Daniel is to be recast** — after Moira's replacement was
+already pending (§11.11) — screening the candidates and listening to every
+emotion a mood uses (the story's `voices`), the negative ones above all.
+Still pending from §11.12: the transcripts of p017 confusion and p063
+pride, after the owner's ear check.
