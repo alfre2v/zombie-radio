@@ -1,7 +1,7 @@
 # Zombie-Radio — Product specification
 
 **Status:** living. This document describes the product as it is
-built — the fork TalkWithZombies at tag `tz-0.3` (`0ec33c1`)
+built — the fork TalkWithZombies at tag `tz-0.4` (`1b7e70e`)
 and this repository's deployment — in the order someone
 would build it again. It is rewritten in place when the product
 changes; it carries no history. Why each choice was made, and when,
@@ -175,8 +175,13 @@ A story is a folder, `stories/<name>/` in the fork; the show plays
 - **`overtones.yaml`** — the emotional palette: three **overtones**
   in order — positive, neutral, negative — each with the **moods** a
   line may carry (fourteen in all) and its **tone words** grouped by
-  theme; which overtones each kind of round may use; and the weights
-  with which free rounds drift to a neighboring overtone.
+  theme; which overtones each kind of round may use; the weights
+  with which free rounds drift to a neighboring overtone; and the
+  **voices** — for each mood, the reference clip its lines are spoken
+  with, named after what was recorded (`afraid: ref-fear.wav`,
+  `calm: ref.wav`). The voices are optional, but all or nothing: once
+  one overtone names them, every overtone names one for each of its
+  moods; one map serves all four characters.
 - **`events.yaml`** — 289 things that happen in and around the lab,
   filed by overtone, then by theme.
 - **`agenda.yaml`** — nine things the cast want from a caller, each
@@ -371,6 +376,25 @@ a hard break at the end of each line) and plays each through
 tts-serve in the speaker's voice. Asterisks the model writes for
 emphasis are left in; the voice reads the emphasis.
 
+**The voice follows the mood** (`show.mood_voices`, on). A persona's
+folder holds its neutral voice, `ref.wav` with its transcript
+`ref.txt`, and a recording per emotion, `ref-<emotion>.wav` with its
+`.txt` (23 from the EARS dataset, cast by this repository's
+`tools/voices/cast_voices.py --all-emotions`). The start of a run
+gives the page the story's voices map; the page names the clip of
+each line's mood with every chunk of the line, and the app's voice
+route clones from that clip if the persona has it, else from
+`ref.wav` (only `ref.wav` or `ref-<word>.wav`, inside the persona's
+folder), and says which clip it used. Off, every line uses `ref.wav`.
+
+**The seed of the voice** (`show.voice_seed`, off). Off, the page
+sends no seed and tts-serve draws one per chunk. On, every chunk is
+asked for with the run's seed, which the app fits into the range the
+engine advertises for `seed` (Faster Qwen3-TTS: 1..1000) — so with
+`show.seed` set, a run is said the same way twice. A seed makes a
+voice reproducible, not steadier: the same clip, text and seed give
+the same audio.
+
 ### §6.9 The record, the debug switch and the seed
 
 Every run is recorded in `runs/<run-id>/script.json`: every round's
@@ -380,7 +404,14 @@ heard, timings and size. With `show.debug` on, each round also leaves
 (rendered by the server's own template), the request body (replayable
 with curl), the reply as it streamed, and a check that the rendered
 prompt's size equals the size the server reported; the page shows a
-line under each round with what the director chose. The run's seed
+line under each round with what the director chose and which clip
+each line was spoken with. With debug on, every chunk the voice says
+is kept too, in `runs/<run-id>/debug/audio/`, named by its place in
+the run (`r009-l2-c1-Daniel-ref-fear.wav`: round 9, line 2, chunk 1),
+with a `.json` of what made it (the text, the clip, the seed asked
+for and the seed the engine used); the fork's
+`scripts/replay_chunk.py` says one again and tells whether the audio
+is byte-identical. The run's seed
 (`show.seed`, or a random one) drives every choice the director makes
 and seeds every model request, so a run replays exactly on the same
 box and build.
@@ -429,13 +460,15 @@ the cards, a link to upstream's chat UI at `/talkwithme`. The root
 Every number is a setting, under `show:` in the fork's
 `settings.yaml` (`ShowConfig` in `app/config.py`): the story, the
 model prefix, the token budgets, the seed, the emotion tags, debug,
-the event and tone pacing, the free rounds' line budgets and weights,
+the mood voices, the voice's seed, the event and tone pacing, the free rounds' line budgets and weights,
 the overtone's hold, the contact's length and line budgets, the
 silences before a Switch-off, the beats' lines, the orientation and
 recollection cadences, the restatement's reach, fixed lines, the
 call's window, the listening window, the press cap and the Whisper
-filter. How to run the show: the fork's `docs/runbooks/show-page.md`
-(the page) and `docs/runbooks/show-driver.md` (a scripted listener,
+filter. Without a `show:` section every setting takes its default,
+and the defaults are the demo's configuration. How to run the show:
+the fork's `docs/runbooks/show-page.md` (the page, and "The show's
+settings: the demo, or a test show") and `docs/runbooks/show-driver.md` (a scripted listener,
 no browser).
 
 ## §7. Deployment and operations
