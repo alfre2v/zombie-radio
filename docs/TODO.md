@@ -208,7 +208,11 @@ the agent keeps this current. These carry across arcs.*
   placeholder voices are kept as `ref.placeholder.wav`. **Since
   2026-09-30 the voices follow the mood** (every one of a speaker's 23
   recordings cast, the story's `voices` choosing one per mood; the fork's
-  alfre2v/TalkWithZombies#8, open, with this repository's #18) — the
+  alfre2v/TalkWithZombies#8 and this repository's #18, both merged on
+  2026-09-30; released as the fork's `tz-0.4`, an annotated tag on
+  `1b7e70e`, pushed — the merge identical to the tested branch head, the
+  fork's tests green on it: 1186 passed, Node 42 / 17 / 91 / 8; the
+  installer pinned to `tz-0.4`, the owner's re-proof pending) — the
   owner: "Wow, the show is very good now." The cast: Daniel p007, Moira
   p026, Ralph p017, Samantha p063 (recast 2026-09-30). **Still open:**
   Daniel and Moira to be recast — Moira sounds too like the new Samantha,
