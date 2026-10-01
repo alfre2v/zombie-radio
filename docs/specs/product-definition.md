@@ -122,8 +122,9 @@ after the request, and a four-line round takes about 1.4-2.0 s.
 - **LLM:** llama.cpp's server, image
   `ghcr.io/ggml-org/llama.cpp:server-cuda-b11096` (pinned), serving
   **Nemotron Nano 9B v2** at `Q4_K_M`
-  (`bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF`), a 16,384-token
-  context, every layer on the GPU, **one slot** (`--parallel 1`), and
+  (`bartowski/nvidia_NVIDIA-Nemotron-Nano-9B-v2-GGUF`), a **32,768-token
+  context** (`zr_llama_ctx`), every layer on the GPU, **one slot**
+  (`--parallel 1`), and
   the server's host-RAM prompt cache. The show sends one request per
   round to `/v1/chat/completions` with a GBNF grammar in the top-level
   `grammar` field; constrained tokens stream in ordinary chunks. The
@@ -144,7 +145,11 @@ after the request, and a four-line round takes about 1.4-2.0 s.
   the GPU. The app sends the cast's names as Whisper's prompt.
 - **Memory budget:** the whole stack must fit a 24 GB card (the
   owner's RTX 3090 class); fitting 16 GB is a wish, not a target.
-  Measured with one voice engine: 14.0 of 15.3 GiB on an A4000.
+  Measured with one voice engine: 14.0 of 15.3 GiB on an A4000 (16k
+  context); on the A6000, 14,195 MiB at 16k and **14,477 MiB at 32k**,
+  flat through a full context — llama.cpp reserves the context's memory
+  when it starts, and this hybrid model's context is small (about
+  0.3 GB more for 32k). How to measure: `docs/runbooks/box-inspection.md`.
 
 ## §5. The story
 
@@ -356,12 +361,23 @@ by Whisper's confidence.
 
 ### §6.7 The trim
 
-The script must stay within the model's context. When a round's
-reported size reaches 90 % of `show.context_budget` (14,000 tokens),
-whole rounds leave the model's reading, from the middle outwards —
-never the first two or the last four — until the script is back to
-50 %. A trim breaks the server's cached prefix once and costs about
-1.5 s.
+The script must stay within the model's context. The app does not count
+tokens itself: after every round it keeps the model server's own count
+(`timings`: `prompt_n` read fresh, `cache_n` reused from the cache,
+`predicted_n` written), whose sum is the script's size, and each round's
+share of it. Before each round, when the size reaches `trim_trigger` (90 %)
+of `context_budget` (34,000 tokens), whole rounds leave the model's
+reading, from the middle outwards — never the first `trim_keep_first` (2)
+or the last `trim_keep_last` (4) — each taking its share off the size,
+until the estimate is back to `trim_target` (50 %); the next round's count
+is the real size. A round with no model request (the Repair) has no count,
+and its share counts as 0, so a trim that takes it cuts somewhat below its
+target. The server then reads the shortened script from the start: a pause
+of about 8.4 s at 32k (13,922 tokens), once every 100 rounds or more. When
+a run opens, the app asks the model server its context (llama.cpp's
+`/props`) and refuses the run if `trim_trigger × context_budget +
+instruction_room` (1,000, for the next instruction) `+ max_tokens` does
+not fit. In depth: [discussion 2026-10-01] the-app-from-the-outside §2.
 
 ### §6.8 The stream parser and the voice
 
@@ -459,7 +475,9 @@ the cards, a link to upstream's chat UI at `/talkwithme`. The root
 
 Every number is a setting, under `show:` in the fork's
 `settings.yaml` (`ShowConfig` in `app/config.py`): the story, the
-model prefix, the token budgets, the seed, the emotion tags, debug,
+model prefix, the token budgets (the reply, the context budget, the
+instruction room), the trim's trigger, target and kept rounds, the seed,
+the emotion tags, debug,
 the mood voices, the voice's seed, the event and tone pacing, the free rounds' line budgets and weights,
 the overtone's hold, the contact's length and line budgets, the
 silences before a Switch-off, the beats' lines, the orientation and
@@ -644,7 +662,10 @@ What the first release still needs, or has not settled:
   show-engine-design; [discussion 2026-09-25]
   show-slice-3-browser-plan; [discussion 2026-09-26]
   show-director-modes; [discussion 2026-09-28]
-  narration-quality-challenges and prompt-sweep.
+  narration-quality-challenges and prompt-sweep; [discussion 2026-09-29]
+  voice-datasets-with-emotion (the cast's voices, the mood voices);
+  [discussion 2026-10-01] the-app-from-the-outside (how the app counts
+  the script's tokens and trims; every endpoint, for testing).
 - **Deployment:** [discussion 2026-09-17] ansible-deployment-shape;
   [discussion 2026-09-13] cloud-gpu-provider-survey;
   `deploy/ansible/README.md`.

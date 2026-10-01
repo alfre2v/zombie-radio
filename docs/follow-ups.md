@@ -1082,7 +1082,18 @@ reader's memory):
   in Settings brings its table along, and an engine without one gets
   the base table.
 
-## The trim's thresholds in settings — the 90 % trigger and the 50 % target are hard-coded (owner, 2026-09-28)
+## The trim's thresholds in settings — the 90 % trigger and the 50 % target are hard-coded (owner, 2026-09-28) — resolved 2026-10-01
+
+- **Status 2026-10-01 — resolved; kept for its receipts.** In the fork's
+  `f9aa73d` (alfre2v/TalkWithZombies#9, branch `alfre2v/context-32k`):
+  `show.trim_trigger` (0.9), `show.trim_target` (0.5),
+  `show.trim_keep_first` (2) and `show.trim_keep_last` (4) replace the
+  four constants of `app/show/script.py`; the defaults are the old
+  values; `ShowConfig` refuses a target at or above the trigger, and the
+  bounds (both in 0-1, the kept rounds from 0). `trim()` reads them from
+  the show's settings. The whole story — how the app counts the
+  script's tokens and decides — in [discussion 2026-10-01]
+  the-app-from-the-outside §2.
 
 - **The gap:** the trim fires when the script reaches 90 % of
   `show.context_budget` and cuts whole rounds from the middle until it
@@ -1104,7 +1115,22 @@ reader's memory):
   `ShowConfig`'s validators (target below trigger, both in 0-1); the
   defaults unchanged.
 
-## A context budget near the full 16k (owner, 2026-09-28)
+## A context budget near the full 16k (owner, 2026-09-28) — overtaken 2026-10-01 by the 32k context
+
+- **Status 2026-10-01 — overtaken; kept for its receipts.** The
+  context went to 32,768 (below) and the budget with it: **34,000** in
+  the fork's `f9aa73d` (alfre2v/TalkWithZombies#9). The room this
+  entry asked to measure, measured: the largest round in 82 recorded
+  runs (1,824 rounds) added **741 tokens** (an exchange, instruction
+  and reply); the new `show.instruction_room` keeps 1,000 above the
+  trigger, plus `show.max_tokens` (512) for the reply. Since the trim
+  fires at 90 % of the budget, the budget may exceed the context:
+  0.9 × 34,000 + 1,000 + 512 = 32,112 fits 32,768. A run now opens only
+  if that fits the server's real context (llama.cpp's `/props`), with
+  the arithmetic in the refusal. The confirming drive (run
+  `2026-10-01T13-43-41`, 220 rounds): the largest request 30,694
+  tokens, no overflow, one trim (before round 140). Details:
+  [discussion 2026-10-01] the-app-from-the-outside §2.4-§2.6.
 
 - **The gap:** `show.context_budget` is 14,000 against the server's
   16,384-token context (`zr_llama_ctx` in
@@ -1136,7 +1162,27 @@ reader's memory):
   to 16,384 minus that room; a long drive or listen to confirm no
   request overflows the server's context, and the trims counted.
 
-## A 32k context, so the show forgets past callers less often (owner, 2026-09-28)
+## A 32k context, so the show forgets past callers less often (owner, 2026-09-28) — done 2026-10-01
+
+- **Status 2026-10-01 — done; kept for its receipts.** `zr_llama_ctx`
+  32768 (this repository's `a89d0fa`, alfre2v/zombie-radio#20),
+  deployed on the box by the owner (`/props`: `n_ctx 32768`); the
+  budget 34,000 in the fork (alfre2v/TalkWithZombies#9). Measured on
+  the A6000: **the GPU memory** — llama-server 6,764 → 6,970 MiB when
+  it started (the context is reserved upfront), 7,046 MiB after the
+  first minute of use, then flat through a full context and a trim;
+  the stack 14,195 → **14,477 MiB** (under the 16 GB wish and the 24 GB
+  target). **The trims** — at 16k, every 22-36 rounds; at 32k, the
+  first before round 114 (budget 31,000) or 140 (34,000), then roughly
+  every 100 rounds (estimated): about 3-4 times rarer. **The pause of
+  a trim** — 8.2-8.4 s (12,209-13,922 tokens re-read), against 5.1 s at
+  16k: about 1.6 times, not the twice expected below. **The prompt
+  reading per round** — served from the cache between trims (about 200
+  tokens fresh, the rest cached; a round about 1.6 s, first line under
+  1 s). **Not measured:** the model's quality deep into a long context
+  — by ear, in the owner's next long listen. Details: [discussion
+  2026-10-01] the-app-from-the-outside §2.6; how to measure the memory:
+  `docs/runbooks/box-inspection.md`.
 
 - **The gap:** at 16k, a long show trims every few minutes (above),
   and each trim drops the middle of the script — the contacts with
