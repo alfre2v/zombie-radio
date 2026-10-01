@@ -139,3 +139,19 @@ product changes.
   competing for airtime. Trigger to consider: the 1930s radio look
   (day-three polish) or the show arc, if the events feel too
   hidden.
+- **A judge in the loop** — parked 2026-10-01, the owner's idea
+  ([discussion 2026-10-01] judge-in-the-loop). A fast model answers
+  the director's typed questions about what was just said ("Did
+  Moira answer the caller's question?" — YES/NO; "What was Ralph
+  asking about?" — a list of options), with a probability per
+  answer, and code steers the next instruction by them: back to a
+  strong exchange in a contact, toward a topic outside one; and the
+  agenda's two branches ("ask", or "use what the caller gave")
+  chosen by code instead of left to the model. Prompted by CLM-8B, an
+  open "System One" model that scores answers instead of writing
+  text; the agent's research found it a week old, needing a second
+  8B encoder on the GPU, 69.2 % zero-shot. The owner's leaning: a
+  small LLM of its own (~3B) as the judge — not Nemotron, whose one
+  slot holds the show's script. Not for the demo; an experiment
+  first (hand-labelled answers from recorded runs; the small LLM
+  against CLM). Trigger to consider: after the demo (2026-10-08).
