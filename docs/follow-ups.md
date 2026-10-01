@@ -1304,6 +1304,13 @@ reader's memory):
 
 ## Mood clips — several reference clips per character, one per mood (owner, 2026-09-28)
 
+- **Status 2026-09-30 — the shape is agreed, and it supersedes the one
+  below:** the clips are named after what was recorded (`ref-fear.wav`,
+  not `ref-afraid.wav`), the story declares the complete mood → clip map
+  (`voices` in `overtones.yaml`), the page names the clip, and the voice
+  route falls back only to `ref.wav` ([discussion 2026-09-29]
+  voice-datasets-with-emotion §11.8). The design below is kept as history.
+
 - **The idea (the owner, verbatim, 2026-09-28):** "In the near future,
   I will want to have several audio clips per persona, difference on the
   mood... So `Moira-happy.way`, `Moira-urgent.wav`, `Moira-afraid.wav`
@@ -1418,6 +1425,251 @@ reader's memory):
   inside the app, where the casting script already has one.
 - **Estimate:** about 1-2 hours in the fork plus 30 minutes in the casting
   script, with tests (the agent's, not measured).
+
+## A cloned line came out badly degraded, once — Samantha, in the first show with mood voices (owner, 2026-09-30) — postponed
+
+- **Status 2026-09-30, evening — suspect 1 confirmed, and screened for.** The
+  owner heard Daniel's voice drift feminine on "Daniel (terrified): That
+  figure, it's not human. Over." (the fork's run `2026-09-30T16-47-31`, round
+  45, mood terrified → `ref-distress.wav`, from p007 — the right clip was
+  sent), and found the cause by listening (verbatim): "the audio of Daniel's
+  `ref-distress.wav` have an artifact in the beginning, the voice actor said
+  something in low voice just before reading the transcript." Whisper heard
+  it: "*can just eat all of them.* Oh God, I'm not sure…" — words the
+  transcript does not have. p007's negative recordings also pitch into a
+  woman's range (median, by a rough standard-library estimate: neutral 133
+  Hz; fear 235, anger 211, distress 190 — Moira's neutral voice is 195-200).
+  The owner (verbatim): "I think we need to replace Daniel."
+  **The screening** (2026-09-30, 17:09-17:12 CDT, on the owner's go): for 14
+  speakers — the ten other men of the shortlist, the current cast (p026,
+  p017, p063) and p007 as the control — each of the 13 recordings the story
+  uses was transcribed by the box's Whisper (`/v1/audio/transcriptions`, no
+  voice-activity filter, language en) and compared word by word with its
+  transcript, and the neutral and four negative recordings were
+  pitch-estimated (autocorrelation, 50 ms frames, voiced frames only) — 182
+  requests, from the downloaded originals converted to 16 kHz. The control
+  was flagged (6 extra words at the start), as it must be. **Stray speech
+  found:** p007 distress ("can just eat all of them."), **p017 (Ralph)
+  confusion** ("Appreciate it" — Ralph's *doubtful* lines), **p063
+  (Samantha) pride** ("I'm amazed." — Samantha's *determined* lines), p046
+  confusion (its first sentence read twice), p101 realization (a different,
+  longer passage). Every other flag was a false alarm — "I'm" heard as "I
+  am" at the start of anger and relief. EARS speakers also paraphrase a
+  little ("too many shrimp" read "so much shrimp"). **Men whose negative
+  recordings stay low** (highest negative median): p054 118 Hz, p088 131,
+  p085 133 — and no stray speech; the rest reach 167-222 Hz. **Still to
+  decide:** Daniel's new speaker (the owner's pick; p054 sits as low as
+  Ralph's p017, 89 Hz neutral); and the two cast clips with stray speech —
+  the simplest fix is to correct their transcripts to what was said.
+  **The method is the fix for suspect 1:** screen a speaker before casting
+  them — now the tool `tools/voices/screen_voices.py` (the runbook
+  `docs/runbooks/cast-voices.md`, step 4b; [discussion 2026-09-29]
+  voice-datasets-with-emotion §11.12). **Done the same evening:** Daniel
+  recast with p085 (the owner's pick); the two transcript fixes wait for the
+  owner to confirm the flags by ear.
+
+- **What was heard:** the owner's first listen to the mood voices
+  (2026-09-30, the fork's `alfre2v/mood-clips` on the dev server, run
+  `2026-09-30T15-23-48` in the fork's `runs/`, 31 rounds, 19 lines by
+  Samantha): "It works! However, there was one instance of severe voice
+  degradation with Samantha's voice. Her is the more plain voice, I think,
+  the other are more vibrant." Which line is not known — the owner: "I do
+  not remember the exact line that had the problem."
+- **Checked, and ruled out:** that her reference clips are too long (the
+  owner's first guess). Across all 24 clips, Samantha (EARS p033): 7.3-16.0
+  s, median 11.6 s; Daniel 6.3-15.8 s (median 10.4), Moira 8.1-16.6 s
+  (10.9), Ralph 6.4-16.2 s (11.5); the nine clips she used in that run are
+  within the others' range each.
+- **The suspects, most likely first** (the agent's reasoning, not measured):
+  1. **A clip whose transcript does not match what was said** — the voice
+     engine clones from the clip and its exact transcript together; EARS's
+     transcripts are the sentences the speakers were asked to read, so a
+     changed word, a laugh or a restart in one recording would mislead the
+     engine for that mood's lines only;
+  2. **a very short line** ("Do you have any of those? Over.") — ultra-short
+     inputs have glitched before (the "1." echo, the TODO's Task 5b notes);
+  3. **the engine's randomness** — it samples, so a line can come out
+     garbled once and fine the next time;
+  4. **her loudness boost** — p033 recorded the quietest of the four (-41
+     dBFS RMS), raised about 21 dB to -20, the most of anyone, which also
+     raises any background hiss — more likely to affect her whole voice than
+     one line.
+- **Why postponed:** the owner (verbatim): "Let's postpone investigations
+  in this direction, as it is not clear to me we would have a good remedy
+  for it. At the moment it seems to be a sparse problem. My first try would
+  be to replace Samanthat's voice by another more vibrant one. She seems to
+  be falling asleep."
+- **Trigger:** it happens again — **note the line's text, or the round's
+  number from the debug line**, whose "voices" names the clip that spoke.
+- **The two quick tests, then:**
+  1. **The transcripts, checked by Whisper:** transcribe each character's
+     `ref*.wav` with the box's Whisper (`localhost:8002` through the tunnel)
+     and compare with its `.txt` — 24 short requests per character; a
+     mismatch points at suspect 1, and the fix is that clip's transcript
+     corrected by hand or the mood remapped in the story.
+  2. **The line replayed:** the same text, sent to `/synthesize` three times
+     with the clip that spoke and once with `ref.wav` (the measurement
+     script of [discussion 2026-09-29] voice-datasets-with-emotion §11.7 is
+     the pattern) — the same degradation every time points at the clip,
+     once only at randomness.
+
+## Recast Daniel and Moira, and correct two stray-speech transcripts (owner, 2026-09-30) — postponed past the demo
+
+- **The statement:** three voice chores are left from the casting, and
+  the owner postponed them all on the evening of 2026-09-30, after the
+  live checks of the voices kept in debug mode (verbatim):
+  "I can live with the audio instabilities for the moment. I wan to make progress in other areas. We postpone recasting more voices, as far as I am concerned we have achieved TTS of voices with emotions with great success. The remaining boring "find and clear the audio samples" do not interest me for the demo."
+  1. **Daniel (p007)** — two of his clips spoil his lines: his *afraid*
+     clip (`ref-fear.wav`, EARS p007 fear) is pitched in a woman's range
+     (246 Hz), and lines cloned from it land anywhere from a man's voice
+     to a woman's depending on the seed (107-235 Hz over four seeds); his
+     *determined* clip (`ref-pride.wav`, p007 pride) has stray words at
+     its start, which the screening tool missed. The live show will now
+     and then give Daniel a woman's voice on those two moods — accepted.
+  2. **Moira (p026)** sounds too like the new Samantha (p063) (the owner,
+     §11.11). Candidates named then: p062, p059, p106, p033.
+  3. **Two transcripts with stray speech** in the current cast: Ralph's
+     *doubtful* clip (p017 confusion, "Appreciate it" before) and
+     Samantha's *determined* clip (p063 pride, "I'm amazed." before) — to
+     correct after the owner's ear check of
+     `zombie-radio-datasets/ears/stray-speech-2026-09-30.html`, with the
+     convention of §11.13 (`.txt.original`, `.CORRECTION.txt`, a line in
+     the datasets' `README.txt`).
+- **Where flagged:** [discussion 2026-09-29] voice-datasets-with-emotion
+  §11.11-§11.14; the follow-up "Keep every synthesized chunk in debug
+  mode…" (the live runs that found Daniel's two clips).
+- **Trigger:** after the demo (2026-10-08), or a bad voice the owner
+  will not accept in a recording. For the canned episode (Task 7) a
+  recast is not needed: record with `show.debug` on, and say any bad
+  line again with the fork's `scripts/replay_chunk.py --seed N` until it
+  sounds right.
+- **The fix shape:** screen the candidates (`python3
+  tools/voices/screen_voices.py --speakers 62,59,106`), listen to every
+  emotion the story's `voices` use, the negative ones above all (the
+  screening misses quiet stray speech: the ear stays the last check);
+  change a line of `tools/voices/cast.yaml` and run `uv run python
+  tools/voices/cast_voices.py --all-emotions --only <Name>`; the runbook
+  `docs/runbooks/cast-voices.md`.
+
+## Keep every synthesized chunk in debug mode, and send a seed with every voice request (owner, 2026-09-30) — built (the fork's `799d005`, alfre2v/TalkWithZombies#8)
+
+- **The gap:** the voice server's audio for each chunk goes to the page,
+  plays, and is forgotten — debug mode keeps only the model's side
+  (`runs/<run-id>/debug/rNNN.txt`, `.request.json`). When a line goes wrong
+  (Daniel's "Candles!" in a woman's voice, 2026-09-30, run
+  `2026-09-30T17-28-18` round 9), the audio heard is gone. And the app sends
+  the voice server **no seed**, so every synthesis is random and a bad line
+  cannot be reproduced.
+- **The owner's question (verbatim):** "What do we do with the received
+  audios for each round in debug mode. We should save them so we can trace
+  back this problems." **Decisions (verbatim):** "yes to 1 and 2, seed
+  always; record the follow-up. But do not execute yet".
+- **The shape agreed:**
+  1. **In debug mode, keep every chunk with its round** —
+     `runs/<run-id>/debug/audio/r009-l2-c1-Daniel-ref-extasy.wav` (round,
+     line, chunk, persona, clip used) and a `.json` beside it: the text
+     sent, the persona, the clip asked for and the clip used, the voice
+     server's `time_used`, the seed. How: with debug on, the page tags each
+     voice request (e.g. `debug: "2026-09-30T17-28-18/r009-l2-c1"`); the
+     voice route checks the tag strictly (the run id's own pattern, numbers
+     only — nothing that can name another folder) and writes the audio it
+     returns into that run's `debug/audio/`. Debug off, or TalkWithMe's chat
+     UI (no tag): nothing changes. About 35-45 MB per 50-round run, in
+     `runs/` (gitignored).
+  2. **A seed with every voice request, always** — derived from the run's
+     seed and the chunk's position (round, line, chunk), recorded in the
+     `.json`; tts-serve's Faster Qwen3-TTS accepts `seed`. Any saved line can
+     then be replayed exactly (same clip, text and seed → the same audio),
+     and a run with a pinned seed reproduces its voices, not only its words.
+  3. Optional: a link from the debug line to the round's audio folder.
+- **Where it sits:** the fork (TalkWithZombies): `static/show/player.js`
+  and `show.js` (the tag, the seed), `app/models.py` (`TTSRequest`: `debug`,
+  `seed`), `app/routers/tts.py` (the save, the seed passed to
+  `synthesize`), tests; the runbook `docs/runbooks/show-page.md`. About 1.5-2
+  hours with tests (the agent's estimate).
+- **Status 2026-09-30, 18:10 — the go is given** (the owner: "Ok, we are
+  going to build that feature", after the voices became unstable and the
+  engine was shown healthy — byte-identical to its 13:00 reply for the same
+  clip, text and seed). Found since: tts-serve picks a random seed in
+  **1..1000** per request when none is sent, and **echoes the seed** in its
+  reply — record the echoed one; a derived seed must stay within 1..1000.
+  Every line's stream events already carry `message_id =
+  "<run-id>-r<NNN>-l<L>"` (the fork's `app/routers/show.py:227`), so the page
+  knows the round and line when it requests the voice. The build spec:
+  `docs/discussions/2026-09-30-show-engine-session-handoff-8.md` §13.3.
+- **Trigger:** the owner's go — "do not execute yet" (2026-09-30, before a
+  context compaction). Related: the replay test proposed for "Candles!" (the
+  line sent 4 times with Daniel's clip and once with Samantha's) — not run;
+  with this built, the next incident arrives with its own evidence.
+- **Status 2026-09-30, 19:42 — built and checked live; the seed is a
+  switch, off by default.** In the fork, `799d005` on
+  `alfre2v/mood-clips` (alfre2v/TalkWithZombies#8):
+  1. **Debug keeps every chunk, as shaped.** With `show.debug` on, the
+     page tags each chunk's voice request with its run and place
+     (`debug: "<run-id>/r009-l2-c1"`, the place read from the line's
+     `message_id`), and the voice route keeps it in
+     `runs/<run-id>/debug/audio/`: `r009-l2-c1-Daniel-ref-fear.wav` (the
+     audio as the engine returned it) and a `.json` (the text, the
+     persona, the language, the clip asked for and used, the clip's file,
+     SHA-256 and transcript, `seed_asked`, the engine's reply without the
+     audio: the seed it used, `time_used`, the sample rate). The tag is
+     checked strictly (the run id's pattern, now one definition in the
+     fork's `app/show/script.py`, and a run folder that exists); debug
+     off or no tag keeps nothing, with the same single request per chunk
+     (the owner asked for that check — "I want you to double check that
+     when debug is off, we are not doing unnecessary round trips of
+     requests" — and the live runs below confirm it). The audio is 48 KB
+     per second of speech; a 50-round run keeps an estimated 35-45 MB.
+  2. **The seed — changed from "always" to a switch.** A seed per chunk
+     (from the run's seed and the chunk's place) was built first; the
+     owner (verbatim): "I want to have a way to switch ON/OFF this TTS
+     seed that you are sending now, in case it proof to add to the
+     instability of the voices... I am not 100% percent sure that the
+     strategy you picked to rotate the seed, and when to keep it the same
+     is correct. And less if this strategy will prove correct for other
+     TTS engines which we may support in the future." Then, once a replay
+     showed the engine's echoed seed is enough to say any kept chunk
+     again: "Ok, so then, all this new functionality you created when
+     voice_seed is not off is wrong, no? [...] I do not see how is any of
+     the other strategies you made to rotate the seed is going to be
+     helpful." The agent agreed that no seed strategy steadies a voice —
+     a seed makes it reproducible (the same clip, text and seed give the
+     same audio, byte for byte, a bad chunk as much as a good one) — and
+     proposed one seed per run; the owner: "on/off with the run's seed,
+     go ahead." **`show.voice_seed`** (off by default): on, every chunk
+     is asked for with the run's seed, so with `show.seed` set a run is
+     said the same way twice, voice included; off, none is sent, as
+     before. The app fits the seed into the range the engine advertises
+     for `seed` (`fit_seed` in the fork's `app/services/tts_client.py`:
+     kept within the range, wrapped around outside — 4000000001 becomes 1
+     in Faster Qwen3-TTS's 1..1000), and sends none to an engine that
+     advertises no `seed`; a request's seed wins over a `seed` in
+     `tts.parameters`.
+  3. **Replay:** `scripts/replay_chunk.py` in the fork says a kept chunk
+     again through the app's `/api/tts` (the seed the page sent, or the
+     one the engine said it used; `--seed N` tries another) and tells
+     whether it is byte-identical. The link from the debug line (item 3
+     of the shape) was not built.
+
+  **Checked live** on the dev server, the owner playing in Chrome:
+
+  | Run | Settings | Result |
+  |---|---|---|
+  | `2026-09-30T18-51-36` | debug on, requests sent by the agent | a tagged chunk kept, an untagged one not; 4000000001 reached the engine as 1; both kept chunks replayed byte-identical |
+  | `2026-09-30T19-08-07` | debug on, seed off | 7 rounds, 15 lines: 16 chunks kept for 16 `POST /api/tts`, every line's text and speaker matching `script.json`; 16 different seeds picked by the engine |
+  | `2026-09-30T19-20-04` | debug on, seed on | 17 rounds, 37 lines: 39 chunks kept for 39 requests; every chunk asked for the run's seed (1696878277), and the engine used 277 on all 39 |
+  | `2026-09-30T19-32-32` | debug off, seed off — the demo's configuration | 19 rounds, 49 lines, a full contact: only `script.json` written, no `debug/` folder; 50 requests for the 50 chunks the page's `chunks()` gives; the owner: "it sounded normal, very well actually" |
+
+  With debug and the seed both off, the voice seeds are not kept anywhere
+  (the run's own seed always is, in `script.json`): a bad line in such a
+  run cannot be said again exactly. **Not shown live yet:** a whole show
+  said twice byte-identical with `show.seed` and `voice_seed` on — to do
+  when it is needed (Task 7, the canned episode). What the kept chunks
+  found at once — Daniel's two bad lines, both his clips' doing — is in
+  [discussion 2026-09-29] voice-datasets-with-emotion §11.13. **For Task 7**
+  (the agent's suggestion): record the canned episode with debug on, and
+  say again any line that comes out wrong with `replay_chunk.py --seed N`
+  until it sounds right.
 
 ## The three dropped page designs — kept in the fork's history, not in its tree (owner, 2026-09-28)
 

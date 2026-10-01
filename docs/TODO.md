@@ -205,7 +205,22 @@ the agent keeps this current. These carry across arcs.*
   the casting script `tools/voices/cast_voices.py` from
   `tools/voices/cast.yaml`; one edited line and one command recast a
   character, heard from the next spoken line (the discussion's §11.5). The
-  placeholder voices are kept as `ref.placeholder.wav`. The detail
+  placeholder voices are kept as `ref.placeholder.wav`. **Since
+  2026-09-30 the voices follow the mood** (every one of a speaker's 23
+  recordings cast, the story's `voices` choosing one per mood; the fork's
+  alfre2v/TalkWithZombies#8, open, with this repository's #18) — the
+  owner: "Wow, the show is very good now." The cast: Daniel p007, Moira
+  p026, Ralph p017, Samantha p063 (recast 2026-09-30). **Still open:**
+  Daniel and Moira to be recast — Moira sounds too like the new Samantha,
+  and two of Daniel's clips spoil his lines (fear pitched in a woman's
+  range, pride with stray words at its start) — screening the candidates
+  first (`tools/voices/screen_voices.py`) and then by ear; the transcripts
+  of Ralph's confusion and Samantha's pride clips to correct after the
+  owner's ear check ([discussion 2026-09-29] voice-datasets-with-emotion
+  §11.11-§11.13). **Postponed past the demo (2026-09-30, evening)** — the
+  owner: "I can live with the audio instabilities for the moment. I wan to make progress in other areas. We postpone recasting more voices, as far as I am concerned we have achieved TTS of voices with emotions with great success. The remaining boring "find and clear the audio samples" do not interest me for the demo." The reference voices are done for the demo; the
+  chores wait in the follow-up "Recast Daniel and Moira, and correct two
+  stray-speech transcripts" (§11.14). The detail
   as first written: character
   bibles → the sections of TalkWithZombies' cast sheet ([spec
   §5]; where they live in the fork — decided 2026-09-23: the

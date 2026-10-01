@@ -13,11 +13,12 @@ hackTNT_2026/                              (the folder holding the clones side b
 ├── zombie-radio-claude/                   this repository's checkout (any name) — the tools
 │   └── tools/voices/
 │       ├── fetch_ears.py                  downloads EARS clips
+│       ├── screen_voices.py               checks each clip says its transcript, and its pitch
 │       ├── cast.yaml                      who voices whom — the only file you edit
 │       └── cast_voices.py                 writes the voices into the app
 └── zombie-radio-datasets/                 the downloads, outside git
     ├── README.txt                         what is here, and the licence
-    └── ears/<speaker>/<type>.wav, .txt    one folder per EARS speaker; index-*.html pages
+    └── ears/<speaker>/<type>.wav, .txt    one folder per EARS speaker; index-*.html and screen-*.html pages
 
 ~/TalkWithZombies-client/Personas/<Name>/  the app's personas: ref.wav, ref.txt (and ref.source)
 ```
@@ -29,6 +30,75 @@ hackTNT_2026/                              (the folder holding the clones side b
 - **The app reads one clip per character**, `Personas/<Name>/ref.wav`, with
   its exact transcript in `ref.txt`, and reads it again on every line it
   speaks — a recast is heard from the next line, without restarting.
+
+## Who voices whom — where it is kept
+
+Two files say which EARS speaker is behind each character; keep both in
+mind.
+
+| | What it says | Where | In git? |
+|---|---|---|---|
+| `tools/voices/cast.yaml` | **the decision**: `cast:` maps each character to an EARS speaker (`Daniel: p007`); `voice:` names the recording that becomes `ref.wav` | this repository | **yes** — every past cast is in its history (`git log -p tools/voices/cast.yaml`) |
+| `Personas/<Name>/ref.source` | **what was actually written**: when, the EARS credit, and one line per file | each persona's folder in the client, beside the audio | no |
+
+A `ref.source` after a cast with `--all-emotions` (Daniel's, from the test
+of 2026-09-30 on a copy of the Personas folder; 25 lines — the header,
+`ref.wav`, and the 23 recordings):
+
+```
+cast 2026-09-30T14:55:31 from EARS, CC BY-NC 4.0 (Richter et al., Interspeech 2024)
+ref.wav <- p007/emo_neutral_sentences
+ref-adoration.wav <- p007/emo_adoration_sentences
+ref-amazement.wav <- p007/emo_amazement_sentences
+...
+ref-serenity.wav <- p007/emo_serenity_sentences
+```
+
+It is rewritten at every cast, so it always describes exactly the files in
+its folder. **If the two disagree** — `cast.yaml` edited but the character
+not recast — `ref.source` is the truth about what the app speaks with, and
+`cast.yaml` only the intention. The current cast at a glance:
+
+```bash
+for f in ~/TalkWithZombies-client/Personas/*/ref.source; do echo "$f: $(sed -n 2p "$f")"; done
+```
+
+Its output on 2026-09-30 (paths shortened), after the first cast:
+
+```
+…/Daniel/ref.source: ref.wav <- p007/emo_neutral_sentences
+…/Moira/ref.source: ref.wav <- p026/emo_neutral_sentences
+…/Ralph/ref.source: ref.wav <- p017/emo_neutral_sentences
+…/Samantha/ref.source: ref.wav <- p033/emo_neutral_sentences
+```
+
+**How `cast_voices.py` uses `cast.yaml`**, followed for Daniel:
+
+```yaml
+source: ../zombie-radio-datasets/ears        # where the EARS downloads are (relative to the checkout)
+personas: ~/TalkWithZombies-client/Personas  # where the app's personas are
+cast:
+  Daniel: p007                               # which EARS speaker voices which character
+voice: emo_neutral_sentences                 # which recording becomes ref.wav
+```
+
+1. **Who, and from where:** `cast` gives Daniel → p007; the clips are read
+   from `source` + the speaker: `../zombie-radio-datasets/ears/p007/`.
+2. **To where:** `personas` + the character's name:
+   `~/TalkWithZombies-client/Personas/Daniel/` — the folder must exist (the
+   script never creates a persona), and the name must match it exactly.
+3. **The voice:** the `voice` recording becomes `ref.wav` —
+   `p007/emo_neutral_sentences.wav` → `Daniel/ref.wav`, its transcript →
+   `ref.txt`.
+4. **With `--all-emotions`:** every `emo_<emotion>_sentences.wav` in
+   `p007/` that has its `.txt` becomes `Daniel/ref-<emotion>.wav` and
+   `.txt`.
+5. **Recorded:** all of it in `Daniel/ref.source`.
+
+`--only Moira` limits a run to the characters named; everything else comes
+from `cast.yaml`. Which of the show's moods is spoken with which recording
+is neither file's business: it is the story's (`voices` in TalkWithZombies'
+`stories/<story>/overtones.yaml`).
 
 ## Before you start
 
@@ -123,6 +193,64 @@ first one of this project is `index_all_speakers_2emo.html`). The pages play
 the original lossless clips (32-bit float WAV); they were used in Chrome,
 other browsers untested.
 
+## 4b. Screen the speakers you liked
+
+EARS's speakers did not always read just their sentence: some said
+something before it (an aside, "Appreciate it", "I'm amazed."), read a
+sentence twice, or read another passage; some raise their voice far above
+their normal pitch in certain emotions. The voice engine clones from a clip
+**and** its transcript together, so a clip whose words do not match its
+transcript can make a line come out badly, and a man's recording that
+climbs into a woman's range can make his cloned voice drift feminine —
+both happened in the first shows (2026-09-30). Screen a speaker before
+casting them:
+
+```bash
+python3 tools/voices/screen_voices.py --speakers 85,54,88
+```
+
+For each speaker and each read emotion downloaded, it:
+
+- has the box's Whisper transcribe the clip (through the tunnel, like the
+  app — `make ssh-tunnel ENV=cloud` first) and compares the words with the
+  transcript, reading "I'm" and "I am", "8pm" and "8 p.m." as the same;
+- estimates the clip's pitch and compares it with the speaker's neutral
+  clip.
+
+A clip is **flagged** for:
+
+- **stray speech** — 2 or more words heard before or after the transcript
+  (`--extra-words`);
+- **weak match** — under 0.80 of the words matching (`--min-match`):
+  paraphrase or garbling;
+- **pitch climbs** — more than 1.5 times the neutral pitch (`--pitch-rise`).
+  The estimate is rough: a climb of exactly ×2.00 may be the estimator
+  mistaking a pitch for its double — listen before believing it.
+
+It prints each speaker's line and every flagged clip with what Whisper
+heard, for example (the test of 2026-09-30):
+
+```
+p017: 23 clips, 3 flagged; pitch neutral 89 Hz, highest 222 Hz
+   confusion     stray speech, pitch climbs: match 0.93, extra 2 before / 0 after, pitch x2.50
+      heard: Appreciate it Huh, what is going on over here? What is this? Where are we going?
+```
+
+and writes, next to the clips, `screen-<start time>.json` (every clip's
+result) and **`screen-<start time>.html`: a page of players for the flagged
+clips**, the transcript beside what Whisper heard, the stray words
+highlighted — to confirm each flag by ear. About 20 seconds per speaker (23
+clips); `--emotions fear,distress` screens only those.
+
+**What to do with a flag:**
+
+- on a recording no mood uses, nothing;
+- on a speaker you are considering, prefer another;
+- on a cast character's recording that a mood uses: recast, remap the mood
+  in the story, or correct the transcript to what was said (in the
+  downloaded copy, `zombie-radio-datasets/ears/<speaker>/emo_<emotion>_sentences.txt`,
+  then recast so the correction reaches the persona).
+
 ## 5. Choose the cast
 
 Edit `tools/voices/cast.yaml`:
@@ -143,8 +271,11 @@ voice: emo_neutral_sentences
 - `loudness_dbfs` (-20) and `peak_dbfs` (-1) — the loudness target, so the
   four voices sound equally loud; `loudness_dbfs: null` keeps each clip's
   own level.
-- `moods` — each show mood's EARS emotion, used only with `--with-moods`
-  (step 6).
+- Which show mood is spoken with which recording is **not** here: it is
+  the story's, in TalkWithZombies' `stories/<story>/overtones.yaml`, under
+  `voices` (`afraid: ref-fear.wav`). This file only says whose voice; the
+  casting copies every recording (step 6, "With every emotion"), so a
+  mood can be remapped in the story at any time without recasting.
 - `source` and `personas` — where the downloads and the app's personas are;
   leave them unless your layout differs.
 
@@ -153,16 +284,20 @@ voice: emo_neutral_sentences
 A dry run first — what would be written, nothing changed:
 
 ```bash
-uv run python tools/voices/cast_voices.py --dry-run
+uv run python tools/voices/cast_voices.py --all-emotions --dry-run
 ```
 
-Then the cast — the whole cast, or only some characters:
+Then the cast — the whole cast, or only some characters — each with its
+voice and every emotion it recorded (see "With every emotion" below):
 
 ```bash
-uv run python tools/voices/cast_voices.py
-uv run python tools/voices/cast_voices.py --only Moira
-uv run python tools/voices/cast_voices.py --only Moira,Ralph
+uv run python tools/voices/cast_voices.py --all-emotions
+uv run python tools/voices/cast_voices.py --all-emotions --only Moira
+uv run python tools/voices/cast_voices.py --all-emotions --only Moira,Ralph
 ```
+
+Without `--all-emotions` only `ref.wav` is written — every mood then falls
+back to it, and the voices carry no emotion of their own.
 
 For each character it prints the clip, its length and its loudness before
 and after. What it does:
@@ -179,13 +314,20 @@ and after. What it does:
   and `ref.source` (where the voice came from, with the EARS credit);
 - never touches `prompt.md`, `language.txt` or `memories.txt`.
 
-**With mood clips** — `ref-<mood>.wav` and `.txt` for each mood of
-`cast.yaml`; the app does not use them until the "Mood clips" feature is
-built (`docs/follow-ups.md`):
+**With every emotion** (`--all-emotions`) — every read emotion the
+speaker recorded, copied as recorded and named after it: `ref-fear.wav` and
+`ref-fear.txt` from `emo_fear_sentences`, `ref-distress.wav` from
+`emo_distress_sentences`, and so on — all 23 with EARS, neutral included,
+about 12 MB per character. `ref.wav`, the voice, is written as always.
 
-```bash
-uv run python tools/voices/cast_voices.py --with-moods
-```
+The app speaks each line with the recording its mood names in the story's
+`voices`, when `show.mood_voices` is on (the TalkWithZombies runbook
+`docs/runbooks/show-page.md`, "The voice"). Because every recording is
+there, remapping a mood in the story needs no recast; a recording the story
+names that a persona lacks falls back to `ref.wav` (the debug line shows
+which clip spoke). An emotion that is not downloaded for the speaker is
+simply not copied — the script says how many it found; fetch the rest
+(step 4) and recast.
 
 ## 7. Check
 
@@ -196,8 +338,9 @@ afinfo ~/TalkWithZombies-client/Personas/Moira/ref.wav
 ```
 
 Expect `ref.wav`, `ref.txt`, `ref.source` (and `ref.placeholder.*` after the
-first cast); `ref.source` naming the speaker and the clip; `afinfo` reporting
-`1 ch, 24000 Hz, Int16` and a length of about 7-15 s.
+first cast; with `--all-emotions`, a `ref-<emotion>.wav` and `.txt` for each
+of the 23 read emotions); `ref.source` naming the speaker and each clip;
+`afinfo` reporting `1 ch, 24000 Hz, Int16` and a length of about 7-15 s.
 
 ## 8. Listen
 

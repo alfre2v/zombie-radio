@@ -2,16 +2,19 @@
 
 For each character, the chosen speaker's clip becomes Personas/<Name>/ref.wav (mono 24 kHz 16-bit, loudness
 evened out) with its transcript in ref.txt; ref.source says where it came from. The first cast keeps the
-placeholder voice as ref.placeholder.wav / .txt. With --with-moods, the moods of cast.yaml become ref-<mood>.wav.
+placeholder voice as ref.placeholder.wav / .txt. With --all-emotions, it also writes every read emotion the speaker
+recorded, named after the recording: ref-fear.wav from emo_fear_sentences, and so on (23 with EARS). Which mood speaks
+with which recording is the story's to say (the voices of its overtones.yaml), not this tool's.
 
   uv run python tools/voices/cast_voices.py --dry-run
   uv run python tools/voices/cast_voices.py
-  uv run python tools/voices/cast_voices.py --only Moira --with-moods
+  uv run python tools/voices/cast_voices.py --only Moira --all-emotions
 """
 
 import argparse
 import array
 import math
+import re
 import struct
 import subprocess
 import sys
@@ -22,6 +25,7 @@ from pathlib import Path
 import yaml
 
 REPO = Path(__file__).resolve().parents[2]
+EMOTION = re.compile(r"emo_(?P<emotion>[a-z]+)_sentences")
 CREDIT = "EARS, CC BY-NC 4.0 (Richter et al., Interspeech 2024)"
 
 
@@ -113,11 +117,17 @@ def cast_clip(src_dir, speaker, clip_type, folder, stem, cfg, dry_run):
     return f"{stem}.wav <- {speaker}/{clip_type}"
 
 
+def recorded_emotions(src_dir):
+    found = (EMOTION.fullmatch(wav.stem) for wav in src_dir.glob("emo_*_sentences.wav"))
+    return sorted(m["emotion"] for m in found if m and (src_dir / f"{m.string}.txt").exists())
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--config", type=Path, default=Path(__file__).resolve().parent / "cast.yaml")
     p.add_argument("--only", help="comma-separated character names (default: the whole cast)")
-    p.add_argument("--with-moods", action="store_true", help="also write ref-<mood>.wav for the moods in the config")
+    p.add_argument("--all-emotions", action="store_true",
+                   help="also write every read emotion the speaker recorded, as ref-<emotion>.wav")
     p.add_argument("--dry-run", action="store_true", help="show what would be written, change nothing")
     args = p.parse_args()
 
@@ -145,11 +155,12 @@ def main():
             for old in folder.glob("ref-*.*"):
                 old.unlink()
         written = [cast_clip(source / speaker, speaker, cfg["voice"], folder, "ref", cfg, args.dry_run)]
-        if args.with_moods:
-            for mood, emotion in cfg.get("moods", {}).items():
-                if emotion:
-                    written.append(cast_clip(source / speaker, speaker, f"emo_{emotion}_sentences", folder,
-                                             f"ref-{mood}", cfg, args.dry_run))
+        if args.all_emotions:
+            emotions = recorded_emotions(source / speaker)
+            print(f"  {len(emotions)} read emotions downloaded for {speaker}")
+            for emotion in emotions:
+                written.append(cast_clip(source / speaker, speaker, f"emo_{emotion}_sentences", folder,
+                                         f"ref-{emotion}", cfg, args.dry_run))
         if not args.dry_run and written[0]:
             lines = [f"cast {datetime.now():%Y-%m-%dT%H:%M:%S} from {CREDIT}"] + [w for w in written if w]
             (folder / "ref.source").write_text("\n".join(lines) + "\n", encoding="utf-8")

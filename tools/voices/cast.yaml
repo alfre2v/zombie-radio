@@ -1,4 +1,4 @@
-# Who voices each character. Change a line, then: uv run python tools/voices/cast_voices.py
+# Who voices each character. Change a line, then: uv run python tools/voices/cast_voices.py --all-emotions
 source: ../zombie-radio-datasets/ears
 personas: ~/TalkWithZombies-client/Personas
 
@@ -6,25 +6,8 @@ cast:
   Daniel: p007
   Moira: p026
   Ralph: p017
-  Samantha: p033
+  Samantha: p063
 
 voice: emo_neutral_sentences
 loudness_dbfs: -20
 peak_dbfs: -1
-
-# show mood -> EARS emotion; written as ref-<mood>.wav only with --with-moods
-moods:
-  calm: neutral
-  happy: amusement
-  excited: extasy
-  hopeful: interest
-  relieved: relief
-  doubtful: confusion
-  curious: interest
-  urgent: null
-  determined: pride
-  sad: sadness
-  afraid: fear
-  terrified: distress
-  angry: anger
-  exhausted: pain

@@ -20,7 +20,14 @@ owner picks the four. **The casting script is built and a first cast is
 in the app** (§11.5): `tools/voices/cast.yaml` says who voices whom; one
 command recasts. **Since 2026-09-30 the downloads live outside the
 repository**, in `zombie-radio-datasets/` beside the checkout, and the
-fetch script's working copy is `tools/voices/fetch_ears.py` (§11.6). This document is updated as the real audio files are tried: each
+fetch script's working copy is `tools/voices/fetch_ears.py` (§11.6). **On
+2026-09-30 the voices began to follow the mood** — the story maps each mood
+to a recording (§11.8-§11.9, the fork's alfre2v/TalkWithZombies#8) — and
+the cast became Daniel p007, Moira p026, Ralph p017, Samantha p063
+(§11.11-§11.13); a screening tool checks a speaker's clips for stray speech
+and pitch (§11.12); Daniel and Moira were to be recast (§11.11, §11.13) —
+**postponed past the demo, the voices with emotion called a success by the
+owner (§11.14).** This document is updated as the real audio files are tried: each
 finding lands as a dated addendum (§11), never as a silent rewrite.
 
 **The owner's request (verbatim, 2026-09-29):** "I think it is time to open a
@@ -1102,3 +1109,573 @@ cast's voices, 6 to 12 times smaller than the WAV; still not adopted (the
 measurement found no gain on this link), and adopting it would need the
 fork's change described above.
 
+### §11.8 2026-09-30 — the voices follow the mood: the shape, agreed
+
+**The owner (verbatim):** "bring me the shape of the mood clips feature".
+Goal 2 of the demo ([discussion 2026-09-30] demo-goals §1: "Emotional voices
+in support of the narration") needs it: each character has had one neutral
+reference clip since the first cast (§11.5), and the app never tells the
+voice engine a line's mood. Nothing is built yet; this section is the shape,
+recorded before the build.
+
+#### What happens today (the fork at `tz-0.3`)
+
+1. The director streams each line with its **mood**: the `start` event
+   carries it (`static/show/show.js:252`) and the caption shows it —
+   "Moira (*afraid*)".
+2. The page then calls `speakLine(persona, text, hooks)`
+   (`static/show/player.js:111`); **the mood is dropped there** —
+   `synthesize` posts only `{text, persona_name}` to `/api/tts`
+   (`player.js:187-190`).
+3. The route `/api/tts` (`app/routers/tts.py`, `tts_proxy`) always sends the
+   persona's single `ref.wav` and `ref.txt` to tts-serve. `TTSRequest`
+   (`app/models.py:56`) has only `text` and `persona_name`. TalkWithMe's chat
+   UI (`static/tts.js`) uses the same route.
+
+#### The problem the shape had to solve — "fallbacks"
+
+The owner, on the agent's first shape (verbatim): "I cannot provide an
+answer, I do not understand the problem. what do you mean by fallbacks? Be
+more explicative, give me filenames, example code changes, etc." The
+agent's explanation, in short: **a fallback answers one question — what
+voice do we use when a line's mood has no clip of its own?** The story gives
+the director 14 moods (the fork's `stories/lab-outbreak/overtones.yaml`:
+positive — happy, hopeful, excited, relieved; neutral — calm, doubtful,
+urgent, curious, determined; negative — sad, afraid, terrified, angry,
+exhausted); EARS has 22 emotions, and they are not the same list — no EARS
+emotion fits `urgent` (§11.3). So when the director writes "Ralph (urgent):
+Seal the east door, now! Over." and no urgent clip exists, Ralph could sound
+(a) neutral — his `ref.wav`, flat for an urgent line — or (b) like a near
+mood — afraid, tenser. Choosing (b) means writing "urgent is near afraid"
+somewhere. The agent offered two places:
+
+- **Place 1 — the story** (the design of the follow-up "Mood clips",
+  2026-09-28): `overtones.yaml` declares `fallbacks: {urgent: afraid, …}`,
+  and the voice route follows the chain on every request — so `/api/tts`, a
+  route the chat UI shares, would have to load the show's story, and two
+  files (the story's fallbacks, the casting's clips) would have to agree.
+- **Place 2 — the casting** (the agent's first recommendation):
+  `tools/voices/cast.yaml` points two moods at one EARS emotion
+  (`afraid: fear`, `urgent: fear`), the casting script writes a
+  `ref-urgent.wav` too, and the route only looks for the exact file, else
+  `ref.wav`.
+
+#### The owner's counterproposal, and the agent's refinements
+
+**The owner (verbatim, thinking out loud):** "No, I do not like "Place 2:
+the casting (my recommendation)". Why? Because it is not clear what ears
+emotion maps to what app mood, except if we go to a tool script... I do not
+like that the map for something as central to the app as voice emotion be
+defined in such an unexpected place. Let me do a counterproposal: What if in
+`stories/lab-outbreak/overtones.yaml`, instead of that `fallbacks` dict (that
+in 1 month I will not remember what maps to what), what if instead we map all
+`app mood` --> `audio file name`, for each overtone, as in:
+`neutral: moods: [calm, doubtful, urgent, curious, determined] fallbacks:
+{urgent: "ref-afraid.wav", doubtful: "ref-neutral.wav", ...}` That way we
+have a complete information of the mapping (we do not rely on the fact that
+some ear emotions seem to map better or worse to our moods, we declare it
+all)".
+
+**The agent agreed with the core** — the complete mood-to-voice map belongs
+in the story, where the moods are defined — and pushed back on three details:
+
+1. **Name the files after what was recorded, not after a mood.** A file
+   called `ref-afraid.wav` is named after a show mood, so someone still has to
+   decide which EARS recording goes into it — a second, hidden mapping in
+   `cast.yaml` (`afraid: fear`); reading "urgent" would take two hops across
+   two files. Named after the recording — `ref-fear.wav`, `ref-distress.wav`,
+   `ref-anger.wav` — the story's map reads in one hop, mood → recording, and
+   the casting needs no map at all.
+2. **Call the map `voices`, not `fallbacks`.** It is no longer a list of
+   exceptions but the complete declaration — every mood → the recording its
+   lines are spoken with — and the story loader refuses a story where a mood
+   has no entry, so "declare it all" is enforced by a test, not by memory.
+   `ref.wav` means the neutral voice.
+3. **Keep the voice route unaware of the story.** The show resolves the map
+   and the page names the clip; `/api/tts` only checks the name and uses the
+   file.
+
+**The owner (verbatim):** "yes, I agree with all your refinements. Well done.
+this way the audio files stay close to the dataset and the mapping is ours to
+change as we wish, this makes it way simpler to move to a separate dataset
+with different emotions or filenames too. I am ok with the limitation that
+you correctly identified: "one map for all four characters. If one speaker's
+fear clip is weak, you can't send only that character to another recording".
+That is acceptable for now."
+
+#### The shape, agreed
+
+**The map — in the story** (the fork's `stories/lab-outbreak/overtones.yaml`),
+one `voices` entry per mood, beside the overtone's moods; a first draft from
+§11.3's mapping (the files named after the EARS recordings, in their own
+spellings):
+
+```yaml
+positive:
+  moods: [happy, hopeful, excited, relieved]
+  voices: {happy: ref-amusement.wav, hopeful: ref-interest.wav,
+           excited: ref-extasy.wav, relieved: ref-relief.wav}
+neutral:
+  moods: [calm, doubtful, urgent, curious, determined]
+  voices: {calm: ref.wav, doubtful: ref-confusion.wav, urgent: ref-fear.wav,
+           curious: ref-interest.wav, determined: ref-pride.wav}
+negative:
+  moods: [sad, afraid, terrified, angry, exhausted]
+  voices: {sad: ref-sadness.wav, afraid: ref-fear.wav, terrified: ref-distress.wav,
+           angry: ref-anger.wav, exhausted: ref-pain.wav}
+```
+
+— `urgent` now sounds afraid (`ref-fear.wav`), where §11.3 had left it
+without a clip; every entry is the owner's to change, a line each.
+
+**A persona's folder, after casting:**
+
+```
+~/TalkWithZombies-client/Personas/Ralph/
+  ref.wav, ref.txt                     <- neutral: the default voice, and "calm"
+  ref-fear.wav, ref-fear.txt           <- used by "afraid" and "urgent"
+  ref-distress.wav, ref-distress.txt   <- used by "terrified"
+  ref-anger.wav, ...                   <- one file per recording the story names
+```
+
+**The pieces:**
+
+1. **The story loader** (the fork's `app/show/story.py`) reads each
+   overtone's `voices`, checks that every mood of the overtone has an entry
+   and that each entry is a plain file name (`ref.wav` or `ref-<word>.wav`),
+   and refuses the story otherwise.
+2. **The switch — `show.mood_voices`** (the owner's decision 2: "An on/off
+   switch: show.mood_voices in settings"), in `ShowConfig`, default on: off,
+   every line uses `ref.wav`, as today — an A/B by ear without recasting.
+3. **The page learns the map once** — the run's start reply
+   (`/api/show/start`) carries the story's mood → clip map and the switch —
+   and, for each line, looks up its mood and posts
+   `{text, persona_name, reference: "ref-fear.wav"}`
+   (`player.js`: `speakLine(persona, text, hooks, reference)`; every chunk of
+   a line keeps its line's clip, so a line split into two or three requests
+   keeps one voice).
+4. **The voice route stays generic** (`app/routers/tts.py`, `app/models.py`):
+   `TTSRequest` gains an optional `reference`; the route accepts only a name
+   matching `^ref(-[a-z]+)?\.wav$` — no paths, so nothing like `../` can
+   reach outside the persona's folder — and uses that file with its `.txt`
+   if both exist in the persona's folder; **otherwise `ref.wav`**, as today
+   — the one remaining fallback, for a recording not cast yet. Without a
+   `reference` (TalkWithMe's chat UI), nothing changes. Each clip is a new
+   reference for tts-serve, encoded once — a clip's first use was measured no
+   slower (§11.7).
+5. **Which clip spoke, in the debug line** (the owner's decision 3: "Show
+   which clip spoke, in the debug line"): the route's reply names the clip it
+   used, and the debug line under each round shows it — to check by ear that
+   "afraid" really used the fear recording.
+6. **The casting script** (zombie-radio's `tools/voices/cast_voices.py`)
+   reads the story's `voices` to know which recordings to copy, and writes
+   each as recorded — EARS `emo_fear_sentences` → `ref-fear.wav`, with
+   `ref-fear.txt` — so the story stays the single source of truth;
+   `cast.yaml` loses its `moods:` section and keeps who voices whom, the
+   neutral clip and the loudness. Earlier mood clips (`ref-*.wav`) are
+   removed on a recast, as today.
+7. **Tests, in the fork's style:** the loader (a complete `voices` accepted;
+   a missing entry or an unsafe name refused); the route (a named clip that
+   exists → that clip; one that does not → `ref.wav`; no `reference` →
+   `ref.wav`; an unsafe name → `ref.wav`; the chat UI's request unchanged);
+   the page (Node: the clip reaches the request body, every chunk of a line
+   carries it; the switch off → no `reference` sent).
+
+**The limitation, accepted:** one map for all four characters — if one
+speaker's fear clip is weak, that character cannot be sent alone to another
+recording. A per-character exception could come later.
+
+**What the shape makes easy** (the owner's point): the files stay named as
+the dataset names them, and the mapping is the story's to change — moving to
+another dataset with other emotions or file names means recasting and editing
+the story's `voices`, nothing in the code.
+
+**Then:** cast with the moods; listen to the same show with `mood_voices` on
+and off — the first real test of goal 2 (how much of a clip's emotion carries
+into the cloned voice is unmeasured; the owner's ear is the measurement); a
+new fork tag (`tz-0.4`) and the installer's pin. **Estimate:** about 2-3 hours
+in the fork and the casting script, with tests (the agent's), on a fork branch
+`alfre2v/mood-clips`.
+
+### §11.9 2026-09-30 — built; the casting copies every emotion, decoupled from the story
+
+**Built** in the fork on `alfre2v/mood-clips` (§11.8's seven pieces: the
+story's `voices`, the loader's check, `show.mood_voices`, the start reply's
+map, the page naming the clip, the voice route's safe lookup, the debug
+line's `voices`), with tests: the fork's suite 1129 → 1148, the page's Node
+tests 35 → 38. Not yet committed at the time of this note.
+
+**The owner's edit to the map (verbatim):** "Heads up: I made a small edit to
+overtones.yaml, to remove the mapping urgent to fear, I do not think was
+appropriate, but the rest is good" — `urgent: ref.wav`, where §11.8's draft
+had `urgent: ref-fear.wav`. Checked: the story loads, all 14 moods keep a
+voice.
+
+**No test pins the shipped mapping.** The owner (verbatim): "Please do not
+hardcore tests to the particular mapping of emotions, that will change,
+instead mock the file if your tests rely in a particular mapping." Two
+assertions had pinned it (the shipped story's `calm`, `urgent`, `afraid`;
+the start reply's `calm`, `afraid`, `terrified`). Now the shipped-story test
+checks only the map's shape — every mood has a voice, each a valid clip name
+— and the start-reply test writes a made-up mapping into its temporary copy
+of the story and checks the reply carries exactly that. The loader's and the
+route's tests already used their own made-up story and clip files.
+
+**The coupling, and its removal.** The owner (verbatim): "Wait, I do not
+understand the coupling you introduced in between zombie-radio's
+`tools/voices/cast_voices.py` and the TalkWithZombies overtones. Walk me
+through how you use the info in overtones inside `cast_voices.py`". As first
+built (§11.8, piece 6), `cast.yaml` pointed at the client's story
+(`story: ~/TalkWithZombies-client/stories/lab-outbreak/overtones.yaml`), and
+`--with-moods` read the clip names under its `voices`, turned each
+`ref-<emotion>.wav` into the EARS file `emo_<emotion>_sentences`, and copied
+only those — so the tool depended on the story's path, the story file's
+shape, and the naming convention, and remapping a mood to a recording not yet
+copied needed a recast. The agent's alternative: **copy all 23 read emotions
+for every character, always**, each named after its recording; the casting
+then needs no story at all. The owner (verbatim): "Bingo!, you finally
+understood the decoupling of the mapping with the file names. Took you a
+while, but I am patient with my robot buddy 😛 Yes". Asked where the tool
+would then write (verbatim: "if you remove the path to the TalkWithZombies
+client, how would the tool know where to copy the files to?"): `cast.yaml`
+keeps its `personas:` line — the destination, there since the first cast;
+only `story:`, the line the mapping was read from, goes.
+
+**What changed** (2026-09-30):
+
+- `tools/voices/cast_voices.py`: `--with-moods` became **`--all-emotions`** —
+  every `emo_<emotion>_sentences` downloaded for the speaker (with its
+  transcript) is converted and written as `ref-<emotion>.wav` and `.txt`; the
+  script says how many it found. It no longer reads the story.
+- `tools/voices/cast.yaml`: the `story:` line removed; who voices whom, the
+  voice clip, the loudness and `personas:` remain.
+- `docs/runbooks/cast-voices.md`: step 5 says the mapping is the story's, not
+  `cast.yaml`'s; step 6's "With mood clips" became **"With every emotion"**;
+  step 7's expectations follow. The fork's `docs/runbooks/show-page.md` points
+  to "With every emotion".
+- **Checked** on a copy of the Personas folder in the agent's scratch space:
+  Ralph (p017) and Daniel (p007) with `--all-emotions` — 23 recordings each
+  (adoration … serenity, neutral included), each with its transcript, 13 MB
+  and 12 MB.
+
+**What it gives:** the story maps moods to recordings; the casting copies
+every recording; neither knows the other. Remapping a mood — as the owner did
+for `urgent` — is one line in the story and nothing else. The one shared
+thing is the naming convention: `ref-<emotion>.wav` is what was recorded. A
+recording the story names that a persona lacks (a typo, or an emotion not
+downloaded) falls back to `ref.wav`, and the debug line shows which clip
+spoke.
+
+### §11.10 2026-09-30 — who voices whom: where it is kept, and how the casting reads it
+
+**The owner (verbatim):** "How do you keep track of the source of each audio
+file (I mean where is the information kept for what person in EARs we select
+for all the audios of one of our app's personas)? I see a file `ref.source`
+which does have `p007/emo_neutral_sentences`. How does the tool
+cast_voices.py knows what EARS dataset persons to copy from and to which app
+Persona?" — and then: "I want this clarification about how we keep track of
+what person from EARS goes to what app persona in the top README as well as
+the runbook, and discussion doc. I will forget this very soon and need to
+keep the info at hand."
+
+**Two files keep track:**
+
+| | What it says | Where | In git? |
+|---|---|---|---|
+| `tools/voices/cast.yaml` | **the decision**: `cast:` maps each character to an EARS speaker (`Daniel: p007`); `voice:` names the recording that becomes `ref.wav` | zombie-radio | **yes** — every past cast is in its history |
+| `Personas/<Name>/ref.source` | **what was actually written**: when, the EARS credit, one line per file (`ref.wav <- p007/emo_neutral_sentences`, `ref-fear.wav <- p007/emo_fear_sentences`, …) | each persona's folder in the client, beside the audio | no |
+
+`ref.source` is rewritten at every cast, so it always describes the files in
+its folder; when the two disagree (`cast.yaml` edited, the character not yet
+recast), `ref.source` is the truth about what the app speaks with. Daniel's,
+on 2026-09-30, from the first cast: `cast 2026-09-29T14:32:13 from EARS, CC
+BY-NC 4.0 (Richter et al., Interspeech 2024)` / `ref.wav <-
+p007/emo_neutral_sentences`. The current cast at a glance:
+`for f in ~/TalkWithZombies-client/Personas/*/ref.source; do echo "$f: $(sed -n 2p "$f")"; done` — its output on 2026-09-30 (paths shortened):
+
+```
+…/Daniel/ref.source: ref.wav <- p007/emo_neutral_sentences
+…/Moira/ref.source: ref.wav <- p026/emo_neutral_sentences
+…/Ralph/ref.source: ref.wav <- p017/emo_neutral_sentences
+…/Samantha/ref.source: ref.wav <- p033/emo_neutral_sentences
+```
+
+
+**How `cast_voices.py` reads `cast.yaml`**, for Daniel: `cast` gives Daniel
+→ p007; the clips are read from `source` + the speaker
+(`../zombie-radio-datasets/ears/p007/`) and written into `personas` + the
+character's name (`~/TalkWithZombies-client/Personas/Daniel/`, which must
+exist and match the name exactly); the `voice` recording becomes `ref.wav`
+and `ref.txt`; with `--all-emotions` every `emo_<emotion>_sentences` that has
+its transcript becomes `ref-<emotion>.wav` and `.txt`; all of it is recorded
+in `ref.source`. `--only` limits a run to the characters named. Which mood is
+spoken with which recording is neither file's business — it is the story's
+(§11.9).
+
+**Where it is kept at hand:** `README.md`, "Voices for the cast" (the two
+files, the one-line check, the path for Daniel); the runbook
+`docs/runbooks/cast-voices.md`, a section "Who voices whom — where it is
+kept" (the table, a real `ref.source`, the five steps). Also fixed the same
+day: `cast.yaml`'s first line now says to run the cast with `--all-emotions`.
+
+### §11.11 2026-09-30 — the first listen with mood voices: it works; the mapping reworked; EARS sounds calm
+
+**The setup** (15:21-15:24 CDT): every character cast with all 23 recordings
+(`cast_voices.py --all-emotions`, 23 each, 12-13 MB per character, each
+`ref.wav` unchanged); the fork's dev server on `alfre2v/mood-clips` (port
+8010) with `debug: true` and no pinned seed for the test (restored after);
+the start reply carried the 14 moods' clips. The owner's run:
+`2026-09-30T15-23-48` in the fork's `runs/`, 31 rounds, seed 1541690589.
+
+**The verdict (verbatim):** "It works! However, there was one instance of
+severe voice degradation with Samantha's voice. Her is the more plain voice,
+I think, the other are more vibrant. Of maybe because the voice actor speaks
+slower the reference audio is too long." Her clips are not longer than the
+others' (checked: median 11.6 s against 10.4-11.5 s); the line was not
+noted, and the investigation is postponed — the follow-up "A cloned line
+came out badly degraded, once". The owner's first remedy (verbatim): "My
+first try would be to replace Samanthat's voice by another more vibrant one.
+She seems to be falling asleep." — pending the owner's pick.
+
+**"I did not see almost any negative emotions!"** The owner (verbatim): "I
+did not see almost any negative emotions! Is something wrong with our
+overtone switching to negative? This show was all positive and nice. This is
+not the vibe of this show. […] Did you change the seed for this run?" Counted
+from the runs' records:
+
+| Run | Rounds | Negative rounds | Lines in negative moods |
+|---|---|---|---|
+| `2026-09-30T15-23-48` — mood voices, random seed | 31 | 11 (35 %) | 26 of 88 (30 %) |
+| `2026-09-30T12-42-08` — `tz-0.3`, no mood voices, random seed | 34 | 12 (35 %) | 26 of 78 (33 %) |
+| `2026-09-28T13-43-28` — the owner's long listen, seed 42 | 113 | 53 (47 %) | 130 of 270 (48 %) |
+
+The overtone works, and the director behaved as before: a short show spends
+much of its time out of the negative (it opens neutral with the orientation,
+and a contact is positive or neutral by design, the story's `kinds`); the
+drift's weights (1 positive : 2 neutral : 3 negative) darken a longer show.
+The seed was random for this test (as announced); the long listen
+remembered was seed 42. **What made the show sound positive was the
+mapping:** the neutral overtone (14 of 31 rounds) spoke `determined` with
+`ref-pride.wav` (9 lines — pleased, confident), `curious` with
+`ref-interest.wav` (bright), and `urgent` and `calm` with the neutral
+`ref.wav` (16 lines — the "sleepy" reading voice): nothing tense.
+
+**The owner's remaps** (all in the fork's `stories/lab-outbreak/overtones.yaml`,
+no recast needed — every recording is in every persona's folder):
+
+- `urgent: ref-anger.wav` (was `ref.wav`) — the owner: "You were right that
+  In the overtone `urgent` should go to some other emotion than the plain
+  voice. It was used a lot in this show." Then: "I changed it to anger."
+- `hopeful: ref-amazement.wav` and `curious: ref-realization.wav` (both were
+  `ref-interest.wav`).
+
+Checked: the story loads with all 14 moods, every named clip exists for all
+four characters, the story and router tests pass. **The map now:** calm
+`ref.wav`; happy amusement; hopeful amazement; excited extasy; relieved
+relief; doubtful confusion; urgent anger; curious realization; determined
+pride; sad sadness; afraid fear; terrified distress; angry anger; exhausted
+pain — twelve recordings, only `ref-anger.wav` shared (urgent, angry).
+**Not assigned:** adoration, contentment, cuteness, desire, disappointment,
+disgust, embarassment, guilt, serenity (and `ref-neutral.wav`, the same
+recording as `ref.wav`).
+
+**The owner on EARS (verbatim):** "That still leave one angry emotion shared
+among our moods but I could not find a better candidate, the thing about
+theEARS dataset is that the voices are too calm, and a bit unnatural rhythm,
+in general, probably due to the strange studio settings it was recorded, I
+am assuming the people who donated their voices are not familiar with
+studios." **The agent's reading:** the speakers were volunteers, not actors,
+asked to *read* three unrelated sentences in each emotion in an anechoic
+chamber — acted emotion from non-actors reading aloud comes out restrained,
+and three unconnected sentences give a reading rhythm, not a speaking one.
+**Two livelier sources, for after the demo:**
+
+1. **EARS's own free-form clips** (`emo_<emotion>_freeform`) — the same
+   speakers describing an image in that emotion, unscripted, with a natural
+   rhythm; set aside on 2026-09-29 for lack of transcripts ("maybe in the
+   future", §11.4) — Whisper on the box could draft them, checked by hand;
+   `fetch_ears.py --types 'emo_*_freeform'`, about 67 MB per speaker.
+2. **Expresso** (§6.4) — trained voice actors, improvised dialogue
+   including angry and fearful; each clip means cutting one actor out of a
+   conversation and transcribing it.
+
+**Samantha recast** (16:46:49 CDT): p033 → **p063** (female, 36-45,
+American English), every emotion (`cast.yaml`, `Samantha: p063`;
+`cast_voices.py --all-emotions --only Samantha` — 24 files, all from p063;
+her `ref.wav` 8.9 s, raised from -38.4 to -23.8 dBFS, peak-limited). Why: the
+owner's first remedy for the plain, "falling asleep" voice and the degraded
+line. After listening, the owner (verbatim): "I actually prefer Samantha now,
+she sounds louder and have more emotion." New problem, the owner: "the voices
+of Samantha and Moira are too similar […] I might have to replace Moira's
+voice for a different voice now." Also the owner, after the remaps: "Wow,
+the show is very good now. What a difference since we started. The emotions
+work very well, and I have not seen more incidents of voice degradation."
+
+### §11.12 2026-09-30 — screening the voices: stray speech and pitch, a tool; Daniel recast
+
+**Why.** The owner heard Daniel's voice drift feminine on a terrified line
+and found the cause by ear (verbatim): "the audio of Daniel's
+`ref-distress.wav` have an artifact in the beginning, the voice actor said
+something in low voice just before reading the transcript." Measured the
+same hour: p007's negative recordings also pitch into a woman's range. The
+owner: "I think we need to replace Daniel." A first screening in the agent's
+scratch space (14 speakers, 182 requests to the box's Whisper) found stray
+speech in five clips, two of them in the current cast — the follow-up "A
+cloned line came out badly degraded, once" has the results. The owner
+(verbatim): "Yes, we need to save this method to screen voices to check if
+they are really following the transcript, the number of deviations I've
+found is noticeable. Therefore we need some automated method to narrow our
+search space. Please incorporate this script into our project and document
+well how to use it."
+
+**The tool:** `tools/voices/screen_voices.py` (standard library only,
+`python3`). For each speaker and each read emotion downloaded, it has the
+box's Whisper transcribe the clip (`/v1/audio/transcriptions` through the
+tunnel, language en, no voice-activity filter so a quiet aside is kept) and
+compares the words with the transcript — contractions and times read alike
+("I'm" = "I am", "8pm" = "8 p.m.", "75%" = "75 percent"), which removes the
+false alarms of the first screening; and it estimates the clip's pitch
+(autocorrelation, 50 ms frames, voiced frames only) against the speaker's
+neutral clip. Flags: **stray speech** (2 or more words before or after the
+transcript), **weak match** (under 0.80), **pitch climbs** (over 1.5 times
+the neutral) — all three thresholds are options. It prints a line per
+speaker and each flagged clip with what Whisper heard, and writes a JSON of
+every result and **a page of players for the flagged clips**
+(`screen-<start time>.html`, next to the clips) to confirm each by ear.
+Documented in the runbook `docs/runbooks/cast-voices.md` (step 4b, with
+what to do with a flag) and in the README's "Voices for the cast" (step 4).
+
+**The tool's test** (17:29-17:30 CDT, 1 min 42 s, 115 clips): p007, p017,
+p063, p026, p085, every read emotion. The three known cases flagged as
+stray speech — p007 distress (6 words before), p017 confusion ("Appreciate
+it"), p063 pride ("I'm amazed.") — and **the two false alarms gone** (p026
+anger and p063 relief, "I'm" heard "I am"). New: **p063 disappointment**,
+5 stray words before (a recording no mood uses). Pitch climbs flagged
+mostly in expressive emotions (confusion, interest, cuteness, extasy);
+some at exactly ×2.00, which may be the estimator doubling a pitch — to
+confirm by ear. p085 (Daniel's new voice): one flag, confusion ×1.75 — the
+recording his *doubtful* lines use.
+
+**Daniel recast** (17:27:44 CDT): p007 → **p085** (male, 26-35, American
+English), the owner's pick from the screening's low-pitched men (p054, p085,
+p088); `cast.yaml`, `Daniel: p085`; every emotion, 24 files, all from p085.
+**Pending:** the transcripts of Ralph's (p017) confusion and Samantha's
+(p063) pride clips, to correct to what was said — after the owner confirms
+the flags by ear, on the page of players the agent built for them
+(`zombie-radio-datasets/ears/stray-speech-2026-09-30.html`, with two false
+alarms for comparison).
+
+
+### §11.13 2026-09-30 — Daniel back to p007, a transcript corrected; the voices kept in debug mode; Daniel's two bad clips; Daniel to be recast
+
+**Daniel back to p007** (17:46:05 CDT, `--all-emotions --only Daniel`;
+`cast.yaml`, `Daniel: p007`). The owner (verbatim): "I think I want to go
+back to the previous Daniel. […] I like that his voice is way different
+than Ralph, and if the TTS is going to make voices feminine sometimes it's
+less notable with his old voice." The cast: **Daniel p007, Moira p026,
+Ralph p017, Samantha p063.**
+
+**p007's distress transcript corrected** (17:51, outside git). The owner:
+"fix Daniel's transcript now, but make sure to leave a note next to the
+changed transcript explaining why we deviated from the original dataset."
+In `zombie-radio-datasets/ears/p007/`: `emo_distress_sentences.txt` now
+says what was said — "Can just eat all of them." before the sentence
+(Whisper's words, the aside confirmed by the owner's ear) —
+`emo_distress_sentences.txt.original` keeps EARS's, and
+`emo_distress_sentences.CORRECTION.txt` says what, why, how it reaches the
+app, how to undo it, and that a re-fetch would bring the original back.
+**The convention for every correction:** those three files, and a line in
+`zombie-radio-datasets/README.txt`, section "Corrected transcripts".
+Daniel recast at 17:51:29; `screen_voices.py --speakers 7 --emotions
+distress,neutral` → 0 flagged (6 stray words before).
+
+**"Instability in all the voices"** (~17:53, the owner, verbatim): "Oh,
+wow, now things are much worse in the TTS. Instability in all the voices.
+I do not think it has anything to do with the transcript change in
+Daniel... Maybe your audio normalization is making things bad." Checked:
+Moira's and Ralph's clips unchanged since 15:21-15:22, Samantha's since
+16:46, the normalization since 2026-09-29; the app sent the voice server
+**no seed** (tts-serve then picks one in 1..1000 per request and echoes
+it); the engine healthy — Moira's `ref.wav`, the 13:00 sentence, seed 42
+→ byte-identical to the 13:00 reply. The owner's observation (verbatim):
+"when I reload the page from `http://127.0.0.1:8010/show` and pick the
+skin page again, the voices stabilities are perfect. But if instead I just
+reload the skin page `http://127.0.0.1:8010/show?design=old-radio` and run
+the show again there, the instability appears". No mechanism found; it was
+not tested separately afterwards (the debug runs below did not note which
+way the page was opened), and the two bad lines found since are both the
+clips' doing.
+
+**The voices kept in debug mode** — the follow-up "Keep every synthesized
+chunk in debug mode, and send a seed with every voice request" (the
+owner's go, 18:10: "Ok, we are going to build that feature"), built in the
+fork's `799d005` (alfre2v/TalkWithZombies#8): with `show.debug` on, every
+chunk's audio and a `.json` of what made it go to
+`runs/<run-id>/debug/audio/`; `scripts/replay_chunk.py` says one again;
+`show.voice_seed` (off by default) sends the run's seed with every chunk.
+The seed changed shape on the way — from a seed per chunk "always" to a
+switch with one seed per run — in the owner's words, recorded with the
+four live runs in the follow-up's status. The finding that settled it: a
+seed makes a voice reproducible, not steadier — the same clip, text and
+seed give the same audio, byte for byte, a bad chunk as much as a good
+one.
+
+**Daniel's afraid line** (run `2026-09-30T19-08-07`, debug on, seed off).
+The owner (verbatim): "I found one case of voice instability, with Daniel
+as before, line: "Daniel (afraid): It's watching us. Over." .. It sounds
+like a girl." The kept chunk, `r007-l1-c1-Daniel-ref-fear.wav`: his
+`ref-fear.wav` (p007 fear), seed 86 picked by the engine. Replayed through
+the app with four seeds (4 requests, ~2.4 s of synthesis), median pitch by
+the agent's rough estimator (autocorrelation over voiced frames):
+
+| Audio | Median pitch | Length |
+|---|---|---|
+| The show's chunk, seed 86 | 182 Hz | 1.92 s |
+| Replay, seed 86 | byte-identical | 1.92 s |
+| Replay, seed 1 | 235 Hz | 1.04 s (short: words may be lost) |
+| Replay, seed 42 | 160 Hz | 1.36 s |
+| Replay, seed 500 | 107 Hz | 2.24 s |
+| Daniel's reference clip `ref-fear.wav` | 246 Hz | |
+| Daniel's reference clip `ref.wav` | 138 Hz | |
+
+A man speaks at roughly 85-180 Hz, a woman at 165-255 Hz. p007's fear
+recording sits in a woman's range, and the seed decides where in the
+range between a man and a woman each line cloned from it lands. The agent
+built a page of players for the owner's ear (in its scratch space, not
+kept). **The cause is the clip, not the seed:** a seed that suits this
+line may not suit the next.
+
+**Daniel's determined line** (run `2026-09-30T19-20-04`, debug on, seed
+on). The owner (verbatim): "Another Daniel case of instability with line
+"Daniel (determined): Charlie, do you know of a place called 'the lab near
+the wood and swamp, smoke from the east wing'? Over." I think this is a
+rabbit hole we cannot pursue much longer." The kept chunk,
+`r012-l2-c1-Daniel-ref-pride.wav` (his `ref-pride.wav`, p007 pride; seed
+277), measures 130 Hz, a man's — pitch does not explain it. The owner,
+listening to the clip (verbatim): "Yeah, mystery solved on this one: the
+pride emotion reference audio for Daniel contain spurious words in the
+very beginning of the sample... I guess I will have to change the voice
+for Daniel... Well, I do not want to lose more time on this right now."
+**The screening tool missed it:** its 17:29 report has p007 pride with a
+word match of 1.00 and no stray words — Whisper's text begins with the
+transcript ("That was all me. I'm the one who found the project…") and
+leaves out the words before it. The screening narrows the search; the ear
+on the page of players stays the last check.
+
+**Decided:** the investigation of the voices' instability stops here (the
+owner, above). **Daniel is to be recast** — after Moira's replacement was
+already pending (§11.11) — screening the candidates and listening to every
+emotion a mood uses (the story's `voices`), the negative ones above all.
+Still pending from §11.12: the transcripts of p017 confusion and p063
+pride, after the owner's ear check.
+
+### §11.14 2026-09-30 — the recasts postponed past the demo; the voices with emotion called a success
+
+After §11.13, the same evening, the owner (verbatim): "I can live with the audio instabilities for the moment. I wan to make progress in other areas. We postpone recasting more voices, as far as I am concerned we have achieved TTS of voices with emotions with great success. The remaining boring "find and clear the audio samples" do not interest me for the demo."
+The recasts of Daniel and Moira and the two pending transcript corrections
+(p017 confusion, p063 pride) wait until after the demo — the follow-up
+"Recast Daniel and Moira, and correct two stray-speech transcripts" holds
+them, with their fix. Daniel's two known bad clips (§11.13) are accepted
+for now. The demo's goal 2, "emotional voices in support of the
+narration", is met by the owner's verdict. The cast for the demo: Daniel
+p007, Moira p026, Ralph p017, Samantha p063.

@@ -58,7 +58,7 @@ Austin Python Meetup in October 2026.
 
 The four characters speak with real human voices, cloned from short
 reference clips of the [EARS](https://github.com/facebookresearch/ears_dataset)
-dataset (CC BY-NC 4.0 — never committed here). Two tools in
+dataset (CC BY-NC 4.0 — never committed here). Three tools in
 [`tools/voices/`](tools/voices/) take them from the dataset to the
 TalkWithZombies client, run from this repository's root:
 
@@ -72,11 +72,14 @@ python3 tools/voices/fetch_ears.py --gender female --native "american english" -
 # 3. Download every emotion for the speakers you liked, and write a page of players for them
 python3 tools/voices/fetch_ears.py --speakers 7,17,26,33 --types 'emo_*_sentences' --fetch
 
-# 4. Choose the cast in tools/voices/cast.yaml, then preview what the cast would write
-uv run python tools/voices/cast_voices.py --dry-run
+# 4. Screen them: does each clip say its transcript, and stay in the speaker's pitch? (Whisper, through the tunnel)
+python3 tools/voices/screen_voices.py --speakers 7,17,26,33
 
-# 5. Cast: write each character's voice into the app's Personas folder
-uv run python tools/voices/cast_voices.py
+# 5. Choose the cast in tools/voices/cast.yaml, then preview what the cast would write
+uv run python tools/voices/cast_voices.py --all-emotions --dry-run
+
+# 6. Cast: write each character's voice, and every emotion it recorded, into the app's Personas folder
+uv run python tools/voices/cast_voices.py --all-emotions
 ```
 
 **Listen before you choose — the page of players.** Every fetch ends by
@@ -96,13 +99,60 @@ untested.
 
 In order: look at the speakers; download two clips each for a
 shortlist, and listen on the page of players the fetch writes; download
-every emotion for your favourites; choose the cast in
+every emotion for your favourites; screen them — some EARS speakers say
+something before their sentence, or climb far above their normal pitch in
+some emotions, and either can spoil a cloned line (the screening flags
+those clips and writes a page of players to confirm them by ear,
+`screen-<start time>.html`); choose the cast in
 [`tools/voices/cast.yaml`](tools/voices/cast.yaml); cast. Each fetch
 works as a dry run without `--fetch`. The clips land in
 `../zombie-radio-datasets/`, beside this checkout; the voices land in
-`~/TalkWithZombies-client/Personas/<Name>/ref.wav`, and the app speaks
-with a new voice from its next line. Every step, with what to expect:
-[the runbook](docs/runbooks/cast-voices.md).
+`~/TalkWithZombies-client/Personas/<Name>/` — `ref.wav`, the voice, and
+with `--all-emotions` one `ref-<emotion>.wav` per recorded emotion
+(`ref-fear.wav`, `ref-distress.wav`, … 23 with EARS). Which recording each
+of the show's moods is spoken with is not decided here but in
+TalkWithZombies' story (`stories/<story>/overtones.yaml`, under
+`voices`), so a mood can be remapped there without recasting. The app
+speaks with a new voice from its next line. Every step, with what to
+expect: [the runbook](docs/runbooks/cast-voices.md).
+
+**Who voices whom, and how to tell.** Two files keep track of which EARS
+speaker is behind each character:
+
+- [`tools/voices/cast.yaml`](tools/voices/cast.yaml) — **the decision**,
+  in git (so every past cast is in its history): `cast:` maps each
+  character to an EARS speaker (`Daniel: p007`), and `voice:` names the
+  recording that becomes the character's `ref.wav`.
+- `~/TalkWithZombies-client/Personas/<Name>/ref.source` — **what was
+  actually written**, beside the audio (outside git): when the character
+  was cast, the EARS credit, and one line per file — `ref.wav <-
+  p007/emo_neutral_sentences`, `ref-fear.wav <- p007/emo_fear_sentences`,
+  … It is rewritten at every cast, so it always describes the files in
+  that folder. If it disagrees with `cast.yaml` (edited, not yet recast),
+  `ref.source` is the truth about what the app speaks with.
+
+To see the current cast at a glance:
+
+```bash
+for f in ~/TalkWithZombies-client/Personas/*/ref.source; do echo "$f: $(sed -n 2p "$f")"; done
+```
+
+Its output on 2026-09-30 (paths shortened), after the first cast:
+
+```
+…/Daniel/ref.source: ref.wav <- p007/emo_neutral_sentences
+…/Moira/ref.source: ref.wav <- p026/emo_neutral_sentences
+…/Ralph/ref.source: ref.wav <- p017/emo_neutral_sentences
+…/Samantha/ref.source: ref.wav <- p033/emo_neutral_sentences
+```
+
+How `cast_voices.py` uses `cast.yaml`, for Daniel: it reads the
+speaker's clips from `source:` + the speaker
+(`../zombie-radio-datasets/ears/p007/`), writes into `personas:` + the
+character's name (`~/TalkWithZombies-client/Personas/Daniel/`, which must
+exist), turns the `voice:` recording into `ref.wav` and `ref.txt`, with
+`--all-emotions` every `emo_<emotion>_sentences` into
+`ref-<emotion>.wav` and `.txt`, and records it all in `ref.source`.
 
 ## Documentation
 
