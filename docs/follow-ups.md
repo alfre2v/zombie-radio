@@ -1082,7 +1082,18 @@ reader's memory):
   in Settings brings its table along, and an engine without one gets
   the base table.
 
-## The trim's thresholds in settings — the 90 % trigger and the 50 % target are hard-coded (owner, 2026-09-28)
+## The trim's thresholds in settings — the 90 % trigger and the 50 % target are hard-coded (owner, 2026-09-28) — resolved 2026-10-01
+
+- **Status 2026-10-01 — resolved; kept for its receipts.** In the fork's
+  `f9aa73d` (alfre2v/TalkWithZombies#9, branch `alfre2v/context-32k`):
+  `show.trim_trigger` (0.9), `show.trim_target` (0.5),
+  `show.trim_keep_first` (2) and `show.trim_keep_last` (4) replace the
+  four constants of `app/show/script.py`; the defaults are the old
+  values; `ShowConfig` refuses a target at or above the trigger, and the
+  bounds (both in 0-1, the kept rounds from 0). `trim()` reads them from
+  the show's settings. The whole story — how the app counts the
+  script's tokens and decides — in [discussion 2026-10-01]
+  the-app-from-the-outside §2.
 
 - **The gap:** the trim fires when the script reaches 90 % of
   `show.context_budget` and cuts whole rounds from the middle until it
@@ -1104,7 +1115,22 @@ reader's memory):
   `ShowConfig`'s validators (target below trigger, both in 0-1); the
   defaults unchanged.
 
-## A context budget near the full 16k (owner, 2026-09-28)
+## A context budget near the full 16k (owner, 2026-09-28) — overtaken 2026-10-01 by the 32k context
+
+- **Status 2026-10-01 — overtaken; kept for its receipts.** The
+  context went to 32,768 (below) and the budget with it: **34,000** in
+  the fork's `f9aa73d` (alfre2v/TalkWithZombies#9). The room this
+  entry asked to measure, measured: the largest round in 82 recorded
+  runs (1,824 rounds) added **741 tokens** (an exchange, instruction
+  and reply); the new `show.instruction_room` keeps 1,000 above the
+  trigger, plus `show.max_tokens` (512) for the reply. Since the trim
+  fires at 90 % of the budget, the budget may exceed the context:
+  0.9 × 34,000 + 1,000 + 512 = 32,112 fits 32,768. A run now opens only
+  if that fits the server's real context (llama.cpp's `/props`), with
+  the arithmetic in the refusal. The confirming drive (run
+  `2026-10-01T13-43-41`, 220 rounds): the largest request 30,694
+  tokens, no overflow, one trim (before round 140). Details:
+  [discussion 2026-10-01] the-app-from-the-outside §2.4-§2.6.
 
 - **The gap:** `show.context_budget` is 14,000 against the server's
   16,384-token context (`zr_llama_ctx` in
@@ -1136,7 +1162,27 @@ reader's memory):
   to 16,384 minus that room; a long drive or listen to confirm no
   request overflows the server's context, and the trims counted.
 
-## A 32k context, so the show forgets past callers less often (owner, 2026-09-28)
+## A 32k context, so the show forgets past callers less often (owner, 2026-09-28) — done 2026-10-01
+
+- **Status 2026-10-01 — done; kept for its receipts.** `zr_llama_ctx`
+  32768 (this repository's `a89d0fa`, alfre2v/zombie-radio#20),
+  deployed on the box by the owner (`/props`: `n_ctx 32768`); the
+  budget 34,000 in the fork (alfre2v/TalkWithZombies#9). Measured on
+  the A6000: **the GPU memory** — llama-server 6,764 → 6,970 MiB when
+  it started (the context is reserved upfront), 7,046 MiB after the
+  first minute of use, then flat through a full context and a trim;
+  the stack 14,195 → **14,477 MiB** (under the 16 GB wish and the 24 GB
+  target). **The trims** — at 16k, every 22-36 rounds; at 32k, the
+  first before round 114 (budget 31,000) or 140 (34,000), then roughly
+  every 100 rounds (estimated): about 3-4 times rarer. **The pause of
+  a trim** — 8.2-8.4 s (12,209-13,922 tokens re-read), against 5.1 s at
+  16k: about 1.6 times, not the twice expected below. **The prompt
+  reading per round** — served from the cache between trims (about 200
+  tokens fresh, the rest cached; a round about 1.6 s, first line under
+  1 s). **Not measured:** the model's quality deep into a long context
+  — by ear, in the owner's next long listen. Details: [discussion
+  2026-10-01] the-app-from-the-outside §2.6; how to measure the memory:
+  `docs/runbooks/box-inspection.md`.
 
 - **The gap:** at 16k, a long show trims every few minutes (above),
   and each trim drops the middle of the script — the contacts with
@@ -1159,6 +1205,80 @@ reader's memory):
   is re-read and would be about twice as long; the model's quality
   deep into a long context; the prompt reading per round as the script
   grows (mostly served from the cache between trims).
+
+## Resume does not re-check the model server's context (owner, 2026-10-01) — low priority
+
+- **The gap:** since 2026-10-01 (the fork's `f9aa73d`,
+  alfre2v/TalkWithZombies#9) a run opens only if the show's budget fits
+  the model server's context: `POST /api/show/start` asks llama.cpp's
+  `/props` for `n_ctx` and refuses the run when `trim_trigger ×
+  context_budget + instruction_room + max_tokens` does not fit
+  ([discussion 2026-10-01] the-app-from-the-outside §2.4). **Resume does
+  not go through `/start`:** it continues the same run — the page's
+  `resumeShow()` calls `runShow()`, which goes straight back to
+  `POST /api/show/round` — so the check is not made again.
+- **When it matters:** only if the box is **redeployed with a smaller
+  context while a show is paused** — for example, a target that needs
+  `zr_llama_ctx` 16384 (a 3090 that cannot fit 32k, overridden in its
+  `99-local.yml`) taking over mid-show. Then the first request larger
+  than the new context fails with the model server's own error (not
+  observed here), the page marks the round "(this round failed: …)",
+  and every Resume fails the same way until the app is restarted with a
+  smaller budget or the box gets a larger context. A mid-show redeploy is
+  not a case the show meets today.
+- **The owner (verbatim, 2026-10-01):** "I think (6) "Resume doesn't
+  re-check the server's context" is low priority for us, we should
+  document in follow ups but mark as low priority."
+- **Where flagged:** the agent's answer to the owner's question whether
+  `server_context()` is called once or periodically ([discussion
+  2026-10-01] the-app-from-the-outside §2.4).
+- **Trigger:** a target deployed with a smaller context than the others,
+  or any change that makes the server's context vary during a show.
+- **Fix shape:** the running app remembers which runs it has checked;
+  a round for a run it has not checked (a Resume, or a run continued
+  after the app restarted) checks `/props` first — or, simpler, every
+  round checks it — one tiny request each
+  (`server_context()` in the fork's `app/services/llm.py` and
+  `context_problem()` in `app/routers/show.py` already exist); on a
+  mismatch, the round fails with the same message as the start, instead
+  of the model server's error.
+
+## The settings API does not show the show's settings (owner, 2026-10-01) — after the demo
+
+- **The gap:** `GET /api/settings` returns only `llm`, `tts`, `stt` and
+  `general` (the fork's `SettingsResponse` in `app/models.py`) — **not
+  `show:`**, and not `mcp:` either: both are "yaml-only" by design
+  (`ShowConfig`'s docstring: "The show engine's settings — yaml-only,
+  like mcp."). Found in the endpoint survey ([discussion 2026-10-01]
+  the-app-from-the-outside §3.6), where the reply's `llm.max_tokens`
+  (200, the chat's) could be mistaken for the show's (512).
+- **What it costs:** nothing in the app can say which show settings a
+  **running** app loaded — the budget and the trim's numbers, the seed,
+  `debug`, `mood_voices`, `voice_seed`, the pacing. `settings.yaml` says
+  what is in the file, which is not always what is running: the settings
+  are read when the app starts, so an edit since then is not in effect
+  (exactly the case of 2026-10-01, when a temporary budget of 40,000 was
+  removed from the file while the running app still had it). Today the
+  only views of the running values are partial: a run's start reply
+  (`seed`, `debug`, `voice_seed`, the voices) and its record. FastAPI's
+  `/docs` page cannot show them either, and TalkWithMe's settings page
+  never shows them.
+- **What is safe already:** saving from the chat's settings page
+  (`PUT /api/settings`) keeps the `show:` section in `settings.yaml` —
+  the fork's `tests/test_show_config.py`,
+  `test_save_then_load_keeps_the_show_section`.
+- **The owner (verbatim, 2026-10-01):** "(7) GET /api/settings doesn't
+  show the show's settings" is more serious, but I do not mind to
+  postpone it until after the demo day. But we should record it well!"
+- **Trigger:** after the demo (2026-10-08); sooner if a test or a listen
+  is misread because the running settings differ from the file.
+- **Fix shape:** a read-only `show` section in `GET /api/settings`'s
+  reply (and `mcp`, for completeness), or a separate
+  `GET /api/show/settings` returning the running `ShowConfig` — readable
+  with `curl` and on `/docs`; not editable through the API (the show's
+  settings stay yaml-only, edited in the file and applied by a restart),
+  so the chat's settings page and its `PUT` are untouched. Tests: the
+  reply carries the loaded values, not the file's.
 
 ## A long silence between two lines of one round, not explained (owner, 2026-09-28)
 
@@ -1512,6 +1632,71 @@ reader's memory):
      script of [discussion 2026-09-29] voice-datasets-with-emotion §11.7 is
      the pattern) — the same degradation every time points at the clip,
      once only at randomness.
+
+## In-prototype experiments and the character bibles — deferred past the demo (owner, 2026-10-01)
+
+- **The statement:** the MVP arc's Task 5 — the in-prototype
+  experiments (deliverable D3: an LLM audition, a TTS comparison with
+  the VRAM budget, the narrative-health probes) — and the character
+  bibles (owner action queue, item 2; Task 4's first part, deferred by
+  the owner on 2026-09-28) are not for the demo. The owner (verbatim,
+  2026-10-01), on the agent's proposal: "Yes, defer: "Defer Task 5 (the
+  experiments: an LLM audition, a TTS engine comparison, the narrative
+  probes) and the character bibles past the demo"". The agent's reasons:
+  none of them is a demo goal; a week is not enough for an audition done
+  properly; the bibles were already deferred; deferring them formally
+  keeps the TODO honest about what is planned.
+- **Where flagged:** `docs/TODO.md` (Task 5, now `[~]` with a pointer
+  here; the owner action queue, item 2); the agent's recap of 2026-09-30
+  and the doc refreshes held for the next significant branch.
+- **Trigger:** after the demo (2026-10-08) — the next arc's planning.
+- **What has changed since they were written** (2026-09-16 to
+  09-23): the cast now has real voices with emotions (EARS, `tz-0.4`),
+  so 5b's "needs Task 4 samples" is met — though a TTS comparison now
+  has to compare emotional cloning, not one clip; the model's context is
+  32k (`tz-0.5`), which changes 5a's "name-memory retest at the raised
+  window"; the bibles would land as each character's entry in the fork's
+  `stories/lab-outbreak/cast_sheet.md` (the owner action queue, item 2,
+  has the shape).
+- **Task 5 as it stood in the TODO, moved whole:**
+
+  - [ ] **Task 5 — In-prototype experiments (deliverable D3;
+    protocol skeleton per guardrail 1: question, timebox,
+    pre-registered pick criteria, runlog).**
+    - [ ] **5a — LLM audition** ([spec §9]): the ranked five via
+      one `-hf` flag each; identical scenario; scored on BOTH
+      narrative-health axes; name-memory retest at the raised
+      window. Picks the working default. Needs Task 4 bibles.
+      **Runs in the fork's engine, after the timebox.** Added
+      2026-09-23: does each candidate write the screenplay format on
+      its own (if not, the grammar steers — ~10 % per token and style
+      drift)? The gate's "prose with and without the grammar" item is
+      answered for Nemotron by identity and re-checked for any other
+      finalist; the bounded-scratchpad cell rides along
+      (follow-ups).
+    - [ ] **5b — TTS comparison + VRAM budget** ([spec §9]):
+      engines via the parametrized role; **LuxTTS's ~1 GB claim is
+      the first check**; picks two engines + Whisper size;
+      measures the two-engine stack vs 24 GB target / 16 GB
+      aspiration. Needs Task 4 samples. Per-engine test items from
+      the field: ultra-short inputs (the "1." echo) and typographic
+      punctuation (`’`/`—` dropped the pause before "Over." on Faster
+      Qwen3-TTS, 2026-09-22 — the parser normalizes anyway).
+    - [ ] **5c — Narrative-health probe battery**
+      ([discussion 2026-09-16] taxonomy §5): the zero-code,
+      owner-run probes — `[Director]:` prefix (C6) · named
+      addressee (E2) · in-fiction phrasing (C8) · long-form escape
+      hatch (B4) · fixed responder (E1) — one variable flipped per
+      run against the same two-round protocol. Protocol-lite (a
+      dated runlog section, no full experiment folder). Does NOT
+      need the real cast. **Re-scoped 2026-09-23 to the fork's
+      engine:** the battery was written against TalkWithMe's
+      per-persona structure; under [ADR-0003] two probes are moot by
+      construction (the `[Director]:` prefix — the director now IS
+      the user turn; the fixed responder — the director picks the
+      speakers), and the others (named addressee, in-fiction
+      phrasing, long-form escape hatch) become director settings to
+      try. Runs after Task 6b, alongside 5a.
 
 ## Recast Daniel and Moira, and correct two stray-speech transcripts (owner, 2026-09-30) — postponed past the demo
 
