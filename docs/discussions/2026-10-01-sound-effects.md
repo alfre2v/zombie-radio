@@ -12,8 +12,15 @@ show, random silences, all in settings — the owner's design, §8.8), **from
 Freesound**; the folder tree agreed; the
 Freesound key in place and checked; nine CC0 candidates listed. **The fetch
 tool built** (`tools/sounds/fetch_freesound.py`) and **the owner's 17 Freesound
-finds downloaded** (previews, 28 MB, outside git — §8.9), waiting for the
-owner's listening. The research on generated and recorded sounds (§4) and the
+finds downloaded** (previews, 28 MB, outside git — §8.9). **How to play the
+bed** — the owner's seven questions and the agent's analysis (§8.10), and **the
+event sounds as a layer of their own beside the bed** (§8.11); **the owner's
+first decisions** (§8.12: constantly, the level moving; the files untouched, a
+gain per clip; one list; shuffled; the filter as a switch; no trimming), and
+**the rest settled three at a time** (§8.13: the looks only, silences on a
+timer, the clips copied unchanged into the client's `Sounds/bed/`, silent while
+push-to-talk is held, a live mute key, the gauge for the voices only, built
+now). **The first build's plan** is in §8.13, waiting for the owner's go. The research on generated and recorded sounds (§4) and the
 three-source listening test (§6.2) wait for the broader work: sounds per event.
 
 ## §1. The owner's idea (verbatim)
@@ -1105,6 +1112,586 @@ request; the credit line written.
 The owner's listening: 5-15 clips for the bed (§8.7, step 2) — said in chat, or
 written into each `.json`'s `ours.verdict` (`keep` / `reject`) and `ours.notes`.
 Then the shape in the fork (§8.7, step 3).
+
+### §8.10 How to play the bed: the owner's questions, the agent's analysis (2026-10-01, night)
+
+**The owner (verbatim)**, after the commit of §8.9:
+
+> Picking the clips is the least interesting thing... What I want to discuss
+> with you is proposals to how implement playing these audios.
+>
+> * Do we play them constantly? Or at certain moments in the play (e.g. in
+>   between rounds)?
+> * Do we normalize the volume of those audios?... My inclination is no
+>   normalization.
+> * Do we apply some transformations to those audios?... Maybe to lower the
+>   bitrate or to make them mono?
+> * During the play: Do we keep the volume of the bed stable or do we modify the
+>   volume to better suit our narrative... My inclination is yes, we have to move
+>   the volume up and down. Specifically we turn the volume down slowly every
+>   time a cast voice starts to speak, but we keep some random brief
+>   fluctuations of volume up and down.
+> * Do we allow a different list of background audios for different types of
+>   rounds?
+> * What strategy do we follow to rotate the audios? ... My lean is to do a
+>   random shuffle every time we consume the whole list.
+> * What strategy do we follow to insert silence between the background audios?
+>
+> Do you have more questions to settle?
+
+Then, on the answer below: "Wow, there is a lot of information here. I cannot
+possibly answer all of those in one go." — **nothing in this section is decided
+yet**; the owner answers one question at a time. The owner's one answer so far
+is on question 5, in §8.11.
+
+#### What the agent read and measured first
+
+**How the page plays the voices today** (the fork at `tz-0.5`):
+
+- `static/show/player.js` — one `AudioContext` for the page (`voice.ctx`),
+  created on the first click (`unlockAudio`; browsers allow sound only after
+  one). Each voice chunk comes from `/api/tts` as base64 WAV and is **decoded
+  whole** into raw samples (`decodeAudioData`), then played by `playClip`: a
+  buffer source connected straight to the speakers (`ctx.destination`). Between
+  the chunks of one line, a pause of **80 ms** (`pauseInLineMs`); after a line,
+  **250 ms** (`pauseBetweenLinesMs`).
+- `static/show/show.js` — the round loop (`runShow`): the listener's turn if the
+  last round listens → ask for the next round (`playRound`) → wait until it has
+  all been said (`playOut`, which awaits `drained()`). **The next round is asked
+  for only after the last one has been said** — so the time between rounds is
+  the model writing the next round plus the first chunk's synthesis: measured
+  **3.7-4.9 s**, and **8.4 s** after a trim (2026-10-01).
+- `static/show/gauge.js` — the looks' gauge **wraps `createBufferSource`** of
+  the page's context (`tapContext`): every buffer source connected to the
+  speakers also feeds the gauge's analyser. A sound played another way (an
+  `<audio>` element through `createMediaElementSource`, or a source connected
+  to a gain node rather than straight to the speakers) does not reach the
+  gauge.
+- The round kinds (`app/show/script.py`): `orientation`, `free`, `repair`,
+  `exchange`, `last-exchange`, `re-call`, `breakdown`, `switch-off`,
+  `invitation`; `answer` and `static` are only in older records, kept loadable
+  (the `static` kind has nothing to do with the bed).
+
+**The 17 clips' loudness**, measured with ffmpeg (installed on the laptop,
+`/opt/homebrew/bin/ffmpeg`); `volumedetect` reads the whole file and reports its
+average level (`mean_volume`, the RMS in dB below full scale) and its loudest
+sample (`max_volume`):
+
+```bash
+# From the folder of the clips: the average and the peak level of each, quietest first
+cd /Users/alfredo/workspace/hackTNT_2026/zombie-radio-datasets/sounds/freesound/radio-static
+for f in *.mp3; do r=$(ffmpeg -hide_banner -nostats -i "$f" -af volumedetect -f null - 2>&1 | awk '/mean_volume/{m=$5} /max_volume/{x=$5} END{printf "%6.1f %6.1f", m, x}'); printf '%s  %s\n' "$r" "${f%%-*}"; done | sort -n
+```
+
+| # (§8.9) | Id | Name | Average (RMS) | Peak |
+|---|---|---|---|---|
+| 6 | 34418 | morse static | −31.1 dB | −7.8 dB |
+| 4 | 730109 | Shortwave Radio static with indistinguishable foreign chatter | −29.4 dB | −7.9 dB |
+| 11 | 557532 | radio tuning fm | −26.5 dB | −4.5 dB |
+| 17 | 546450 | The Sound of dial-up Internet | −26.4 dB | −8.1 dB |
+| 8 | 652596 | Vintage Radio Tuning 5 | −25.7 dB | −0.1 dB |
+| 13 | 255775 | S06Russian | −25.3 dB | −8.6 dB |
+| 5 | 625095 | radio_static_01 | −22.3 dB | −0.3 dB |
+| 3 | 615189 | radio11 | −21.2 dB | −3.3 dB |
+| 2 | 719588 | Handheld radio music and static | −21.1 dB | −1.2 dB |
+| 10 | 722884 | harsh analog fm radio flips | −19.5 dB | −0.4 dB |
+| 16 | 658932 | Dial-up_sound | −18.9 dB | −3.2 dB |
+| 1 | 11859 | analog_noise_arped_radio_static | −17.4 dB | 0.0 dB |
+| 14 | 343740 | Radio transmission morse code @4606.2kHz Poland | −17.3 dB | 0.0 dB |
+| 12 | 624412 | Radio Music - A MakeNoise Morphagene Reel | −17.0 dB | −0.3 dB |
+| 7 | 396902 | Full radio sweep | −16.5 dB | 0.0 dB |
+| 9 | 30302 | CS3B_beacon | −15.2 dB | −5.8 dB |
+| 15 | 855480 | Radio — Generative Sound by Glorb | −11.0 dB | 0.0 dB |
+
+**The spread of the averages is 20 dB** (−31.1 to −11.0): the loudest clip's
+amplitude is 10 times the quietest's (20 dB = a factor of 10 in amplitude), and
+it sounds roughly 4 times as loud (each 10 dB sounds about twice as loud).
+
+#### The agent's answers, question by question (proposals, not decisions)
+
+**1. Constantly, or at certain moments?** *Recommendation: constantly, with the
+level moving.* In the fiction the audience listens to a shortwave receiver, and
+a receiver hisses all the time. A bed only between rounds would switch on and
+off every 20-40 seconds, and the audience would hear an effect being switched,
+not a radio. **The choice need not be made now:** with the level under a voice
+as a setting, "only between rounds" is that setting at 0 — the two versions
+are one number apart, and the owner can compare them by ear.
+
+**2. Normalize the volume?** (The owner leans no.) The measurement above says
+the shuffle would jump by up to 20 dB at every change of clip, and that jump
+would drown the experiment the owner wants — moving the level with the show.
+*Recommendation, which keeps the owner's "no": the files are not touched;
+instead each clip carries one gain number* in the list that names the clips —
+measured by a tool to bring every clip to a common level, and overridable by ear
+(a clip deliberately louder, say). The files stay as they are; what each clip
+contributes is visible and tunable.
+
+**3. Transformations (bitrate, mono)?**
+
+- **Mono: yes.** The voices are mono; a radio's speaker is mono; and memory —
+  the reason that matters most. Decoded whole as the voices are
+  (`decodeAudioData`: raw 32-bit samples), the 17 clips would take **about
+  555 MB** of the browser's memory: 24.1 minutes = 1,446 s × 48,000 samples a
+  second × 2 channels × 4 bytes = 555,264,000 bytes (at 44,100 samples a second,
+  about 510 MB). Mono halves it — but the better answer is **not to decode the
+  bed whole at all**: play each clip through an `<audio>` element connected to
+  the page's context (`createMediaElementSource`), which streams the file and
+  holds only a little of it at a time.
+- **Bitrate: it hardly matters for playing.** The page loads the clips from the
+  app on the same laptop; the venue's network never carries them. A lower
+  bitrate matters only for size, if the chosen clips are committed to the fork:
+  10 clips of about 90 s, mono, at 64 kbps = 900 s × 8,000 bytes a second ≈
+  7.2 MB.
+- **Trimming: yes, where needed** — a bad start or end, a stretch the owner
+  does not like.
+- **A creative idea, the owner's call:** a band-pass filter — only the middle
+  frequencies, the band of a small AM speaker — would make the 8 kHz Russian
+  recording (#13) and the 48 kHz FM sweep (#7) sound as if through the same
+  receiver. Worth one A/B listen before adopting it.
+
+**4. The bed's volume steady, or moving with the story?** *Agreed: moving.* The
+owner's shape — down when a voice starts, with small random ups and downs.
+Shortwave listeners have a word for those ups and downs: **fading** (radio
+amateurs call it QSB) — the signal swelling and sinking; period-true, and a
+slide for the talk. The agent's refinements:
+
+1. **The level changes per round, not per voice clip.** The page pauses 80 ms
+   between the chunks of a line and 250 ms between lines, and longer when the
+   voice engine lags behind the playing; a bed rising in each of those gaps
+   would pump audibly. Two states the page already knows:
+   - **"voice"** — from the round's first clip starting until the round has all
+     been said (`playOut`'s `drained()`, `show.js`);
+   - **"between"** — from then until the next round's first clip.
+
+   The gap between rounds — 3.7-4.9 s, 8.4 s after a trim — is long enough for
+   the bed to rise noticeably and dip again.
+2. **"Down slowly" — one caution:** a slow dip covers the first words of the
+   line. A start: about 0.5 s down, 1.5 s back up — both settings, tuned by ear.
+3. **The fading:** every few seconds, a random change of plus or minus a few dB,
+   glided to (never a jump), in every state — two settings: how deep, and how
+   often.
+
+**5. Different lists for different kinds of round?** *Not in the first build —
+but the data allows it from day one:* the list is a **named list** (`default`
+only, for now), so a list for one kind of round later is a change of data, not
+of code. The natural candidates are already in the story: the **breakdown**
+(the receiver dies — harsher, louder static); the **repair** (the owner's tuning
+sweeps, #7, #8, #11 — someone finding the frequency); the **contact** (the bed
+off, as the owner said in §8.4.1). **Where the list lives: in the story**
+(`stories/lab-outbreak/`), beside the voices' map in `overtones.yaml` — the
+owner's rule that data maps live where they are central, not in a tool's
+configuration. *(The owner's answer to this question, and the angle it adds —
+event sounds — is §8.11.)*
+
+**6. How to rotate the clips?** *Agreed: shuffle, and reshuffle when the list is
+used up* — with the guard of §8.8 (refinement 3): the first clip of the new order
+is never the one that just ended. An option, left out of the first build: start
+each clip at a random point, so the first minute of a long clip is not always
+the one heard.
+
+**7. How to insert the silences?** Two shapes:
+
+| Shape | How it works | Weakness |
+|---|---|---|
+| **A. At the joins** | after a clip ends, a silence with some probability | with clips up to 5 minutes long, silences can be minutes apart |
+| **B. On a timer** | every 30-120 s (random), the bed fades out, the clip **pauses**, 3-15 s of silence (random), then it fades back in **where it stopped** | none that matters; as simple with an `<audio>` element (pause, then play) |
+
+*Recommendation: B* — the signal dropping out and coming back — always with
+fades (a hard cut sounds like a bug). Between two clips, a short crossfade and
+no silence. (This is the timer the settings draft of §8.8 already names:
+`bed_silence_every_s`, `bed_silence_s`.)
+
+#### More questions to settle (the agent's, each with its recommendation)
+
+1. **Where it plays.** The looks only; the plain page silent, as the working and
+   debugging page — with a switch in the address, `?bed=on`, like `?voice=off`,
+   to hear it there.
+2. **The listener's turn.** Before push-to-talk is held: the "between" level
+   (atmosphere while the audience thinks); **silent while it is held** (the
+   owner's rule, §8.4.1); back when released; `bed_off_in_contact` stays a
+   setting.
+3. **A live mute for the presenter:** one key on the page that silences the bed
+   at once — the venue's speakers are unknown, and the bed may have to go
+   mid-demo. Cheap; recommended.
+4. **The gauge.** The gauge hears only what is played the voices' way
+   (`gauge.js` wraps `createBufferSource`): a bed played through an `<audio>`
+   element **stays out of the gauge with no extra code**; letting it in is one
+   more connection. Recommendation: out — the needle shows the voices.
+5. **Which clips may be used, and where they live** — **the one answer that
+   changes the build.** A demo set drawn only from the CC0 and CC BY clips (15
+   of the 17) can live in the fork beside the story, with a credits list, and
+   the installer needs nothing new; #9 (CC BY-NC) and #1 (Sampling+) would need
+   a home outside git, like the cast's voices.
+6. **Start and end:** the bed fades in at Start (the click that unlocks the
+   page's audio), stops on Stop, and fades out when the show ends (the
+   switch-off).
+7. **Its level against the voices:** the first numbers by ear on the laptop; the
+   venue's sound will differ — the live mute and the settings are the safety
+   net.
+8. **The canned episode (Task 7):** if the page plays it, it has the bed for
+   free.
+9. **Tests:** the shuffle, the no-repeat guard, the silence timer and the
+   state's changes as small pure functions with Node tests, like the page's
+   text splitter (`chunks`, `tests/test_show_page.js`).
+
+#### The order proposed (smallest step first)
+
+1. **The first build:** one list, shuffled; mono files with a gain per clip;
+   two states (voice / between) with the dip and the rise; silent while
+   push-to-talk is held; the live mute; the looks only.
+2. **Then, by ear:** the fading, the silences, the crossfade.
+3. **Later:** lists per kind of round — and the event sounds (§8.11).
+
+### §8.11 Event sounds — a layer of their own beside the bed (2026-10-01, night)
+
+**The owner (verbatim)**, on §8.10's question 5:
+
+> I mostly agree with you, but there is an angle you are forgetting:
+>
+> Remember that eventually we want also to have SFX audios for event rounds, and
+> the sound of the event cannot just be active in one round or it would be
+> strange... The question arises how do we plan to eventually implement the
+> event sounds:
+>
+> * As another type of background noise (replacing the static audios), or,
+> * As another audio channel completely independent of the bed channel, this
+>   gives us the most flexibility but is the more complex as we have to mix 3
+>   sources of audio.... Yet this is my lean.
+>
+> What do you think about how we position ourselves for the eventual
+> introduction of event SFX, and reconcile it with the bed audio.
+
+And, on the documents: "Remember to always save to our documents carrying the
+same level of details that you use in this transcript (or even more), the
+documents are very important."
+
+#### The facts the answer stands on (the fork at `tz-0.5`)
+
+- **The story has 289 events in 35 themes** (`stories/lab-outbreak/events.yaml`,
+  counted), filed by overtone (`positive`, `neutral`, …) then by theme. Each is
+  a sentence of free text — *"A fire alarm in the east wing rings once, loud as
+  a church bell, and stops."*, *"The calendar in the break room says today is
+  someone's birthday."* — with no sound attached and no id.
+- **An event comes often:** in a free round, every `event_every` 2 ± 1
+  (`event_jitter`) free rounds (`app/config.py`; `_event_due`,
+  `app/show/director.py`). It lives in **one round** (`RoundPlan.event`; the
+  round's summary carries it). With `fixed_lines` on (the default), the first
+  to speak **reads the event word for word as the round's first line**, and the
+  rest react.
+- **Many events have a natural sound** (an alarm, glass raining down, an
+  elevator, a helicopter, a choir, the server fans' howl); **many have none**
+  (a birthday on a calendar, a stash of chocolate) — the owner's "some events
+  will have many audios to pick from, other will have none" (§8.1).
+
+#### The agent's answer: agreed — a channel of its own; why it costs less than it seems
+
+**The bed and the event sounds are different things in the fiction:**
+
+| Layer | What it is in the story | What changes it | How long |
+|---|---|---|---|
+| **The bed** | **the radio** — what the receiver does: static, fading, a tuning sweep | the radio's state: a breakdown, a repair, a contact | always there |
+| **An event's sound** | **the room** — what happens in the lab, heard through the transmitter: the alarm, the glass, the rotor | an event | its own length, across rounds |
+
+**Why not "another kind of background, replacing the static":** the bed would
+stop being the radio. Each time something happened in the lab the static would
+vanish — as if the receiver cleared up because a fire alarm rang. And with an
+event every 2-3 free rounds, the bed would be replaced most of the time.
+Replacing the bed's *list* stays the right tool for **the radio's own states**
+(§8.10 question 5: harsher static at the breakdown, sweeps at the repair) —
+the radio changing, not the room.
+
+**Why three sources is cheaper than it sounds:** in Web Audio, mixing is not
+something we write. Every sound goes through its own **gain node** (a volume
+knob the code can turn, with smooth ramps), and every gain node connected to
+the speakers is **summed by the browser**. Three sources are three knobs into
+the same speakers:
+
+```
+voice chunks ──(buffer sources, as today)──────────────────────────► speakers   (+ the gauge's tap)
+bed clips   ──<audio>── clip gain ── bed layer gain ───┐
+event sound ──<audio>── clip gain ── event layer gain ─┴─ sounds gain ─► speakers
+                                                          (the live mute; the dip under a voice)
+```
+
+**The real work is the rules, not the mixing** — who dips under whom, when an
+event's sound starts, how long it lasts — and those can be added one at a time.
+A first set, to tune by ear:
+
+| While… | the bed | an event's sound |
+|---|---|---|
+| a voice is talking | low | lower, but heard (the alarm still ringing under the line) |
+| between rounds | the "between" level | up — the gap of 3.7-4.9 s before the reporter speaks is where the sound is heard best |
+| an event's sound is playing | dips a little | — |
+| push-to-talk is held | silent | silent |
+| the live mute | silent | silent |
+
+**How the event sounds would work, later** (a sketch, to argue over when we get
+there, not now):
+
+1. **Which sound:** the story says it — each event (or each theme) may name a
+   kind of sound (`alarm`, `glass`, `rotor`…) or none; a kind is a list of clips
+   in the pool (`sounds/<source>/<kind>/`), many or none, as the owner said. The
+   director picks the clip, as it picks the event, and **sends it to the page at
+   the round's start** (in the stream's first message, before the event's
+   reading) — the page plays, it does not decide; the same split as the voices
+   (the story maps a mood to a clip, the page plays it).
+2. **When it starts:** a beat **before** the event is read — the sound happens,
+   then someone reports it. The page plays it when the round's first message
+   arrives, during the dead air before the first voice.
+3. **How long — the owner's point:** **its own length, not the round's.** The
+   sound plays to its clip's end, across round boundaries (a siren of 40 s spans
+   two or three rounds), up to a maximum, then fades out. A new event's sound
+   crossfades over the old one; one event sound at a time.
+4. **Through the radio:** the event's sound reaches the audience through the
+   lab's transmitter, so it could carry the same coloring as the bed (§8.10,
+   question 3's band-pass) — and sit under the static rather than above it.
+
+**How to position ourselves now — the agent's recommendation:** build the bed
+**as the first layer of this structure, and nothing more**: one "sounds" gain
+for all non-voice sound (the live mute, the dip under a voice), and the bed as
+one layer below it, written so that a second layer is a second instance, not a
+rewrite. The cost now is close to nothing (a gain node and a little care in
+naming); the event layer, its data in the story and its rules come after the
+bed works — and, with the deadline seven days away (2026-10-08), most likely
+after the demo.
+
+**Open, the owner's:** the bed's other questions (§8.10), one at a time.
+
+### §8.12 The owner's pass over §8.10: decided, and the agent's answers (2026-10-01, night)
+
+**The owner (verbatim)**, opening: "Ok, I feel we are in agreement. Yet, let me
+make a quick pass over your decomposition above providing my observations". And,
+at the end: "I'll look at the "More questions to settle (my recommendation for
+each)" later. This is getting too long." — **§8.10's nine further questions
+stay open.**
+
+#### Decided
+
+| §8.10 question | The owner (verbatim) | Decided |
+|---|---|---|
+| 1. Constantly, or at moments? | "Ok, let's implement "My recommendation: constantly, with the level moving"." | **Constantly, the level moving with the show** |
+| 2. Normalize? | "Ok, let's build this: don't change the files. Instead, give each clip one gain number in the list that names the clips. A tool would measure it to bring every clip to a common level, and you can override any number by ear (for example, to leave one clip deliberately louder). The files stay untouched, and what each clip contributes is visible and easy to tune." | **The files untouched; one gain per clip in the list — measured by a tool, overridable by ear** |
+| 3. Bitrate | "So let's go with you lean here." | **No bitrate work** — the page loads the clips from the laptop |
+| 3. Trimming | "I do not want to lose time manually massaging the files... I am interested in the technical achievements in this project, not in producing studio quality sounds. Unless you can do the trimming automatically, we postpone it!" | **Postponed** (the agent's answer below) |
+| 3. The band-pass filter | "This is very interesting! Yet I fear we are ballooning complexity. We could build this, and ydo an A/B test, but in any case it has to be a feature we can switch ON/OFF in the settings." | **Built only as a setting, on or off — an A/B by switching it** |
+| 4. The level moving | "Agreed with your agreement 😃 … I agree with your 3 proposals to raise and lower the volume." | **Per round (voice / between), not per clip; dip about 0.5 s, rise about 1.5 s, both settings; the fading** |
+| 5. Lists per kind of round | "Agreed. Let's start with one single list for all the show. We can refine this design later." | **One list for the whole show**; named, so more lists later are data (and the event sounds a layer of their own, §8.11) |
+| 6. Rotation | "We agree." | **Shuffle; reshuffle when used up; never the same clip across the seam** |
+
+On the fading and its name: "I love your explanation about "fading" and "QSB",
+we need a small mention about this in our docs for sure. If e are doing a radio
+show, we need to embrace the terminology and learn about the culture." — the
+words are below ("Radio words").
+
+#### Still open, with the agent's answers
+
+**3A. Mono — how, with which tool, and where the files go.** The owner (verbatim):
+"Mono: yes ... A/ Ok. How do we do this transformation? Do we need a new tool
+for that? And where do we keep the modified audio files, we should never
+overwrite the originals downloaded from freesound, so we need a new path in my
+fielsystem to store the actual files modified for the app to use.... A
+gitignored folder inside the TalkWithZombies client folder?"
+
+**The agent's answer: no transformed files at all — the browser does the mono.**
+§8.10 gave memory as mono's main reason; that reason went away with the
+`<audio>` element (it streams the file instead of decoding it whole). What is
+left is the sound — one channel, as from a radio's speaker — and the browser
+does that with **one property of the bed's gain node** (`channelCount = 1`,
+`channelCountMode = "explicit"`: a stereo clip is mixed down to mono as it
+passes). The same goes for the filter: a band-pass is **one more node**
+(`BiquadFilterNode`) on the bed's path, in or out by the setting. So the files
+the page plays are **the Freesound previews, byte for byte**.
+
+**A tool is still needed** — not to change the audio, but to put the chosen
+clips where the app reads them and to measure their gains. It follows the
+voices' pattern exactly (`tools/voices/cast.yaml` → `cast_voices.py` →
+`~/TalkWithZombies-client/Personas/`):
+
+| Piece | What | Where |
+|---|---|---|
+| **The list** — the decision, the only file the owner edits | which clips play in the bed (by Freesound id), and an optional gain per clip that overrides the measured one | `tools/sounds/bed.yaml`, in this repository (its history is the record of every past choice) |
+| **The tool** | **copies** each listed clip, unchanged, from the pool into the app's folder, measures its average level, and writes a manifest: the file, its length, its gain (measured, or the list's override), its licence and credit line | `tools/sounds/prepare_bed.py`, in this repository |
+| **The app's copy** | the clips and the manifest the page reads | **`~/TalkWithZombies-client/Sounds/bed/`** — the owner's idea: a folder inside the client, gitignored by the fork (a `Sounds/` line in its `.gitignore`, beside `Personas/`); the dev checkout gets its own the same way |
+
+**The originals are never touched:** the pool (`zombie-radio-datasets/sounds/`)
+stays as downloaded; the app's folder holds copies, and can be wiped and
+remade from the list at any time. **A gift of this shape:** the files stay
+outside git, so **all 17 clips may be used in the demo**, whatever their
+licence (the CC BY-NC and Sampling+ ones included — a meetup talk is not
+commercial); the credit lines of the seven that are not CC0 go on a slide, or a
+credits note the page can show. To check when built: that the installer (its
+`git` task, `force: false`) is not upset by an untracked `Sounds/` folder in the
+client before the fork's `.gitignore` names it.
+
+**3. Trimming, automatically?** Only the easy part could be automatic — cutting
+silence at a clip's start and end (a level threshold). Choosing the
+*interesting* stretch cannot. And it is not needed: the bed fades in and out at
+every join (the crossfade) and every silence, so a dull or quiet start is
+heard for a second at most, under a fade. **Postponed, as the owner said** — no
+trimming at all.
+
+**7. The silences — the owner's question (verbatim):** "So, you recommend: `B.
+On a timer: every 30-120 s (random), the bed fades out, the clip pauses, stays
+silent for 3-15 s (random), then fades back in where it stopped` This adds
+complexity. And how do you pick the slice? Because I do not suppose you want to
+always start the slice from the beginning of the audio file, where the least
+interesting signal usually is... You will need to make available for the code
+the length of each audio file, and be ready to make a seek inside the file to
+locate the slice you want... Have you thought this well? Sound very complex for
+me..."
+
+**The agent's answer: shape B picks no slice — §8.10 said it too briefly.**
+Nothing is cut, chosen or sought: the clip plays from its start to its end, as
+it would without silences; a silence only **interrupts** it, like a
+pause button. An `<audio>` element remembers where it was paused, so the
+silence is:
+
+```
+clip #4 playing ─────────────╲ (fade out, 0.5 s)
+                    pause()   ▏ … silence of 3-15 s (random) …
+                    play()    ▕ the same clip, from the very sample it stopped at
+                             ╱ (fade in, 0.5 s) ─────────────── to its end, then the next clip
+```
+
+| What shape B needs | How |
+|---|---|
+| when the next silence comes | a timer, `setTimeout`, with a random delay in the setting's range (30-120 s) |
+| the fade out | a gain ramp to 0 on the bed's gain node (`linearRampToValueAtTime`), the same as the dip under a voice |
+| the silence | `audio.pause()`, then a second timer of 3-15 s |
+| coming back | `audio.play()` — it resumes where it paused — and a gain ramp back up |
+| the clip's length | **not needed**; the element plays to the end and says so (its `ended` event), which starts the next clip |
+| a seek | **none** |
+
+It is about as small as shape A. **What did need a seek** was a different idea —
+§8.10's question 6 option, starting each clip at a random point — and that one
+was already left out of the first build. (Even that one is small in the
+browser — `audio.duration` is known once the file starts loading, and
+`audio.currentTime = x` is the seek — but it stays out.) The decision is the
+owner's.
+
+#### Radio words (the owner: "we need to embrace the terminology and learn about the culture")
+
+Radio operators have shared a set of three-letter **Q-codes** since the
+radiotelegraph days of the early twentieth century — short codes for the
+questions they asked each other most, fast to send in Morse and understood in
+any language. Asked with a question mark, a code is a question; sent plain, it
+is the answer. Three of them describe exactly what the static bed is made of:
+
+| Code | As a question | In the bed |
+|---|---|---|
+| **QRN** | "Are you troubled by static?" — natural noise: lightning, the atmosphere | **the bed itself** — the hiss and crackle of the static clips |
+| **QRM** | "Is my transmission being interfered with?" — man-made interference: other stations bleeding in | the owner's finds of "radio static of mixed radio stations" (#2, #4, #13), the Morse (#6, #14) — and the "radio bleed" layer of §8.5 |
+| **QSB** | "Are my signals fading?" — the signal swelling and sinking as the ionosphere shifts | **the fading** — the bed's slow random ups and downs (§8.10, question 4, refinement 3) |
+
+Ham operators still use them on the air, in Morse and by voice ("lots of QRN
+tonight"). The settings may borrow the words when the bed is built (the
+fading's settings as `bed_qsb_…`, say) — the owner's call; and a slide for the
+talk. *(Decided in §8.13: plain words in the settings; the codes in the docs.)*
+
+### §8.13 The open questions, settled three at a time; the first build's plan (2026-10-01, night)
+
+**The owner (verbatim):** "Ok, I need your help with so many questions. Present
+the questions to me in groups of 3." The agent asked them in three groups, each
+question with its options and a recommendation; the owner chose one option per
+question. The questions and the chosen options, as asked:
+
+**Group 1**
+
+| Question | Chosen | What it means |
+|---|---|---|
+| "Where should the static bed play?" | **Looks only** (the recommendation) | the bed plays in `old-radio` and `amateur-radio-transmitter`; the plain page stays silent as the working and debugging page; an address switch `?bed=on` turns it on there when wanted |
+| "How should the random silences work?" | **B: on a timer** (the recommendation) | every 30-120 s (random) the bed fades out and the clip pauses; after 3-15 s (random) it resumes where it stopped and fades back in — no slicing, no seek, no clip lengths needed (§8.12, question 7) |
+| "Do you approve this shape for getting the clips to the app: a list (`tools/sounds/bed.yaml`), a tool that copies the clips unchanged and measures their gains (`tools/sounds/prepare_bed.py`), the copies in `~/TalkWithZombies-client/Sounds/bed/` (gitignored by the fork), mono and the filter done in the browser?" | **Yes, this shape** (the recommendation) | like the voices (`cast.yaml` → `cast_voices.py` → `Personas/`); the originals never touched; the copies can be wiped and remade; all 17 clips usable, since nothing goes into git (§8.12, 3A) |
+
+**Group 2**
+
+| Question | Chosen | What it means |
+|---|---|---|
+| "What should the bed do during the listener's turn (the contact rounds, when the audience may talk back)?" | **Up, silent while held** (the recommendation) | while the page waits for the listener: the "between" level (atmosphere while the audience thinks); silent while push-to-talk is held, back when released; `bed_off_in_contact` stays a setting to silence the whole contact |
+| "Should the page have a live mute for the bed, for the presenter at the venue?" | **Yes, one key** (the recommendation) | one keyboard key on the page turns the bed (and later the event sounds) off and on at once, with a short fade; invisible to the audience. The key proposed: **M** — the page already uses **Space** for push-to-talk (`static/show/show.js`, its `keydown`/`keyup` listeners) |
+| "Should the looks' gauge (the magic eye and meters) react to the bed?" | **Out: voices only** (the recommendation) | the needle moves only with the voices, as today; no code — a bed played through an `<audio>` element stays out of the gauge by itself |
+
+**Group 3**
+
+| Question | Chosen | What it means |
+|---|---|---|
+| "How should the bed start and end with the show?" | **Fade in, stop, fade out** (the recommendation) | fades in at Start (the click that unlocks the page's audio); stops at once on Stop (and resumes on Resume); fades out over a few seconds when the show ends (the switch-off) |
+| "Should the bed's settings borrow the radio words?" | **Plain words** (the recommendation) | `bed_fading_db`, `bed_fading_every_s` and so on; the Q-codes explained in the docs and on a slide, not in the settings' names |
+| "When should the static bed be built, against the rest of the board (the 3090, names-only A, the canned episode, the talk) with the deadline on 2026-10-08?" | **Now, first build only** (offered without a recommendation) | next: the list, the tool and the first build in the fork; the fading, the silences and the filter after a first listen; then the rest of the board |
+
+**Not asked — the agent's working assumptions** (§8.10's remaining three, which
+are not choices): the bed's level against the voices is set **by ear** on the
+laptop, the venue's sound handled by the live mute and the settings (§8.10,
+7); the canned episode, if the page plays it, has the bed for free (§8.10, 8);
+the bed's logic is written as small pure functions with Node tests (§8.10, 9).
+
+#### The whole design, as decided (§8.8 and §8.10-§8.13 together)
+
+- **What:** a shuffled list of radio static clips, played constantly, quietly,
+  under the show — **the static bed**, the first layer of a small structure
+  that event sounds can join later as a second layer (§8.11).
+- **The clips:** the Freesound previews, unchanged; one list for the whole show
+  (all 17 to start; the owner prunes by ear); one gain per clip, measured to a
+  common level and overridable in the list.
+- **The path:** `tools/sounds/bed.yaml` (the list) → `tools/sounds/prepare_bed.py`
+  (copies, measures, writes a manifest) → `~/TalkWithZombies-client/Sounds/bed/`
+  (gitignored by the fork) → the app serves it → the page plays it.
+- **In the browser:** each clip through an `<audio>` element (streamed, not
+  decoded whole) → its clip gain → the bed's gain (mixed down to mono there) →
+  the "sounds" gain (the live mute) → the speakers; the gauge not tapped.
+- **The level:** two states by round — **voice** (low) from the round's first
+  clip to the end of its playing, **between** (higher) until the next round's
+  first clip — a dip of about 0.5 s and a rise of about 1.5 s; during the
+  listener's turn the "between" level; **silent while push-to-talk is held**.
+- **The order:** shuffle; reshuffle when used up; never the same clip across
+  the seam.
+- **Later, after a first listen:** the fading (random slow ups and downs), the
+  silences on a timer (shape B), the crossfade at the joins, the AM filter as a
+  switch.
+- **Where:** the looks only (`?bed=on` for the plain page). **Start and end:**
+  fade in at Start, stop on Stop, fade out at the show's end. **The live mute:**
+  the M key. **The gauge:** voices only. **The settings:** in the fork's
+  `show:` section, plain names, sent to the page in the start reply.
+- **No trimming; no bitrate work; no normalization of the files.**
+
+#### The first build's plan (to be approved before it starts)
+
+**Step 1 — zombie-radio, this branch (`alfre2v/sound-effects`):**
+
+1. `tools/sounds/bed.yaml` — the list: the pool's folder, the app's folder
+   (`~/TalkWithZombies-client/Sounds/bed`), the common level, and the clips by
+   Freesound id (all 17 to start), each with an optional `gain_db`.
+2. `tools/sounds/prepare_bed.py` — for each listed clip: find it in the pool by
+   its id, copy it unchanged, measure its average level (decoded with macOS's
+   built-in `afconvert`, as `cast_voices.py` does — no new dependency), and
+   write `bed.json` beside the copies: the file, its length, its gain (measured,
+   or the list's), its licence class and credit line. A dry run by default; it
+   removes from the app's folder only the files it wrote before.
+3. Run it (dry run → the owner's approval → for real) into the installed client
+   and into the dev checkout.
+
+**Step 2 — the fork, a new branch (`alfre2v/static-bed`):**
+
+1. `.gitignore`: `Sounds/`, beside `Personas/`.
+2. **Settings** (`ShowConfig`, plain names, the first build's only): `bed`
+   (on/off), `bed_volume_voice`, `bed_volume_between`, `bed_dip_s`,
+   `bed_rise_s`, `bed_off_in_contact` — sent to the page in the start reply.
+3. **Serving the bed:** the app serves `Sounds/bed/` (the clips and
+   `bed.json`); no `bed.json`, no bed — the show runs as today.
+4. **The page:** a new module `static/show/bed.js` — the sounds gain, the bed
+   layer, the shuffle with its seam guard, the states (voice, between,
+   listening, muted), short fades at the joins; hooks in `show.js` (the round's
+   first clip, the end of its playing, push-to-talk held and released, Start,
+   Stop, the show's end, the M key); loaded by the looks, and by the plain page
+   only with `?bed=on`.
+5. **Tests:** pytest (the settings, the serving, the start reply) and a Node
+   test for the shuffle and the states.
+6. **Runbook:** the fork's `docs/runbooks/show-page.md`, a section "The static
+   bed" — the settings, the M key, `?bed=on`, how the clips get there.
+
+**Step 3 — listen** (the owner, with the box up): tune the numbers by ear; then
+the second build (the fading, the silences, the crossfade, the filter switch)
+and a release.
 
 ## §7. Sources
 
