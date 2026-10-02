@@ -2527,6 +2527,145 @@ restored (`cmp`-identical to the backup: `show: seed: 42`). Part 2, §8.17-§8.2
 and the follow-up committed and pushed; both PRs' descriptions brought up to
 date.
 
+### §8.21 The leftovers ruled; the clips in the repo (Task A, under discussion); a settings runbook (Task B, built) (2026-10-02)
+
+**The owner (verbatim)**, on "What's left of the bed's plan": "no, keep the
+handoffs for now." (asked whether to delete handoffs 6-9), then:
+
+> Of your "What's left of the bed's plan", we will execute before the demo (so,
+> they are priority, but not to execute today... We need to document them in
+> TODO properly): (1) The filter test you described (bands below). It may change
+> the filter's default or its band. (2) Your picks of the clips: switch off the
+> harshest ones in the story's bed.yaml. (I will add one task related to this
+> soon). (3) Credits for the talk: the 7 clips that aren't CC0 need a slide or a
+> credits note. Each credit line is already in bed.json. (I will add one task
+> related to this soon).
+>
+> The rest we will execute today: (4) A release: merge both PRs, tag the fork,
+> pin the installer to the tag, run make client-mac. … (As soon as I merge the
+> PRs)
+>
+> (5) Not built by choice: the crossfade at the joins (only if they bother you),
+> and whether three short timings become settings.... A/ Correct. I do not see
+> any value in implementing crossfade for our app. You can close any follow-up
+> that may exist about crossfade with a note that we decided not to implement.
+>
+> (6) lists of clips per kind of round, event sounds as a second layer, and the
+> voice-levelling follow-up (undecided).... A/ Same thing. I do not see any
+> value in implementing this right now. Keep it in a follow up but mark it as
+> very low priority and undecided if worth executing... Keeping it only to
+> conserve as a ledger of all our ideas.
+
+**Recorded:** (1)-(3) as **Task 10, "The static bed before the demo"**, in
+`docs/TODO.md`; (5) — no crossfade follow-up existed, so one was written to
+record the decision, closed: **not to be implemented**; the three timings stay
+constants (closed); (6) — two new follow-ups (lists per kind of round; event
+sounds as a second layer) and the voice-levelling one, all **very low
+priority, undecided whether worth executing, kept as a ledger of ideas**.
+
+#### Task A — the clips in the repo, only the incompatible ones ignored (under discussion)
+
+**The owner (verbatim):** "I decided this bed audio feature is too good not to
+come out of the box with the app when someone deploy it. So, what we are going
+to do is: Give me a list of all the audios we cannot include in the repo for
+license reasons. Then we are going to set these audios with problematic
+licenses to `enabled: false` in `stories/lab-outbreak/bed.yaml`. Finally we
+are going to modify our gitignore to ignore only those files with problematic
+licenses, instead of the whole audio bed folders. This way users get a
+functional app with the limited range of bed audios available that respect
+licensing, but we still provide the names and the metadata of all the bed audio
+files we considered, if someone wants them they can find and download
+themselves. What is your opinion? Pushbacks?"
+
+**The list — 2 of the 17:** 11859 *analog_noise_arped_radio_static*
+(**Sampling+ 1.0**: the whole work shared only non-commercially) and 30302
+*CS3B_beacon* (**CC BY-NC 4.0**). The fork is **MIT** (upstream's licence,
+kept): anyone may use it commercially, which non-commercial clips would
+contradict. The other 15 may go in: 10 CC0, and 5 CC BY (#2, #3, #4, #6, #13)
+**with their attribution shipped**. Committable: 27.46 MB (the two excluded:
+0.58 MB).
+
+**The agent's opinion: yes — with these points to settle:** (1) **credits are
+mandatory** for CC BY: a `Sounds/bed/CREDITS.md` generated from `bed.json` (as
+the old-radio look's `CREDITS.md` for its photograph), and a line in the
+README's licence section; (2) **27.46 MB into git's history for good** —
+fine for GitHub, heavier clones; mono 64 kbps copies would be ~9 MB but break
+the owner's "files untouched" (the agent's recommendation: accept the 27 MB);
+(3) **a release trap:** the installed client holds the 17 copies untracked; a
+tag that tracks 15 of them makes `git checkout` refuse to overwrite them, so
+`make client-mac` would fail — the release must delete the client's
+`Sounds/bed/` copies (and the `Sounds/` line of its `.git/info/exclude`)
+first; (4) **the tool's target changes:** `prepare_bed.py` must never again
+write into the installed client (tracked files modified there would break the
+installer the same way) — it writes into the fork's dev checkout, and the
+result goes through a PR; (5) **quiet logs:** a `bed.json` entry whose file is
+missing should be skipped quietly unless the story enables it (else every
+clone logs 2 warnings per Start); (6) **`.gitignore` by explicit name**, two
+lines with a comment naming the licences, and a check in `prepare_bed.py`
+that warns when a clip that is not CC0 or CC BY is missing from it; (7) the
+two set to `enabled: false` in `bed.yaml`, with a comment why.
+
+**The owner:** "Let's start by implementing "Task B: a practical settings
+runbook, and the keyboard shortcuts" After we finish with this one, we will
+discuss in more detail the Task A." — **Task A waits for that discussion.**
+
+#### Task B — a practical settings runbook, and the keyboard shortcuts (built)
+
+**The owner (verbatim):** "Now that we have so many configuration knobs in the
+fork app, the need arises to document well what they are and give recipies of
+how to change them (like the scenarios we discussed for the bed audios of
+several audio volume levels, and several filter settings). This file should be
+practical oriented, to show the user quickly what knob to change to achieve
+something in the app. Also we should document well the keyboad shortcuts we
+have for the app. (Possibly these shortcuts also documented in a top level
+README section) Opinion? Pushbacks?"
+
+**The agent's pushbacks, taken:** no duplicate of all ~60 settings — the
+comments of `ShowConfig` stay the complete reference, the runbook holds
+recipes and points there; `show-page.md`'s settings table points to the new
+runbook (one source); a small docs test against drift.
+
+**Built (the fork, uncommitted):**
+
+- **`docs/runbooks/show-settings.md`** (new) — "the show's settings — recipes",
+  organized by what one wants: how a setting changes (the file, `show:`, a
+  restart — with the command — and a new run; what needs no restart: the
+  story's files, the address switches, the keys; **a misspelled setting is
+  ignored without a word, a value out of bounds stops the app at start** —
+  both checked: `ShowConfig(bed_volume_betwen=0.3)` keeps 0.15;
+  `bed_volume_between: 1.5` raises "1 validation error for ShowConfig /
+  bed_volume_between" from `load_settings()`, which the app's start does not
+  catch); the demo, or a test show; **the static bed** — quieter or louder
+  (the ×2/3, ×1/2, ×1/3, ×1.5 table), a deeper or gentler dip, no static (the
+  setting, the M key, the contacts only), more rest or fewer breaks (the
+  silences), a steadier or livelier signal (the fading), **the AM filter's
+  bands A-D**, the static on the plain page, a clip switched off or changed
+  by ear (the story's `bed.yaml`); **the listener's turn** (the window, the
+  press cap, the calls sooner or later, longer or shorter contacts); **the
+  story's pace** (events, orientations); **the model server's context** (a
+  16k server: `context_budget` 16,500 — 0.9 × 16,500 + 1,000 + 512 =
+  16,362); **the address switches**; **the keyboard shortcuts** (Space held:
+  talk, only while the radio listens; M: the bed's mute; F: the bed's filter;
+  M and F ignore a held key and Cmd, Ctrl or Alt — those three are every key
+  the page has; the captions toggle is a button).
+- **`README.md`** — a fork section "The show page: keyboard shortcuts and
+  settings": the three keys, and the three runbooks (settings, the page, the
+  driver), above the upstream README, which stays unchanged.
+- **`docs/runbooks/show-page.md`** — "The show's settings" shortened to where
+  the settings live and a pointer to the new runbook (its heading kept: cited
+  elsewhere); the static bed's volume note points to the recipes.
+- **`tests/test_docs.py`** — **a drift test:** every name under `show:` in a
+  YAML example of `docs/runbooks/*.md` or the README must be a field of
+  `ShowConfig` (34 names found, in `show-settings.md`, `show-page.md` and
+  `show-driver.md`); a renamed setting would otherwise leave a recipe that
+  silently does nothing. **Proven:** a misspelled `bed_volume_betwen` added to
+  a backed-up copy of the runbook made it fail ("Settings in the docs' YAML
+  examples that ShowConfig does not have: bed_volume_betwen
+  (show-settings.md)"); the runbook restored, `cmp`-identical.
+- **`AGENTS.md`** — the coverage map's line on `test_docs.py`.
+
+**Checked:** pytest **1281 passed** (1280 before: the drift test).
+
 ## §7. Sources
 
 - [Stable Audio 3 — the paper (arXiv 2605.17991)](https://arxiv.org/html/2605.17991)

@@ -1736,7 +1736,7 @@ reader's memory):
   tools/voices/cast_voices.py --all-emotions --only <Name>`; the runbook
   `docs/runbooks/cast-voices.md`.
 
-## Even out each voice chunk to a common speech level (owner, 2026-10-02) — not a priority; undecided whether to build it
+## Even out each voice chunk to a common speech level (owner, 2026-10-02) — very low priority; undecided whether worth executing; kept as a ledger of ideas
 
 - **The statement:** the voices' level swings widely from line to line,
   the women's most — the owner heard it while listening to the static bed
@@ -1762,6 +1762,9 @@ reader's memory):
   owner's question, the code check, both tables); the measuring scripts
   `chunk_levels.py` and `chunk_levels_by_clip.py` were scratch files of
   that session, their method written there.
+- **Lowered later the same night (the owner, verbatim):** "I do not see any value in implementing this right
+  now. Keep it in a follow up but mark it as very low priority and undecided if worth executing... Keeping it
+  only to conserve as a ledger of all our ideas."
 - **The owner's ruling (verbatim):** "Humm, this is an interesting
   feature. but I think it belongs in a follow up." And: "make it as not a
   priority and undecided if we will execute on it." — **not a priority;
@@ -1794,6 +1797,54 @@ reader's memory):
      quiet one raised by the right amount, a loud one lowered, nothing
      clipped.
   A side effect: everyone to one target also closes the women's ~4 dB gap.
+
+## The static bed's lists per kind of round (owner, 2026-10-02) — very low priority; undecided whether worth executing; kept as a ledger of ideas
+
+- **The statement:** the static bed plays one list of clips for the whole show. A list per kind of round — the radio's
+  own states — was proposed: harsher, louder static at the Breakdown (the receiver dies), the owner's tuning sweeps at
+  the Repair (someone finding the frequency), the bed off for the contact. The data already allows it: the story's
+  `bed.yaml` could name lists, so a list per kind would be a change of data, not of code.
+- **Where flagged:** [discussion 2026-10-01] sound-effects §8.10 (question 5), §8.20.
+- **The owner's ruling (verbatim), 2026-10-02:** "I do not see any value in implementing this right now. Keep it in a
+  follow up but mark it as very low priority and undecided if worth executing... Keeping it only to conserve as a
+  ledger of all our ideas."
+- **Trigger:** none set; the owner's decision.
+- **The fix shape:** named lists in `stories/<story>/bed.yaml` (a `default` and one per kind of round); the start
+  reply carries them; `bed.js` switches the list when a round of that kind starts (the round's summary names its kind).
+
+## Event sounds as a layer of their own beside the static bed (owner, 2026-10-01) — very low priority; undecided whether worth executing; kept as a ledger of ideas
+
+- **The statement:** sounds for the events (an alarm, glass breaking, a rotor), heard through the transmitter and
+  lasting their own length across rounds, as **a second layer** beside the bed — the bed is the radio, an event's sound
+  the room — not replacing the bed's clips.
+- **Where flagged:** [discussion 2026-10-01] sound-effects §8.11 (the owner's angle and lean: "another audio channel
+  completely independent of the bed channel"; the agent's shape), §8.20.
+- **The owner's ruling (verbatim), 2026-10-02:** "I do not see any value in implementing this right now. Keep it in a
+  follow up but mark it as very low priority and undecided if worth executing... Keeping it only to conserve as a
+  ledger of all our ideas."
+- **Trigger:** none set; the owner's decision.
+- **The fix shape (§8.11):** the bed's chain already ends in a "sounds" gain (the M key's mute) that a second layer can
+  join; each event (or theme) in the story names a kind of sound or none; the director picks a clip and sends it in the
+  round's first message; the page plays it a beat before the event is read, to the clip's own length (capped), a new
+  one crossfading over the old; the clips from Freesound or a generating model (§4).
+
+## A crossfade at the static bed's joins (owner, 2026-10-02) — decided not to implement
+
+- **The statement:** at a join between two clips, start the next 1-2 s before the current one ends, the two
+  overlapping (two `<audio>` elements taking turns), instead of the next clip simply fading in over 0.3 s.
+- **Where flagged:** [discussion 2026-10-01] sound-effects §8.8 (refinement 2), §8.18 (left out of the second build),
+  §8.20.
+- **The owner's decision (verbatim), 2026-10-02:** "I do not see any value in implementing crossfade for our app. You
+  can close any follow-up that may exist about crossfade with a note that we decided not to implement." No follow-up
+  existed; this entry records the decision. **Closed: not to be implemented.** Kept as a ledger of ideas.
+
+## The static bed's three short timings stay constants (owner, 2026-10-02) — decided
+
+- **The statement:** three timings in the fork's `static/show/bed.js` are constants (`BED`), not settings: the silence
+  when the listener presses to talk (0.15 s), a clip's fade-in (0.3 s), the M key's fade (0.3 s) — against the house
+  rule that every number is a setting.
+- **Where flagged:** [discussion 2026-10-01] sound-effects §8.15, §8.20.
+- **The owner's decision, 2026-10-02:** they stay constants ("Correct", on "Not built by choice"). Closed.
 
 ## Keep every synthesized chunk in debug mode, and send a seed with every voice request (owner, 2026-09-30) — built (the fork's `799d005`, alfre2v/TalkWithZombies#8)
 
