@@ -2809,6 +2809,113 @@ installed client's untracked `Sounds/bed/` copies and the `Sounds/` line of its
 `.git/info/exclude`; then the tag, the installer pinned to it,
 `make client-mac`, and a check that the client holds the 8 tracked clips.
 
+### §8.23 The release, `tz-0.6`; and a correction: the "trap" was not one (2026-10-02)
+
+Task A committed and pushed (the fork's `c898d21`, this repository's
+`8e63dab`), after the owner's check: "Please check that the content of
+bed.yaml is identical to what you produced... I may have pressed a key in
+vscode and altered the file, though I think I undo it, check anyway." —
+`cmp` against the copy saved right after it was generated: identical (2,385
+bytes); 8 clips, all enabled, #14 at −6 ("If check ok: keep -6, commit and
+push both."). Asked "What component perform "5. The consistency test"? the
+script tool, I suppose." — no: a pytest test in the fork
+(`tests/test_show_bed.py`, `TestShippedBed`), run with the fork's suite on the
+committed files; the tool's licence guard is the other layer, at preparation
+time.
+
+**The owner:** "Both PRs merged, go ahead with the release. We are going to do
+this together: Delete the installed client's untracked Sounds/bed/ copies and
+the Sounds/ line in its .git/info/exclude. Without this, make client-mac would
+refuse the new release."
+
+#### Two ignore lists — and the owner's questions
+
+**The owner (verbatim):** "Why do we have to edit
+`~/TalkWithZombies-client/.git/info/exclude`? I thought we created a gitignore
+file." Git has two ignore lists:
+
+| | `.gitignore` | `.git/info/exclude` |
+|---|---|---|
+| What it is | a file **in the project**, tracked and committed | a file **inside the clone's private `.git` folder**, never tracked, never committed |
+| Who sees it | everyone who clones the repository | that one clone, on that one machine |
+| Where we used it | the fork's dev checkout: `Sounds/` added (`c5288bf`), removed by Task A (`c898d21`) | **the installed client only**: one line, `Sounds/` (§8.14) |
+
+The client got the second because its `.gitignore` is tracked (a checkout of
+`tz-0.5`): edited there, the clone would be "locally modified", and the
+installer's git step (`force: false`) refuses a locally modified clone.
+
+**The owner (verbatim):** "What does this mean "the installed client only:
+Sounds/ on line 7" ... Show me the lines of code where we make use of this." …
+"Well, now we do not need that way. Do we still depend in any way of that way
+to ignore files or is there any code that uses or sets it?" — **no code uses or
+sets it.** "Line 7" is the seventh line of that plain text file (lines 1-6 are
+git's template comments). It was written once, by hand, by the agent, on the
+night of 2026-10-01 (`printf 'Sounds/\n' >> ~/TalkWithZombies-client/.git/info/exclude`);
+only git itself reads it, at every `git status`, `git add` or `git checkout`
+in that clone. A search of both repositories: the fork mentions
+`info/exclude` nowhere; this repository only in this discussion (§8.14,
+§8.21, §8.22) — the installer and the Makefile never.
+
+#### The correction: git overwrites ignored files
+
+§8.21 and §8.22 said that without the cleanup "`git checkout` would refuse
+to overwrite them, so `make client-mac` would fail". **True only for files
+that are untracked and not ignored.** Tested in a scratch repository (git
+2.55.0): a release tag that tracks `Sounds/bed/clip.mp3`, and a local copy at
+that path:
+
+| The local copy | `git checkout` of the release |
+|---|---|
+| untracked, **not ignored** | **refused:** "The following untracked working tree files would be overwritten by checkout: Sounds/bed/clip.mp3 — Please move or remove them before you switch branches." |
+| the same, **ignored** through `.git/info/exclude` | **switched silently**, the copy overwritten by the release's file |
+
+Git treats ignored files as expendable. The installed client was the second
+case (its line 7), so `make client-mac` would have succeeded without the
+cleanup. **The cleanup was still worth doing, as tidiness:** without it the 9
+rejected clips (13 MB) would stay in the client's `Sounds/bed/` for good,
+unused (the new `bed.json` does not list them), and line 7 would keep hiding
+them — and any future stray file under `Sounds/` — from `git status`: a
+silent rule nobody would remember.
+
+#### Done, together
+
+1. **The client cleaned, by the owner** (verbatim: "I removed the Sounds
+   folder and removed the line from `~/TalkWithZombies-client/.git/info/exclude`"),
+   with the agent's check, as the owner ran it:
+
+   ```
+   % ls ~/TalkWithZombies-client/Sounds; tail -2 ~/TalkWithZombies-client/.git/info/exclude; git -C ~/TalkWithZombies-client status --short
+   ls: /Users/alfredo/TalkWithZombies-client/Sounds: No such file or directory
+   # *.[oa]
+   # *~
+   ?? .DS_Store
+   ```
+
+   (Before it, the agent's inspection: the client at `tz-0.5`, `Sounds/bed/`
+   holding the 17 clips and the old `bed.json`, 27 MB — every file also in
+   the pool; the `.DS_Store` is Finder's, left alone.)
+2. **The merges checked:** the fork's `master` at `5347ead` (#10), its
+   content identical to the tested branch head `c898d21`; this
+   repository's `main` at `429d8c2` (#22), identical to its branch.
+3. **The fork's tests on `master`:** pytest 1284 passed; Node 42 / 17 / 91
+   / 8 / 29; 10 files tracked under `Sounds/` (the 8 clips, `bed.json`,
+   `CREDITS.md`).
+4. **The tag:** **`tz-0.6`**, annotated (`56e56cb`), on `5347ead`, pushed —
+   "TalkWithZombies 0.6: the static bed — radio static played quietly under
+   the show by the looks, from eight Freesound clips chosen by ear and
+   shipped with the app (CC0 and CC BY, credited in Sounds/bed/CREDITS.md),
+   shuffled, lower under a round, silent while the listener holds to talk,
+   with silences on a timer, a slow fading and an AM filter (the F key); the
+   M key mutes it; the story's bed.yaml chooses the clips; a settings
+   runbook with recipes and the keyboard shortcuts".
+5. **The installer pinned** (`client_version: "tz-0.6"`), on a new branch
+   `alfre2v/installer-tz-0.6`, with the README's and the spec's tag, the
+   static bed described in the spec (§6.10, §6.11, §9, §11), the TODO's
+   "Now", and this section.
+6. **Next, the owner's:** `make client-mac`, then the agent checks the
+   client (`git describe` at `tz-0.6`, the 8 clips tracked, nothing
+   untracked but `.DS_Store`, a second run `changed=0`).
+
 ## §7. Sources
 
 - [Stable Audio 3 — the paper (arXiv 2605.17991)](https://arxiv.org/html/2605.17991)

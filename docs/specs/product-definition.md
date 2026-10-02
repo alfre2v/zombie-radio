@@ -1,7 +1,7 @@
 # Zombie-Radio — Product specification
 
 **Status:** living. This document describes the product as it is
-built — the fork TalkWithZombies at tag `tz-0.5` (`9b3a329`)
+built — the fork TalkWithZombies at tag `tz-0.6` (`5347ead`)
 and this repository's deployment — in the order someone
 would build it again. It is rewritten in place when the product
 changes; it carries no history. Why each choice was made, and when,
@@ -461,6 +461,22 @@ the cards, a link to upstream's chat UI at `/talkwithme`. The root
   and publishes the level, smoothed, each frame, as CSS variables
   (`--level`, `--level-voice`, `--level-mic`) and to the look's
   script.
+- **The static bed** — `static/show/bed.js`, loaded in every look (and
+  on the plain page with `&bed=on`): radio static played quietly under
+  the show, from the clips that ship with the app in `Sounds/bed/` —
+  eight Freesound clips chosen by ear, CC0 and CC BY only, credited in
+  `Sounds/bed/CREDITS.md`, each with the gain that evens it out
+  (`bed.json`, written by this repository's
+  `tools/sounds/prepare_bed.py`, which refuses any other licence); the
+  story's `bed.yaml` switches each clip on or off and changes its level
+  by ear. Shuffled, never the same clip across a reshuffle; each clip
+  streamed through an `<audio>` element into the page's audio, mixed to
+  mono. It follows the page's state from outside, as the gauge does:
+  higher while the page waits, lower under a round, silent while the
+  listener holds to talk, paused on Stop; silences on a timer give the
+  ear rest; a slow fading (QSB) and an optional AM filter (a radio
+  speaker's band) make it a receiver's. Keys: M mutes it, F flips the
+  filter. The gauge never hears it.
 - **The two looks:** `old-radio`, a photograph of a 1950 Philips
   Sirius BD 400 A (Wikimedia Commons, CC BY-SA 3.0, credited on the
   page) with the transcript on the speaker cloth, the magic eye as
@@ -481,16 +497,18 @@ Every number is a setting, under `show:` in the fork's
 model prefix, the token budgets (the reply, the context budget, the
 instruction room), the trim's trigger, target and kept rounds, the seed,
 the emotion tags, debug,
-the mood voices, the voice's seed, the event and tone pacing, the free rounds' line budgets and weights,
+the mood voices, the voice's seed, the static bed (on or off, its two volumes, the dip and the rise, the
+silences, the AM filter's band, the fading), the event and tone pacing, the free rounds' line budgets and weights,
 the overtone's hold, the contact's length and line budgets, the
 silences before a Switch-off, the beats' lines, the orientation and
 recollection cadences, the restatement's reach, fixed lines, the
 call's window, the listening window, the press cap and the Whisper
 filter. Without a `show:` section every setting takes its default,
-and the defaults are the demo's configuration. How to run the show:
-the fork's `docs/runbooks/show-page.md` (the page, and "The show's
-settings: the demo, or a test show") and `docs/runbooks/show-driver.md` (a scripted listener,
-no browser).
+and the defaults are the demo's configuration. What to change to get
+something done, recipe by recipe, with the address switches and the
+keyboard shortcuts: the fork's `docs/runbooks/show-settings.md`. How
+to run the show: `docs/runbooks/show-page.md` (the page) and
+`docs/runbooks/show-driver.md` (a scripted listener, no browser).
 
 ## §7. Deployment and operations
 
@@ -616,8 +634,8 @@ What the first release still needs, or has not settled:
 - **Who a returning caller is** — code telling the model which
   earlier caller a voice is, by name.
 - **The canned episode** and the demo runbook.
-- **Polish** — dead-air static while a round is generated, the next
-  round prefetched, episodes.
+- **Polish** — the next round prefetched, episodes. (The dead-air
+  static is done: the static bed rises while the page waits.)
 - **Operations** — a tunnel that reconnects by itself, and a fallback
   for the venue's network.
 
@@ -668,7 +686,9 @@ What the first release still needs, or has not settled:
   narration-quality-challenges and prompt-sweep; [discussion 2026-09-29]
   voice-datasets-with-emotion (the cast's voices, the mood voices);
   [discussion 2026-10-01] the-app-from-the-outside (how the app counts
-  the script's tokens and trims; every endpoint, for testing).
+  the script's tokens and trims; every endpoint, for testing);
+  [discussion 2026-10-01] sound-effects (the research, then the static
+  bed: its design, its build, the clips chosen by ear).
 - **Deployment:** [discussion 2026-09-17] ansible-deployment-shape;
   [discussion 2026-09-13] cloud-gpu-provider-survey;
   `deploy/ansible/README.md`.
