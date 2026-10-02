@@ -2265,6 +2265,268 @@ Resume, and **Resume continues the same run, with the list it opened with**.
 So: change the line, **reload the show page, press Start**. Corrected in the
 fork's `bed.yaml` header and runbook.
 
+### §8.18 The second build: silences, the AM filter, the fading (2026-10-02, night)
+
+**The owner (verbatim):** "Let's focus now on completing the second part of
+the build, because, as you said: the silences on a timer give the ear
+regular breaks, and the AM filter takes the hiss's sharp high end off. Both
+directly target "annoying"." And, mid-build: "Oh, if you can commit the state
+of the code before you start the part 2." — part 2's files were already in
+the working tree; they were set aside in the scratchpad, the committed versions
+put back, the state before part 2 committed (the fork's `af0b9c4`: the volume
+comment, the `bed.yaml` header, the runbook; this repository's `0584a34`:
+§8.17), and part 2 restored, `cmp`-identical.
+
+**The shape proposed, then three questions, the owner's choices:**
+
+| Question | Chosen |
+|---|---|
+| "How should the AM filter be switched, for your A/B listening?" | **Setting + live F key** (the recommendation): `bed_filter` decides how a run starts (off by default until the owner picks); the F key flips it live on the page; with debug on, the console says so |
+| "Which parts of the second build now?" | **Silences, filter, fading** (the recommendation); the crossfade (two audio elements taking turns) later, if the joins bother the ear |
+| "Are the starting numbers right (all settings, tunable by ear later)?" | **Yes, as proposed** (the recommendation): silences every 30-120 s, lasting 3-15 s, 1 s fades; the filter 300-3,000 Hz; the fading ±3 dB every 2-6 s |
+
+#### What was built (the fork, uncommitted)
+
+**The chain** in `static/show/bed.js`, each stage a Web Audio node:
+
+```
+the clip → its gain → the bed's level (mono) → [AM filter: highpass 300 Hz → lowpass 3,000 Hz] → the fading
+         → the silence gate → the mute → the speakers
+```
+
+- **The silences** (`bed_silences` on; `bed_silence_every_s` [30, 120],
+  `bed_silence_s` [3, 15], `bed_silence_fade_s` 1.0): a timer runs while the
+  bed plays; when it fires, the gate fades to 0 over the fade, then the clip
+  pauses (`audio.pause()`); after the silence's length, `audio.play()` resumes
+  it where it stopped and the gate fades back to 1; the next silence is set. A
+  state change in a silence moves the level and plays nothing; a clip that ends
+  in a silence's fade loads the next, which waits for the silence's end; Stop
+  cancels the silence (the gate back to 1 at once, so Resume comes back with
+  sound and a new silence set). Console, with debug: `Show: bed silence: 9.0 s`.
+- **The AM filter** (`bed_filter` off; `bed_filter_low_hz` 300,
+  `bed_filter_high_hz` 3000): two `BiquadFilterNode`s, a highpass and a
+  lowpass, each with Q = √½ (flat, no bump at the edge). Off, the bed's level
+  connects straight to the fading; on, through the two filters — the switch
+  re-routes the connection (`bedRoute()`). **The F key** flips it live (not
+  before the bed plays); console: `Show: bed filter on, 300-3000 Hz (F)` /
+  `filter off (F)`.
+- **The fading** (`bed_fading_db` 3, 0 turns it off; `bed_fading_every_s`
+  [2, 6]): each step draws a length in the range and a level within ±3 dB, and
+  glides the fading's gain to it over that length; Stop ends it.
+- **The settings** (`app/config.py`, with a comment explaining them; a check
+  that each range is two seconds above 0 and in order, and the filter's band in
+  order) reach the page in the start reply's `bed` (every `bed_*` setting,
+  without its prefix: `app/models.py` `ShowBed`, `app/routers/show.py`).
+- **The dice** (`bed.random`, `Math.random` on the page) are one property, so
+  the tests load their own.
+
+#### Checked
+
+- pytest **1280 passed** (1252 before: 28 new — the ranges 18 (three
+  settings × six bad pairs), a one-value range, the filter's band 2, the
+  bounds 7); the defaults and the start reply's fields extended.
+- Node **`test_show_bed.js` 29** (19 before: 10 new — the two dice functions;
+  a silence from fade to resume; a clip ending in a silence; Stop in a
+  silence; silences off; the filter off and the F key; the filter on from the
+  settings, at the settings' band; F before the bed plays; the fading's glide
+  and its next step, ended by Stop; the fading off), with **fake timers**
+  (`setTimeout` queued, fired by the test) and the dice at 0.5 (a silence after
+  75 s, 9 s long; a glide of 4 s). The others unchanged: 42 / 17 / 91 / 8.
+- **The tests catch a wrong build:** two mutations of `bed.js` (backed up,
+  restored, `cmp`-identical) — the silence never pausing the clip, and the F
+  key flipping nothing — each failed a test.
+- No new code line over 120 characters, no en dash.
+- **A real browser** — the owner: "yes, restart the dev server". Restarted
+  (debug still on); the start reply carried the 17 clips and every new
+  setting. In the app's built-in Chromium (`?design=old-radio`), **without
+  Start** — no round asks the model, so the owner's show keeps the model's one
+  slot: a click on the speaker cloth (the page may then play), the page's
+  audio unlocked, **the bed muted with M first** (nothing reached the
+  speakers), a run opened by `/api/show/start`, **its silences shortened for
+  the check only** (every 3 s, 2 s long), the state set to `thinking`, and the
+  bed sampled every 0.5 s:
+
+  | Time | Measured |
+  |---|---|
+  | 0-2.5 s | playing; the clip advancing 0.5 s per 0.5 s; the gate at 1 |
+  | 3.0 s | the silence begins: `silent` true; the gate 0.989 |
+  | 3.5 s | the gate 0.488 — the 1 s fade half way |
+  | 4.0 s | the gate 0; **the clip paused at 4.0 s** |
+  | 4.0-5.5 s | paused; the clip held at 4.0 s |
+  | 6.0 s | **playing again from 4.0 s**; the gate 0.016, rising |
+  | 6.5-7.0 s | the gate 0.517, then 1; the clip at 4.5, 5.0 s |
+  | 9.0 s | the next silence beginning, 3 s after the last one ended |
+
+  The fading glided smoothly all along (1.000 → 0.802 over 9 s, within ±3 dB).
+  **The F key** (a real `keydown`): the filter on — a highpass at 300 Hz with
+  Q 0.7071 and a lowpass at 3,000 Hz — the clip playing on through it, then
+  off. Stop: the clip paused, no silence pending, the gate back at 1. **The
+  console, as it printed** (the M key pressed before the run opened, so its
+  line is not there):
+
+  ```
+  Show: bed shuffled: a new pass of 17 clips
+  Show: bed clip 1 of 17: 730109-shortwave-radio-static-with-indistinguishable-foreign-chatte.mp3 (gain +9.4 dB)
+  Show: bed silence: 2.0 s
+  Show: bed silence: 2.0 s
+  Show: bed silence: 2.0 s
+  Show: bed filter on, 300-3000 Hz (F)
+  Show: bed filter off (F)
+  ```
+
+  This real capture replaced the runbook's illustration of the console lines.
+  The check left two short runs in the dev checkout's `runs/` (gitignored):
+  `2026-10-02T01-08-33` (the start reply's check) and `01-08-54` (the
+  browser's), neither with a round.
+
+### §8.19 Does the bed change the voices' volume? Checked: no — the mood clips do (2026-10-02, night)
+
+**The owner (verbatim):** "I want you to inspect the changes that you made. Is
+there any way that you may have altered by mistake the volume of the TTS
+voices. I notice wide volume changes in some of the voices, especially the
+females... Could be just another manifestation of the voice instability of the
+TTS engine, but we need to be sure it's not this volume control feature
+spilling over to the TTS voices."
+
+#### The code: the voice's path is untouched
+
+- **Nothing on the voice's path changed since `tz-0.5`** (`git diff --stat
+  tz-0.5` on the committed and the working tree): `static/show/player.js`
+  (which decodes and plays each chunk), `show.js`, `gauge.js`, `mic.js`,
+  `app/routers/tts.py`, `app/services/tts_client.py`, `app/show/debug.py`,
+  the story's `overtones.yaml` — no line. The branch changed only the bed's
+  files, the settings, the start reply, the story's loader (`bed.yaml`), the
+  templates (which load `bed.js`), tests and docs.
+- **What `bed.js` touches outside its own state:** it reads `voice.ctx` (the
+  page's one AudioContext) to plug its chain into it, and connects its last
+  node, the mute, to the speakers (`ctx.destination`); it wraps `setState` and
+  `setReceiver` (calling them unchanged first). It never touches
+  `createBufferSource`, `playClip` or any of the voice's nodes. The voice's
+  chunks still go `buffer source → ctx.destination` (`playClip`), at their
+  own level; at the speakers the browser adds the two sounds — no gain of the
+  bed sits on the voice's path.
+
+#### The measurement: the voice as the engine returned it
+
+With `debug` on, the voice route keeps every chunk **as the TTS engine returned
+it**, before the page decodes or plays it (`runs/<run-id>/debug/audio/`,
+mono 24 kHz 16-bit) — so a difference in those files cannot come from the
+page. Each chunk's speech level, in dBFS: the RMS of its 20 ms frames above
+−45 dBFS (so the pauses do not lower it), per speaker
+(`<scratchpad>/chunk_levels.py`):
+
+| Speaker | Before the bed — 2026-09-30: `18-52-59`, `19-08-07`, `19-20-04` (chunks · mean · stdev · min..max · range) | With the bed — 2026-10-02: `00-29-11`, `01-10-49` (the owner's listening) |
+|---|---|---|
+| Daniel | 19 · −21.0 · 2.7 · −27.7..−15.5 · 12.2 dB | 55 · −21.2 · 3.1 · −31.7..−15.6 · 16.1 dB |
+| Moira | 18 · −25.6 · 2.4 · −30.5..−21.1 · 9.4 dB | 44 · −26.0 · 3.8 · −35.4..−20.3 · 15.1 dB |
+| Ralph | 13 · −21.2 · 2.5 · −25.4..−15.6 · 9.8 dB | 49 · −20.7 · 3.2 · −28.0..−12.8 · 15.2 dB |
+| Samantha | 18 · −24.5 · 2.6 · −30.8..−20.3 · 10.5 dB | 47 · −24.0 · 2.2 · −30.7..−19.8 · 10.9 dB |
+
+The means agree within 0.5 dB; the engine's chunks varied as widely before the
+bed existed (ranges of 9-12 dB); the wider ranges tonight come with three times
+the chunks (more chances for an extreme). **The women are about 4 dB quieter on
+average** (Moira −26, Samantha −24.5, the men −21), before and after alike.
+
+**Where the swings come from — the mood clips** (all five runs, per speaker
+and reference clip, `<scratchpad>/chunk_levels_by_clip.py`; the average, the
+number of chunks):
+
+| Speaker | Quietest moods | Loudest moods | Spread of the averages |
+|---|---|---|---|
+| Moira | `ref-fear` −32.7 (5), `ref-distress` −28.5 (5) | `ref-sadness` −23.7 (4), `ref` −23.6 (5) | **9.1 dB** |
+| Samantha | `ref-amusement` −29.7 (2), `ref-fear` −27.6 (2) | `ref-sadness` −22.7 (8), `ref-confusion` −20.2 (4) | **9.5 dB** |
+| Daniel | `ref-amusement` −24.0 (2), `ref-fear` −23.9 (3) | `ref-pain` −19.0 (9), `ref-confusion` −18.7 (11) | 5.3 dB |
+| Ralph | `ref-realization` −26.3 (2), `ref-amazement` −25.4 (1) | `ref-sadness` −19.2 (3), `ref-confusion` −16.0 (10) | 10.3 dB |
+
+**The cause:** the mood voices (`tz-0.4`). Every reference clip was cast at the
+same level (`cast_voices.py`: RMS −20 dBFS), but the engine clones the
+**delivery** of a clip, not its level: Moira's *fear* recording is near a
+whisper, and the lines said with it come out about 9 dB below her *sadness*.
+On top, chunks said with the same clip still vary by 5-10 dB (the engine's
+instability, known since 2026-09-30). The bed adds and removes nothing; it can
+only change how the voice **seems** next to it (the static dipping under a
+line, its ±3 dB fading) — a matter of perception, not of the voice's level.
+
+**A remedy, if wanted (not built; the owner's call):** level each chunk to a
+common speech level before it plays — the page has every chunk decoded already
+(`decodeAudioData`), so a gain per chunk from its RMS is a few lines in
+`player.js`; or the voice route could do it on the server. It would flatten
+the whispered *fear* too: a partial levelling (halfway to the target) keeps
+some of the delivery. **The owner (verbatim):** "Humm, this is an interesting
+feature. but I think it belongs in a follow up." — recorded in
+`docs/follow-ups.md`, "Even out each voice chunk to a common speech level",
+with the sketch (the samples scaled in place, not a gain node on the voice's
+path, which would leave the gauge still), **not a priority, undecided whether
+to build it** (the owner: "make it as not a priority and undecided if we will
+execute on it").
+
+### §8.20 The verdict after a longer listen; what is left; narrower filters to try (2026-10-02, night)
+
+**The owner (verbatim):** "I listened to the show a bit longer. Very good
+impressions. I think technically we have met and exceeded our goals." And:
+
+> * I think the silence works well in reducing the fatigue of listening to
+>   static.
+> * The filter I am not sure if it helps. Maybe we could do a test with a
+>   narrower band of frequencies to see if:
+>
+> 1. The bed noises cause less fatigue
+> 2. The bed noises become more old radio poor reception style.
+>
+> I do not want to execute the narrower filter test right now because it is
+> really late here and I need to go to bed, but I want you to give me a few
+> recommendations for ranges of frequencies to try.
+
+#### What is left of what we set out to do (§8.7, §8.10-§8.13)
+
+| Item | Where it was set | State |
+|---|---|---|
+| The crossfade at the joins (1.5 s, two audio elements taking turns) | §8.8 refinement 2; §8.18 (the owner chose to leave it out) | **not built** — only if the joins bother the ear |
+| The filter's default (on or off) and its band | §8.12; §8.18 | **open** — the narrower-band test below |
+| The owner's picks of the clips (5-15 of the 17; the harshest switched off) | §8.7 step 2; §8.17 | **open** — the story's `bed.yaml`, `enabled: false` ("will do eventually") |
+| Three timings as settings or constants (the silence on the press 0.15 s, a clip's fade-in 0.3 s, the mute's fade 0.3 s) | §8.15 | **open**, the owner's call |
+| The credits of the CC BY clips (and the CC BY-NC and Sampling+ ones) — on a slide, or a credits note | §8.12, 3A | **open** — for the talk (Task 9); each credit line is in `bed.json` |
+| A release: merge #10 and #22, tag, pin the installer, `make client-mac` | §8.13 step 3 | **after review** — the installed client already has `Sounds/bed/` prepared |
+| Lists per kind of round (the breakdown, the repair, the contact) | §8.10, question 5 | later — the data allows it |
+| Event sounds as a layer of their own | §8.11 | after the demo |
+| Even out each voice chunk's level | §8.19; `docs/follow-ups.md` | not a priority, undecided |
+
+#### Narrower bands to try (the agent's recommendations)
+
+Why narrower could help on both counts: **fatigue** — the ear is most sensitive
+around 2-5 kHz (the ear canal's resonance, near 3 kHz), and the hiss's sharpest
+energy sits from there up; an upper edge at 2-2.7 kHz takes out most of what
+the ear finds harsh. **The old-radio sound** — a shortwave receiver passes a
+narrow band: a ham's single-sideband (SSB) voice filter is about 2.4 kHz wide
+(roughly 300-2,700 Hz), a communications receiver set to "narrow" less, and a
+Morse (CW) filter a few hundred hertz around a tone. The less band, the more
+"poor reception". The current band, 300-3,000 Hz, is the telephone's — clean
+enough that it may not sound like a radio at all, which would fit the owner's
+"not sure if it helps".
+
+| Try | `bed_filter_low_hz` | `bed_filter_high_hz` | Width | What to expect |
+|---|---|---|---|---|
+| A — the shortwave voice band | 300 | 2,700 | 2.4 kHz | a ham's SSB filter: the classic shortwave sound; the harsh top just gone |
+| **B — a narrow receiver** (the agent's first pick) | **400** | **2,000** | 1.6 kHz | tinny and boxy, clearly "radio"; much less hiss |
+| C — poor reception | 500 | 1,500 | 1 kHz | a cheap, distant receiver; the static becomes a mid-range rush |
+| D — the extreme, to know the limit | 600 | 1,000 | 0.4 kHz | close to a Morse filter: almost a tone; only to hear where it breaks |
+
+**How to run it:** each pair under `show:` in `settings.yaml` (with
+`bed_filter: true`, or the F key to A/B against no filter), then a restart of
+the app; listen a few minutes each, B first. Two cautions: a narrower band also
+**sounds quieter** (less energy passes), so a fair comparison may want
+`bed_volume_*` raised a little with it; and the edges are gentle (one filter
+per edge, 12 dB per octave) — if B and C still sound too "full", a steeper
+edge (two filters per edge) is a small change in `bed.js`.
+
+#### Wrapped up for the night
+
+The owner: "Let's wrap up for the night. Commit and push. Make sure the PRs
+are in order to be reviewed." The dev server stopped; its `settings.yaml`
+restored (`cmp`-identical to the backup: `show: seed: 42`). Part 2, §8.17-§8.20
+and the follow-up committed and pushed; both PRs' descriptions brought up to
+date.
+
 ## §7. Sources
 
 - [Stable Audio 3 — the paper (arXiv 2605.17991)](https://arxiv.org/html/2605.17991)

@@ -1736,6 +1736,65 @@ reader's memory):
   tools/voices/cast_voices.py --all-emotions --only <Name>`; the runbook
   `docs/runbooks/cast-voices.md`.
 
+## Even out each voice chunk to a common speech level (owner, 2026-10-02) — not a priority; undecided whether to build it
+
+- **The statement:** the voices' level swings widely from line to line,
+  the women's most — the owner heard it while listening to the static bed
+  (verbatim): "I notice wide volume changes in some of the voices,
+  especially the females... Could be just another manifestation of the
+  voice instability of the TTS engine, but we need to be sure it's not this
+  volume control feature spilling over to the TTS voices." **Checked: not
+  the bed** — nothing on the voice's path changed, and the chunks kept in
+  debug mode (as the engine returned them, before the page) vary as widely
+  before the bed existed as with it. **The cause:** the mood voices
+  (`tz-0.4`). Every reference clip was cast at the same level (RMS
+  −20 dBFS), but the engine clones a clip's **delivery**, not its level —
+  Moira's *fear* recording is near a whisper. The average speech level by
+  mood clip, over five debug runs (2026-09-30 and 2026-10-02, 267 chunks):
+  Moira from −32.7 dBFS (*fear*) to −23.6 (`ref`), 9.1 dB apart; Samantha
+  from −29.7 (*amusement*) to −20.2 (*confusion*), 9.5 dB; Ralph 10.3 dB;
+  Daniel 5.3 dB. On top, chunks said with the same clip vary by 5-10 dB (the
+  engine's instability; with `voice_seed` off it picks its own seed for
+  each chunk — 110 different seeds over 122 chunks in one run), and the
+  women sit about 4 dB below the men on average (−26 and −24.5 against
+  −21).
+- **Where flagged:** [discussion 2026-10-01] sound-effects §8.19 (the
+  owner's question, the code check, both tables); the measuring scripts
+  `chunk_levels.py` and `chunk_levels_by_clip.py` were scratch files of
+  that session, their method written there.
+- **The owner's ruling (verbatim):** "Humm, this is an interesting
+  feature. but I think it belongs in a follow up." And: "make it as not a
+  priority and undecided if we will execute on it." — **not a priority;
+  whether to build it at all is undecided.**
+- **Trigger:** the owner's decision — for example a recording (the canned
+  episode, Task 7) whose quiet lines get lost, or the venue's speakers
+  making the swings worse.
+- **The fix shape (the agent's sketch, 2026-10-02):**
+  1. **Measure each chunk where it is already decoded:** in the fork's
+     `static/show/player.js`, right after `decodeAudioData` turns the
+     engine's WAV into samples (`synthesize()`), its speech level — the
+     RMS of its 20 ms frames above −45 dBFS, so the pauses do not count
+     (the method of §8.19).
+  2. **A gain:** (target − level) × strength. The target a common speech
+     level (e.g. −22 dBFS); strength 1 evens out fully, 0.5 halfway — so a
+     whispered *fear* stays somewhat quieter than a shout. Capped (e.g.
+     ±12 dB), and never pushing the chunk's peak past −1 dBFS, so it cannot
+     clip.
+  3. **Applied to the samples themselves** (each sample of the decoded
+     buffer × the gain), **not with a gain node in the audio chain** — the
+     looks' gauge listens only to sounds wired straight to the speakers
+     (`gauge.js` wraps `createBufferSource`'s connect to `ctx.destination`);
+     a gain node on the voice's path would leave the magic eye and the
+     meters still. Scaling the samples changes nothing in the wiring.
+  4. **Settings,** like everything else (on or off, the target, the
+     strength, the cap), sent in the start reply; with debug on, the
+     console says each chunk's level and the gain applied. The chunks kept
+     in debug mode stay as the engine returned them — the evidence.
+  5. **Tested** like the bed: a Node test with a fake decoded chunk — a
+     quiet one raised by the right amount, a loud one lowered, nothing
+     clipped.
+  A side effect: everyone to one target also closes the women's ~4 dB gap.
+
 ## Keep every synthesized chunk in debug mode, and send a seed with every voice request (owner, 2026-09-30) — built (the fork's `799d005`, alfre2v/TalkWithZombies#8)
 
 - **The gap:** the voice server's audio for each chunk goes to the page,

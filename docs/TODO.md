@@ -76,6 +76,17 @@ it is detail.*
   parked for after the demo (roadmap); [discussion 2026-10-01]
   the-app-from-the-outside — how the app counts its tokens and trims,
   and every endpoint to test it without the page.
+- **Sound effects, narrowed to the static bed, 2026-10-01 to 10-02:**
+  radio static from 17 Freesound clips the owner found, played quietly
+  under the show by the looks — shuffled; louder between rounds, lower
+  under a round, silent while the listener holds to talk; silences on a
+  timer, a slow fading, an AM filter (the F key flips it); the M key
+  mutes it; the story's `bed.yaml` switches each clip on or off. Built in
+  alfre2v/TalkWithZombies#10 with this repository's tools (#22: the
+  Freesound fetch, `tools/sounds/prepare_bed.py`), heard by the owner:
+  "I think technically we have met and exceeded our goals." **Open:** the
+  owner's narrower-filter test, the clips' picks, the credits for the
+  talk, then a release ([discussion 2026-10-01] sound-effects §8.20).
 - **Next** — the agent's recommended order (2026-09-30), not yet ruled
   by the owner beyond its first pick (the 32k work, done): goal 4, **the
   3090** (owner action queue, item 3) → **names-only A** (the follow-up
