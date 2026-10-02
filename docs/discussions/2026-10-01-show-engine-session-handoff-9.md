@@ -77,7 +77,9 @@ new this session, `minor-doc-edits-ride-next-branch.md`, `discussions-can-become
    `for u in localhost:8080/health localhost:8001/capabilities localhost:8002/docs; do printf '%s ' "$u"; curl -s -m 3 -o /dev/null -w '%{http_code}\n' "$u"; done`
    — the tunnel dropped twice on 2026-10-01 (`000`); the agent stopped and told the owner each time.
 5. **No box address in any markdown or commit, ever.** `deploy/ansible/inventories/cloud/hosts.yml` is `NEVER_COMMIT`
-   and **wired (modified) now** — never stage it; stage by explicit path. **IP scan on the STAGED diff only:**
+   and was **unwired by the owner before the compaction** (2026-10-01, ~19:50: "I unwired the hosts.yml to not
+   conflict with the delicate compaction process") — clean now; whenever it is wired again (`make ans-set`), never
+   stage it; stage by explicit path. **IP scan on the STAGED diff only:**
    `git diff --cached | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}'` (`127.0.0.1` is fine).
 6. Nothing changes on the box outside the playbook (so the SFX models, if ever run on the box, need an opt-in role).
 7. **Scratch files** only in the session's scratchpad:
@@ -112,9 +114,10 @@ run**.
 ## §2. The exact state (2026-10-01, ~19:45 CDT)
 
 - **zombie-radio:** `main` at `7ad7ce7` (#21 merged). Branch **`alfre2v/sound-effects`** (cut from `main`):
-  **being committed with this handoff** (the owner's order: "go ahead and commit all changes"; review at the commit's
-  permission) — `docs/TODO.md` (one line: the `tz-0.5` re-proof recorded), `docs/discussions/2026-10-01-sound-effects.md`
-  (§1-§8.8), this handoff. **Not pushed; no PR.** `hosts.yml` wired, never staged.
+  committed on the owner's order ("go ahead and commit all changes") — `docs/TODO.md` (one line: the `tz-0.5` re-proof recorded), `docs/discussions/2026-10-01-sound-effects.md`
+  (§1-§8.8), this handoff — committed as `0d2e6fa` (and this correction). **Not pushed; no PR.** `hosts.yml` **clean**:
+  unwired by the owner before the compaction ("I want the repo to be in a good state after you start to recompose
+  your memory").
 - **The fork:** `master` at `9b3a329` = annotated tag **`tz-0.5`** (pushed). Checkout on `master`, clean. Its dev
   `settings.yaml` (gitignored) restored to the original — `show: seed: 42` (backup
   `<scratchpad>/settings.yaml.before-trim`, `cmp`-identical). **The dev server (port 8010) is stopped.**
