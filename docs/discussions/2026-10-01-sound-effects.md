@@ -1700,6 +1700,11 @@ of §8.13's plan, in this repository.
 
 #### The two files
 
+*(Changed in §8.16: which clips play, and a change of level by ear, moved to the
+story — the fork's `stories/lab-outbreak/bed.yaml`; this list lost its
+`gain_db`, and `bed.json` its `gain_from`, its `gain_db` renamed
+`measured_gain_db`. Below, the state of step 1.)*
+
 - **`tools/sounds/bed.yaml` — the list, the only file the owner edits:** the
   pool (`../zombie-radio-datasets/sounds/freesound`), the app's folder
   (`~/TalkWithZombies-client/Sounds/bed`), the common level (`loudness_dbfs:
@@ -1912,6 +1917,268 @@ uv run python tools/sounds/prepare_bed.py --write --app /Users/alfredo/workspace
 ```
 
 **Next — step 2, the fork** (§8.13): a new branch `alfre2v/static-bed`.
+
+### §8.15 Step 2 built: the static bed in the fork (2026-10-01, night)
+
+**The owner:** "commit, then start step 2" — step 1 committed in this
+repository (`0ac89d5`); step 2 built in the fork, on
+`alfre2v/static-bed` (from `master` at `tz-0.5`). Nothing committed in the
+fork yet.
+
+#### A correction first: the show has no end
+
+§8.13's group 3 offered "fade out over a few seconds when the show ends (the
+switch-off)", and the owner chose it. **Wrong premise, the agent's:** the
+Switch-off only turns the lab's **receiver** off — the director's own words
+(`app/show/director.py`, its docstring): "after enough silences in a row a
+Switch-off turns the receiver off by choice. Both return the show to
+Broadcast". The broadcast goes on; **the show runs until Stop.** So the bed
+rises from silence at Start and Resume and pauses at once on Stop — the
+owner's choice — and there is no end to fade out at.
+
+#### What was built (the fork, uncommitted)
+
+| File | What |
+|---|---|
+| `.gitignore` | `Sounds/`, beside `Personas/` (§8.14: the dev checkout ignores it from then) |
+| `app/config.py` | six settings in `ShowConfig`, plain names (§8.13): `bed` (on by default), `bed_volume_voice` 0.05, `bed_volume_between` 0.15, `bed_dip_s` 0.5, `bed_rise_s` 1.5, `bed_off_in_contact` false — with their comment; and `get_bed_directory()`, `<project root>/Sounds/bed` |
+| `app/show/bed.py` (new) | reads `bed.json`: the clips the disk holds, each `{file, gain}`; a missing or broken manifest, or an entry with an unsafe name, a bad gain or no file, gives fewer clips or none — logged, **never a failed start**; `clip_path()` serves only a file the manifest lists and the folder holds |
+| `app/models.py` | `ShowBedClip`, `ShowBed`; `ShowStartResponse.bed` (`null` when `bed` is off or no clip is there) |
+| `app/routers/show.py` | the start reply carries the bed (the clips and the `bed_*` settings without their prefix); **`GET /api/show/bed/{name}`** serves a clip (a `FileResponse`: range requests answered, as an `<audio>` element asks); `GET /show` passes `?bed=on` to the plain page |
+| `templates/show.html` | `bed.js` only with `?bed=on` — the plain page unchanged otherwise |
+| `templates/show_design.html` | `bed.js` in every look, after `gauge.js`; not with `&mock=1` |
+| `static/show/bed.js` (new) | the bed in the page (below) |
+| `tests/test_show_bed.py` (new), `tests/test_routers_show.py`, `tests/test_show_config.py` | the manifest's reading, the start reply, the clip route, the pages, the settings' defaults and bounds |
+| `tests/test_show_bed.js` (new) | the page's bed in plain Node (below) |
+| `AGENTS.md` | the API table (the start reply's fields; the new route — `tests/test_docs.py` checks it), the show page's files (`bed.js`), the Node tests to run |
+| `docs/runbooks/show-page.md` | a section "The static bed", a row in the settings table, an entry in "When something looks wrong" |
+
+**How the page's bed follows the show** (`static/show/bed.js`): like
+`gauge.js`, it is loaded after the page's own scripts and **wraps two of
+their functions from outside** — `show.js` is not edited. `setState` says what
+the show is doing; `setReceiver` whether the receiver is on. The level for
+each state of the page (`bedLevel()`):
+
+| The page's state | When | The bed |
+|---|---|---|
+| `thinking` | waiting for the next round | `volume_between` (0.15) |
+| `on air` | from the round's first voice clip until the next `thinking` | `volume_voice` (0.05) |
+| `listening` | the window open, waiting for the press | `volume_between` |
+| `recording` | push-to-talk held | **0**, in 0.15 s — the clip keeps playing silently, so letting go resumes it in place |
+| `hearing` | Whisper transcribing | `volume_between` |
+| `stopped`, `error`, `idle` | the show not running | **paused** at once, level 0; the next state rises from silence |
+| any running state, with `off_in_contact` and the receiver on | — | 0 |
+
+A dip takes `dip_s`, a rise `rise_s` (linear ramps on the bed's gain, from
+wherever it is). The clips: `bedShuffle()` — every clip once per pass, the
+first of a new pass never the clip that just ended; a clip that ends gives way
+to the next; a clip that fails to load is skipped; when every clip fails in a
+row, the bed gives up for the page (logged). The graph: `<audio>` element →
+the clip's gain (its `gain` from `bed.json`, faded in over 0.3 s at each new
+clip) → **the bed's gain, one channel** (`channelCount` 1, `explicit`,
+`speakers`: the browser mixes a stereo clip to (left + right) / 2) → **the
+"sounds" gain** (the M key's mute, 0.3 s; the slot of §8.11's future event
+layer) → the speakers. The gauge's tap wraps only `createBufferSource`, so the
+bed never reaches it.
+
+**Three numbers are constants in `bed.js`, not settings** (`BED`: the silence
+on the press 0.15 s, a clip's fade-in 0.3 s, the mute's fade 0.3 s) — like
+`player.js`'s pauses (`VOICE`) and `gauge.js`'s (`GAUGE`). The owner's house
+rule is "every number is a setting"; **the owner's call** whether these three
+become settings too.
+
+**`bed: true` by default** — the agent's choice, to confirm: the defaults are
+the demo's configuration, so once released the installed client plays the bed
+in the looks (its `Sounds/bed/` is prepared); `bed: false` under `show:`
+turns it off.
+
+#### Checked
+
+- **The tests:** pytest **1232 passed** (1210 at `tz-0.5`: 22 new — the
+  manifest's reading 6, the start reply 3, the clip route 4, the plain page
+  1, the settings' bounds 8; extended: the defaults, the designs' and the mock's
+  pages); Node
+  `test_show_page.js` 42, `test_persona_form.js` 17, `test_tts_settings.js`
+  91, `test_show_gauge.js` 8, and **`test_show_bed.js` 16** (the shuffle, the
+  levels, the wiring, the levels following the states, Stop and Resume,
+  `off_in_contact`, the clips' turns and failures, a new run, the M key, the
+  gauge never tapping it, the plain page's scripts untouched).
+- **The tests catch a wrong bed:** two mutations of `bed.js` (in a copy
+  backed up in the scratchpad, restored and `cmp`-identical) — the seam guard
+  removed, and the bed left at `volume_between` while recording — each failed
+  2 of the 16 tests.
+- **The fork's style:** no added code line over 120 characters, no en dash.
+- **The real server** (the dev checkout, port 8010; the tunnel down, so no
+  model): the start reply carried **17 clips** and the settings; a clip served
+  whole (200, `audio/mpeg`, 105,414 bytes — the file's size), a range of it
+  (206, 1,024 bytes), an unlisted name refused (404).
+- **A real browser** (the app's built-in Chromium, `?design=old-radio`, Start
+  pressed): the bed wired into the page's audio, the first clip loaded
+  (`readyState` 4 — decoded), its gain 2.95 (+9.4 dB, #4's); the first round
+  failed (no model), the page went to `error`, and the bed paused, as it
+  should. Then, **muted with the M key** (nothing reached the speakers), the
+  states driven by hand:
+
+| Step | Measured |
+|---|---|
+| `thinking`, 2.5 s | playing; the clip advanced 2.50 s; the bed's gain at **0.15** |
+| `on air`, 0.8 s later | the bed's gain at **0.05** |
+| `recording`, 0.4 s later | the bed's gain at **0**; the clip still playing |
+| `stopped` | paused at 3.70 s; gain 0 |
+| the bed's gain node | `channelCount` 1, `explicit`, `speakers` |
+
+  The only console error: the round's "All connection attempts failed" (no
+  model). The dev server stopped after; the checks left three short runs in
+  the dev checkout's `runs/` (gitignored): `2026-10-01T23-52-08`,
+  `23-52-19`, and one more for the runbook's example output.
+
+#### Next
+
+**Step 3 — listen** (§8.13): with the box up and the tunnel open, a show in a
+look, by ear — the two levels, the dip and the rise, the clips (which to keep,
+which gain to change in `tools/sounds/bed.yaml`); the second build after
+(the fading, the silences on a timer, the crossfade, the AM filter as a
+switch); then a release.
+
+### §8.16 The clips switched on and off in the story; which clip plays, in the console (2026-10-02, after midnight)
+
+**The owner (verbatim):**
+
+> (1) A mechanism for me to easily enable/disable bed audios.
+> Initially I thought we should add a new key under each audio in bed.json:
+> `enabled: true|false` so I can easily activate the audios I like....
+> But now I do not think that `Sounds/bed/bed.json` fits the role of a place to
+> add configurations, you now add there a lot of parameters that will change the
+> way the app runs (gains). I feel we should have a yaml equivalent of this
+> bed.json inside `stories/lab-outbreak/` maybe `stories/lab-outbreak/bed.yaml`.
+> but at the same time, the bed audio files are ignored, so it may not fit the
+> pattern after all. I am torn here. What do you recommend?
+>
+> (2) An easy way for me to know what bed audiofile is playing (maybe when debug
+> is on, print the name of the bed audio playing to the console?)
+
+And: "I wired the hosts.yml and made the tunnel up, but let's hold the tests
+until we have discussed this two items." With two questions — "Did you
+already build the whole thing? I do not think so, right?" and "Did you already
+add the M shortcut to mute/unmute the bed audio play?" — the agent's answers:
+step 2's first build was built in full (uncommitted); the second build (the
+fading, the silences, the crossfade, the filter) was not; the M key was built
+and tested.
+
+#### The agent's answer to (1): facts apart from decisions
+
+| | What it holds | Who writes it | Where |
+|---|---|---|---|
+| **Facts about the files** | which files are there, their length, their measured level, the gain that evens them out, the licence, the credit | the tool, by measuring; never edited by hand | `Sounds/bed/bed.json`, beside the files it describes (as `ref.source` in `Personas/`) |
+| **Decisions about the show** | which clips play, and a change of a clip's level by ear | the owner | the story, in git |
+
+The measured gain **is** a fact — like a clip's length, a measurement of the
+file; the owner's "a touch quieter" is a decision. **The doubt — a committed
+story naming files that git ignores — is already the pattern:** the story's
+`overtones.yaml` names `ref-fear.wav` and the rest, which live outside git in
+`Personas/`. Recommendation: **`stories/lab-outbreak/bed.yaml`**, as the owner
+proposed — read at every Start, so a change plays at the next Start, with no
+restart; a clip enabled but not on disk skipped and logged; no file, every
+clip on disk plays; `gain_db` added to the measured gain; zombie-radio's
+`tools/sounds/bed.yaml` keeps only what to copy into the app, its `gain_db`
+gone.
+
+**The owner (verbatim):** "Agreed in your proposal, with one small change: Like
+in overtones, I propose we use the full audio filename (instead of just the
+id) … I think that would make it easy for me to recognize from the log
+messages on debug what is the actual file that is playing." — the owner's
+example wrote the key as `id:` with the file name as its value; the agent
+named the key **`file:`** (the value is a file name, and `bed.json` calls the
+same thing `file`), and said so.
+
+#### The agent's answer to (2): the console, with debug on
+
+With `show.debug` on, a line in the browser's console each time a clip starts —
+its place in the pass, its file, its gain in dB — and at each new shuffle and
+each press of the M key; nothing with debug off. (Not the round's debug line: a
+clip spans rounds.) **The owner:** "Agreed." Then: "Build these two small
+additions."
+
+#### What was built
+
+**The fork** (`alfre2v/static-bed`, uncommitted):
+
+- **`stories/lab-outbreak/bed.yaml`** (new) — all 17 clips, `enabled: true`,
+  each with a comment above it (Freesound's name, the licence, the length),
+  generated from the real `bed.json`, no name typed by hand:
+
+  ```yaml
+  clips:
+    # analog_noise_arped_radio_static.wav (Sampling+ 1.0, 12 s)
+    - file: 11859-analog-noise-arped-radio-static.mp3
+      enabled: true
+      gain_db: 0
+    # Handheld radio music and static (CC BY 4.0, 42 s)
+    - file: 719588-handheld-radio-music-and-static.mp3
+      enabled: true
+      gain_db: 0
+  ```
+
+  (The comments sit above the entries: beside them, the lines ran past the
+  fork's 120 characters.) **Then, the owner (verbatim):** "Please expand the
+  yaml list items in bed.yaml to each item use several lines, instad of the
+  short one line version `{...}`." and "What is the neutral value of gain_db?
+  (The one that does nothing to the signal). Is it 0 or 1? I think we should
+  explicitly add the gain_db key to each item already with the neutral
+  value." — **0**: `gain_db` is in decibels, and the app multiplies the
+  measured gain by 10^(gain_db / 20); 10⁰ = 1, nothing changes (−3 dB ≈ ×0.71,
+  a little quieter; −6 dB ≈ ×0.50, half the amplitude; +6 dB ≈ ×2.0). The 1 is
+  the neutral *factor* — `bed.json`'s `gain`. The file was regenerated as above
+  — one key per line, `gain_db: 0` on all 17 — and its header explains the
+  three keys; it loads as 17 clips, all enabled, all at 0 dB.
+- **`app/show/story.py`** — `BedClip(file, enabled, gain_db)`; `Story.bed`
+  (`None` without the file); `_load_bed()`: `clips` a list; `file` a plain clip
+  name (the same pattern the clip route checks); `enabled` true or false
+  (default true); `gain_db` a number within ±40 dB (default 0); **any other
+  key fails**, so a misspelled `enable: false` is never silently ignored; a
+  clip named twice fails. A malformed `bed.yaml` refuses the Start (HTTP 422,
+  the line at fault), like any broken story file.
+- **`app/show/bed.py`** — `bed_play_list()`: every clip on disk when the story
+  has no `bed.yaml`; else the story's enabled clips, in its order, each gain
+  multiplied by `10^(gain_db / 20)`; a clip enabled but not on disk skipped
+  with a warning.
+- **`app/routers/show.py`** — the start reply's bed uses it.
+- **`static/show/bed.js`** — `bedLog()` (only with the run's `debug`),
+  `bedDb()` (a gain as signed dB); the lines: `Show: bed shuffled: a new pass
+  of N clips`, `Show: bed clip K of N: <file> (gain ±X.X dB)`, `Show: bed
+  muted (M)` / `unmuted (M)`.
+- **Tests:** the story's `bed.yaml` (read when present, 12 malformed cases),
+  the play list (4), the start reply (the story's choice and gains, read at
+  every Start, a malformed file refused); the Node tests: `bedDb`, the console
+  lines with debug on, silence with debug off. The router tests write their
+  own `bed.yaml` into the run's copy of the story, or remove it — **never the
+  shipped mapping** (the owner's rule).
+- **Docs:** `docs/runbooks/show-page.md` ("Which clips play is the story's
+  choice", "Which clip is playing", the troubleshooting line); `AGENTS.md`
+  (the start reply).
+
+**This repository** (`alfre2v/sound-effects`, uncommitted):
+`tools/sounds/bed.yaml` lists only Freesound ids (its header points to the
+story); `prepare_bed.py` takes no `gain_db` (an entry that is not an id stops
+it, naming the story's file), and `bed.json` lost `gain_from` and renamed its
+`gain_db` to **`measured_gain_db`** — so the story's `gain_db` (by ear) and the
+manifest's (measured) are never confused. Re-run with `--write` into both
+folders (2026-10-02, 00:19 CDT): nothing copied, `bed.json` rewritten; checked
+— 17 clips each, clip 730109's `measured_gain_db` 9.4 and `gain` 2.9521.
+
+#### Checked
+
+- The fork: pytest **1252 passed** (1232 before: 20 new — the story's
+  `bed.yaml` 13, the play list 4, the start reply 3); Node `test_show_page.js`
+  42, `test_persona_form.js` 17, `test_tts_settings.js` 91, `test_show_gauge.js`
+  8, **`test_show_bed.js` 19** (3 new). No new code line over 120 characters,
+  no en dash.
+- The runbook's console lines are labelled as the lines' **form** (clip
+  730109's file and gain as `bed.json` gives them) — not yet a capture from a
+  real run; the owner's listening (step 3) will give one.
+
+**Next:** step 3, the owner's listening, with the tunnel up (the owner wired
+`hosts.yml` for it — never staged).
 
 ## §7. Sources
 

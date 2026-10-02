@@ -1,11 +1,12 @@
-"""Prepare the static bed for the app: tools/sounds/bed.yaml says which clips play under the show.
+"""Prepare the static bed for the app: tools/sounds/bed.yaml says which clips are copied into it.
 
 For each listed Freesound id, the clip is found in the pool (fetched by fetch_freesound.py), measured and copied
 unchanged into the app's folder (bed.yaml's app:, e.g. ~/TalkWithZombies-client/Sounds/bed). bed.json beside the
-copies tells the page each clip's file, length and gain: the gain brings the clip's average level to loudness_dbfs,
-unless the list gives the clip its own gain_db. The level is measured on the mono mix the page plays, (left + right)
-/ 2, decoded with macOS's afconvert. Nothing is written without --write; files of an earlier bed.json that are no
-longer listed are removed, and nothing else in the folder is touched.
+copies holds the facts about them: each clip's file, length, level and gain, the gain bringing the clip's average
+level to loudness_dbfs. The level is measured on the mono mix the page plays, (left + right) / 2, decoded with
+macOS's afconvert. Which clips play, and any change of a clip's level by ear, is the story's to say (the fork's
+stories/<story>/bed.yaml). Nothing is written without --write; files of an earlier bed.json that are no longer
+listed are removed, and nothing else in the folder is touched.
 
   uv run python tools/sounds/prepare_bed.py
   uv run python tools/sounds/prepare_bed.py --write
@@ -90,12 +91,9 @@ def sha256(path):
 def parse_clips(entries):
     clips = []
     for entry in entries:
-        if isinstance(entry, int):
-            clips.append({"id": entry, "gain_db": None})
-        elif isinstance(entry, dict) and isinstance(entry.get("id"), int):
-            clips.append({"id": entry["id"], "gain_db": entry.get("gain_db")})
-        else:
-            sys.exit(f"not a Freesound id or {{id: N, gain_db: X}}: {entry!r}")
+        if isinstance(entry, bool) or not isinstance(entry, int):
+            sys.exit(f"not a Freesound id: {entry!r} (a change of level by ear goes in the story's bed.yaml)")
+        clips.append({"id": entry})
     ids = [c["id"] for c in clips]
     if len(ids) != len(set(ids)):
         sys.exit("a clip is listed twice")
@@ -136,8 +134,7 @@ def main():
     rows = []
     for clip in clips:
         m = measure(clip["src"])
-        measured = target - m["rms_dbfs"]
-        gain_db = measured if clip["gain_db"] is None else float(clip["gain_db"])
+        gain_db = target - m["rms_dbfs"]
         meta = clip["meta"]
         rows.append({
             "file": clip["src"].name,
@@ -149,17 +146,16 @@ def main():
             "channels": m["channels"],
             "rms_dbfs": round(m["rms_dbfs"], 2),
             "peak_dbfs": round(m["peak_dbfs"], 2),
-            "gain_db": round(gain_db, 2),
+            "measured_gain_db": round(gain_db, 2),
             "gain": round(10 ** (gain_db / 20), 4),
-            "gain_from": "measured" if clip["gain_db"] is None else "list",
             "licence": meta["licence"]["name"],
             "licence_class": meta["licence"]["class"],
             "credit": meta["licence"]["credit"],
         })
         r = rows[-1]
         print(f"{r['id']:>7}  {r['name'][:40]:40}  {r['seconds']:6.1f} s  {r['channels']} ch  "
-              f"RMS {r['rms_dbfs']:6.1f}  peak {r['peak_dbfs']:5.1f}  gain {r['gain_db']:+6.1f} dB "
-              f"({r['gain_from']})  {r['licence']}")
+              f"RMS {r['rms_dbfs']:6.1f}  peak {r['peak_dbfs']:5.1f}  gain {r['measured_gain_db']:+6.1f} dB  "
+              f"{r['licence']}")
 
     stale = sorted(previous_files(app) - {r["file"] for r in rows})
     total = sum(clip["src"].stat().st_size for clip in clips)
