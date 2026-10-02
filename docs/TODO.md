@@ -66,7 +66,9 @@ it is detail.*
   (alfre2v/TalkWithZombies#9 and this repository's #20 merged; the merge
   identical to the tested branch head `8a32bd7`, the fork's tests green
   on it: 1210 passed, Node 42 / 17 / 91 / 8); the installer pinned to
-  it; **the owner's re-proof pending**. The installed client needs the
+  it (#21) and **re-proven by the owner on 2026-10-01** ("re-proof
+  passed, installed at tz-0.5"; the client checked out at `tz-0.5`, its
+  settings the demo's: no `show:` section). The installed client needs the
   box at 32k: its 34,000 budget does not fit a 16k context, and the
   start check would refuse every run.
 - **Also written:** [discussion 2026-10-01] judge-in-the-loop — a fast
@@ -74,6 +76,17 @@ it is detail.*
   parked for after the demo (roadmap); [discussion 2026-10-01]
   the-app-from-the-outside — how the app counts its tokens and trims,
   and every endpoint to test it without the page.
+- **Sound effects, narrowed to the static bed, 2026-10-01 to 10-02:**
+  radio static from 17 Freesound clips the owner found, played quietly
+  under the show by the looks — shuffled; louder between rounds, lower
+  under a round, silent while the listener holds to talk; silences on a
+  timer, a slow fading, an AM filter (the F key flips it); the M key
+  mutes it; the story's `bed.yaml` switches each clip on or off. Built in
+  alfre2v/TalkWithZombies#10 with this repository's tools (#22: the
+  Freesound fetch, `tools/sounds/prepare_bed.py`), heard by the owner:
+  "I think technically we have met and exceeded our goals." **Open:** the
+  owner's narrower-filter test, the clips' picks, the credits for the
+  talk, then a release ([discussion 2026-10-01] sound-effects §8.20).
 - **Next** — the agent's recommended order (2026-09-30), not yet ruled
   by the owner beyond its first pick (the 32k work, done): goal 4, **the
   3090** (owner action queue, item 3) → **names-only A** (the follow-up
@@ -376,6 +389,27 @@ the agent keeps this current. These carry across arcs.*
   talk's safety net. Evidence to draw on: the experiments, the
   discussions, the measurements (the 32k context, the trim's fix, the
   voices).
+- [ ] **Task 10 — The static bed before the demo** (the owner,
+  2026-10-02: "we will execute before the demo (so, they are priority,
+  but not to execute today"). Three items left of the bed's plan
+  ([discussion 2026-10-01] sound-effects §8.20, §8.21):
+  1. [ ] **The narrower-filter test** — the owner's ear on bands
+     narrower than today's 300-3,000 Hz, to learn whether the bed tires
+     less and sounds more like an old radio with poor reception. The
+     bands, B first: A 300-2,700 Hz (a ham's SSB voice filter), **B
+     400-2,000 Hz** (a narrow receiver), C 500-1,500 Hz (poor
+     reception), D 600-1,000 Hz (the extreme). Each under `show:` with
+     `bed_filter: true`, `bed_filter_low_hz`, `bed_filter_high_hz`, a
+     restart of the app, the F key to compare; a narrower band sounds
+     quieter (raise `bed_volume_*` a little for a fair test). May change
+     `bed_filter`'s default or its band.
+  2. [ ] **The owner's picks of the clips** — switch off the harshest in
+     the fork's `stories/lab-outbreak/bed.yaml` (`enabled: false`; the
+     dial-up modems and the "harsh analog fm radio flips" are the
+     candidates named); the owner will add a related task.
+  3. [ ] **Credits for the talk** — the clips that are not CC0 need a
+     slide or a credits note; each clip's credit line is in
+     `Sounds/bed/bed.json` (`credit`); the owner will add a related task.
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes

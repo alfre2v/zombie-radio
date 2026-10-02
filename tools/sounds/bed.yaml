@@ -1,0 +1,20 @@
+# The static bed's clips, copied into the app, measured, and credited (CREDITS.md). They ship with the app: the target
+# is the fork's checkout beside this one, committed there through a pull request. Which clips play, and any change of
+# a clip's level by ear, is the story's to say: the fork's stories/lab-outbreak/bed.yaml. Chosen by the owner on
+# 2026-10-02, one by one (the sound-effects discussion, §8.22). Change a line, then:
+#   uv run python tools/sounds/prepare_bed.py            (a dry run: the clips, their levels and gains)
+#   uv run python tools/sounds/prepare_bed.py --write    (copies them into the fork, with bed.json and CREDITS.md)
+pool: ../zombie-radio-datasets/sounds/freesound
+app: ../TalkWithZombies/Sounds/bed
+loudness_dbfs: -20
+
+# Freesound ids; only CC0 and CC BY clips may be listed (the tool refuses any other)
+clips:
+  - 719588
+  - 730109
+  - 625095
+  - 652596
+  - 557532
+  - 624412
+  - 255775
+  - 343740

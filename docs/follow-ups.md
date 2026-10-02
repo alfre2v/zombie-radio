@@ -1736,6 +1736,116 @@ reader's memory):
   tools/voices/cast_voices.py --all-emotions --only <Name>`; the runbook
   `docs/runbooks/cast-voices.md`.
 
+## Even out each voice chunk to a common speech level (owner, 2026-10-02) — very low priority; undecided whether worth executing; kept as a ledger of ideas
+
+- **The statement:** the voices' level swings widely from line to line,
+  the women's most — the owner heard it while listening to the static bed
+  (verbatim): "I notice wide volume changes in some of the voices,
+  especially the females... Could be just another manifestation of the
+  voice instability of the TTS engine, but we need to be sure it's not this
+  volume control feature spilling over to the TTS voices." **Checked: not
+  the bed** — nothing on the voice's path changed, and the chunks kept in
+  debug mode (as the engine returned them, before the page) vary as widely
+  before the bed existed as with it. **The cause:** the mood voices
+  (`tz-0.4`). Every reference clip was cast at the same level (RMS
+  −20 dBFS), but the engine clones a clip's **delivery**, not its level —
+  Moira's *fear* recording is near a whisper. The average speech level by
+  mood clip, over five debug runs (2026-09-30 and 2026-10-02, 267 chunks):
+  Moira from −32.7 dBFS (*fear*) to −23.6 (`ref`), 9.1 dB apart; Samantha
+  from −29.7 (*amusement*) to −20.2 (*confusion*), 9.5 dB; Ralph 10.3 dB;
+  Daniel 5.3 dB. On top, chunks said with the same clip vary by 5-10 dB (the
+  engine's instability; with `voice_seed` off it picks its own seed for
+  each chunk — 110 different seeds over 122 chunks in one run), and the
+  women sit about 4 dB below the men on average (−26 and −24.5 against
+  −21).
+- **Where flagged:** [discussion 2026-10-01] sound-effects §8.19 (the
+  owner's question, the code check, both tables); the measuring scripts
+  `chunk_levels.py` and `chunk_levels_by_clip.py` were scratch files of
+  that session, their method written there.
+- **Lowered later the same night (the owner, verbatim):** "I do not see any value in implementing this right
+  now. Keep it in a follow up but mark it as very low priority and undecided if worth executing... Keeping it
+  only to conserve as a ledger of all our ideas."
+- **The owner's ruling (verbatim):** "Humm, this is an interesting
+  feature. but I think it belongs in a follow up." And: "make it as not a
+  priority and undecided if we will execute on it." — **not a priority;
+  whether to build it at all is undecided.**
+- **Trigger:** the owner's decision — for example a recording (the canned
+  episode, Task 7) whose quiet lines get lost, or the venue's speakers
+  making the swings worse.
+- **The fix shape (the agent's sketch, 2026-10-02):**
+  1. **Measure each chunk where it is already decoded:** in the fork's
+     `static/show/player.js`, right after `decodeAudioData` turns the
+     engine's WAV into samples (`synthesize()`), its speech level — the
+     RMS of its 20 ms frames above −45 dBFS, so the pauses do not count
+     (the method of §8.19).
+  2. **A gain:** (target − level) × strength. The target a common speech
+     level (e.g. −22 dBFS); strength 1 evens out fully, 0.5 halfway — so a
+     whispered *fear* stays somewhat quieter than a shout. Capped (e.g.
+     ±12 dB), and never pushing the chunk's peak past −1 dBFS, so it cannot
+     clip.
+  3. **Applied to the samples themselves** (each sample of the decoded
+     buffer × the gain), **not with a gain node in the audio chain** — the
+     looks' gauge listens only to sounds wired straight to the speakers
+     (`gauge.js` wraps `createBufferSource`'s connect to `ctx.destination`);
+     a gain node on the voice's path would leave the magic eye and the
+     meters still. Scaling the samples changes nothing in the wiring.
+  4. **Settings,** like everything else (on or off, the target, the
+     strength, the cap), sent in the start reply; with debug on, the
+     console says each chunk's level and the gain applied. The chunks kept
+     in debug mode stay as the engine returned them — the evidence.
+  5. **Tested** like the bed: a Node test with a fake decoded chunk — a
+     quiet one raised by the right amount, a loud one lowered, nothing
+     clipped.
+  A side effect: everyone to one target also closes the women's ~4 dB gap.
+
+## The static bed's lists per kind of round (owner, 2026-10-02) — very low priority; undecided whether worth executing; kept as a ledger of ideas
+
+- **The statement:** the static bed plays one list of clips for the whole show. A list per kind of round — the radio's
+  own states — was proposed: harsher, louder static at the Breakdown (the receiver dies), the owner's tuning sweeps at
+  the Repair (someone finding the frequency), the bed off for the contact. The data already allows it: the story's
+  `bed.yaml` could name lists, so a list per kind would be a change of data, not of code.
+- **Where flagged:** [discussion 2026-10-01] sound-effects §8.10 (question 5), §8.20.
+- **The owner's ruling (verbatim), 2026-10-02:** "I do not see any value in implementing this right now. Keep it in a
+  follow up but mark it as very low priority and undecided if worth executing... Keeping it only to conserve as a
+  ledger of all our ideas."
+- **Trigger:** none set; the owner's decision.
+- **The fix shape:** named lists in `stories/<story>/bed.yaml` (a `default` and one per kind of round); the start
+  reply carries them; `bed.js` switches the list when a round of that kind starts (the round's summary names its kind).
+
+## Event sounds as a layer of their own beside the static bed (owner, 2026-10-01) — very low priority; undecided whether worth executing; kept as a ledger of ideas
+
+- **The statement:** sounds for the events (an alarm, glass breaking, a rotor), heard through the transmitter and
+  lasting their own length across rounds, as **a second layer** beside the bed — the bed is the radio, an event's sound
+  the room — not replacing the bed's clips.
+- **Where flagged:** [discussion 2026-10-01] sound-effects §8.11 (the owner's angle and lean: "another audio channel
+  completely independent of the bed channel"; the agent's shape), §8.20.
+- **The owner's ruling (verbatim), 2026-10-02:** "I do not see any value in implementing this right now. Keep it in a
+  follow up but mark it as very low priority and undecided if worth executing... Keeping it only to conserve as a
+  ledger of all our ideas."
+- **Trigger:** none set; the owner's decision.
+- **The fix shape (§8.11):** the bed's chain already ends in a "sounds" gain (the M key's mute) that a second layer can
+  join; each event (or theme) in the story names a kind of sound or none; the director picks a clip and sends it in the
+  round's first message; the page plays it a beat before the event is read, to the clip's own length (capped), a new
+  one crossfading over the old; the clips from Freesound or a generating model (§4).
+
+## A crossfade at the static bed's joins (owner, 2026-10-02) — decided not to implement
+
+- **The statement:** at a join between two clips, start the next 1-2 s before the current one ends, the two
+  overlapping (two `<audio>` elements taking turns), instead of the next clip simply fading in over 0.3 s.
+- **Where flagged:** [discussion 2026-10-01] sound-effects §8.8 (refinement 2), §8.18 (left out of the second build),
+  §8.20.
+- **The owner's decision (verbatim), 2026-10-02:** "I do not see any value in implementing crossfade for our app. You
+  can close any follow-up that may exist about crossfade with a note that we decided not to implement." No follow-up
+  existed; this entry records the decision. **Closed: not to be implemented.** Kept as a ledger of ideas.
+
+## The static bed's three short timings stay constants (owner, 2026-10-02) — decided
+
+- **The statement:** three timings in the fork's `static/show/bed.js` are constants (`BED`), not settings: the silence
+  when the listener presses to talk (0.15 s), a clip's fade-in (0.3 s), the M key's fade (0.3 s) — against the house
+  rule that every number is a setting.
+- **Where flagged:** [discussion 2026-10-01] sound-effects §8.15, §8.20.
+- **The owner's decision, 2026-10-02:** they stay constants ("Correct", on "Not built by choice"). Closed.
+
 ## Keep every synthesized chunk in debug mode, and send a seed with every voice request (owner, 2026-09-30) — built (the fork's `799d005`, alfre2v/TalkWithZombies#8)
 
 - **The gap:** the voice server's audio for each chunk goes to the page,
