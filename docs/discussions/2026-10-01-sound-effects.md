@@ -20,7 +20,7 @@ gain per clip; one list; shuffled; the filter as a switch; no trimming), and
 **the rest settled three at a time** (§8.13: the looks only, silences on a
 timer, the clips copied unchanged into the client's `Sounds/bed/`, silent while
 push-to-talk is held, a live mute key, the gauge for the voices only, built
-now). **The first build's plan** is in §8.13, waiting for the owner's go. The research on generated and recorded sounds (§4) and the
+now). **The first build's plan** is in §8.13; **step 1 built** (§8.14: the list `tools/sounds/bed.yaml`, the tool `prepare_bed.py`, the 17 clips and `bed.json` in the client's and the dev checkout's `Sounds/bed/`). The research on generated and recorded sounds (§4) and the
 three-source listening test (§6.2) wait for the broader work: sounds per event.
 
 ## §1. The owner's idea (verbatim)
@@ -1692,6 +1692,226 @@ the bed's logic is written as small pure functions with Node tests (§8.10, 9).
 **Step 3 — listen** (the owner, with the box up): tune the numbers by ear; then
 the second build (the fading, the silences, the crossfade, the filter switch)
 and a release.
+
+### §8.14 Step 1 built: the list, the tool, the clips in the app (2026-10-01, night)
+
+**The owner:** "commit, then start step 1" — §8.10-§8.13 committed; then step 1
+of §8.13's plan, in this repository.
+
+#### The two files
+
+- **`tools/sounds/bed.yaml` — the list, the only file the owner edits:** the
+  pool (`../zombie-radio-datasets/sounds/freesound`), the app's folder
+  (`~/TalkWithZombies-client/Sounds/bed`), the common level (`loudness_dbfs:
+  -20`), and the clips by Freesound id — all 17 to start. A clip may carry its
+  own gain, which replaces the measured one: `- {id: 11859, gain_db: -3}`.
+- **`tools/sounds/prepare_bed.py` — the tool** (run with `uv run`, for PyYAML,
+  like `cast_voices.py`). For each listed id: it finds the clip in the pool
+  (`<pool>/<kind>/<id>-*.mp3`), checks the file's SHA-256 against its `.json`,
+  measures its level on the **mono mix the page will play**, and computes the
+  gain to `loudness_dbfs`. With `--write` it **copies each clip unchanged**
+  into the app's folder (skipping a copy already identical) and writes
+  `bed.json` beside them (written to `bed.json.part` first, then renamed).
+  Without `--write`, a dry run. It removes only files that an earlier
+  `bed.json` listed and the list no longer names; nothing else in the folder is
+  touched. `--app` points it at another folder (the dev checkout's).
+
+**`bed.json`** — what the page will read: when it was prepared, the list it came
+from, the common level, and per clip: `file`, `id`, `name`, `author`, `page`,
+`seconds`, `channels`, `rms_dbfs` and `peak_dbfs` (of the mono mix), `gain_db`
+and `gain` (the same as a factor, for the page's gain node), `gain_from`
+(`measured` or `list`), `licence`, `licence_class`, `credit`. One clip's entry,
+as written:
+
+```json
+{
+ "file": "730109-shortwave-radio-static-with-indistinguishable-foreign-chatte.mp3",
+ "id": 730109,
+ "name": "Shortwave Radio static with indistinguishable foreign chatter and static",
+ "author": "-CASK-",
+ "page": "https://freesound.org/people/-CASK-/sounds/730109/",
+ "seconds": 172.14,
+ "channels": 2,
+ "rms_dbfs": -29.4,
+ "peak_dbfs": -7.93,
+ "gain_db": 9.4,
+ "gain": 2.9521,
+ "gain_from": "measured",
+ "licence": "CC BY 4.0",
+ "licence_class": "cc-by",
+ "credit": "\"Shortwave Radio static with indistinguishable foreign chatter and static\" by -CASK- (https://freesound.org/people/-CASK-/sounds/730109/), licensed under CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/)"
+}
+```
+
+#### A trap found: `afconvert -c 1` keeps the left channel, it does not mix
+
+To measure a clip, the tool must first turn the MP3 into samples Python can
+read — macOS's `afconvert` (built in; `cast_voices.py` uses it). The obvious
+call asks for one channel (`-c 1`), expecting the two to be mixed. **They are
+not: `afconvert -c 1` keeps the left channel and drops the right.** Found by a
+test before relying on it — a 440 Hz tone at half volume, put on one side of a
+stereo MP3 (ffmpeg's `pan` filter), then decoded with `afconvert -c 1`:
+
+| Test clip | `afconvert -c 1` gave | Meaning |
+|---|---|---|
+| the tone on the **left** only | −27.36 dB — the tone's full level (the tone alone: −27.1 dB) | the left channel, kept whole |
+| the tone on the **right** only | **silence** (the RMS was 0) | the right channel, dropped |
+
+(Two real clips, #15 and #4, had shown nothing: their two channels are nearly
+alike, so left-only and the mix measure the same — −10.98 / −11.0 dB and
+−29.38 / −29.4 dB against ffmpeg's mix-down. Only a one-sided signal tells.)
+
+Measured that way, a clip with more static on the right would measure too
+quiet and get too much gain, and a clip with sound only on the right would
+measure as silence — while the page plays **the mix of both channels**
+(§8.12, 3A: the browser mixes a stereo clip down to mono as it plays).
+
+**How the tool avoids it** (`measure()` in `tools/sounds/prepare_bed.py`):
+
+1. **Decode without `-c 1`**, keeping every channel —
+   `afconvert -f WAVE -d LEF32 <clip> <temp>.wav` changes only the format (MP3
+   → 32-bit float WAV), not the number of channels. The WAV lives in a
+   temporary folder and is deleted after measuring; it is never copied
+   anywhere.
+2. **Split the channels.** A stereo WAV stores its samples interleaved, left
+   and right in turn — `L0 R0 L1 R1 L2 R2 …`; `samples[0::2]` is every left
+   sample, `samples[1::2]` every right one
+   (`frames = [samples[c::channels] for c in range(channels)]`).
+3. **Mix them as the browser does** — the average at each instant,
+   `(L0+R0)/2, (L1+R1)/2, …`
+   (`mix = array.array("f", (sum(frame) / channels for frame in zip(*frames)))`);
+   a mono clip is used as it is.
+4. **Measure that mix** — its RMS and peak — and the gain to −20 dBFS.
+
+**Checked** on test tones through `measure()` itself:
+
+| Test clip | The tool's mix | Why |
+|---|---|---|
+| the tone on **both** channels | −27.36 dB | (L + L) / 2 = L: the tone itself |
+| the tone on the **left** only | **−33.38 dB** | (L + 0) / 2 = half the amplitude = **6.02 dB less** — exactly |
+
+**The tool does not make the clips mono:** the copies in the app are the
+original MP3s, byte for byte; mono happens only in the browser, as decided. The
+tool measures that mix in advance, so the gain in `bed.json` fits what is
+heard.
+
+**The mono mix against §8.10's table:** §8.10's loudness table measured the
+stereo files as they are (ffmpeg's `volumedetect`, both channels together).
+For four clips whose channels differ, the mono mix is about 3 dB quieter — the
+figure that counts:
+
+| # | Clip | §8.10 (stereo as is) | The mono mix |
+|---|---|---|---|
+| 2 | Handheld radio music and static | −21.1 dB | −24.5 dB |
+| 7 | Full radio sweep | −16.5 dB | −19.5 dB |
+| 8 | Vintage Radio Tuning 5 | −25.7 dB | −28.7 dB |
+| 15 | Radio — Generative Sound by Glorb | −11.0 dB | −13.9 dB |
+
+#### The owner's question: are the cast's voices hit by the same trap?
+
+**The owner (verbatim):** "Are you sure about this "since EARS recordings are
+already mono"... I thought the EARS recording where all studio quality and
+therefore I doubt they are mono. Instead I seem to remember that the agent
+performed some transformation to make them mono, maybe creating an error by
+using afconvert without noticing. We need to research this question."
+
+**Researched — the EARS recordings are mono at the source; the voices are not
+affected:**
+
+| What was checked | Result |
+|---|---|
+| all **612** EARS files on disk (`zombie-radio-datasets/ears/`), their WAV headers | **612 × mono** — 32-bit float, 48,000 Hz, 1 channel |
+| **the source:** p007's `emo_neutral_sentences.wav`, its header read straight from EARS's zip on GitHub (with `fetch_ears.py`'s range reader: 5 range requests, 81 KB read, nothing saved) | **mono** (format 3 = float, 1 channel, 48,000 Hz, 32-bit); the zip member 1,740,754 bytes, the file on disk 1,740,754 bytes — `fetch_ears.py` copies it out of the zip unchanged (`zf.open` → `shutil.copyfileobj`, the zip's CRC checked) |
+| `cast_voices.py`'s reader (`read_wav`, `tools/voices/cast_voices.py:48`) | it **refuses** anything but mono 32-bit float, with an error ("expected mono 32-bit float…"): a stereo file would have stopped the cast loudly, never passed silently |
+| the cast's **100** `Personas/*/ref*.wav` in the installed client | **100 × mono**, 16-bit PCM, 24,000 Hz — as the cast writes them |
+
+**Why studio quality is still mono:** EARS's quality is elsewhere — an anechoic
+chamber (no echo), 48 kHz, 32-bit float. Speech datasets are recorded with one
+microphone in front of the speaker; a second channel would add nothing for one
+voice. (EARS's README does not name the channel count; the files do.) So the
+`afconvert … -c 1` in `cast_voices.py` only ever receives mono — the trap is
+real only for stereo input, like the Freesound clips.
+
+#### The dry run, then the write (approved: "yes, write into both folders")
+
+The dry run measured the 17 clips (24.1 minutes of audio) in 13 seconds. The
+real write, 2026-10-01 at 23:39 CDT — into the installed client, then into the
+dev checkout (`--app`); the client's output, in full:
+
+```
+pool /Users/alfredo/workspace/hackTNT_2026/zombie-radio-datasets/sounds/freesound
+app  /Users/alfredo/TalkWithZombies-client/Sounds/bed
+loudness -20 dBFS (the mono mix's average level)
+
+  11859  analog_noise_arped_radio_static.wav         11.7 s  2 ch  RMS  -17.4  peak   0.0  gain   -2.5 dB (measured)  Sampling+ 1.0
+ 719588  Handheld radio music and static             41.8 s  2 ch  RMS  -24.5  peak  -6.4  gain   +4.5 dB (measured)  CC BY 4.0
+ 615189  radio11.wav                                 14.1 s  2 ch  RMS  -21.2  peak  -3.3  gain   +1.2 dB (measured)  CC BY 4.0
+ 730109  Shortwave Radio static with indistinguis   172.1 s  2 ch  RMS  -29.4  peak  -7.9  gain   +9.4 dB (measured)  CC BY 4.0
+ 625095  radio_static_01.flac                        84.7 s  1 ch  RMS  -22.3  peak  -0.3  gain   +2.3 dB (measured)  CC0 1.0
+  34418  morse static.wav                             4.9 s  2 ch  RMS  -31.1  peak  -7.9  gain  +11.1 dB (measured)  CC BY 4.0
+ 396902  Full radio sweep.wav                       296.8 s  2 ch  RMS  -19.5  peak  -0.1  gain   -0.5 dB (measured)  CC0 1.0
+ 652596  Vintage Radio Tuning 5.WAV                 110.8 s  2 ch  RMS  -28.7  peak  -6.1  gain   +8.7 dB (measured)  CC0 1.0
+  30302  CS3B_beacon.wav                             11.8 s  1 ch  RMS  -15.2  peak  -5.8  gain   -4.8 dB (measured)  CC BY-NC 4.0
+ 722884  harsh analog fm radio flips                 21.3 s  2 ch  RMS  -19.9  peak  -0.8  gain   -0.1 dB (measured)  CC0 1.0
+ 557532  radio tuning fm.mp3                        165.3 s  2 ch  RMS  -26.5  peak  -4.5  gain   +6.5 dB (measured)  CC0 1.0
+ 624412  Radio Music - A MakeNoise Morphagene Ree   156.2 s  2 ch  RMS  -17.0  peak  -0.2  gain   -3.0 dB (measured)  CC0 1.0
+ 255775  S06Russian.wav                             110.0 s  1 ch  RMS  -25.4  peak  -8.6  gain   +5.3 dB (measured)  CC BY 3.0
+ 343740  Radio transmission morse code @4606.2kHz    76.3 s  1 ch  RMS  -17.3  peak   0.0  gain   -2.7 dB (measured)  CC0 1.0
+ 855480  Radio — Generative Sound by Glorb          120.0 s  2 ch  RMS  -13.9  peak  -0.1  gain   -6.0 dB (measured)  CC0 1.0
+ 658932  Dial-up_sound.mp3.flac                      19.3 s  1 ch  RMS  -18.9  peak  -3.2  gain   -1.1 dB (measured)  CC0 1.0
+ 546450  The Sound of dial-up Internet               28.7 s  2 ch  RMS  -26.4  peak  -8.1  gain   +6.4 dB (measured)  CC0 1.0
+
+17 clips, 24.1 minutes, 28.05 MB
+
+written: 17 clips and bed.json in /Users/alfredo/TalkWithZombies-client/Sounds/bed
+```
+
+**The gains run from −6.0 dB** (#15, the loudest) **to +11.1 dB** (#6, the
+quietest). A gain of +11 dB alone would push a clip's peaks past full scale,
+but the bed is then multiplied by its own volume — 0.05-0.15 in the settings
+draft, −26 to −16 dB — so what reaches the speakers stays far below it.
+
+**Checked after the write**, in both folders:
+
+- 17 clips and `bed.json`, nothing else; 27 MB (`du -sh`).
+- **Each copy identical to the pool's file**, byte for byte (Python's
+  `filecmp.cmp`, `shallow=False`): 17 of 17, in both.
+- `bed.json`: 17 clips, `loudness_dbfs` −20; prepared 23:39:46 (the client)
+  and 23:39:59 (the dev checkout).
+- **The checkouts:** right after the write, in the installed client (still at
+  `tz-0.5`) and in the dev checkout, `Sounds/` showed as untracked
+  (`?? Sounds/`). Ansible's git module ignores untracked files
+  (`has_local_mods` filters the `??` lines of `git status --porcelain`), so
+  `make client-mac` would not be upset by the folder.
+- **Ignored at once, on the owner's word** (verbatim: "Why don't you gitignore
+  the audio file now. If I say commit you may commit them."), two ways, one per
+  checkout:
+  - **The dev checkout:** the fork's branch **`alfre2v/static-bed`** created
+    from `master` (step 2's branch), and `Sounds/` added to the fork's
+    `.gitignore` beside `Personas/` (step 2's first item) — git ignores the
+    folder from that moment, before any commit (`git check-ignore -v`:
+    `.gitignore:11:Sounds/`).
+  - **The installed client:** **not** its `.gitignore` — a tracked file; editing
+    it would make the clone "locally modified", and the installer's git task
+    (`force: false`) would then fail. Instead `Sounds/` went into
+    `.git/info/exclude`, git's local ignore list, which is not tracked and
+    which the installer never reads (`git check-ignore -v`:
+    `.git/info/exclude:7:Sounds/`). Once the client moves to a release whose
+    `.gitignore` names `Sounds/`, the line there is redundant and harmless.
+  - **zombie-radio:** no audio file anywhere in its tree (the clips live in
+    `zombie-radio-datasets/` and in the fork's `Sounds/`).
+- **A second run** copies nothing (each copy's SHA-256 already matches) and
+  rewrites only `bed.json` (its `prepared` time).
+
+```bash
+# Prepare the bed: a dry run (the clips, their mono-mix levels and gains), then the write
+uv run python tools/sounds/prepare_bed.py
+uv run python tools/sounds/prepare_bed.py --write
+# The same into the dev checkout of the fork
+uv run python tools/sounds/prepare_bed.py --write --app /Users/alfredo/workspace/hackTNT_2026/TalkWithZombies/Sounds/bed
+```
+
+**Next — step 2, the fork** (§8.13): a new branch `alfre2v/static-bed`.
 
 ## §7. Sources
 
