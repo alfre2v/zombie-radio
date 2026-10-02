@@ -10,10 +10,11 @@ sounds would fit the show; a recommendation.
 (5-15 clips of radio static at low volume, shuffled, the level moving with the
 show, random silences, all in settings — the owner's design, §8.8), **from
 Freesound**; the folder tree agreed; the
-Freesound key in place and checked; nine CC0 candidates listed, nothing
-downloaded. The research on generated and recorded sounds (§4) and the
+Freesound key in place and checked; nine CC0 candidates listed. **The fetch
+tool built** (`tools/sounds/fetch_freesound.py`) and **the owner's 17 Freesound
+finds downloaded** (previews, 28 MB, outside git — §8.9), waiting for the
+owner's listening. The research on generated and recorded sounds (§4) and the
 three-source listening test (§6.2) wait for the broader work: sounds per event.
-Nothing built.
 
 ## §1. The owner's idea (verbatim)
 
@@ -769,7 +770,8 @@ kept clips of 1-15 s (a sound effect's length); a bed wants clips of **20-240 s*
    `tools/voices/fetch_ears.py`): ids or a search in, the previews and their
    `.json` out into `zombie-radio-datasets/sounds/freesound/<kind>/`, a page of
    players per fetch; a dry run first (the files, their sizes and licences), the
-   owner's approval, then the download.
+   owner's approval, then the download. **Done 2026-10-01, night (§8.9):** the
+   tool built; the owner's 17 finds downloaded.
 2. **The owner's picks** for the background radio sound (the owner's finds and
    the static candidates).
 3. **The shape of the static bed in the fork**, discussion first — the owner's
@@ -872,6 +874,237 @@ settle when the feature is shaped in the fork.
 the plain page silent (the agent's suggestion), or everywhere; the looks'
 gauge — the bed kept out of it, or moving the needle; where the chosen clips
 live (§8.3, by licence).
+
+### §8.9 The owner's finds fetched: the tool, the dry run, the download (2026-10-01, night)
+
+**The owner's finds (verbatim)** — "Some sounds of radio static of mixed radio
+stations that I like:"
+
+1. https://freesound.org/people/medialint/sounds/11859/
+2. https://freesound.org/people/AlexMurphy53/sounds/719588/
+3. https://freesound.org/people/theplax/sounds/615189/
+4. https://freesound.org/people/-CASK-/sounds/730109/
+5. https://freesound.org/people/wwstudioswastaken/sounds/625095/
+6. https://freesound.org/people/ERH/sounds/34418/
+7. https://freesound.org/people/vedas/sounds/396902/
+8. https://freesound.org/people/exsil/sounds/652596/
+9. https://freesound.org/people/acclivity/sounds/30302/
+10. https://freesound.org/people/cognito%20perceptu/sounds/722884/
+11. https://freesound.org/people/finneganmilla/sounds/557532/
+12. https://freesound.org/people/nlux/sounds/624412/
+13. https://freesound.org/people/kwahmah_02/sounds/255775/
+14. https://freesound.org/people/NebulousRoyale/sounds/343740/
+15. https://freesound.org/people/bassimat/sounds/855480/
+16. https://freesound.org/people/thearchiveguy99/sounds/658932/
+17. https://freesound.org/people/wtermini/sounds/546450/
+
+And: "When you download them, beware not to send all the requests at once, we
+do not want to be throttled." Then, on the dry run: "yes, download all 17 into
+radio-static"; and on the tool's two flaws (below): "yes, fix both and write
+§8.9".
+
+#### The tool: `tools/sounds/fetch_freesound.py`
+
+Step 1 of §8.7, built. Standard library only, like `tools/voices/fetch_ears.py`.
+
+- **In:** Freesound ids or sound links (`--ids`, comma-separated, or
+  `--ids-file`, one per line, `#` comments allowed), or a text search
+  (`--search`, with `--license cc0|cc-by`, `--duration 20-240`, `--max N`; the
+  best rated first). `--kind` names the folder, in our words (kebab-case).
+- **Ids in one request:** all the ids go into a single search, filtered by id
+  (`filter=id:(11859 OR 719588 OR …)`, up to 50 per request) — 17 sounds cost
+  one API request, not 17. An id Freesound does not know is reported, not fatal.
+- **The key:** read from `~/.config/zombie-radio/freesound.key`, sent in the
+  `Authorization: Token …` header, never printed, never in a URL (§8.6).
+- **Paced:** every request waits `--pause` seconds after the one before (2 by
+  default) — at most 30 a minute, half of Freesound's 60. A `429 Too Many
+  Requests` stops the tool with a message, no retry.
+- **A dry run by default:** the table of what would be fetched — id, name,
+  author, licence, length, rating, the original's format, and the preview's
+  size **measured** (a `HEAD` request to the preview, no audio) — and the total.
+  Nothing is downloaded without `--fetch`.
+- **With `--fetch`:** each preview (`preview-hq-mp3`) into
+  `zombie-radio-datasets/sounds/freesound/<kind>/<id>-<slug>.mp3` (written to a
+  `.part` file first, renamed when complete), its `.json` beside it, and a page
+  of players for the fetch, `sounds/pages/index-<start time>.html`.
+- **Already here:** a file is skipped, with no request, when it and its `.json`
+  exist and its size and SHA-256 match the `.json`'s.
+- **The `.json`** (the fields of §8.3): `source`, `id`, `page`, `name`,
+  `author`, `author_page`; `licence` — `name`, `url`, `class` (`cc0`, `cc-by`,
+  `cc-by-nc`, `sampling-plus`, `other`) and `credit`, the credit line ready to
+  paste (for every licence but CC0); `file` — what it is (`preview-hq-mp3`), its
+  URL, bytes, SHA-256 and when it was downloaded; `original` — the uploaded
+  file's type, bytes, length, rate, channels and bit depth; `rating`;
+  `uploaded`; Freesound's `tags` and `description`; and ours — `kind`,
+  `verdict` (empty until the owner listens) and `notes`.
+
+How to run it, from this repository's root:
+
+```bash
+# A dry run: what would be fetched, with each preview's size and licence; downloads nothing
+python3 tools/sounds/fetch_freesound.py --kind radio-static --ids-file picks.txt
+# The download, after the owner's approval of the dry run
+python3 tools/sounds/fetch_freesound.py --kind radio-static --ids-file picks.txt --fetch
+# A search instead of ids: the 15 best-rated CC0 sounds of 20-240 s (a dry run)
+python3 tools/sounds/fetch_freesound.py --kind radio-static --search "shortwave radio static" --license cc0 --duration 20-240
+```
+
+The first dry run on the owner's 17 links, 2026-10-01 (the real output; the
+preview sizes in KB of 1,024 bytes, the total in MB of 1,000,000):
+
+```
+  11859  analog_noise_arped_radio_static.wav           medialint           Sampling+ 1.0    11.7 s  4.3 (38)    WAV 96000 Hz 2 ch       preview    309 KB  (would fetch)
+ 719588  Handheld radio music and static               AlexMurphy53        CC BY 4.0        41.8 s  4.7 (11)    MP3 48000 Hz 2 ch       preview    976 KB  (would fetch)
+ 615189  radio11.wav                                   theplax             CC BY 4.0        14.1 s  4.9 (11)    WAV 48000 Hz 2 ch       preview    328 KB  (would fetch)
+ 730109  Shortwave Radio static with indistinguishabl  -CASK-              CC BY 4.0       172.1 s  4.8 (8)     FLAC 44100 Hz 2 ch      preview   3999 KB  (would fetch)
+ 625095  radio_static_01.flac                          wwstudioswastaken   CC0 1.0          84.7 s  4.9 (19)    FLAC 96000 Hz 1 ch      preview   1815 KB  (would fetch)
+  34418  morse static.wav                              ERH                 CC BY 4.0         4.9 s  4.2 (36)    WAV 44100 Hz 2 ch       preview    103 KB  (would fetch)
+ 396902  Full radio sweep.wav                          vedas               CC0 1.0         296.8 s  4.9 (42)    WAV 44100 Hz 2 ch       preview   6117 KB  (would fetch)
+ 652596  Vintage Radio Tuning 5.WAV                    exsil               CC0 1.0         110.8 s  4.7 (21)    WAV 44100 Hz 2 ch       preview   2435 KB  (would fetch)
+  30302  CS3B_beacon.wav                               acclivity           CC BY-NC 4.0     11.9 s  3.5 (11)    WAV 44100 Hz 1 ch       preview    262 KB  (would fetch)
+ 722884  harsh analog fm radio flips                   cognito perceptu    CC0 1.0          21.3 s  5.0 (6)     WAV 44100 Hz 2 ch       preview    491 KB  (would fetch)
+ 557532  radio tuning fm.mp3                           finneganmilla       CC0 1.0         165.3 s  4.1 (14)    MP3 44100 Hz 2 ch       preview   3064 KB  (would fetch)
+ 624412  Radio Music - A MakeNoise Morphagene Reel     nlux                CC0 1.0         156.2 s  5.0 (18)    WAV 48000 Hz 2 ch       preview   3299 KB  (would fetch)
+ 255775  S06Russian.wav                                kwahmah_02          CC BY 3.0       110.0 s  4.7 (14)    WAV 7119 Hz 1 ch        preview    744 KB  (would fetch)
+ 343740  Radio transmission morse code @4606.2kHz Pol  NebulousRoyale      CC0 1.0          76.3 s  4.7 (51)    WAV 8000 Hz 1 ch        preview    499 KB  (would fetch)
+ 855480  Radio — Generative Sound by Glorb             bassimat            CC0 1.0         120.0 s  5.0 (1)     WAV 44100 Hz 2 ch       preview   1865 KB  (would fetch)
+ 658932  Dial-up_sound.mp3.flac                        thearchiveguy99     CC0 1.0          19.3 s  4.9 (102)   FLAC 96000 Hz 1 ch      preview    427 KB  (would fetch)
+ 546450  The Sound of dial-up Internet                 wtermini            CC0 1.0          28.7 s  4.9 (150)   MP3 48000 Hz 2 ch       preview    657 KB  (would fetch)
+
+17 sounds, 24.1 minutes in all; licences: cc-by 5, cc-by-nc 1, cc0 10, sampling-plus 1
+would fetch: 28.05 MB
+
+[18 requests, 0.018 MB transferred]
+```
+
+#### The 17 sounds (from Freesound's API)
+
+| # | Id | Name | Author | Licence | Length | Rating | Original |
+|---|---|---|---|---|---|---|---|
+| 1 | [11859](https://freesound.org/people/medialint/sounds/11859/) | analog_noise_arped_radio_static.wav | medialint | Sampling+ 1.0 | 11.7 s | 4.3 (38) | WAV, 96000 Hz, 2 ch |
+| 2 | [719588](https://freesound.org/people/AlexMurphy53/sounds/719588/) | Handheld radio music and static | AlexMurphy53 | CC BY 4.0 | 41.8 s | 4.7 (11) | MP3, 48000 Hz, 2 ch |
+| 3 | [615189](https://freesound.org/people/theplax/sounds/615189/) | radio11.wav | theplax | CC BY 4.0 | 14.1 s | 4.9 (11) | WAV, 48000 Hz, 2 ch |
+| 4 | [730109](https://freesound.org/people/-CASK-/sounds/730109/) | Shortwave Radio static with indistinguishable foreign chatter and static | -CASK- | CC BY 4.0 | 172.1 s | 4.8 (8) | FLAC, 44100 Hz, 2 ch |
+| 5 | [625095](https://freesound.org/people/wwstudioswastaken/sounds/625095/) | radio_static_01.flac | wwstudioswastaken | CC0 1.0 | 84.7 s | 4.9 (19) | FLAC, 96000 Hz, 1 ch |
+| 6 | [34418](https://freesound.org/people/ERH/sounds/34418/) | morse static.wav | ERH | CC BY 4.0 | 4.9 s | 4.2 (36) | WAV, 44100 Hz, 2 ch |
+| 7 | [396902](https://freesound.org/people/vedas/sounds/396902/) | Full radio sweep.wav | vedas | CC0 1.0 | 296.8 s | 4.9 (42) | WAV, 44100 Hz, 2 ch |
+| 8 | [652596](https://freesound.org/people/exsil/sounds/652596/) | Vintage Radio Tuning 5.WAV | exsil | CC0 1.0 | 110.8 s | 4.7 (21) | WAV, 44100 Hz, 2 ch |
+| 9 | [30302](https://freesound.org/people/acclivity/sounds/30302/) | CS3B_beacon.wav | acclivity | CC BY-NC 4.0 | 11.9 s | 3.5 (11) | WAV, 44100 Hz, 1 ch |
+| 10 | [722884](https://freesound.org/people/cognito%20perceptu/sounds/722884/) | harsh analog fm radio flips | cognito perceptu | CC0 1.0 | 21.3 s | 5.0 (6) | WAV, 44100 Hz, 2 ch |
+| 11 | [557532](https://freesound.org/people/finneganmilla/sounds/557532/) | radio tuning fm.mp3 | finneganmilla | CC0 1.0 | 165.3 s | 4.1 (14) | MP3, 44100 Hz, 2 ch |
+| 12 | [624412](https://freesound.org/people/nlux/sounds/624412/) | Radio Music - A MakeNoise Morphagene Reel | nlux | CC0 1.0 | 156.2 s | 5.0 (18) | WAV, 48000 Hz, 2 ch |
+| 13 | [255775](https://freesound.org/people/kwahmah_02/sounds/255775/) | S06Russian.wav | kwahmah_02 | CC BY 3.0 | 110.0 s | 4.7 (14) | WAV, 7119 Hz, 1 ch |
+| 14 | [343740](https://freesound.org/people/NebulousRoyale/sounds/343740/) | Radio transmission morse code @4606.2kHz Poland | NebulousRoyale | CC0 1.0 | 76.3 s | 4.7 (51) | WAV, 8000 Hz, 1 ch |
+| 15 | [855480](https://freesound.org/people/bassimat/sounds/855480/) | Radio — Generative Sound by Glorb | bassimat | CC0 1.0 | 120.0 s | 5.0 (1) | WAV, 44100 Hz, 2 ch |
+| 16 | [658932](https://freesound.org/people/thearchiveguy99/sounds/658932/) | Dial-up_sound.mp3.flac | thearchiveguy99 | CC0 1.0 | 19.3 s | 4.9 (102) | FLAC, 96000 Hz, 1 ch |
+| 17 | [546450](https://freesound.org/people/wtermini/sounds/546450/) | The Sound of dial-up Internet | wtermini | CC0 1.0 | 28.7 s | 4.9 (150) | MP3, 48000 Hz, 2 ch |
+
+**The licences, and what they mean for us.** All of them allow keeping the
+previews in `zombie-radio-datasets/`, outside git; the licence matters only for
+what may later be committed to the public fork (§8.3):
+
+| Licence | Sounds | What it allows us |
+|---|---|---|
+| **CC0** | 10 — #5, 7, 8, 10, 11, 12, 14, 15, 16, 17 | public domain: commit and play them, no credit needed |
+| **CC BY** | 5 — #2, 3, 4, 6 (4.0), 13 (3.0) | commit and play them **with a credit** — the `.json`'s `licence.credit` |
+| **CC BY-NC** | 1 — #9 (the beacon) | non-commercial only: it stays outside git, like the EARS voices |
+| **Sampling+ 1.0** | 1 — #1 | a retired Creative Commons licence made for sampling and remixing; the agent's suggestion: treat it like CC BY-NC — outside git |
+
+**What the agent noticed, for the owner's listening** (not objections):
+
+- **Length.** Five are shorter than the 20 s a bed clip wants (§8.8, refinement
+  1): #1 (11.7 s), #3 (14.1 s), #6 (4.9 s), #9 (11.9 s), #16 (19.3 s) — frequent
+  joins if used as bed clips, or short bursts between long ones. #7 (296.8 s) is
+  longer than 240 s — fine.
+- **Kind.** All 17 went to `radio-static/`, as the owner named them. Some are
+  Morse (#6, #14), a beacon (#9) and dial-up modems (#16, #17) — candidates for
+  the rarer second layer of §8.5 ("radio bleed") if the owner wants it apart.
+
+#### The download (2026-10-01, 22:14:36 to 22:21:13 CDT)
+
+Approved by the owner ("yes, download all 17 into radio-static"). The real
+output's last lines:
+
+```
+17 sounds, 24.1 minutes in all; licences: cc-by 5, cc-by-nc 1, cc0 10, sampling-plus 1
+fetched: 28.05 MB
+page: /Users/alfredo/workspace/hackTNT_2026/zombie-radio-datasets/sounds/pages/index-2026-10-01T22:14:37.html
+
+[35 requests, 28.064 MB transferred]
+```
+
+**No throttling, no error.** 6 minutes 37 seconds for 28 MB: Freesound's CDN
+served the larger previews at about 40-60 s each; the pauses were at most 70 s
+of it (2 s × 35, and none after a request that itself took longer than 2 s).
+
+**Checked after the download:**
+
+- 17 `.mp3` and 17 `.json` files, no `.part` left; the folder 27 MB (`du -sh`).
+- **Each file's size and SHA-256 equal its `.json`'s:** 17 of 17. (The agent's
+  first check also tested how each file begins and flagged #13 and #14 — a
+  mistake in the check, not the files: they begin `ff e3`, an MPEG-2 frame, as
+  low-rate MP3s do, where the others begin `ff fb`; the check was re-run on the
+  size and hash alone.)
+- **Every MP3 reads, and its length matches Freesound's** to 0.2 s (macOS
+  `afinfo`):
+
+| # | File | Preview bytes | Length (afinfo) | Bit rate | Preview's rate |
+|---|---|---|---|---|---|
+| 1 | `11859-analog-noise-arped-radio-static.mp3` | 316,032 | 11.7 s | 215 kbps | 48,000 Hz, 2 ch |
+| 2 | `719588-handheld-radio-music-and-static.mp3` | 999,312 | 41.8 s | 191 kbps | 48,000 Hz, 2 ch |
+| 3 | `615189-radio11.mp3` | 335,904 | 14.1 s | 190 kbps | 48,000 Hz, 2 ch |
+| 4 | `730109-shortwave-radio-static-with-indistinguishable-foreign-chatte.mp3` | 4,094,696 | 172.2 s | 190 kbps | 44,100 Hz, 2 ch |
+| 5 | `625095-radio-static-01.mp3` | 1,858,368 | 84.8 s | 175 kbps | 48,000 Hz, 1 ch |
+| 6 | `34418-morse-static.mp3` | 105,414 | 4.9 s | 171 kbps | 44,100 Hz, 2 ch |
+| 7 | `396902-full-radio-sweep.mp3` | 6,264,252 | 296.8 s | 169 kbps | 44,100 Hz, 2 ch |
+| 8 | `652596-vintage-radio-tuning-5.mp3` | 2,493,758 | 110.8 s | 180 kbps | 44,100 Hz, 2 ch |
+| 9 | `30302-cs3b-beacon.mp3` | 268,001 | 11.9 s | 180 kbps | 44,100 Hz, 1 ch |
+| 10 | `722884-harsh-analog-fm-radio-flips.mp3` | 502,278 | 21.4 s | 188 kbps | 44,100 Hz, 2 ch |
+| 11 | `557532-radio-tuning-fm.mp3` | 3,137,048 | 165.4 s | 152 kbps | 44,100 Hz, 2 ch |
+| 12 | `624412-radio-music-a-makenoise-morphagene-reel.mp3` | 3,377,760 | 156.2 s | 173 kbps | 48,000 Hz, 2 ch |
+| 13 | `255775-s06russian.mp3` | 762,336 | 110.2 s | 55 kbps | 8,000 Hz, 1 ch |
+| 14 | `343740-radio-transmission-morse-code-4606-2khz-poland.mp3` | 510,768 | 76.5 s | 53 kbps | 8,000 Hz, 1 ch |
+| 15 | `855480-radio-generative-sound-by-glorb.mp3` | 1,909,588 | 120.0 s | 127 kbps | 44,100 Hz, 2 ch |
+| 16 | `658932-dial-up-sound-mp3.mp3` | 436,992 | 19.3 s | 181 kbps | 48,000 Hz, 1 ch |
+| 17 | `546450-the-sound-of-dial-up-internet.mp3` | 672,792 | 28.7 s | 187 kbps | 48,000 Hz, 2 ch |
+
+#13 and #14 are the lo-fi ones (about 55 kbps, 8 kHz mono): their originals
+were recorded at 7,119 Hz and 8,000 Hz — the recordings, not the download; a
+shortwave radio sounds like that.
+
+**Where they are:**
+`/Users/alfredo/workspace/hackTNT_2026/zombie-radio-datasets/sounds/freesound/radio-static/`;
+the page of players `sounds/pages/index-2026-10-01T22:14:37.html` (one row per
+sound: the id linked to its page, the name and author, the licence, the length,
+a player). The datasets folder's `README.txt` gained a `sounds/` section (the
+tree, the licences, the tool).
+
+```bash
+# Listen: open the fetch's page of players in the browser
+open "/Users/alfredo/workspace/hackTNT_2026/zombie-radio-datasets/sounds/pages/index-2026-10-01T22:14:37.html"
+```
+
+#### The tool's two flaws, found in the download and fixed
+
+1. **A wasted request per file:** the first version measured each preview with a
+   `HEAD` request even when downloading it — 35 requests where 18 would do. Now
+   a download is a single `GET` (its size known from the bytes), the `HEAD` only
+   in a dry run, and a file already here costs no request.
+2. **Silent until the end:** Python holds its printed lines back when the output
+   goes to a pipe (`| tee`), so the download looked stuck for minutes. Now the
+   output is written line by line.
+
+**Checked:** the dry run again on the 17 — `17` lines "(already here)", `[1
+requests, 0.018 MB transferred]` (the one API request; before the fix, 18);
+and the download path with the network stubbed (no real request): a new file —
+one `GET`, no `HEAD`; the same fetch again — no request; a dry run — no
+request; the credit line written.
+
+#### Next
+
+The owner's listening: 5-15 clips for the bed (§8.7, step 2) — said in chat, or
+written into each `.json`'s `ours.verdict` (`keep` / `reject`) and `ours.notes`.
+Then the shape in the fork (§8.7, step 3).
 
 ## §7. Sources
 
