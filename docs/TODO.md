@@ -84,9 +84,19 @@ it is detail.*
   mutes it; the story's `bed.yaml` switches each clip on or off. Built in
   alfre2v/TalkWithZombies#10 with this repository's tools (#22: the
   Freesound fetch, `tools/sounds/prepare_bed.py`), heard by the owner:
-  "I think technically we have met and exceeded our goals." **Open:** the
-  owner's narrower-filter test, the clips' picks, the credits for the
-  talk, then a release ([discussion 2026-10-01] sound-effects §8.20).
+  "I think technically we have met and exceeded our goals." **The clips
+  ship with the app:** eight chosen by the owner by ear, one by one (CC0
+  and CC BY only; credited in the fork's `Sounds/bed/CREDITS.md`).
+  **Released 2026-10-02** as the fork's **`tz-0.6`**, an annotated tag on
+  `5347ead` (#10 and #22 merged; the merge identical to the tested branch
+  head `c898d21`; the fork's tests green on it: 1284 passed, Node 42 /
+  17 / 91 / 8 / 29); the installer pinned to it (#23) and **re-proven by
+  the owner on 2026-10-02** ("Ran make client-mac the two times, all as
+  expected."; `git describe` `tz-0.6`, the clips in the bed folder), then
+  checked from the API (the start reply, the clips served, the pages, a
+  scripted show, the voice) and heard live: "All works well". **Open, before the demo (Task 10):** the narrower-filter
+  test, the clips' picks, the credits for the talk ([discussion
+  2026-10-01] sound-effects §8.20-§8.23).
 - **Next** — the agent's recommended order (2026-09-30), not yet ruled
   by the owner beyond its first pick (the 32k work, done): goal 4, **the
   3090** (owner action queue, item 3) → **names-only A** (the follow-up
