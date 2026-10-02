@@ -1280,6 +1280,46 @@ reader's memory):
   so the chat's settings page and its `PUT` are untouched. Tests: the
   reply carries the loaded values, not the file's.
 
+## A cast member says another's line — Daniel introduces himself as Samantha (owner, 2026-10-02)
+
+- **The statement:** in an exchange, the model wrote Samantha's self-introduction under Daniel's name. The owner,
+  during the first live test of `tz-0.6` (verbatim): "Ok, I am running a live test of the app. All works well,
+  however I did notice Daniel assume a line from Samantha: "Daniel (happy): This is Dr. Samantha Reyes. We're in a lab
+  near a wood and a swamp. Over."... Shame I did not run this with debug on, is there any way to check what happened
+  in this round? Where does that answer come from?"
+- **Where flagged — the evidence, from the run's record** (debug was off, so no prompt was kept; the record
+  `~/TalkWithZombies-client/runs/2026-10-02T17-27-56/script.json`, outside git, holds the rest): **round 18, an
+  exchange**, after the listener spoke (Whisper heard "Hello, hello, this is Sargent Pepper from California requesting
+  information about the disease", no-speech probability 0.017). The director's instruction (verbatim, from the
+  record): "… Speak to the voice directly. Answer what the voice said, then: Find out who the voice is. If the voice
+  already said their name, greet them by it and ask how they found this frequency. The last line asks the voice a
+  question. Samantha speaks first, then Daniel, Moira or Ralph: the next three lines, each with the emotion in its
+  voice, one of: happy, hopeful, excited, relieved. Let the tone be: vaudevillian." The three lines, all written by the
+  model (`fixed: false`):
+  1. Samantha (relieved): "Hello there! We're back, and we need your help. Over."
+  2. **Daniel (happy): "This is Dr. Samantha Reyes. We're in a lab near a wood and a swamp. Over."**
+  3. Moira (hopeful): "You're Sargent Pepper? How did you find this frequency? Over."
+- **Why (the agent's reading, 2026-10-02):** the round's grammar pins Samantha to the first line, and every line after
+  it may only be Daniel's, Moira's or Ralph's (the fork's `app/show/grammar.py`, `build_grammar(..., first=...)`:
+  `speaker ::= "Daniel" | "Moira" | "Ralph"` after the pinned line) — Samantha cannot appear on line 2. Greeting a new
+  caller, the model's natural next move was the operator identifying herself; forced to open line 2 with another name,
+  it wrote Daniel's, then the words it meant for Samantha. **The grammar forces the speaker, not the content.** Half
+  the line is copied from the script itself: round 1's orientation had Samantha say "We're in a lab near a wood and a
+  swamp, no name, no address…" — the phrase's only earlier use in the run.
+- **Trigger:** not set — the owner's call (seen once: round 18 of the live test, 24 rounds when inspected). Run the
+  next live tests with `debug: true` under the client's `show:`: the debug files keep the exact prompt and request of
+  every round.
+- **The fix shape — three options, none chosen:**
+  1. **The instruction:** say plainly that each line is said by its speaker, as themselves, and that only Samantha
+     introduces herself as Samantha (a sentence in the exchange's instruction, `app/show/director.py`).
+  2. **Let Samantha speak again** after her pinned first line in an exchange (the grammar's `speaker` keeps all four),
+     so she can finish her own greeting — at the cost of Samantha dominating more rounds.
+  3. **A check in the stream parser:** a line whose speaker introduces themselves as another cast member ("This is Dr.
+     Samantha Reyes" from Daniel) is dropped, as the parser already drops malformed lines; the cast's full names are in
+     the story's cast sheet.
+- **To see a round again without debug:** the director is a pure function of the run's record and its seed, so round
+  18's prompt could be rebuilt from `script.json` and sent again — not while a live show holds the model's one slot.
+
 ## A long silence between two lines of one round, not explained (owner, 2026-09-28)
 
 - **What was seen:** in the owner's listen of the installed `tz-0.2`

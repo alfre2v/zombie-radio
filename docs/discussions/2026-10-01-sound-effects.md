@@ -2916,6 +2916,37 @@ silent rule nobody would remember.
    client (`git describe` at `tz-0.6`, the 8 clips tracked, nothing
    untracked but `.DS_Store`, a second run `changed=0`).
 
+#### The re-proof, five checks from the API, and a live test
+
+**The owner (verbatim):** "Ran make client-mac the two times, all as
+expected." — `git describe`: `tz-0.6`; "Clips are in the bed folder."; "hosts.yml
+wired, tunnel is up." The agent's look at the client (read-only): `tz-0.6`;
+tracked under `Sounds/bed/`: the 8 clips, `bed.json`, `CREDITS.md`; nothing
+untracked but `.DS_Store`; **no `show:` section** in its `settings.yaml` — the
+demo's configuration. Then (the owner: "Before we do an actual test. Is there
+some test you want to drive yourself from the api…" — "start it yourself and
+run all five checks"), the client's own app started by the agent on port 8000
+(`uvicorn` from `~/TalkWithZombies-client`), the five checks, the app stopped:
+
+| # | Check | Result |
+|---|---|---|
+| 1 | the start reply | the run opened (the start check passed on the 32k server); debug off, voice seed off, a random story seed; the bed: the demo's settings (silences on, filter off), 8 clips at their measured gains, **#14 at exactly 0.5012 of its own — 10^(−6/20)** |
+| 2 | the clips served | all 8: 200, `audio/mpeg`, byte-exact; a range: 206; **12 refused** (404): the 9 rejected names, `bed.json`, `CREDITS.md`, a traversal |
+| 3 | the pages | both looks load `bed.js`; the plain page not, with `&bed=on` yes, `&mock=1` not; the served `bed.js` byte-identical to `tz-0.6`'s (15,052 bytes) |
+| 4 | a scripted show (`drive_show.py --rounds 6 --report`) | 6 rounds in 5.8 s, 14 lines, 0 dropped, the director's limits kept; two events as fixed lines, the Repair at round 6. The report's other five criteria (10 rounds, the listener's words, a silence, the trim, debug files) belong to a full checkpoint drive and cannot pass on a short drive in the demo's configuration — by design |
+| 5 | the voice (`/api/tts`) | 200; a line with the story's *calm* clip (`ref.wav`), 4.6 s of speech; a line with `ref-fear.wav`, used as asked, 2.7 s of speech, synthesized in 1.1 s. (The agent's first request asked for a guessed `ref-calm.wav`, which does not exist; the app fell back to `ref.wav`, as designed.) |
+
+Two short runs left in the client's `runs/` (gitignored): `17-23-32` (check 1)
+and `17-23-57` (the drive).
+
+**The owner's live test** (the demo's configuration): "All works well". One
+oddity — Daniel saying Samantha's introduction in an exchange (round 18 of run
+`2026-10-02T17-27-56`): traced from the run's record (debug was off) to the
+grammar, which pins Samantha to the first line and lets only the others speak
+after it — the model wrote her intended words under Daniel's name. Recorded in
+`docs/follow-ups.md`, "A cast member says another's line — Daniel introduces
+himself as Samantha", with the evidence and three options (none chosen).
+
 ## §7. Sources
 
 - [Stable Audio 3 — the paper (arXiv 2605.17991)](https://arxiv.org/html/2605.17991)
