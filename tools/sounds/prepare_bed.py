@@ -1,16 +1,20 @@
 """Prepare the static bed for the app: tools/sounds/bed.yaml says which clips are copied into it.
 
 For each listed Freesound id, the clip is found in the pool (fetched by fetch_freesound.py), measured and copied
-unchanged into the app's folder (bed.yaml's app:, e.g. ~/TalkWithZombies-client/Sounds/bed). bed.json beside the
-copies holds the facts about them: each clip's file, length, level and gain, the gain bringing the clip's average
-level to loudness_dbfs. The level is measured on the mono mix the page plays, (left + right) / 2, decoded with
-macOS's afconvert. Which clips play, and any change of a clip's level by ear, is the story's to say (the fork's
-stories/<story>/bed.yaml). Nothing is written without --write; files of an earlier bed.json that are no longer
-listed are removed, and nothing else in the folder is touched.
+unchanged into the app's folder (bed.yaml's app:, the fork's checkout beside this one: ../TalkWithZombies/Sounds/bed).
+The clips ship with the app, so the folder is committed in the fork through a pull request; never write into an
+installed client, whose tracked files would then differ from its release. Only clips whose licence allows
+redistribution in the fork (CC0, CC BY) are copied: any other stops the tool, and nothing changes.
+
+Beside the copies, bed.json holds the facts about them: each clip's file, length, level and gain, the gain bringing
+the clip's average level to loudness_dbfs; the level is measured on the mono mix the page plays, (left + right) / 2,
+decoded with macOS's afconvert. CREDITS.md credits every clip, the CC BY credit lines marked as required. Which clips
+play, and any change of a clip's level by ear, is the story's to say (the fork's stories/<story>/bed.yaml). Nothing
+is written without --write; files of an earlier bed.json that are no longer listed are removed, and nothing else in
+the folder is touched.
 
   uv run python tools/sounds/prepare_bed.py
   uv run python tools/sounds/prepare_bed.py --write
-  uv run python tools/sounds/prepare_bed.py --write --app ../TalkWithZombies/Sounds/bed
 """
 
 import argparse
@@ -30,6 +34,8 @@ import yaml
 
 REPO = Path(__file__).resolve().parents[2]
 MANIFEST = "bed.json"
+CREDITS = "CREDITS.md"
+REDISTRIBUTABLE = {"cc0", "cc-by"}
 
 
 def read_float_wav(path):
@@ -107,6 +113,26 @@ def previous_files(app):
     return {c["file"] for c in json.loads(manifest.read_text(encoding="utf-8"))["clips"]}
 
 
+def credits(rows):
+    by = [r for r in rows if r["licence_class"] == "cc-by"]
+    free = [r for r in rows if r["licence_class"] == "cc0"]
+    lines = [
+        "# The static bed's clips: credits",
+        "",
+        "The radio static the show plays under the voices. Every clip comes from Freesound (https://freesound.org),",
+        "as the high-quality MP3 preview Freesound serves (converted by Freesound from the uploaded original),",
+        "otherwise unchanged; `bed.json` beside this file lists them with their gains. Written by zombie-radio's",
+        "`tools/sounds/prepare_bed.py`.",
+        "",
+        "## Credit required by the licence (CC BY)",
+        "",
+    ]
+    lines += [f"- {r['credit']}" for r in by] or ["- (none)"]
+    lines += ["", "## Public domain (CC0): no credit required, credited with thanks", ""]
+    lines += [f"- \"{r['name']}\" by {r['author']} ({r['page']}), {r['licence']}" for r in free] or ["- (none)"]
+    return "\n".join(lines) + "\n"
+
+
 def main():
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument("--config", type=Path, default=Path(__file__).resolve().parent / "bed.yaml")
@@ -119,6 +145,7 @@ def main():
     pool = Path(cfg["pool"]).expanduser()
     pool = (pool if pool.is_absolute() else REPO / pool).resolve()
     app = (args.app or Path(cfg["app"])).expanduser()
+    app = (app if app.is_absolute() else REPO / app).resolve()
     target = cfg["loudness_dbfs"]
     clips = parse_clips(cfg["clips"])
 
@@ -129,6 +156,10 @@ def main():
         clip["meta"] = json.loads(clip["src"].with_suffix(".json").read_text(encoding="utf-8"))
         if sha256(clip["src"]) != clip["meta"]["file"]["sha256"]:
             sys.exit(f"{clip['src']}: its SHA-256 differs from its .json's; nothing changed")
+    barred = [f"{c['id']} ({c['meta']['licence']['name']})" for c in clips
+              if c["meta"]["licence"]["class"] not in REDISTRIBUTABLE]
+    if barred:
+        sys.exit(f"not redistributable in the fork (only CC0 and CC BY): {', '.join(barred)}; nothing changed")
 
     print(f"pool {pool}\napp  {app}\nloudness {target} dBFS (the mono mix's average level)\n")
     rows = []
@@ -182,7 +213,8 @@ def main():
     part = app / (MANIFEST + ".part")
     part.write_text(json.dumps(manifest, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
     part.replace(app / MANIFEST)
-    print(f"\nwritten: {len(rows)} clips and {MANIFEST} in {app}")
+    (app / CREDITS).write_text(credits(rows), encoding="utf-8")
+    print(f"\nwritten: {len(rows)} clips, {MANIFEST} and {CREDITS} in {app}")
 
 
 if __name__ == "__main__":

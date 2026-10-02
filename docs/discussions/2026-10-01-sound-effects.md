@@ -2666,6 +2666,149 @@ runbook (one source); a small docs test against drift.
 
 **Checked:** pytest **1281 passed** (1280 before: the drift test).
 
+### §8.22 The clips chosen by ear, one by one; Task A done — the bed ships with the app (2026-10-02)
+
+Task B committed and pushed (the fork's `07ca8e7`, this repository's
+`6625289`). **The owner (verbatim)**, opening Task A: "Now, for Task A, before
+starting executing, I should eliminate audio files that do not perform well or
+with incompatible licenses: We will remove the files with the problematic
+licenses: `CS3B_beacon.wav` and `analog_noise_arped_radio_static.wav` (we can
+remove them completely from `bed.yaml` and even their entries in metadata
+bed.json). They are not good quality anyway. Then, we will go together one by
+one with the rest of the files examining which ones we could remove. You had a
+shortlist of files that you thought were not a good fit for several reasons.
+Let's start by revisiting that list."
+
+#### Two measures, to back the agent's ear-less guesses
+
+On the mono mix the page plays (ffmpeg): **the share of energy above 4 kHz**
+(two highpass filters at 4 kHz, then `volumedetect`, against the clip's full
+level) — where hiss stings; and **the loudness range** (LRA, EBU R 128,
+`ebur128`) — how much the level jumps inside the clip.
+
+| # | Id | Clip | Length | Above 4 kHz | LRA |
+|---|---|---|---|---|---|
+| 2 | 719588 | Handheld radio music and static | 42 s | 5.6 % | 9.9 LU |
+| 3 | 615189 | radio11 | 14 s | 1.5 % | 3.0 LU |
+| 4 | 730109 | Shortwave Radio static with indistinguishable foreign chatter | 172 s | 6.0 % | 4.7 LU |
+| 5 | 625095 | radio_static_01 | 85 s | 1.6 % | 11.9 LU |
+| 6 | 34418 | morse static | 5 s | 0.2 % | 2.0 LU |
+| 7 | 396902 | Full radio sweep | 297 s | **24.5 %** | 11.3 LU |
+| 8 | 652596 | Vintage Radio Tuning 5 | 111 s | 11.7 % | 9.3 LU |
+| 10 | 722884 | harsh analog fm radio flips | 21 s | 7.8 % | 4.4 LU |
+| 11 | 557532 | radio tuning fm | 165 s | 1.3 % | 5.3 LU |
+| 12 | 624412 | Radio Music - A MakeNoise Morphagene Reel | 156 s | 0.5 % | 9.5 LU |
+| 13 | 255775 | S06Russian | 110 s | 0.0 % | 2.6 LU |
+| 14 | 343740 | Radio transmission morse code @4606.2kHz Poland | 76 s | 0.0 % | 3.4 LU |
+| 15 | 855480 | Radio — Generative Sound by Glorb | 120 s | 6.8 % | 3.7 LU |
+| 16 | 658932 | Dial-up_sound | 19 s | 2.1 % | 5.8 LU |
+| 17 | 546450 | The Sound of dial-up Internet | 29 s | 1.5 % | **13.8 LU** |
+
+(#13 and #14 have nothing above 4 kHz: their recordings were made at 7,119
+and 8,000 Hz.)
+
+#### The review, clip by clip
+
+Each presented with its uploader's own description (read from its `.json`),
+the two measures, the case for and against, and the agent's lean; the owner's
+answer verbatim.
+
+| # | The agent's lean | The owner (verbatim) | Verdict |
+|---|---|---|---|
+| 1, 9 | — (licences: Sampling+ 1.0, CC BY-NC 4.0; the fork is MIT) | "They are not good quality anyway." | **out** |
+| 17, 16 | remove: computer modems, not a radio; #17 the busiest (13.8 LU) | "yes, remove both dial-up modems." | **out** |
+| 10 | lean remove: harsh by its own name (7.8 %), abrupt band flips | "yes, remove #10" | **out** |
+| 7 | lean remove: the harshest by far (24.5 %), busy, the longest (a fifth of a pass) | "yes, remove #7" | **out** |
+| 13 | lean keep: S06, a real numbers station (numbers read in groups of three) — iconic shortwave; a faint murmur under a line | "yes, keep #13. The fact that the voice is speaking in Russian adds to the mystery and the atmosphere." | **kept** |
+| 2 | lean keep: "voices and static… perfect for any Silent Hill-esque project" (the uploader) — the horror games' radio that crackles when monsters near | "yes, keep #2. As an interesting note: in the beginning of this clip you can hear a voice talking in what I think is a slavic language, maybe Russian too." | **kept** |
+| 12 | lean keep: ten splices of real shortwave from the WebSDR in Enschede (the same receiver as #13), soft on the ear; abrupt joins, some music | "yes, keep #12. Sounds very intriguing, and it's not so aggressive to my ears." | **kept** |
+| 6 | lean remove: 5 s, a switch click that may pass for a glitch; Morse covered by #14 | "yes, remove #6" | **out** |
+| 3 | lean keep, mildly: an old multiband receiver, tuning and voices; short (14 s) | "lets remove #3" | **out** |
+| 8 | lean keep: a real vintage receiver swept across every band; the harshest kept (11.7 %) — the filter test may tame it | "yes, keep #8." | **kept** |
+| 4 | lean keep: the textbook "other stations bleeding in" (QRM) | "yes, keep #4. As a note: the foreign voices speak in an Asian language, probably Chinese." | **kept** |
+| 5 | lean keep: the only pure static; the busiest left (11.9 LU) | "yes, keep #5. I do not find it so easy on the ears. But it sounds like the real deal. I can always disable it later in the bed.yaml if I dislike it." | **kept** |
+| 11 | lean keep: someone tuning FM by hand, Italian and French talk; FM, not shortwave | "yes, keep #11" | **kept** |
+| 14 | lean keep: a real Morse transmission at 4,606.2 kHz, "sent by a human" (the uploader) | "Keep #14. Make a note to lower this one in the control we have in the gain_db, it annoys my ears, but it is the real thing, so we keep it." | **kept, `gain_db` −6** |
+| 15 | lean keep: synthesized by GLORB in Python (NumPy, SciPy) — a gift for a Python talk; may sound artificial | "No, let's remove #15, now that I hear it better it sounds very artificial." | **out** |
+
+Asked along the way — "Remind me what is Task 10.1. and why we depend on it?"
+— the agent: the narrower-filter test (TODO Task 10, item 1); #8's harshness
+sits above 4 kHz, the very band the AM filter removes: if the test turns the
+filter on by default, keeping #8 costs nothing; if not, #8 is the first to drop
+if the bed still tires the ear — a soft dependency, not a blocker.
+
+**The result: 8 kept, 9 out.** Kept: #2, #4, #5, #8, #11, #12, #13, #14 — 15.3
+minutes, **17.23 MB**, 5 CC0 and 3 CC BY (#2, #4, #13: their credit lines
+required). With the two incompatible clips gone entirely, **every clip kept may
+ship**: `.gitignore` needs no list of exceptions, and the guard moves into the
+tool.
+
+#### "What pool?" — and the two last choices
+
+**The owner (verbatim):** "I like the shape. But, I don't understand this. What
+pool?" — the pool is §8.3's term for **the raw downloads**,
+`zombie-radio-datasets/sounds/freesound/radio-static/` (outside git, beside
+the checkouts): all 17 clips as fetched, each with its `.json`, whose last
+section (`ours`: `kind`, `verdict`, `notes`) was left empty for us; the chosen
+set is the fork's `Sounds/bed/`, copied from it by `prepare_bed.py`. Step 3
+would fill each `ours` with the verdict and the reason — a convenience beside
+each file; the record is this section. **The owner:** "keep step 3 and add the
+consistency test, go ahead".
+
+#### Task A, executed
+
+**This repository** (uncommitted):
+
+- `tools/sounds/bed.yaml` — the 8 ids; the target **the fork's checkout**
+  (`app: ../TalkWithZombies/Sounds/bed`, resolved from this repository), never
+  an installed client again (a tracked file changed there would make the
+  installer refuse the clone).
+- `tools/sounds/prepare_bed.py` — **the licence guard:** a clip that is not
+  CC0 or CC BY stops the tool, naming it, and nothing changes; **`CREDITS.md`**
+  written beside `bed.json` (the CC BY credit lines under "Credit required by
+  the licence", the CC0 clips "credited with thanks"; the files described as
+  Freesound's high-quality MP3 previews, converted by Freesound from the
+  uploaded originals, otherwise unchanged).
+- **The guard, tested:** a scratch copy of the list with 30302 and 11859 added
+  → "not redistributable in the fork (only CC0 and CC BY): 30302 (CC BY-NC
+  4.0), 11859 (Sampling+ 1.0); nothing changed" (the folder still 18 files).
+- **The dry run, then the write** into the fork's dev checkout: 8 clips, 15.3
+  minutes, 17.23 MB; the 9 rejected copies removed; checked — 8 entries in
+  `bed.json`, 8 copies byte-identical to the pool, licence classes only `cc0`
+  and `cc-by`. The installed client untouched (still its 17 copies and
+  `bed.json`: 18 files).
+- **The pool** (outside git): each of the 17 `.json`s' `ours` filled —
+  `verdict` (9 `reject`, 8 `keep`), `notes` (the reason, with the owner's words
+  where there were some), `reviewed` (the date and this section).
+
+**The fork** (uncommitted):
+
+- **`Sounds/bed/`**, committed for the first time: the 8 clips, `bed.json`,
+  `CREDITS.md`; **`.gitignore`** loses its `Sounds/` line.
+- **`stories/lab-outbreak/bed.yaml`** — the 8 clips (all enabled), #14 at
+  `gain_db: -6` under a comment quoting the owner; the header: the clips ship
+  with the app, chosen by ear on 2026-10-02.
+- **Docs:** the README's licence paragraph (the eight clips from Freesound,
+  under their own licences, CC0 and CC BY, with a link to `CREDITS.md`);
+  `show-page.md` ("The clips": shipped, chosen by ear, credited; a change goes
+  through a pull request; the tool's licence guard); the docstrings of
+  `app/config.py`, `app/show/bed.py`, `app/show/story.py`; `AGENTS.md`'s
+  coverage map.
+- **The consistency test** (`tests/test_show_bed.py`, `TestShippedBed`, on the
+  committed files): every clip the shipped story enables is on disk and in the
+  manifest (the play list equals the story's enabled list — which clips is not
+  pinned); every shipped clip is CC0 or CC BY; `CREDITS.md` names every clip
+  and carries every CC BY credit line. **Proven:** one entry of a backed-up
+  copy of the story's `bed.yaml` pointed at a clip not shipped (#7) → "1
+  failed"; restored, `cmp`-identical.
+- **Checked:** pytest **1284 passed** (1281 before: the three shipped-bed
+  tests); Node 42 / 17 / 91 / 8 / 29; no added code line over 120 characters.
+
+**The release, after the owner merges** (the trap of §8.21): delete the
+installed client's untracked `Sounds/bed/` copies and the `Sounds/` line of its
+`.git/info/exclude`; then the tag, the installer pinned to it,
+`make client-mac`, and a check that the client holds the 8 tracked clips.
+
 ## §7. Sources
 
 - [Stable Audio 3 — the paper (arXiv 2605.17991)](https://arxiv.org/html/2605.17991)
