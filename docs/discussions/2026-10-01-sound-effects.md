@@ -2180,6 +2180,91 @@ folders (2026-10-02, 00:19 CDT): nothing copied, `bed.json` rewritten; checked
 **Next:** step 3, the owner's listening, with the tunnel up (the owner wired
 `hosts.yml` for it — never staged).
 
+### §8.17 Step 3, the first listen; the volume's scale (2026-10-02, night)
+
+Committed (the fork's `c5288bf`, this repository's `5db744c`) and opened as
+alfre2v/TalkWithZombies#10 and alfre2v/zombie-radio#22 (the owner: "Let's
+open the PRs too, I would like to review the diffs on github too."). The dev
+server on port 8010 with `debug: true` added under `show:` (the dev
+checkout's `settings.yaml` backed up in the scratchpad, to restore with
+`cmp`); the tunnel probed (200 on all three; `/props`: `n_ctx 32768`, one
+slot).
+
+**The owner, listening (verbatim):** "I am testing the audio. Man it's
+amazing." Then: "Let's keep the settings as they are. If anything I think I
+will end up lowering the bed volume in general... turns out listening to
+static is annoying... even on purpose... 😃 So, technically the results are
+very impressive... But for my ear the static is very annoying... Regardless,
+let's leave the volume as it is."
+
+**The volume moving with the voices — already built** (the owner asked):
+0.15 while the page waits, 0.05 from a round's first voice clip to the end of
+its playing, a dip over 0.5 s and a rise over 1.5 s, silent while push-to-talk
+is held — per round, not per line, so it does not pump in the 80-250 ms gaps
+between chunks and lines. From 0.15 to 0.05 is a third of the amplitude,
+−9.5 dB: audible, gentle by design. **Not built yet:** the random brief ups
+and downs (the fading, QSB) — the second build.
+
+#### The volume's scale
+
+**The owner (verbatim):** "So, explain the "Bed level" scale that we have in
+our settings. This is the volume control. Right? … Is this in decibels? If I
+wanted to lower the volume of all the bed audio play all across the board, what
+values would you propose to try?"
+
+`bed_volume_voice` and `bed_volume_between` are the volume controls — **plain
+multipliers on the sound's amplitude, not decibels.** 0 is silence; 1 is a
+clip at the clips' common level (−20 dBFS, the average every clip is first
+brought to by its own gain in `bed.json`); 0.15 multiplies that sound by 0.15.
+`bed_dip_s` and `bed_rise_s` are not volumes: they are the seconds a change
+takes. The owner asked for the explanation as a comment above the settings
+(verbatim): "bed_volume_voice and bed_volume_between are the volume controls.
+They are plain multipliers on the sound's amplitude (not decibels). bed_dip_s
+and bed_rise_s are the seconds a change takes" — added to the fork's
+`app/config.py`, and to its runbook (`show-page.md`, "The static bed").
+
+**In decibels:** 20 × log₁₀(value). Rules of thumb: −6 dB is half the
+amplitude; −10 dB sounds about half as loud.
+
+| Setting | Value | In dB |
+|---|---|---|
+| `bed_volume_between` | 0.15 | −16.5 dB |
+| `bed_volume_voice` | 0.05 | −26.0 dB |
+
+**To lower the whole bed, multiply both by the same factor** — the dip keeps
+its shape ("between" stays 3 times "voice", 9.5 dB apart):
+
+| Try | `bed_volume_between` | `bed_volume_voice` | Change |
+|---|---|---|---|
+| a little quieter (× 2/3) | 0.10 (−20.0 dB) | 0.035 (−29.1 dB) | about −3.5 dB |
+| **half the amplitude** (× 1/2; the agent's first suggestion) | **0.075** (−22.5 dB) | **0.025** (−32.0 dB) | **−6 dB** |
+| about half as loud (× 1/3) | 0.05 (−26.0 dB) | 0.017 (−35.4 dB) | about −9.5 dB |
+
+(In the chat the last row read 0.015 and "−10 dB", rounded; a third of 0.05 is
+0.017, and × 1/3 is −9.5 dB.) Under `show:` in `settings.yaml`, with a restart
+of the app. **The owner kept the defaults for now.**
+
+**Other levers against "annoying"** (the agent's): switch off the harshest
+clips in the story's `bed.yaml` (the dial-up modems #16 and #17, the "harsh
+analog fm radio flips" #10 are candidates) — the owner: "Agreed, will do
+eventually"; and the second build: the silences on a timer give the ear
+regular breaks, and the AM filter takes the hiss's sharp high end off.
+
+#### "No restart" — and a correction
+
+**The owner (verbatim):** "but what do you mean with "no restart"?" The app
+reads `settings.yaml` **once, when it starts** (the uvicorn process): a
+change of a setting needs the app stopped and started again. It reads the
+story — `stories/lab-outbreak/bed.yaml` among its files — **each time a run
+opens** (the start route calls `load_story`): a change of `bed.yaml` needs
+only a new run, the app left running. **The correction:** §8.16 and the
+first runbook text said "change a line, press Start"; but the page shows
+Start only on a fresh page (`setState`: Start is visible in `idle`, or after
+a failed first start) — after a run has opened, the page offers Stop and
+Resume, and **Resume continues the same run, with the list it opened with**.
+So: change the line, **reload the show page, press Start**. Corrected in the
+fork's `bed.yaml` header and runbook.
+
 ## §7. Sources
 
 - [Stable Audio 3 — the paper (arXiv 2605.17991)](https://arxiv.org/html/2605.17991)
