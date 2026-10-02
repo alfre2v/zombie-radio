@@ -66,7 +66,9 @@ it is detail.*
   (alfre2v/TalkWithZombies#9 and this repository's #20 merged; the merge
   identical to the tested branch head `8a32bd7`, the fork's tests green
   on it: 1210 passed, Node 42 / 17 / 91 / 8); the installer pinned to
-  it; **the owner's re-proof pending**. The installed client needs the
+  it (#21) and **re-proven by the owner on 2026-10-01** ("re-proof
+  passed, installed at tz-0.5"; the client checked out at `tz-0.5`, its
+  settings the demo's: no `show:` section). The installed client needs the
   box at 32k: its 34,000 budget does not fit a 16k context, and the
   start check would refuse every run.
 - **Also written:** [discussion 2026-10-01] judge-in-the-loop — a fast
