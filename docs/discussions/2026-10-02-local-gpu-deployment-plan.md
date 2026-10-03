@@ -7,7 +7,10 @@ deployment to a local GPU, the owner's 3090): what is already built, what the
 playbook requires and does to a machine, the decisions to make, the facts to
 gather, and an executable plan; meant to guide the task when it opens.
 **Status:** OPEN — scouting done (2026-10-02, evening), nothing built; the
-owner's facts (§5) and decisions (§4) next; the task not opened yet.
+owner's facts (§5) and decisions (§4) next; the task not opened yet. **§8
+(the same night):** an SSH key login from the Mac to the 3090 (`ssh
+zr-3090`, done), the repo cloned there, a Claude session to start there with
+the Mac's memory copied and a ready prompt (§8.4).
 **Trigger to revisit:** the owner's facts from the 3090 (§5), or the task
 opening.
 
@@ -172,3 +175,129 @@ never in a document or a commit** (the rule for every box).
   `ANS_ARGS=-K` asks for the password.
 - **Time:** the demo is 2026-10-08; the deploy itself is minutes, the
   unknowns are the prerequisites (§5).
+
+## §8. Addendum, 2026-10-02, night — working on the 3090: three tracks, and where they stand
+
+**The owner (verbatim):** "So, I installed Claude Code also in the 3090 linux
+desktop. My idea was to work from inside the machine with you to diagnose any
+problem with a model. However, I do not see this project transcripts in the
+linux Claude App. What is going on?"
+
+**Why no transcripts:** Claude Code keeps each session **on the machine where
+it ran** — the Mac's under
+`~/.claude/projects/-Users-alfredo-workspace-hackTNT-2026-zombie-radio-claude/`
+(a `.jsonl` per session), and the agent's memory in a `memory/` folder beside
+them; local sessions are not synced between machines (only cloud sessions
+live on a server), and the folder is named after the repo's path, which
+differs on Linux. A session on the 3090 starts with no history and no memory —
+but with **the memory of record**, `CLAUDE.md` and `docs/`, once the repo is
+cloned there. (Checked on the 3090: `~/.claude` existed with **no
+`projects/` folder** — no Code session had run there yet.)
+
+**Three ways were offered** — A: this Mac session reaches the 3090 over SSH;
+B: a fresh session on the 3090, started with a re-orientation prompt; C: the
+Mac's memory folder copied to the 3090. **The owner (verbatim):** "I will go
+with a combination of A, B and C. How about that? 😃 — I want to exercise
+having Claude in the linux host just to prove how mature Claude's Linux support
+is. — I want to try to transfer you memories folder, that sounds interesting.
+— And I want to establish an ssh-key login between this machine and the linux
+3090, for many reasons, but this will allow you also to issue commands there."
+
+### §8.1 Track A — the SSH key login (done)
+
+Run by the owner (passwords and keys are the owner's):
+
+```bash
+# On the 3090: an SSH server, started now and at every boot
+sudo apt install -y openssh-server && sudo systemctl enable --now ssh
+# On the Mac: a dedicated key for the 3090 (like ~/.ssh/hyperstack_2026 for the cloud), with a passphrase
+ssh-keygen -t ed25519 -f ~/.ssh/zombie_radio_3090 -C "mac to 3090, zombie-radio"
+# On the Mac: the key's public half onto the 3090 (asks the 3090's password once)
+ssh-copy-id -i ~/.ssh/zombie_radio_3090.pub <user>@<the 3090's address>
+# On the Mac: the key in the agent, its passphrase kept in the macOS Keychain (asked one last time)
+ssh-add --apple-use-keychain ~/.ssh/zombie_radio_3090
+```
+
+The owner (verbatim), before the last step: "It asks to enter the passphrase
+every time. I think the step of putting the key in the authority agent is
+missing, no?" — yes. Then **an alias in the owner's `~/.ssh/config`** (the
+owner's file, never read by the agent):
+
+```
+Host zr-3090
+    HostName aorusX570.local
+    User alfredo
+    IdentityFile ~/.ssh/zombie_radio_3090
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+    UseKeychain yes
+```
+
+`ssh zr-3090 '<cmd>'` — no user, key or address typed, so **the address never
+appears in a command or its output**; `aorusX570.local` (the machine's name on
+the LAN) survives a new address from the router. The owner: "done, ssh zr-3090
+works without passphrase." The same key is the one decision D3 needs for the
+playbook.
+
+**A wall, and the way around it.** From the agent's command shell (the Bash
+tool), the 3090 was unreachable — `ping` and `ssh`, by name or by address,
+inside and outside the sandbox: "No route to host" at once, though the name
+resolved (IPv4 and IPv6) and the route was direct (`en0`, no gateway): the
+signature of macOS's Local Network privacy check. **The owner (verbatim):**
+"Claude already had the local network permission. We have been here before,
+in another project, you probably have no memory off... Suffice to say, we gave
+up trying to figure out the problem." **What works:** the app's **Terminal
+panel** — the agent types `ssh zr-3090 '…'` into a tab of it and reads the
+output: `aorusX570`, user `alfredo`. (Recorded in the agent's memory so no
+session re-diagnoses it.)
+
+**The 3090, as found over SSH (read-only):** hostname `aorusX570`; user
+`alfredo`; **Ubuntu 22.04.5 LTS**; git 2.34.1; **the Claude desktop app**
+installed (the `claude-desktop` package, 2.19675.0; no `claude` command on the
+PATH, the app carries its own); `~/.claude` without `projects/`.
+
+### §8.2 Track B — the repo on the 3090, and a session there (in progress)
+
+**Done:** both repositories are public, so no credentials were needed;
+`~/workspace/hackTNT_2026/zombie-radio-claude` cloned (the same relative place
+as on the Mac), on `main` at `df01fb2` (#23), in step with GitHub. **This
+document and the board are on #24, not yet merged:** after the merge, `git pull`
+on the 3090 (or #24's branch checked out there).
+
+**Next, the owner:** open a Code session in the Linux Claude app in
+`~/workspace/hackTNT_2026/zombie-radio-claude` once, and close it — Claude Code
+then creates its project folder for that path.
+
+### §8.3 Track C — the memory folder copied (next)
+
+Once that folder exists: list `~/.claude/projects/` on the 3090 for its exact
+name (expected `-home-alfredo-workspace-hackTNT-2026-zombie-radio-claude`, by
+the Mac's rule — every `/` and `_` becomes `-` — checked, not assumed); copy the
+Mac's memory folder (its small markdown files: the index `MEMORY.md`, the
+working agreements, the collaboration style, the path conventions, …) into it
+with `scp`, through the Terminal panel, and list them there. **Caveats:** the
+memory mentions Mac paths (`/Users/alfredo/…`); it is a snapshot — the two
+copies drift apart from the day of the copy; the repo stays the shared memory
+of record.
+
+### §8.4 The Linux session's first prompt (to paste once the memory is copied)
+
+```
+We continue the Zombie-Radio work on the owner's Linux desktop (hostname aorusX570, Ubuntu 22.04.5, an RTX 3090). A Claude session on the owner's Mac has worked on this project for weeks; its memory folder was copied here (you may see it as recalled memories). Its paths mention the Mac (/Users/alfredo/...); here the repo is ~/workspace/hackTNT_2026/zombie-radio-claude. Re-orient before doing anything:
+
+1. Read CLAUDE.md, then docs/README.md, then docs/discussions/2026-10-02-local-gpu-deployment-plan.md in full: it is our plan for the demo's goal 4 (deploying the stack to this 3090 with the Ansible playbook).
+2. Run the plan's §5 read-only checks on this machine (the OS, the GPU and its driver, Docker and its NVIDIA runtime, the NVIDIA container toolkit, free disk, the SSH server, the ports 8080/8001/8002) and report each result, explained simply.
+3. Then stop and wait for my go. Change nothing on this machine: no installs, no sudo, no services.
+
+Standing rules: discussion-first; review before commit (I review in VS Code, no diffs in chat); never commit or push without my explicit order, and keep to one branch at a time (the Mac session also works on this repo); no AI attribution anywhere; my words verbatim in docs; never put any machine's IP address in a document or commit; never print or commit secrets; explain simply and explicatively; never invent data.
+```
+
+The prompt asks only for the read-only checks, and keeps the Linux session from
+changing the machine or the repo until the owner's go. **Then** the two
+sessions can cross-check: the Linux one from inside, the Mac one over
+`ssh zr-3090`.
+
+**Where the night stopped:** the context of the Mac session at 87 %; the owner
+(verbatim): "Wait, the context window is at 87%, let's save this prompt you
+created for the linux agent and any detail from this conversation that is
+important in the new plan document, then commit and push to the PR."
