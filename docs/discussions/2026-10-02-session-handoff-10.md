@@ -208,7 +208,9 @@ All in **[discussion 2026-10-01] sound-effects §8.9-§8.23** unless said otherw
 
 ## §5. The work in flight: goal 4, the local 3090
 
-Read **`docs/discussions/2026-10-02-local-gpu-deployment-plan.md`** in full. In short: the `local` inventory exists
+Read **`docs/discussions/2026-10-02-local-gpu-deployment-plan.md`** in full — **§8.5 above all** (the agent cannot
+run anything against the 3090 from its own shell; the `ssh` alias works only for the name `zr-3090`; the Makefile's
+tunnel overrides it). In short: the `local` inventory exists
 but is designed to run **on** the 3090 (`ansible_connection: local`) and was never run; the playbook **asserts, never
 installs** Ubuntu, Docker, the NVIDIA container toolkit, a driver ≥ R525 (R570 proven, `cu128`); services start at
 every boot, bound to loopback; **the Makefile's `ssh-tunnel` reads the user and key only from `common_vars.yml`**.
@@ -309,7 +311,8 @@ levelling, the bed's lists per round kind, event sounds (ledger); the crossfade 
 
 1. This document, in full.
 2. `git status -sb` and `git log --oneline -5` in both repos; `gh pr list` in both (#24 open, unless merged).
-3. `docs/discussions/2026-10-02-local-gpu-deployment-plan.md` — §8 first (where goal 4 stands), then §4-§6.
+3. `docs/discussions/2026-10-02-local-gpu-deployment-plan.md` — §8 first (where goal 4 stands; **§8.5, the execution
+   details**), then §4-§6. And §14 of this document (the second pass).
 4. `docs/discussions/2026-10-02-board-before-demo.md`.
 5. `docs/TODO.md` "Now".
 6. As needed: `docs/discussions/2026-10-01-sound-effects.md` §8.20-§8.23; the fork's `docs/runbooks/show-settings.md`.
@@ -344,3 +347,53 @@ Standing rules: strict review-before-commit (I review in VS Code — no diffs in
   · "I want to try to transfer you memories folder, that sounds interesting."
 - On the LAN wall: "We have been here before, in another project … Suffice to say, we gave up trying to figure out the
   problem."
+
+## §14. Second pass — details that would otherwise be lost
+
+The owner, before the compaction (verbatim): "Are you certain you captured in the handoff document all nuanced details
+about where we are in the project, what our next tasks are, where the pertinent documents to pick up the state of the
+project live, etc.? Maybe you should do another deep scan over your context window to try to find details that would
+be lost if not saved to the handoff." — the agent's second pass added this section, and **§8.5 of the local-GPU plan**
+(the execution details: the agent cannot run anything against the 3090 from its own shell; the `ssh` alias applies
+only to the name `zr-3090` and the Makefile's tunnel overrides it with the Hyperstack key and `ubuntu@`; Ansible's own
+SSH options; `ANS_ARGS=-K` for sudo; one tunnel at a time; no release needed for goal 4).
+
+- **Where the clips can be heard:** the page of players of the owner's 17 finds,
+  `/Users/alfredo/workspace/hackTNT_2026/zombie-radio-datasets/sounds/pages/index-2026-10-01T22:14:37.html` (open it
+  in a browser); each clip's `.json` carries the owner's `verdict` and `notes`. The datasets folder's `README.txt` has
+  a `sounds/` section.
+- **The Freesound credential** is "zombie-radio sound test" on the owner's account; the key file above. Fetching more
+  clips: `python3 tools/sounds/fetch_freesound.py --kind radio-static --ids <ids or links>` (dry run), then `--fetch`
+  on the owner's approval; then add the ids to `tools/sounds/bed.yaml`, `uv run python tools/sounds/prepare_bed.py`
+  (dry run) and `--write` (into the fork's checkout), the story's `bed.yaml` entry, the tests, a PR in each repo.
+- **Changing the static's filter default** (Task 10.1's possible outcome) is a code change in the fork (the
+  `bed_filter*` defaults in `app/config.py`, the tests' defaults, the runbook) and **a new release** (a tag `tz-0.7`, the
+  installer pinned, a re-proof); for the demo alone, the client's `settings.yaml` (`show:` `bed_filter: true` and the
+  band) is enough — no release.
+- **The release pattern** (as for `tz-0.5` and `tz-0.6`): the PRs merged → the fork's `master` checked against the
+  tested branch head (`git diff --stat`) → all tests on `master` → an annotated tag in the style of the previous ones
+  (`git tag -l --format=… tz-0.5`) pushed → a zombie-radio branch `alfre2v/installer-tz-X` (`client_version`, the
+  README's and the spec's tag, the spec's description if the product changed, the TODO, the discussion) → PR → the
+  owner's `make client-mac` twice → the agent's checks on the client (`git describe`, `git status`, the start reply, …).
+- **Re-running `prepare_bed.py --write` rewrites `Sounds/bed/bed.json`** (its `prepared` time) even when nothing else
+  changed — a one-line diff in the fork to expect.
+- **The fork's runbook for the bed** says "reload the page, then Start" after a `bed.yaml` change; the settings need an
+  app restart; the address switches (`&bed=on`, `&voice=off`, `&mock=1`) and the keys (Space held, M, F) need nothing.
+- **Local branches** in both repos (many, merged) — the owner: "Leave the branches. I'll clean up later." Do not
+  delete them.
+- **The Terminal panel's tabs `c1`-`c4`** (the 3090 checks) are idle; reuse or close them with `stop_terminal_tab`.
+- **Scratchpad, useful files** (same session folder; may vanish with the machine's `/private/tmp`):
+  `settings.yaml.before-bed` (the dev checkout's original settings), `story-bed.yaml.backup` (the story's `bed.yaml`
+  as generated), `bed.js.part2.backup`, `part2/` (the part-2 set-aside), `show-settings.md.backup`,
+  `owner-finds.txt` (the 17 links), `chunk_levels.py`, `chunk_levels_by_clip.py`, `test_fetch_path.py`,
+  `client-start.json` (the client's start reply), `served-bed.js` / `tag-bed.js`, the PR bodies (`pr-fork-bed.md`,
+  `pr-zr-sound.md`, `pr-installer-tz-0.6.md`, `pr-todo.md` — #24's, with its "Added since" sections).
+- **Talk material that came up** (Task 9): the S06 numbers station (#13, a real Russian shortwave broadcast); the
+  radio amateurs' Q-codes — QRN (static), QRM (interference, the "mixed stations" clips), QSB (the fading) —
+  ([discussion 2026-10-01] sound-effects §8.12); `afconvert -c 1` keeping only the left channel; the voices' level
+  set by the mood clips' delivery (§8.19); the dead air between rounds (3.7-4.9 s, 8.4 s after a trim) filled by the
+  bed; the one-by-one choice of the clips by ear with two measures; "two Claudes, one 3090".
+- **Owner questions still open, asked in the plan's §5:** what else the 3090 is used for (games, other GPU work), and
+  the §5 checks' results. The board's items 5-6 (the venue's network; demo-day logistics) wait for the owner's facts.
+- **Pushing:** this handoff and the plan's §8.5 are committed on `alfre2v/todo-2026-10-02` but **not pushed** until the
+  owner says so; #24's description lists the commits up to `9ee2075` — add "Added since" lines when pushing.

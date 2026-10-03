@@ -301,3 +301,47 @@ sessions can cross-check: the Linux one from inside, the Mac one over
 (verbatim): "Wait, the context window is at 87%, let's save this prompt you
 created for the linux agent and any detail from this conversation that is
 important in the new plan document, then commit and push to the PR."
+
+### §8.5 Details for the execution, from the night's work (the agent's second pass)
+
+The owner, before the compaction (verbatim): "Regarding the new plan document, make another deep pass trying to find
+details in your context window about our discussion about the topic that would be lost in compaction that could serve
+to enrich the document and better guide us during execution?" What the night taught, for §6's steps:
+
+1. **The agent cannot run anything against the 3090 from its own command shell** (§8.1's wall). Every step that
+   reaches the 3090 — `make ans-check-syntax` is hostless and fine, but `make ans-deploy ENV=local`, `make ssh-tunnel
+   ENV=local`, `ssh`, `scp` — runs **in the owner's terminal, or in the app's Terminal panel** (the agent types it
+   there with `run_in_terminal` and reads it with `read_terminal`). The deploys are the owner's anyway (§0.1 of the
+   handoffs).
+2. **The owner's `~/.ssh/config` alias applies only to the name `zr-3090`.** `ssh` reads the alias's options (user
+   `alfredo`, the key, `UseKeychain`) when it is asked to dial **`zr-3090`**; dialling `aorusX570.local` or the
+   address skips them. Two consequences for D1 and D3:
+   - **wiring with the alias** — `make ans-set ENV=local IP=zr-3090` (the target takes any string; the sentinel is
+     replaced by it) — would let Ansible's `ssh` find the user, the key and the Keychain through the owner's config,
+     and keep any address out of the inventory file (even then, `hosts.yml` is wired and unwired like the cloud's);
+   - **but the Makefile's `ssh-tunnel` forces its own user and key on the command line** — `-i
+     ~/.ssh/hyperstack_2026` and `ubuntu@<host>` (read from `common_vars.yml`), plus `SSH_TOFU_OPTS` (`-o
+     IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new -o UserKnownHostsFile=~/.config/zombie-radio/known_hosts`)
+     — and command-line options win over the config file: as it stands, the tunnel to the 3090 would offer the wrong
+     key as the wrong user. **The fix stays D3's**: `ssh-tunnel` reads the user and key from the env's `99-<env>.yml`
+     when set (and the same for the playbook's `ansible_user` / `ansible_ssh_private_key_file` in `99-local.yml`).
+3. **Ansible's own SSH options apply to the 3090 too** (`common_vars.yml`): `IdentitiesOnly`, trust on first use
+   (`accept-new`) into the project's own `~/.config/zombie-radio/known_hosts` (not `~/.ssh/known_hosts`), and only the
+   declared key — so `99-local.yml` must declare `~/.ssh/zombie_radio_3090`; its passphrase comes from the macOS agent
+   (Keychain), which `ssh` uses when run from the owner's shell.
+4. **Sudo:** the cloud's `ubuntu` has passwordless sudo; the 3090's `alfredo` likely not — the deploy then needs
+   `ANS_ARGS=-K` (Ansible asks the sudo password at the start), typed by the owner, never by the agent.
+5. **One tunnel at a time:** the cloud's and the 3090's tunnels forward the same local ports (8080, 8001, 8002); close
+   one before opening the other (the installed client points at those ports and needs no change).
+6. **The 3090's facts so far** (§8.1): Ubuntu 22.04.5 LTS (the playbook's Ubuntu assert passes; 22.04 is one of the
+   cloud images it was proven on); git 2.34.1; reachable on the LAN by name and key. **Still unknown — §5's checks:**
+   the driver branch, Docker, the NVIDIA container toolkit, free disk, the ports, and whether the desktop session holds
+   GPU memory; and the owner's answer on what else the 3090 is used for (D4).
+7. **Two Claude sessions on one repository** (the Mac's and the 3090's): one branch at a time; the 3090's clone
+   `git pull`s before work; neither commits without the owner's order (the §8.4 prompt says so).
+8. **A release is not needed for goal 4** — the deployment lives in this repository (the inventory, `99-local.yml`,
+   the Makefile); the app (`tz-0.6`) and the installed client stay as they are.
+9. **The evidence for the talk** (D5): the deploy's log (`~/.config/zombie-radio/logs/`, as for the cloud), the second
+   run's `changed=0`, `nvidia-smi` on the 3090 against the A6000's 14,477 MiB, and a short recording of a show running
+   on it — and the story the owner wants to tell: the same playbook, from the same laptop, to a rented GPU or a GPU at
+   home, with Claude working on both machines.
