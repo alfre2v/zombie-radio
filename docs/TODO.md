@@ -39,7 +39,10 @@ it is detail.*
   2026-10-02 — below); 2. emotional voices in support of the
   narration — **met** (2026-09-30, below); 3. automated deployment to a
   cloud GPU — **met** (since 2026-09-18); 4. automated deployment to a
-  local GPU (the 3090) — **built, never run**.
+  local GPU (the 3090) — **built, never run; the 3090 checked
+  (2026-10-02, all passed), then paused by the owner (2026-10-03) until
+  the owner is home again** ([discussion 2026-10-02]
+  local-gpu-deployment-plan §9).
 - **The engine and the looks** — Task 6 done 2026-09-28 (the fork's
   `tz-0.2`, "Done in this arc"); the looks the same night — a chooser at
   `/show`, `old-radio` and `amateur-radio-transmitter` with a live gauge
@@ -101,7 +104,8 @@ it is detail.*
   (Task 9) ([discussion 2026-10-01] sound-effects §8.20-§8.23).
 - **Next** — the agent's recommended order (2026-09-30), not yet ruled
   by the owner beyond its first pick (the 32k work, done): goal 4, **the
-  3090** (owner action queue, item 3) → ~~names-only A~~ (deferred past
+  3090** (paused 2026-10-03 until the owner is home; resumes with the
+  plan's decisions D1-D5) → ~~names-only A~~ (deferred past
   the demo, 2026-10-02) → ~~sound effects~~ (done: the static bed,
   `tz-0.6`) → **Task 10.1, the narrower-filter test** → **Task 7, the
   canned episode** (a MUST: a video of the app working, the owner
@@ -182,7 +186,10 @@ the agent keeps this current. These carry across arcs.*
    entry under "The cast:" in the fork's
    `stories/lab-outbreak/cast_sheet.md`, arriving as a pull request
    ([discussion 2026-09-23] show-engine-design §4). Unblocks Task 5a.
-3. **Check the home 3090 box's NVIDIA driver** — **due: the local GPU
+3. **Check the home 3090 box's NVIDIA driver** — **DONE (2026-10-02,
+   night): driver R580, and every other check passed**
+   ([discussion 2026-10-02] local-gpu-deployment-plan §9.2); kept until
+   the owner deletes it. Goal 4 paused 2026-10-03 (§9.5). Was: **due: the local GPU
    is the demo's goal 4 (the owner, 2026-09-30)**, built and never run;
    this check comes first — with the other read-only checks of
    [discussion 2026-10-02] local-gpu-deployment-plan §5 (the OS, Docker, the
