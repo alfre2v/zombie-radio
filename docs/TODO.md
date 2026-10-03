@@ -184,7 +184,10 @@ the agent keeps this current. These carry across arcs.*
    ([discussion 2026-09-23] show-engine-design §4). Unblocks Task 5a.
 3. **Check the home 3090 box's NVIDIA driver** — **due: the local GPU
    is the demo's goal 4 (the owner, 2026-09-30)**, built and never run;
-   this check comes first. Until 2026-09-30: DEPRIORITIZED
+   this check comes first — with the other read-only checks of
+   [discussion 2026-10-02] local-gpu-deployment-plan §5 (the OS, Docker, the
+   NVIDIA container toolkit, the disk, SSH, the ports); the plan's
+   decisions D1-D5 follow. Until 2026-09-30: DEPRIORITIZED
    (cloud-only demo), but note: it partially revives the day we
    test the playbook's localhost target ([discussion 2026-09-17]
    ruling 4).
