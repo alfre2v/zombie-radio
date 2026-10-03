@@ -29,13 +29,14 @@ this arc".
 
 ## Now — where the arc stands
 
-*Updated 2026-10-01, evening. Read this section first; everything below
+*Updated 2026-10-02. Read this section first; everything below
 it is detail.*
 
 - **The demo's four goals** (the owner, 2026-09-30; the README's "What
   the demo shows"; [discussion 2026-09-30] demo-goals): 1. story
-  coherence and improvisation — **largely met** (one show fix before
-  the talk: names-only A); 2. emotional voices in support of the
+  coherence and improvisation — **largely met** (names-only A, the show
+  fix once planned before the talk, deferred past the demo by the owner,
+  2026-10-02 — below); 2. emotional voices in support of the
   narration — **met** (2026-09-30, below); 3. automated deployment to a
   cloud GPU — **met** (since 2026-09-18); 4. automated deployment to a
   local GPU (the 3090) — **built, never run**.
@@ -94,28 +95,37 @@ it is detail.*
   the owner on 2026-10-02** ("Ran make client-mac the two times, all as
   expected."; `git describe` `tz-0.6`, the clips in the bed folder), then
   checked from the API (the start reply, the clips served, the pages, a
-  scripted show, the voice) and heard live: "All works well". **Open, before the demo (Task 10):** the narrower-filter
-  test, the clips' picks, the credits for the talk ([discussion
-  2026-10-01] sound-effects §8.20-§8.23).
+  scripted show, the voice) and heard live: "All works well". **Open,
+  before the demo (Task 10):** only the narrower-filter test — the clips'
+  picks done (the one-by-one review), the credits moved into the talk
+  (Task 9) ([discussion 2026-10-01] sound-effects §8.20-§8.23).
 - **Next** — the agent's recommended order (2026-09-30), not yet ruled
   by the owner beyond its first pick (the 32k work, done): goal 4, **the
-  3090** (owner action queue, item 3) → **names-only A** (the follow-up
-  "A listener memory keyed by identity") → **sound effects**, if wanted:
-  a library generated offline by an SFX model and played under the
-  events (an idea of 2026-09-30; a research pass first; it would absorb
-  the dead-air static) → **Task 7, the canned episode** (a MUST; record
-  it with `show.debug` on, and say any bad line again with the fork's
-  `scripts/replay_chunk.py --seed N`) → **Task 9, the talk** → the
+  3090** (owner action queue, item 3) → ~~names-only A~~ (deferred past
+  the demo, 2026-10-02) → ~~sound effects~~ (done: the static bed,
+  `tz-0.6`) → **Task 10.1, the narrower-filter test** → **Task 7, the
+  canned episode** (a MUST: a video of the app working, the owner
+  explaining it) → **Task 9, the talk** → the
   compressed reference clips, if the venue's uplink is slow → Task 8,
   the close ritual. Hard deadline 2026-10-08; the talk at the Austin
   Python Meetup in October 2026.
 - **Deferred past the demo (the owner, 2026-10-01):** Task 5, the
   in-prototype experiments, and the character bibles — moved to the
   follow-up "In-prototype experiments and the character bibles —
-  deferred past the demo".
-- **The box** (the A6000 on Hyperstack, kept up for live tests):
-  the choice to keep it or destroy it is due (owner action queue,
-  item 5).
+  deferred past the demo". **And (2026-10-02) names-only A**, the show
+  fix that would tell the model which earlier caller a voice is — the
+  owner (verbatim): "No, I have decided we are not going to execute "Names-only A" before the demo... Time is too tight, and I think we have already demonstrated enough technical depth in steering the model." The follow-up "A listener memory keyed by
+  identity" keeps the shape and the measurements. **And** the follow-up
+  "A cast member says another's line" (Daniel saying Samantha's
+  introduction, seen once in the live test of `tz-0.6`) — the owner:
+  "That's ok to postpone, the fix is busy work but not technically
+  challenge."
+- **The box** (the A6000 on Hyperstack): kept hibernated until demo
+  day, woken about 4 hours before the talk, a new VM deployed from zero
+  if the wake fails or by the owner's choice that day (owner action
+  queue, item 5, decided 2026-10-02).
+- **The board before the demo** — every item left, who does it, and
+  what was deferred: [discussion 2026-10-02] board-before-demo.
 - **At a session's end:** a fresh-session handoff replaces any
   mid-session one, and a handoff is deleted only with the owner's
   permission. The latest handoff stays until the next compaction, as
@@ -174,7 +184,10 @@ the agent keeps this current. These carry across arcs.*
    ([discussion 2026-09-23] show-engine-design §4). Unblocks Task 5a.
 3. **Check the home 3090 box's NVIDIA driver** — **due: the local GPU
    is the demo's goal 4 (the owner, 2026-09-30)**, built and never run;
-   this check comes first. Until 2026-09-30: DEPRIORITIZED
+   this check comes first — with the other read-only checks of
+   [discussion 2026-10-02] local-gpu-deployment-plan §5 (the OS, Docker, the
+   NVIDIA container toolkit, the disk, SSH, the ports); the plan's
+   decisions D1-D5 follow. Until 2026-09-30: DEPRIORITIZED
    (cloud-only demo), but note: it partially revives the day we
    test the playbook's localhost target ([discussion 2026-09-17]
    ruling 4).
@@ -184,8 +197,15 @@ the agent keeps this current. These carry across arcs.*
    MUST** (Task 7). Candidate on the radar: a tunnel that reconnects by
    itself (follow-ups, SSH keepalives — low priority).
 5. **The Hyperstack VM — hibernated, woken per box session.**
-   **Due now:** the timebox closed on 2026-09-28, so the choice it
-   waited for — keep hibernating the box or destroy it — is open. Woken
+   **Decided 2026-10-02 (the owner, verbatim):** "I will keep the machine
+   hibernated until the day of the presentation... That day, say 4 hours
+   before, I'll start trying to awake the VM... I might create a new VM
+   too to exercise the deployment live, I will make that decision that
+   same day." — the items that need the box (the filter test, the
+   video) come before it is hibernated, or need another wake
+   ([discussion 2026-10-02] board-before-demo, item 7). Until then: the
+   timebox closed on 2026-09-28, so the choice it
+   waited for — keep hibernating the box or destroy it — was open. Woken
    from hibernation 2026-09-23 on the same IP; hibernation is a full
    shutdown with the disk kept, so the box boots cold and every
    service comes back by itself (the TTS warms up on first use).
@@ -377,12 +397,20 @@ the agent keeps this current. These carry across arcs.*
   follow-up "In-prototype experiments and the character bibles —
   deferred past the demo" (`docs/follow-ups.md`).
 - [ ] **Task 7 — The canned episode (owner MUST) + demo-day
-  protocol runbook.** Recorded from the working prototype; the
-  runbook promotion deferred from the last arc lands here. The
-  seed makes retakes reproducible: on one server slot, the same
-  request and seed gave the same words 80 minutes apart
-  (2026-09-22) — record with the settings it will be replayed
-  with. **Before demo day, re-examine** the follow-up "Compressed
+  protocol runbook.** The emergency fallback for demo day (the owner,
+  2026-09-16: the "canned episode" emergency mode is a MUST): if the live
+  show fails at the venue, a recording of it is shown instead. **Its
+  form, ruled by the owner on 2026-10-02 (verbatim):** "Yes, recording a
+  video of the app working, while I explain some of the functionality is
+  enough...Let's keep it simple." — **a video of the app working, the
+  owner explaining some of its functionality.** Tips for the take:
+  `show.seed` set, so a retake replays the same story (on one server
+  slot, the same request and seed gave the same words 80 minutes apart,
+  2026-09-22); several takes, the best kept; check that the screen
+  recording also captures the browser's sound. If the video is
+  published, its description carries the static's credits line (Task
+  9). The runbook promotion deferred from the last arc lands here.
+  **Before demo day, re-examine** the follow-up "Compressed
   reference clips, switchable on and off" (the owner, 2026-09-30): if
   the venue's uplink is slow, build the switch and turn it on.
 - [ ] **Task 9 — Prepare the talk** (the owner, 2026-10-01: "Yes, add
@@ -398,11 +426,20 @@ the agent keeps this current. These carry across arcs.*
   survives; what it costs). After Task 7: the canned episode is the
   talk's safety net. Evidence to draw on: the experiments, the
   discussions, the measurements (the 32k context, the trim's fix, the
-  voices).
+  voices, the static bed). **The static's credits** (moved here from
+  Task 10.3, the owner, 2026-10-02: "yes, close 10.3 into Task 9"): one
+  line on the last slide — the radio static is from Freesound, credits at
+  `github.com/alfre2v/TalkWithZombies/blob/master/Sounds/bed/CREDITS.md`.
+  The repository is covered (the fork's README and `CREDITS.md`), but
+  the talk is a separate sharing: CC BY 4.0's "Share" includes public
+  performance, so the three CC BY clips (719588, 730109, 255775) must be
+  credited there, and CC BY allows doing it by a link to a page that
+  holds the credits.
 - [ ] **Task 10 — The static bed before the demo** (the owner,
   2026-10-02: "we will execute before the demo (so, they are priority,
   but not to execute today"). Three items left of the bed's plan
-  ([discussion 2026-10-01] sound-effects §8.20, §8.21):
+  ([discussion 2026-10-01] sound-effects §8.20, §8.21); two closed the
+  same day:
   1. [ ] **The narrower-filter test** — the owner's ear on bands
      narrower than today's 300-3,000 Hz, to learn whether the bed tires
      less and sounds more like an old radio with poor reception. The
@@ -413,13 +450,14 @@ the agent keeps this current. These carry across arcs.*
      restart of the app, the F key to compare; a narrower band sounds
      quieter (raise `bed_volume_*` a little for a fair test). May change
      `bed_filter`'s default or its band.
-  2. [ ] **The owner's picks of the clips** — switch off the harshest in
-     the fork's `stories/lab-outbreak/bed.yaml` (`enabled: false`; the
-     dial-up modems and the "harsh analog fm radio flips" are the
-     candidates named); the owner will add a related task.
-  3. [ ] **Credits for the talk** — the clips that are not CC0 need a
-     slide or a credits note; each clip's credit line is in
-     `Sounds/bed/bed.json` (`credit`); the owner will add a related task.
+  2. [x] **The owner's picks of the clips** — done 2026-10-02 by the
+     one-by-one review (sound-effects §8.22: 8 kept, 9 out; shipped in
+     `tz-0.6`). The owner (verbatim): "We can already mark "10.2, your
+     picks of the clips" as done, since I significantly removed audio
+     clips and I like the ones we left. No need to execute this task."
+  3. [~] **Credits for the talk** — moved into Task 9 (one line on the
+     last slide, a link to the fork's `Sounds/bed/CREDITS.md`). The owner:
+     "yes, close 10.3 into Task 9".
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes
