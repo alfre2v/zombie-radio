@@ -1,0 +1,11 @@
+project:
+  type: default
+  output-dir: _output
+
+format:
+  revealjs:
+    theme: night
+    slide-number: true
+    hash: true
+    embed-resources: true
+    footer: "Zombie-Radio · Austin Python Meetup · October 2026"

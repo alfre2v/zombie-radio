@@ -1,0 +1,35 @@
+# Intro {background-color="#1a0000"}
+
+::: {.notes}
+About 5 minutes.
+:::
+
+## [placeholder] Orson Welles, vibe coder
+
+The short clip, played from YouTube (needs the venue's internet).
+
+::: {.notes}
+The opening joke: Welles portrayed as a vibe coder.
+:::
+
+## [placeholder] Who I am, and how this project came to be
+
+::: {.notes}
+About 5 minutes in the owner's draft: the project's history and who the owner is.
+:::
+
+## [placeholder] A Halloween broadcast
+
+::: {.notes}
+Set the atmosphere: fun and fake horror.
+:::
+
+## [placeholder] Local AI only
+
+::: {.notes}
+Every model runs on a GPU we deploy ourselves: no API, no vendor.
+:::
+
+## [placeholder] The only zombies not allowed in this apocalypse are...
+
+The zombie CEOs' image goes here (deferred: an SVG, the companies' logos on the faces).

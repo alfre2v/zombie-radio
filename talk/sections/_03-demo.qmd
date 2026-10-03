@@ -1,0 +1,28 @@
+# The show {background-color="#00001a"}
+
+::: {.notes}
+About 10 minutes.
+:::
+
+## [placeholder] Three commands to go on air
+
+```bash
+# Wire the box (the address is never shown on screen)
+make ans-set ENV=cloud IP=<the box's address>
+# Open the SSH tunnel to the box
+make ssh-tunnel ENV=cloud
+# Serve the app on the laptop (127.0.0.1 only, the default)
+cd ~/TalkWithZombies-client
+.venv/bin/uvicorn app.main:app --port 8000
+```
+
+::: {.notes}
+The wiring and the tunnel are done before the talk, not live.
+:::
+
+## Live {background-color="#000000"}
+
+::: {.notes}
+Switch to the app and start a show; pause it to comment. Voice instabilities and the known defects (a line said under
+the wrong name) explained openly. Fallback: Task 7's video.
+:::

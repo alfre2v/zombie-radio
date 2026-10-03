@@ -1,0 +1,17 @@
+# Tech deep dive {background-color="#1a1a00"}
+
+## [placeholder] Behind the curtain: the architecture
+
+## [placeholder] The director, in plain Python
+
+## [placeholder] A grammar keeps the model in format
+
+## [placeholder] The stream parser
+
+## [placeholder] The 32k context, and the trim
+
+## [placeholder] One command to a GPU: Ansible and Docker
+
+## [placeholder] What it costs
+
+## [placeholder] The 3090 at home

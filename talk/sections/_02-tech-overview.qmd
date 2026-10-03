@@ -1,0 +1,25 @@
+# Tech overview {background-color="#001a00"}
+
+::: {.notes}
+About 5 minutes.
+:::
+
+## [placeholder] The components
+
+A big diagram of the app's components.
+
+::: {.notes}
+A few words on each component.
+:::
+
+## [placeholder] Where the AI runs, and how it got there
+
+A cloud VM on Hyperstack for the demo; a GPU at home as the other option. The client installed with one command:
+
+```bash
+make client-mac
+```
+
+::: {.notes}
+Where things run, not how the playbook works (that is the deep dive).
+:::
