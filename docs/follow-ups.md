@@ -607,8 +607,11 @@ reader's memory):
   kind-to-theme mapping in the story's overtones file, so another story
   brings its own; tests like the tone word's.
 
-## A listener memory keyed by identity — revisit how the show remembers a returning listener (owner, 2026-09-26)
+## A listener memory keyed by identity — revisit how the show remembers a returning listener (owner, 2026-09-26) — deferred past the demo (2026-10-02)
 
+- **Status 2026-10-02 — DEFERRED PAST THE DEMO.** The owner (verbatim):
+  "No, I have decided we are not going to execute "Names-only A" before the demo... Time is too tight, and I think we have already demonstrated enough technical depth in steering the model." Everything below stays as the shape to build after the demo;
+  the measurements of 2026-09-26 stand.
 - **Status 2026-09-26, evening — measured; RULING: names-only A, a show
   fix before the talk.** Step 3.4c.5's driver test ran B in two
   wordings and A simulated with a perfect extractor, on the same
@@ -688,8 +691,9 @@ reader's memory):
   the model misses a returning voice, mixes two listeners up, or the cap
   drops a listener who comes back later — or option A comes back for
   feature 5~~ — **fired 2026-09-26** (the driver test: B takes an
-  anonymous returning voice for the most recent caller). Now: among
-  the show fixes before the talk (slice 3 closed 2026-09-28).
+  anonymous returning voice for the most recent caller). Was among
+  the show fixes before the talk (slice 3 closed 2026-09-28); **deferred
+  past the demo by the owner on 2026-10-02** (status above).
 
 ## Event texts reworded as lines of dialog — a personal account from the cast (owner, 2026-09-27)
 
@@ -1280,8 +1284,11 @@ reader's memory):
   so the chat's settings page and its `PUT` are untouched. Tests: the
   reply carries the loaded values, not the file's.
 
-## A cast member says another's line — Daniel introduces himself as Samantha (owner, 2026-10-02)
+## A cast member says another's line — Daniel introduces himself as Samantha (owner, 2026-10-02) — deferred past the demo
 
+- **Status 2026-10-02 — DEFERRED PAST THE DEMO.** The owner (verbatim): "We are also not going to execute in this
+  follow up before the demo: "Follow-up, a cast member saying another's line"... I suppose this is the observation of
+  Daniel saying Samantha's line... That's ok to postpone, the fix is busy work but not technically challenge."
 - **The statement:** in an exchange, the model wrote Samantha's self-introduction under Daniel's name. The owner,
   during the first live test of `tz-0.6` (verbatim): "Ok, I am running a live test of the app. All works well,
   however I did notice Daniel assume a line from Samantha: "Daniel (happy): This is Dr. Samantha Reyes. We're in a lab
@@ -1306,9 +1313,9 @@ reader's memory):
   it wrote Daniel's, then the words it meant for Samantha. **The grammar forces the speaker, not the content.** Half
   the line is copied from the script itself: round 1's orientation had Samantha say "We're in a lab near a wood and a
   swamp, no name, no address…" — the phrase's only earlier use in the run.
-- **Trigger:** not set — the owner's call (seen once: round 18 of the live test, 24 rounds when inspected). Run the
-  next live tests with `debug: true` under the client's `show:`: the debug files keep the exact prompt and request of
-  every round.
+- **Trigger:** after the demo (the status above; seen once: round 18 of the live test, 24 rounds when inspected).
+  Until then, run live tests with `debug: true` under the client's `show:` when a round may need tracing: the debug
+  files keep the exact prompt and request of every round.
 - **The fix shape — three options, none chosen:**
   1. **The instruction:** say plainly that each line is said by its speaker, as themselves, and that only Samantha
      introduces herself as Samantha (a sentence in the exchange's instruction, `app/show/director.py`).
