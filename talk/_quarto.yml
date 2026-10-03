@@ -5,6 +5,8 @@ project:
 format:
   revealjs:
     theme: night
+    width: 1280
+    height: 720
     slide-number: true
     hash: true
     embed-resources: true

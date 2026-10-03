@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 20 1600 710" width="100%" style="font-family: 'Open Sans', Helvetica, Arial, sans-serif" role="img" aria-label="The machines: the laptop, the SSH tunnel, and the GPU box">
+<defs>
+<marker id="tip-b48cff" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#b48cff"/>
+</marker>
+<marker id="tip-d0d0d0" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#d0d0d0"/>
+</marker>
+</defs>
+<rect x="90" y="40" width="460" height="320" rx="16" fill="#0c0c0c" stroke="#d0d0d0" stroke-width="4"/>
+<rect x="118" y="72" width="404" height="120" rx="10" fill="#ff8c1a" fill-opacity="0.10" stroke="#ff8c1a" stroke-width="2.5"/>
+<text x="136" y="108" fill="#ff8c1a" font-size="24" font-weight="700" text-anchor="start" >The browser</text>
+<text x="136" y="136" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start" >the /show page: the show you hear</text>
+<rect x="118" y="210" width="404" height="120" rx="10" fill="#8fd14f" fill-opacity="0.10" stroke="#8fd14f" stroke-width="2.5"/>
+<text x="136" y="246" fill="#8fd14f" font-size="24" font-weight="700" text-anchor="start" >TalkWithZombies</text>
+<text x="136" y="274" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start" >FastAPI, Python · 127.0.0.1:8000</text>
+<polygon points="60,366 580,366 620,400 20,400" fill="#2a2a2a" stroke="#d0d0d0" stroke-width="3"/>
+<text x="320" y="444" fill="#eeeeee" font-size="28" font-weight="700" text-anchor="middle" >The laptop</text>
+<text x="320" y="474" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="middle" >the client: macOS</text>
+<rect x="40" y="510" width="560" height="200" rx="12" fill="#151515" stroke="#555555" stroke-width="1.5"/>
+<text x="64" y="548" fill="#b8b8b8" font-size="19" font-weight="400" text-anchor="start" >From the laptop, one command each:</text>
+<text x="64" y="596" fill="#8fd14f" font-size="24" font-weight="700" text-anchor="start" font-family="'JetBrains Mono', Menlo, Consolas, monospace">make client-mac</text>
+<text x="64" y="626" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start" >installs TalkWithZombies on the laptop</text>
+<text x="64" y="670" fill="#b48cff" font-size="24" font-weight="700" text-anchor="start" font-family="'JetBrains Mono', Menlo, Consolas, monospace">make ans-deploy ENV=cloud</text>
+<text x="64" y="700" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start" >deploys the AI to the GPU box</text>
+<line x1="604" y1="150" x2="1056" y2="150" stroke="#b48cff" stroke-width="3" stroke-dasharray="10 8" marker-end="url(#tip-b48cff)"/>
+<text x="830" y="132" fill="#b48cff" font-size="20" font-weight="700" text-anchor="middle" >make ans-deploy · Ansible over SSH</text>
+<text x="830" y="180" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle" >once: about 7 minutes from a fresh VM</text>
+<line x1="604" y1="300" x2="1056" y2="300" stroke="#d0d0d0" stroke-width="5" stroke-dasharray="4 8" marker-start="url(#tip-d0d0d0)" marker-end="url(#tip-d0d0d0)"/>
+<text x="830" y="282" fill="#eeeeee" font-size="20" font-weight="700" text-anchor="middle" >SSH tunnel · during the show</text>
+<text x="830" y="332" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="middle" font-family="'JetBrains Mono', Menlo, Consolas, monospace">localhost :8080  :8001  :8002</text>
+<text x="830" y="380" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle" font-style="italic">over the internet</text>
+<rect x="1060" y="40" width="500" height="420" rx="16" fill="#b48cff" fill-opacity="0.07" stroke="#b48cff" stroke-width="4"/>
+<text x="1084" y="80" fill="#b48cff" font-size="26" font-weight="700" text-anchor="start" >The GPU box: a VM on Hyperstack</text>
+<text x="1084" y="108" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start" >NVIDIA RTX A6000 (48 GB) · Ubuntu · Docker</text>
+<rect x="1084" y="128" width="452" height="96" rx="10" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="2.5"/>
+<text x="1102" y="164" fill="#b48cff" font-size="24" font-weight="700" text-anchor="start" >llama.cpp</text>
+<text x="1102" y="192" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start" >the language model: Nemotron Nano 9B v2</text>
+<rect x="1084" y="236" width="452" height="96" rx="10" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="2.5"/>
+<text x="1102" y="272" fill="#b48cff" font-size="24" font-weight="700" text-anchor="start" >tts-serve</text>
+<text x="1102" y="300" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start" >the voices: Faster Qwen3-TTS</text>
+<rect x="1084" y="344" width="452" height="96" rx="10" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="2.5"/>
+<text x="1102" y="380" fill="#b48cff" font-size="24" font-weight="700" text-anchor="start" >Whisper</text>
+<text x="1102" y="408" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start" >the listener&#x27;s ears: speech to text</text>
+<rect x="1060" y="510" width="500" height="200" rx="16" fill="none" stroke="#b48cff" stroke-width="2.5" stroke-dasharray="12 8"/>
+<text x="1084" y="556" fill="#b48cff" font-size="26" font-weight="700" text-anchor="start" >or: a home lab PC</text>
+<text x="1084" y="590" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start" >NVIDIA RTX 3090 (24 GB) · Ubuntu · Docker</text>
+<text x="1084" y="640" fill="#eeeeee" font-size="19" font-weight="400" text-anchor="start" >the same three services,</text>
+<text x="1084" y="668" fill="#eeeeee" font-size="19" font-weight="400" text-anchor="start" >deployed by the same playbook</text>
+</svg>

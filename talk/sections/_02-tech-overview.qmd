@@ -4,22 +4,26 @@
 About 5 minutes.
 :::
 
-## [placeholder] The components
+## The machines
 
-A big diagram of the app's components.
-
-::: {.notes}
-A few words on each component.
-:::
-
-## [placeholder] Where the AI runs, and how it got there
-
-A cloud VM on Hyperstack for the demo; a GPU at home as the other option. The client installed with one command:
-
-```bash
-make client-mac
+```{=html}
+{{< include images/_machines.svg >}}
 ```
 
 ::: {.notes}
-Where things run, not how the playbook works (that is the deep dive).
+Two machines and a tunnel. The laptop runs the browser and TalkWithZombies; the AI runs on a GPU box, a VM on
+Hyperstack for the demo, or a home lab PC with a 3090. One command installs the client, one deploys the AI; during the
+show, an SSH tunnel brings the box's three services to the laptop's localhost. Where things run, not how the playbook
+works (that is the deep dive).
+:::
+
+## The components
+
+```{=html}
+{{< include images/_components.svg >}}
+```
+
+::: {.notes}
+The same picture, opened up: the laptop's two parts and the box, the colours the same. A few words on each component.
+Three presses of the arrow key: the browser, then the app, then the GPU box.
 :::
