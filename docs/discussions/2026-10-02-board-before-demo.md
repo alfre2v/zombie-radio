@@ -78,3 +78,16 @@ Kept as follow-ups (`docs/follow-ups.md`); nothing to do before 2026-10-08.
 - **Task 10.3, the credits** — moved into Task 9 (item 3 above).
 - **The static bed** — released as `tz-0.6`, installed, re-proven, checked
   from the API and heard live: "All works well".
+
+## §5. Addendum, 2026-10-03 — item 4 (goal 4, the 3090) paused
+
+- **The 3090 checked (2026-10-02, night):** the plan's §5 checks all passed — Ubuntu 22.04.5, driver R580 with about
+  24 GB of the GPU free, Docker with the NVIDIA runtime, the container toolkit, the disk, SSH, the ports; sudo asks for
+  a password, so the deploy will ask it at the keyboard (`ANS_ARGS=-K`); the owner's lean: the services not started at
+  boot (a small change, estimated). The Mac's memory copied to the 3090's Claude session. Details: [discussion
+  2026-10-02] local-gpu-deployment-plan §9.
+- **Paused (2026-10-03).** The owner (verbatim): "We are going to pause for a time "Automated deployment to a local GPU
+  (the 3090)"... I am not at home now, so the only way to execute the AI heavy parts would be to awake the VM, which is
+  ok..." **Resumes when the owner is home again**, with the decisions D1-D5. Goal 4 stays a demo goal.
+- **Items 1 and 2 (the filter test, the video)** need a box: the cloud box, woken for them — the 3090 cannot stand in
+  while the owner is away from it.

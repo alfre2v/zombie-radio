@@ -6,13 +6,16 @@
 deployment to a local GPU, the owner's 3090): what is already built, what the
 playbook requires and does to a machine, the decisions to make, the facts to
 gather, and an executable plan; meant to guide the task when it opens.
-**Status:** OPEN — scouting done (2026-10-02, evening), nothing built; the
-owner's facts (§5) and decisions (§4) next; the task not opened yet. **§8
-(the same night):** an SSH key login from the Mac to the 3090 (`ssh
-zr-3090`, done), the repo cloned there, a Claude session to start there with
-the Mac's memory copied and a ready prompt (§8.4).
-**Trigger to revisit:** the owner's facts from the 3090 (§5), or the task
-opening.
+**Status:** PAUSED (2026-10-03) — scouting done (2026-10-02, evening),
+nothing built; the task not opened yet. **§8 (the same night):** an SSH key
+login from the Mac to the 3090 (`ssh zr-3090`, done), the repo cloned there,
+a Claude session there with the Mac's memory copied and a ready prompt
+(§8.4). **§9 (2026-10-02 night to 10-03):** the memory copied and checked,
+**the §5 checks all passed**, sudo by keyboard (`-K`) decided, the owner's
+lean on D4 (no start at boot) estimated; **paused by the owner while away
+from home** (§9.5).
+**Trigger to revisit:** the owner home again — then the decisions (§4),
+then §6 from step 2.
 
 ## §1. Why this document
 
@@ -345,3 +348,122 @@ to enrich the document and better guide us during execution?" What the night tau
    run's `changed=0`, `nvidia-smi` on the 3090 against the A6000's 14,477 MiB, and a short recording of a show running
    on it — and the story the owner wants to tell: the same playbook, from the same laptop, to a rented GPU or a GPU at
    home, with Claude working on both machines.
+
+## §9. Addendum, 2026-10-02 night to 2026-10-03 — the memory copied, the 3090 checked, sudo decided; paused
+
+### §9.1 Track B and Track C done (2026-10-02, night)
+
+1. **#24 merged** (`6f02b45`), the plan with it; on the 3090, through the Terminal panel:
+   `ssh -o BatchMode=yes zr-3090 'cd ~/workspace/hackTNT_2026/zombie-radio-claude && git pull -q && git status -sb && git log --oneline -1'`
+   — on `main` at `6f02b45`, in step with GitHub.
+2. **The owner opened a Code session** in the Linux Claude app in that folder ("done, opened a Code session on the
+   3090"). Claude Code created **`~/.claude/projects/-home-alfredo-workspace-hackTNT-2026-zombie-radio-claude/`** —
+   the name §8.3 expected by the Mac's rule (every `/` and `_` becomes `-`), now checked — holding the session's
+   `.jsonl` and an **empty `memory/` folder** (so the copy overwrote nothing).
+3. **The memory copied** (via the Terminal panel), then a checksum of every file on both sides:
+
+   ```bash
+   # The Mac's memory files into the 3090's empty memory folder
+   scp -q -o BatchMode=yes ~/.claude/projects/-Users-alfredo-workspace-hackTNT-2026-zombie-radio-claude/memory/*.md zr-3090:.claude/projects/-home-alfredo-workspace-hackTNT-2026-zombie-radio-claude/memory/
+   # A checksum of each file on the 3090, then on the Mac, to compare
+   ssh -o BatchMode=yes zr-3090 'cd ~/.claude/projects/-home-alfredo-workspace-hackTNT-2026-zombie-radio-claude/memory && sha256sum *.md'
+   (cd ~/.claude/projects/-Users-alfredo-workspace-hackTNT-2026-zombie-radio-claude/memory && shasum -a 256 *.md)
+   ```
+
+   **All 11 files identical** (the index `MEMORY.md` and ten memories; the two lists differ only in their order — Linux
+   and macOS sort names differently). The Mac's `pending-doc-updates.md` had been deleted just before, its edits merged
+   with #24, so it was not copied.
+4. **A new session, not the first one:** a session reads `MEMORY.md` when it starts, and the owner's first session
+   started before the copy — so the owner started **a new Code session** and pasted §8.4's prompt into it.
+
+### §9.2 The §5 checks — all passed
+
+The owner (verbatim): "done, the Linux session reported the checks. All positive." The Mac session then ran the same
+checks over `ssh zr-3090` (read-only; the GPU's id left out here):
+
+```bash
+# §5's seven checks in one call, plus whether sudo asks for a password (-n: never prompt) and the account's groups
+ssh -o BatchMode=yes zr-3090 'lsb_release -ds; nvidia-smi --query-gpu=name,driver_version,memory.total,memory.used --format=csv; docker --version; docker info 2>/dev/null | grep -i -E "runtimes|nvidia"; nvidia-ctk --version; df -h /home; systemctl is-active ssh; ss -ltn | grep -E ":(8080|8001|8002)\b" || echo "ports free"; sudo -n true 2>&1 | head -1; id -nG'
+```
+
+| # | Check | The result (2026-10-02, night) | The playbook's view |
+|---|---|---|---|
+| 1 | The OS | Ubuntu 22.04.5 LTS | passes the Ubuntu assert; 22.04 is a release the cloud images were proven on |
+| 2 | The GPU, the driver, the memory | NVIDIA GeForce RTX 3090, driver **580.178.04**, 24,576 MiB in total, **491 MiB in use** | the base role asserts the driver can run the pinned CUDA generation (its CUDA major ≥ the pin's 12); R580 is newer than the R570 proven on the A6000; about 24 GB free for the stack's 14,477 MiB |
+| 3 | Docker and its NVIDIA runtime | Docker 29.1.3 (`29.1.3-0ubuntu3~22.04.2`); `Runtimes: io.containerd.runc.v2 nvidia runc`; CDI devices `nvidia.com/gpu=0`, `=all` | the base role only asserts the `docker` command exists, and enables the Docker service (already enabled) |
+| 4 | The NVIDIA container toolkit | `NVIDIA Container Toolkit CLI version 1.20.1` | asserted present (`nvidia-ctk`) |
+| 5 | Free disk | `/` (the root volume, `/home` on it): 912 G, 396 G free | about 11 GB of models, plus the images and the voice's environment |
+| 6 | The SSH server | `active` | needed for D1 (b), already used by `ssh zr-3090` |
+| 7 | The ports 8080, 8001, 8002 | `ports free` | nothing to move |
+| + | sudo | `sudo: a password is required` | §9.3 |
+
+**Two things noticed in passing:**
+- **Docker is Ubuntu's own build** (`docker.io`), not Docker's (`docker-ce`). The playbook does not care which (it
+  asserts the command, and runs the containers with the `community.docker` modules); recorded in case anything odd
+  shows up.
+- **The owner's account is in the groups `ollama` and `ollama_access`** — Ollama seems installed. Idle, it holds no
+  GPU memory; if it loads a model while a show runs, it competes for the 3090's 24 GB. **Open question for D4:** does
+  Ollama (or anything else on the GPU) run while a show would?
+
+### §9.3 Sudo — the password typed at the keyboard (decided)
+
+The owner (verbatim): "The only thing that I saw in passing could be a problem is that my account in that machine does
+ask for password for sudo... I know that is workable in ansible if I am willing to provide my sudo password to the
+playbook... I'd be more happy providing  my password via safe keyboard input than writing it in a vault (I know ansible
+has a way to ask for passwords interactively)"
+
+**Decided: Ansible's `-K` (`--ask-become-pass`).** The playbook runs with `become: true` (`site.yml`), so sudo is needed
+on the 3090; with `-K` Ansible asks `BECOME password:` once at the start, without echoing what is typed, and keeps it in
+memory for that run only — nothing in a file or a vault. **The Makefile already passes `ANS_ARGS` through** (the
+`ans-deploy` target), so no code change:
+
+```bash
+# The deploy to the 3090, asking the sudo password at the keyboard (run by the owner, in the owner's own terminal)
+make ans-deploy ENV=local ANS_ARGS=-K
+```
+
+The owner types it, in the owner's own terminal (the prompt needs the keyboard); the agent never types it (§8.5 point
+4, now confirmed). **Not chosen:** a vault (the password stored, which the owner does not want); a sudoers rule without
+a password (it would weaken the machine for good). What needs sudo: the base packages (`apt`), the Docker service, the
+voice's systemd unit, the containers.
+
+### §9.4 D4 — the services not started at boot (the owner's lean; the effort estimated)
+
+The owner (verbatim, 2026-10-02, night): "Because this machine is a desktop computer that I use for other stuff too, I
+do not want to keep the services starting automatically on boot. What is your estimation of the effort to change
+that?"
+
+**What starts them at boot today** (three places, all in the playbook):
+
+| The service | How it comes back at boot | Where |
+|---|---|---|
+| llama.cpp (`llama`) | a Docker container with `restart_policy: unless-stopped` — Docker brings it back at every boot | `deploy/ansible/roles/llama/tasks/main.yml:19` |
+| Whisper (`whisper`) | the same | `deploy/ansible/roles/stt_engine/tasks/main.yml:19` |
+| the voice (`tts-<name>`) | a systemd unit, `enabled: true` | `deploy/ansible/roles/tts_engine/tasks/main.yml:49` |
+
+**The change (the agent's shape, not yet built or approved):**
+1. **One switch**, e.g. `zr_start_at_boot` — `true` by default (the cloud box unchanged), `false` in the 3090's
+   `99-local.yml`.
+2. **Three lines follow it:** the containers' restart policy `no` instead of `unless-stopped`; the voice's unit
+   `enabled: false`. A deploy still **starts** all three (a show can run right after); after a reboot they stay off.
+3. **A way to start and stop them by hand:** two Makefile targets (`ans-start`, `ans-stop`) or a runbook recipe;
+   starting the voice needs sudo, so `-K` again; llama reloads its model on start (about 90 s).
+4. **The proof:** a deploy, a second run at `changed=0`, **a reboot of the 3090** — nothing running, the GPU free —
+   then a start by hand, the three ports answering.
+
+Docker itself stays enabled at boot (it already is on the 3090); with no container running it holds no GPU memory.
+**The estimate:** small — about an hour or two of the agent's work, plus one reboot by the owner. It belongs on the
+goal-4 branch with the inventory (§6 step 3).
+
+### §9.5 Paused (2026-10-03)
+
+The owner (verbatim, 2026-10-03): "We are going to pause for a time "Automated deployment to a local GPU (the 3090)"...
+I am not at home now, so the only way to execute the AI heavy parts would be to awake the VM, which is ok..."
+
+- **Resumes when the owner is home again** (the owner's choice, 2026-10-03); goal 4 stays a demo goal.
+- **Where it resumes:** decisions D1-D5 (§4) — D4 with the owner's lean above, the Ollama question with it — then §6
+  from step 2 (step 1, the facts, is done).
+- **Meanwhile** the board's items that need a box — Task 10.1 (the filter test) and Task 7 (the video) — use the cloud
+  box, woken for them (the owner: "which is ok"); the 3090 cannot stand in while the owner is away from it.
+- **Left as is on the 3090:** the repo at `6f02b45`; the copied memory (a snapshot of 2026-10-02 — it drifts from the
+  Mac's from now on); the Code session; the SSH server, enabled. Nothing deployed, nothing installed by the agent.
