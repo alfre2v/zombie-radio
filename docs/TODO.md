@@ -424,7 +424,12 @@ the agent keeps this current. These carry across arcs.*
   this: Add a task for preparing the talk itself"). The slides and the
   talk's script for the Austin Python Meetup (October 2026) — the
   content is the owner's; the agent helps with material, figures and
-  checks. What to highlight is already listed: the four goals and where
+  checks. **Under way (2026-10-03):** the slides in Quarto, the source in
+  a `talk/` folder of this repository, published on GitHub Pages; the
+  show live with Task 7's video as the fallback; the owner's structure
+  (intro, tech overview, the app demo, a tech deep dive, built with an
+  AI pair, future work; about 33 minutes plus questions)
+  ([discussion 2026-10-03] the-talk). What to highlight is already listed: the four goals and where
   each stands ([discussion 2026-09-30] demo-goals §1, §3) and the pool of
   creative goals the owner marked as "current features we can highlight
   in the talk" (§6: behind the curtain — the director, the grammar, the
