@@ -16,7 +16,7 @@
 <text x="136" y="274" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start" >FastAPI, Python · 127.0.0.1:8000</text>
 <polygon points="60,366 580,366 620,400 20,400" fill="#2a2a2a" stroke="#d0d0d0" stroke-width="3"/>
 <text x="320" y="444" fill="#eeeeee" font-size="28" font-weight="700" text-anchor="middle" >The laptop</text>
-<text x="320" y="474" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="middle" >the client: macOS</text>
+<text x="320" y="474" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="middle" >the client: macOS or Linux</text>
 <rect x="40" y="510" width="560" height="200" rx="12" fill="#151515" stroke="#555555" stroke-width="1.5"/>
 <text x="64" y="548" fill="#b8b8b8" font-size="19" font-weight="400" text-anchor="start" >From the laptop, one command each:</text>
 <text x="64" y="596" fill="#8fd14f" font-size="24" font-weight="700" text-anchor="start" font-family="'JetBrains Mono', Menlo, Consolas, monospace">make client-mac</text>

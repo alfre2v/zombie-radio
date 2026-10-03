@@ -35,7 +35,7 @@ parts = [
     card(118, 210, 404, 120, GREEN, "TalkWithZombies", "FastAPI, Python · 127.0.0.1:8000"),
     f'<polygon points="60,366 580,366 620,400 20,400" fill="#2a2a2a" stroke="{FRAME}" stroke-width="3"/>',
     text(320, 444, "The laptop", 28, TEXT, 700, "middle"),
-    text(320, 474, "the client: macOS", 18, DIM, 400, "middle"),
+    text(320, 474, "the client: macOS or Linux", 18, DIM, 400, "middle"),
     f'<rect x="40" y="510" width="560" height="200" rx="12" fill="#151515" stroke="#555555" stroke-width="1.5"/>',
     text(64, 548, "From the laptop, one command each:", 19, DIM),
     text(64, 596, "make client-mac", 24, GREEN, 700, extra=MONO),
