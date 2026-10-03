@@ -6,11 +6,13 @@ About 5 minutes.
 
 ## Orson Welles, vibe coder
 
+::: {.centered}
 <iframe data-external="1" referrerpolicy="strict-origin-when-cross-origin" width="880" height="495" src="https://www.youtube-nocookie.com/embed/Kl9GO1DUjls"
 title="Interview with a Vibe Coder" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture"
 allowfullscreen></iframe>
 
 [“Interview with a Vibe Coder” by Roope Rainisto, on YouTube]{.credit}
+:::
 
 ::: {.notes}
 The opening joke. The clip plays from YouTube, so it needs the venue's internet; if the network is down, skip it.
@@ -29,41 +31,15 @@ The owner's words, to come.
 {{< include images/_timeline.svg >}}
 ```
 
+::: {.small-note}
+33 discussion docs · 6 experiments and 7 tools developed to answer discussion questions
+:::
+
 ::: {.notes}
 October 2024: the first version, zombie_radio_ai, made by hand in a couple of days for a hackathon, no AI assistant —
 they were not good enough then. Many of the show's ideas come from it. Then TalkWithMe, the app we built on (its first
 version written by an AI, Qwen), and four weeks of zombie-radio: the docs first, then the fork, and a release every
-day or two.
-:::
-
-## Socratic agentic engineering
-
-[draft] Discussion first: the agent proposes and asks, the owner decides — every decision written down, in the
-owner's words.
-
-::: {.stats}
-::: {.stat}
-[33]{.n} discussions<br>[254,447 words · about 1,000 pages]{.d}
-:::
-::: {.stat}
-[443]{.n} times "verbatim"<br>[the owner's words, kept as said]{.d}
-:::
-::: {.stat}
-[6]{.n} experiments<br>[pre-registered, then run]{.d}
-:::
-::: {.stat}
-[7]{.n} tools<br>[built to answer the discussions' questions]{.d}
-:::
-::: {.stat}
-[3]{.n} decision records<br>[5 session handoffs · 50 follow-ups]{.d}
-:::
-::: {.stat}
-[35]{.n} pull requests<br>[every one reviewed and merged by the owner]{.d}
-:::
-:::
-
-::: {.notes}
-The owner's name for how we work. Counted on 2026-10-03 — recount before the talk. The tools: fetch EARS, screen the
+day or two. The numbers were counted on 2026-10-03 (recount before the talk); the 7 tools: fetch EARS, screen the
 voices, cast the voices, fetch from Freesound, prepare the static bed, drive a show, replay a voice chunk.
 :::
 

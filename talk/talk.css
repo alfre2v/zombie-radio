@@ -5,7 +5,8 @@
   z-index: 0;
   pointer-events: none;
   mix-blend-mode: lighten;
-  background-image: url("images/_spiderweb.svg"), url("images/handprint.jpg"), url("images/_zombies.svg");
+  background-blend-mode: lighten;
+  background-image: url("images/_spiderweb.svg"), url("images/handprint.jpg"), url("images/zombies.jpg");
   background-repeat: no-repeat, no-repeat, repeat-x;
   background-position: right top, right 0.6vw bottom 9vh, left bottom;
   background-size: auto 30vh, auto 18vh, auto 15vh;
@@ -41,4 +42,14 @@
 .reveal .credit {
   font-size: 0.5em;
   color: #b8b8b8;
+}
+
+.reveal .centered {
+  text-align: center;
+}
+
+.reveal .small-note {
+  font-size: 0.55em;
+  color: #b8b8b8;
+  text-align: center;
 }
