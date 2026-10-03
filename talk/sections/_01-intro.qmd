@@ -4,30 +4,108 @@
 About 5 minutes.
 :::
 
-## [placeholder] Orson Welles, vibe coder
+## Orson Welles, vibe coder
 
-The short clip, played from YouTube (needs the venue's internet).
+<iframe data-external="1" referrerpolicy="strict-origin-when-cross-origin" width="880" height="495" src="https://www.youtube-nocookie.com/embed/Kl9GO1DUjls"
+title="Interview with a Vibe Coder" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture"
+allowfullscreen></iframe>
+
+[“Interview with a Vibe Coder” by Roope Rainisto, on YouTube]{.credit}
 
 ::: {.notes}
-The opening joke: Welles portrayed as a vibe coder.
+The opening joke. The clip plays from YouTube, so it needs the venue's internet; if the network is down, skip it.
+Link: https://www.youtube.com/watch?v=Kl9GO1DUjls
 :::
 
-## [placeholder] Who I am, and how this project came to be
+## [placeholder] Who I am
 
 ::: {.notes}
-About 5 minutes in the owner's draft: the project's history and who the owner is.
+The owner's words, to come.
 :::
 
-## [placeholder] A Halloween broadcast
+## How this project came to be
+
+```{=html}
+{{< include images/_timeline.svg >}}
+```
 
 ::: {.notes}
-Set the atmosphere: fun and fake horror.
+October 2024: the first version, zombie_radio_ai, made by hand in a couple of days for a hackathon, no AI assistant —
+they were not good enough then. Many of the show's ideas come from it. Then TalkWithMe, the app we built on (its first
+version written by an AI, Qwen), and four weeks of zombie-radio: the docs first, then the fork, and a release every
+day or two.
 :::
 
-## [placeholder] Local AI only
+## Socratic agentic engineering
+
+[draft] Discussion first: the agent proposes and asks, the owner decides — every decision written down, in the
+owner's words.
+
+::: {.stats}
+::: {.stat}
+[33]{.n} discussions<br>[254,447 words · about 1,000 pages]{.d}
+:::
+::: {.stat}
+[443]{.n} times "verbatim"<br>[the owner's words, kept as said]{.d}
+:::
+::: {.stat}
+[6]{.n} experiments<br>[pre-registered, then run]{.d}
+:::
+::: {.stat}
+[7]{.n} tools<br>[built to answer the discussions' questions]{.d}
+:::
+::: {.stat}
+[3]{.n} decision records<br>[5 session handoffs · 50 follow-ups]{.d}
+:::
+::: {.stat}
+[35]{.n} pull requests<br>[every one reviewed and merged by the owner]{.d}
+:::
+:::
 
 ::: {.notes}
-Every model runs on a GPU we deploy ourselves: no API, no vendor.
+The owner's name for how we work. Counted on 2026-10-03 — recount before the talk. The tools: fetch EARS, screen the
+voices, cast the voices, fetch from Freesound, prepare the static bed, drive a show, replay a voice chunk.
+:::
+
+## A Halloween broadcast {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+### October 30, 1938
+
+The eve of Halloween. Orson Welles and the Mercury Theatre on the Air broadcast *The War of the Worlds* on CBS radio:
+a Martian invasion, told as breaking news.
+:::
+::: {.column width="50%"}
+### October 2026
+
+Zombie-Radio borrows the frame: an emergency broadcast already in progress, scientists trapped in a lab, a failing
+shortwave radio — that sometimes listens.
+:::
+:::
+
+::: {.notes}
+The bridge from the clip to the show. Set the atmosphere: fun and fake horror.
+:::
+
+## Local AI only
+
+::: {.stats}
+::: {.stat}
+[the words]{.n}<br>Nemotron Nano 9B v2<br>[NVIDIA]{.d}
+:::
+::: {.stat}
+[the voices]{.n}<br>Qwen3-TTS<br>[Alibaba's Qwen team]{.d}
+:::
+::: {.stat}
+[the ears]{.n}<br>Whisper<br>[OpenAI's open-source speech model]{.d}
+:::
+:::
+
+Open models, on one GPU we deploy ourselves. No AI API, no keys.
+
+::: {.notes}
+The only piece from OpenAI is the open one.
 :::
 
 ## [placeholder] The only zombies not allowed in this apocalypse are...

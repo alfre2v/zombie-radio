@@ -10,4 +10,5 @@ format:
     slide-number: true
     hash: true
     embed-resources: true
+    css: talk.css
     footer: "Zombie-Radio · Austin Python Meetup · October 2026"
