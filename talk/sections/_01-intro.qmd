@@ -51,12 +51,24 @@ voices, cast the voices, fetch from Freesound, prepare the static bed, drive a s
 
 The eve of Halloween. Orson Welles and the Mercury Theatre on the Air broadcast *The War of the Worlds* on CBS radio:
 a Martian invasion, told as breaking news.
+
+![](images/war-of-the-worlds-1938.jpg){.col-img fig-alt="Orson Welles at the CBS microphone, and a 1938 editorial cartoon: Help! Men from Mars!"}
+
+::: {.credit .centered}
+Wikimedia Commons, public domain
+:::
 :::
 ::: {.column width="50%"}
 ### October 2026
 
 Zombie-Radio borrows the frame: an emergency broadcast already in progress, scientists trapped in a lab, a failing
 shortwave radio — that sometimes listens.
+
+![](images/old-radio-look.jpg){.col-img fig-alt="The show's old-radio look: a 1950 Philips Sirius radio with the transcript on its speaker cloth"}
+
+::: {.credit .centered}
+Radio photo: Bin im Garten, CC BY-SA 3.0, Wikimedia Commons
+:::
 :::
 :::
 
