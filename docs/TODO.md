@@ -120,9 +120,12 @@ it is detail.*
   introduction, seen once in the live test of `tz-0.6`) — the owner:
   "That's ok to postpone, the fix is busy work but not technically
   challenge."
-- **The box** (the A6000 on Hyperstack, kept up for live tests):
-  the choice to keep it or destroy it is due (owner action queue,
-  item 5).
+- **The box** (the A6000 on Hyperstack): kept hibernated until demo
+  day, woken about 4 hours before the talk, a new VM deployed from zero
+  if the wake fails or by the owner's choice that day (owner action
+  queue, item 5, decided 2026-10-02).
+- **The board before the demo** — every item left, who does it, and
+  what was deferred: [discussion 2026-10-02] board-before-demo.
 - **At a session's end:** a fresh-session handoff replaces any
   mid-session one, and a handoff is deleted only with the owner's
   permission. The latest handoff stays until the next compaction, as
@@ -191,8 +194,15 @@ the agent keeps this current. These carry across arcs.*
    MUST** (Task 7). Candidate on the radar: a tunnel that reconnects by
    itself (follow-ups, SSH keepalives — low priority).
 5. **The Hyperstack VM — hibernated, woken per box session.**
-   **Due now:** the timebox closed on 2026-09-28, so the choice it
-   waited for — keep hibernating the box or destroy it — is open. Woken
+   **Decided 2026-10-02 (the owner, verbatim):** "I will keep the machine
+   hibernated until the day of the presentation... That day, say 4 hours
+   before, I'll start trying to awake the VM... I might create a new VM
+   too to exercise the deployment live, I will make that decision that
+   same day." — the items that need the box (the filter test, the
+   video) come before it is hibernated, or need another wake
+   ([discussion 2026-10-02] board-before-demo, item 7). Until then: the
+   timebox closed on 2026-09-28, so the choice it
+   waited for — keep hibernating the box or destroy it — was open. Woken
    from hibernation 2026-09-23 on the same IP; hibernation is a full
    shutdown with the disk kept, so the box boots cold and every
    service comes back by itself (the TTS warms up on first use).
