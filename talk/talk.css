@@ -218,3 +218,21 @@
   margin: 0.3em auto 0;
   border-radius: 10px;
 }
+
+.reveal .model-lines {
+  font-size: 0.6em;
+  border-left: 4px solid #b48cff;
+  padding-left: 0.6em;
+}
+
+.reveal .model-lines p {
+  margin: 0.4em 0;
+}
+
+.reveal .stats.one {
+  grid-template-columns: 1fr;
+}
+
+.reveal .stats.one.compact .stat {
+  font-size: 0.75em;
+}

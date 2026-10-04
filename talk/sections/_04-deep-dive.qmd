@@ -1,17 +1,160 @@
 # Tech deep dive {background-color="#1a1a00"}
 
-## [placeholder] Behind the curtain: the architecture
+::: {.notes}
+About 8 minutes.
+:::
 
-## [placeholder] The director, in plain Python
+## Behind the curtain: one round
 
-## [placeholder] A grammar keeps the model in format
+```{=html}
+{{< include images/_round_flow.svg >}}
+```
 
-## [placeholder] The stream parser
+::: {.notes}
+The browser is the clock: it asks for each round when the last one has played. The director, plain Python, plans the
+round; llama.cpp writes it under a grammar; the parser cuts the stream into lines as they arrive, and each line goes to
+the voice before the next is written. When the radio listens, the listener's words come back through Whisper.
+:::
 
-## [placeholder] The 32k context, and the trim
+## The director, in plain Python {.smaller}
 
-## [placeholder] One command to a GPU: Ansible and Docker
+```{.python code-line-numbers="|4"}
+def plan_round(run: Run, story: Story, show: ShowConfig, played_s: float = 0.0,
+               transcript: Optional[str] = None) -> RoundPlan:
+    n = len(run.rounds) + 1
+    rng = random.Random(f"{run.seed}:{n}")
+    if not run.rounds:
+        return _orientation(run, story, show, rng, sign_on=True)
+    if run.rounds[-1].kind in LISTENS:
+        return _after_listening(run, story, show, (transcript or "").strip(), rng)
+    if run.rounds[-1].kind == "last-exchange":
+        return _breakdown(run, story, show, rng)
+    if _time_to_listen(run, show, played_s, rng):
+        return _repair(run, story, show, rng)
+    ended = _aftermath(run)
+    if ended:
+        return _free(run, story, show, rng, slot="aftermath", words=ended[1], recollects=ended[0])
+    if _orientation_due(run, show):
+        return _orientation(run, story, show, rng, sign_on=False)
+    recalled = _recollection_due(run, show, rng)
+    if recalled:
+        return _free(run, story, show, rng, slot="recollection", words=recalled[1], recollects=recalled[0])
+    return _free(run, story, show, rng)
+```
 
-## [placeholder] What it costs
+::: {.small-note}
+`app/show/director.py` — the whole decision ladder of the show
+:::
 
-## [placeholder] The 3090 at home
+::: {.notes}
+No agent framework: a ladder of ifs. The highlighted line is why the same seed replays the same show — every round
+draws from a random generator seeded with the run's seed and the round's number.
+:::
+
+## A grammar keeps the model in format
+
+The grammar the app sent to llama.cpp for one round:
+
+```{.ebnf}
+root    ::= line{1,3}
+line    ::= speaker " (" emotion "): " text "\n"
+speaker ::= "Daniel" | "Moira" | "Ralph"
+emotion ::= "sad" | "afraid" | "terrified" | "angry" | "exhausted"
+text    ::= [^\n\[\]()]+
+```
+
+What the model wrote under it:
+
+::: {.model-lines}
+Daniel (exhausted): We’ve lost power to the security cameras. Over.
+
+Moira (afraid): The samples—they’re spreading. Faster than the math says. Over.
+
+Ralph (angry): This isn’t natural. Someone \*made\* this. Over.
+:::
+
+::: {.small-note}
+Round 3 of a run on 2026-10-02: only the round's speakers, only the moods allowed, at most three lines
+:::
+
+::: {.notes}
+GBNF, llama.cpp's grammar format: the model cannot write anything else. A name outside the round, a missing mood, a
+fourth line — impossible, not just discouraged. Real request and real output, from the run's debug files.
+:::
+
+## The 32k context, and the trim
+
+```{=html}
+{{< include images/_trim_chart.svg >}}
+```
+
+::: {.small-note}
+A 270-round show, 2026-10-01: rounds cut from the middle (the first 2 and last 4 kept), and the show goes on
+:::
+
+::: {.notes}
+Budget 34,000 tokens; the trim fires at 90 % (30,600) and cuts down to 50 % (17,000). It landed at 16,608 and 16,722.
+A flaw found that day: the trim used to over-cut, more with every trim; fixed and measured — now it lands within one
+round of its target.
+:::
+
+## One command to a GPU {.smaller}
+
+::: {.columns}
+::: {.column width="50%"}
+```bash
+make ans-deploy ENV=cloud
+```
+
+Four roles, each for its own machines:
+
+- **base**: checks Ubuntu, Docker, the NVIDIA toolkit and driver (never installs them)
+- **llama**: llama.cpp in a pinned container, the model from Hugging Face
+- **tts_engine**: tts-serve 1.2 as a system service
+- **stt_engine**: Whisper in a container
+:::
+::: {.column width="50%"}
+::: {.stats .one .compact}
+::: {.stat}
+[7 minutes]{.n}<br>from a fresh VM to the stack running
+:::
+::: {.stat}
+[changed=0]{.n}<br>a second run changes nothing
+:::
+::: {.stat}
+[~$0.50 an hour]{.n}<br>an RTX A6000, 48 GB, on Hyperstack
+:::
+:::
+:::
+:::
+
+::: {.notes}
+From zero in 7 minutes (ok=33 changed=16); the re-run reports changed=0 in 30 seconds. Before touching anything, the
+playbook checks it is aimed at the right environment and that no placeholder is left. The price: $0.50-0.59 an hour,
+from our provider survey of 2026-09-13 — check today's price before the talk.
+:::
+
+## The 3090 at home
+
+```bash
+make ans-deploy ENV=local
+```
+
+The same playbook, the same three services — on a home PC instead of a rented VM.
+
+::: {.stats}
+::: {.stat}
+[RTX 3090]{.n}<br>24 GB; the stack needs about 14.5
+:::
+::: {.stat}
+[checked]{.n}<br>Ubuntu 22.04, driver R580, Docker with the NVIDIA runtime
+:::
+::: {.stat}
+[deploy]{.n}<br>[status as of 2026-10-03: pending]{.d}
+:::
+:::
+
+::: {.notes}
+Update this slide on the day, wherever goal 4 stands. As of 2026-10-03: the checks passed, the deploy paused while the
+owner was away from home.
+:::
