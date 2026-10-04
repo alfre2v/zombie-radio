@@ -335,3 +335,28 @@
 .reveal .about-code + .about-row {
   margin-top: 1.2em;
 }
+
+.reveal .next-row + .next-row {
+  margin-top: 0.7em;
+}
+
+.reveal .next-row .about-block ul {
+  margin: 0;
+  padding-left: 1.1em;
+}
+
+.reveal .next-row .about-block li {
+  margin: 0.15em 0;
+}
+
+.reveal .next-blood {
+  border: 2px solid #d42a2a;
+}
+
+.reveal .next-blood .about-head {
+  color: #ff5a4a;
+}
+
+.reveal .next-row .about-code {
+  margin-top: 0;
+}

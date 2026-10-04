@@ -1,8 +1,51 @@
 # Future work {background-color="#001a1a"}
 
-## [placeholder] What's next
+## What's next
 
-The judge in the loop · names-only A · a scientist turning
+::: {.about-row .next-row}
+::: {.about-block .about-goals}
+[A smarter director]{.about-head}
+
+- **A judge in the loop**: a small model answers the director's questions about what was just said
+- **A caller memory**: each caller's details stored, and recalled when they call back
+- **Episodes**: a story arc, with a recap between episodes
+:::
+::: {.about-block .next-blood}
+[More theatre]{.about-head}
+
+- **A scientist turns**: infected mid-show, the voice changing line by line
+- **The audience writes the news**, from their phones
+- Comic relief and scientific findings as story beats
+:::
+:::
+
+::: {.about-row .next-row}
+::: {.about-block .about-code}
+[Better voices and ears]{.about-head}
+
+- **New voice engines compared**: LuxTTS, F5-TTS
+- Recasting voices
+- **Event sounds**: a layer of their own beside the static
+- **Speaker identification**: recognizing callers by voice (speaker embeddings, cosine similarity)
+:::
+::: {.about-block .about-principles}
+[More places to run]{.about-head}
+
+- **A Mac with Apple Silicon**: llama.cpp on Metal, tts-serve's MLX engine
+- **The client on Linux and Windows**
+:::
+:::
+
+::: {.small-note}
+Ideas and PRs welcome, and improvements are planned to go back upstream to TalkWithMe
+:::
+
+::: {.notes}
+The judge in the loop: a fast small model (about 3B) scores the director's yes/no questions, and code steers the next
+instruction; an experiment first. A caller memory: today the show asks callers their names and restates what earlier callers said, but the model's recall is unreliable; a proper store would keep each caller's details and give them back when they call again. Speaker identification (challenge C3 of the product-definition brainstorm, 2026-09-13, a wishlist item since 2024): a model like ECAPA-TDNN turns a short sample of speech into a speaker embedding, matched against stored ones by cosine similarity, like face recognition. A
+scientist turns: the app re-reads the reference clip on every line, so a recast mid-show is heard on the next line.
+The Mac: the 64 GB M1 could run the whole stack; the 16 GB demo laptop cannot.
+:::
 
 ## Thank you
 
