@@ -236,3 +236,8 @@
 .reveal .stats.one.compact .stat {
   font-size: 0.75em;
 }
+
+.reveal img.scene.finale {
+  height: 360px;
+  margin-bottom: 0.3em;
+}

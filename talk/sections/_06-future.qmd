@@ -6,7 +6,11 @@ The judge in the loop · names-only A · a scientist turning
 
 ## Thank you
 
+![](images/scientists-goodbye.jpg){.scene .finale .nostretch fig-alt="The cast takes a bow: scientists and zombies hand in hand on a stage, one zombie holding flowers, the audience applauding"}
+
+::: {.small-note}
 [placeholder] The links.
 
 The radio static is from Freesound — credits at
 [github.com/alfre2v/TalkWithZombies/blob/master/Sounds/bed/CREDITS.md](https://github.com/alfre2v/TalkWithZombies/blob/master/Sounds/bed/CREDITS.md)
+:::
