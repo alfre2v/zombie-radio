@@ -1,6 +1,6 @@
 ---
 title: "Zombie-Radio"
-subtitle: "[placeholder] An AI radio play: four AI actors, one failing shortwave radio, local AI only"
+subtitle: "A zombie apocalypse, a fading radio broadcast, improvised live by local AI"
 author: "Alfredo Valles"
 date: 2026-10-14
 date-format: "MMMM YYYY"
