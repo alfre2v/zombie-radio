@@ -74,6 +74,8 @@ The slides' address works once the deck is published to GitHub Pages (quarto pub
 ## Credits {.credits-slide}
 
 ::: {.credits-roll}
+[Credits]{.cr-credits}
+
 [Zombie-Radio]{.cr-title}
 
 [a radio play for four AI voices, by Alfredo Valles]{.cr-by}

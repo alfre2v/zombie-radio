@@ -387,17 +387,19 @@
   text-align: center;
   font-size: 0.5em;
   line-height: 1.5;
-  transform: translateY(670px);
+  transform: translateY(308px);
 }
 
 .reveal section.credits-slide.present .credits-roll {
-  animation: credits-roll 59s linear infinite;
+  animation: credits-roll 62s linear infinite;
 }
 
 @keyframes credits-roll {
-  0% { transform: translateY(670px); }
-  89.83% { transform: translateY(-1040px); }
-  100% { transform: translateY(-1040px); }
+  0% { transform: translateY(308px); opacity: 0; }
+  1.61% { opacity: 1; }
+  4.84% { transform: translateY(308px); }
+  90.32% { transform: translateY(-1400px); }
+  100% { transform: translateY(-1400px); }
 }
 
 .reveal .credits-roll p {
@@ -451,4 +453,16 @@
   display: block;
   font-size: 0.8em;
   color: #8a8a8a;
+}
+
+.reveal .cr-credits {
+  display: block;
+  font-family: Montserrat, sans-serif;
+  font-size: 4.4em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #ff8c1a;
+  line-height: 1.1;
+  margin-bottom: 265px;
 }

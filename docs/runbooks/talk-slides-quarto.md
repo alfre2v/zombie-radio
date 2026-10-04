@@ -42,7 +42,7 @@ All of the deck is in the `talk/` folder of this repository:
 | `talk/sections/_03-demo.qmd` | Commands to go on air · Live demo |
 | `talk/sections/_04-deep-dive.qmd` | Behind the curtain: one round · The director, in plain Python · A grammar keeps the model in format · The 32k context, and the trim · One command to a GPU · The 3090 at home |
 | `talk/sections/_05-ai-pair.qmd` | Built with an AI pair: the documentation system · what went right · what went wrong (placeholders at this writing) |
-| `talk/sections/_06-future.qmd` | What's next · Thank you |
+| `talk/sections/_06-future.qmd` | What's next · Thank you · Credits (the rolling credits, the deck's last slide) |
 | `talk/talk.css` | the look: colours, sizes, spacing, the boxes and cards, the Halloween decorations |
 | `talk/images/` | every picture: photos and generated images (`.jpg`), the diagrams (`_*.svg`), the scripts that draw the diagrams (`make_*_svg.py`), and `CREDITS.md` |
 | `talk/data/` | the numbers behind a chart, kept in git (`trim-run-2026-10-01T17-48-37.csv`) |
@@ -201,7 +201,7 @@ The styles defined in `talk.css` and where they are used:
 
 | Style | Used for |
 |---|---|
-| `.small-note` | small grey centred lines (the counts under the timeline, captions under charts, the links on the last slide) |
+| `.small-note` | small grey centred lines (the counts under the timeline, captions under charts, the footer of What's next) |
 | `.credit` | the tiny attribution lines under pictures |
 | `.centered` | centre a block (the Welles clip and its credit) |
 | `.stats`, `.stat`, `.n`, `.d` | the grid of cards (Local AI only, the 3090); `.n` the big orange word, `.d` the grey detail; `.stats.two`, `.stats.compact`, `.stats.one` are variants |
@@ -211,6 +211,9 @@ The styles defined in `talk.css` and where they are used:
 | `.provider-shots`, `.provider-caption`, `.citation` | "Why not AI APIs (2/2)": the two screenshots, the closing line, the Supreme Court citation |
 | `.model-lines` | the model's lines on the grammar slide |
 | `.boxed-columns` | a faint box around each column (§4.2) |
+| `.next-row`, `.next-blood` | "What's next": its two rows of cards (they reuse `.about-block`), and the red card |
+| `.thanks-links`, `.thanks-contact` | "Thank you": the two link cards and the contact line |
+| `.credits-slide`, `.credits-roll`, `.cr-title`, `.cr-by`, `.cr-head`, `.cr-role`, `.cr-name`, `.cr-note` | "Credits": the slide (title hidden, the roll clipped and faded at top and bottom), the rolling block, and its parts — the big title, the byline, the orange headings, the small-caps roles on the left, the names on the right, the grey notes (§4.10) |
 
 ### 4.5 Columns
 
@@ -287,6 +290,44 @@ date-format: "MMMM YYYY"
 Quarto **parses** the date: written as `"October 2026"` it showed "2026-10-01". A real date with a `date-format` shows
 "October 2026". The talk is on 2026-10-14 in the slides (the internal docs keep 2026-10-08 as the deadline, on
 purpose).
+
+### 4.10 An animation that runs while a slide shows (the rolling credits)
+
+The "Credits" slide opens on a big orange **CREDITS** at the centre of the screen, then rolls everything upward like a
+film's end — built with CSS alone (`talk.css`):
+
+```css
+.reveal section.credits-slide.present .credits-roll {
+  animation: credits-roll 62s linear infinite;
+}
+
+@keyframes credits-roll {
+  0% { transform: translateY(308px); opacity: 0; }  /* CREDITS centred on the screen, invisible */
+  1.61% { opacity: 1; }                             /* 1 s: faded in */
+  4.84% { transform: translateY(308px); }           /* 3 s: held still, to be read */
+  90.32% { transform: translateY(-1400px); }        /* 56 s: the last line has left at the top */
+  100% { transform: translateY(-1400px); }          /* held there: 6 s of empty screen, then again */
+}
+```
+
+- **The slide** is clipped (`overflow: hidden`) and faded at both ends with a `mask-image` gradient, so lines fade in at
+  the bottom and out at the top; its `##` title is hidden. The visible title is the first item of the roll,
+  `[Credits]{.cr-credits}` — a 97-pixel-tall line whose `margin-bottom: 265px` is the gap that keeps the list below the
+  screen while the title sits at the centre.
+- **The numbers** (measured in the browser, 2026-10-04): the roll is 1,395 pixels tall in a 720-pixel slide. At a shift
+  of 308 the title's centre is at 360 (the screen's centre) and the list's first line at 673, just below the band where
+  lines are visible (the bottom fade starts at 662). The roll is fully gone once its bottom passes the top edge (a shift
+  of −1,398; the end is −1,400). The roll covers 1,708 pixels in 53 s — about 32 pixels a second — after a 3 s hold;
+  then 6 s of empty screen (the owner asked for at least 5): a 62 s cycle. The percentages are the moments divided by
+  62: 1 s = 1.61 %, 3 s = 4.84 %, 56 s = 90.32 %. **Adding lines makes the roll taller:** lower the end shift by as much,
+  and lengthen the cycle to keep the speed (then recompute the percentages).
+- **A trap, found by the owner (2026-10-04):** the rule was first written `.reveal .present .credits-roll` — "inside
+  *anything* marked present". reveal.js also marks an outer container `present`, so the animation never stopped when
+  the slide was left, and never restarted when it was entered again. **Tie such a rule to the slide itself:**
+  `section.credits-slide.present`. Then leaving the slide stops the roll, and entering it starts from the beginning.
+- **Checking an animation** cannot be done with one screenshot (it shows one instant). The agent froze the roll at
+  given positions in a scratch copy of the page (a `transform … !important` and `animation: none`), and read the running
+  animation's state in the browser pane (`element.getAnimations()[0].currentTime`).
 
 ## 5. Things never edited by hand
 
@@ -366,8 +407,10 @@ ffmpeg -v error -y -i <original> -vf "colorlevels=romax=0.55:gomax=0.55:bomax=0.
 
 `talk/images/CREDITS.md` records the source and licence of every picture. Public-domain pictures need no credit (the
 slide still says "Wikimedia Commons, public domain"); **CC BY and CC BY-SA need a credit line on the slide** (the
-old-radio photo; the Wikipedia citation on "Why not AI APIs (2/2)"); **the radio static's credits line on the last
-slide is required** (CC BY includes public performance). The owner's own images are recorded as such.
+old-radio photo; the Wikipedia citation on "Why not AI APIs (2/2)"); **the radio static's credits are required on
+screen** (CC BY includes public performance) — they are on the rolling "Credits" slide, with the EARS voices
+(CC BY-NC 4.0), Steve Corbett's projects, the models and the pictures (§4.10). The owner's own images are recorded as
+such.
 
 ## 7. The Welles clip (YouTube)
 
@@ -444,20 +487,98 @@ Then, as for every change in this repository: review in VS Code, commit only on 
 staged diff (`git diff --cached | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}'` — `127.0.0.1` on the commands slide is
 fine), push on the owner's order.
 
-## 10. Publishing (not done yet)
+## 10. Publishing to GitHub Pages (not done yet)
+
+The owner (verbatim, 2026-10-04): "Not that I want to publish the talk yet, but I am curious how is the process of
+publishing to GitHub Pages. Walk me through the steps required." — the walk-through, kept here. **Nothing in this
+section had been run at this writing.**
+
+### 10.1 What publishing does
+
+`quarto publish gh-pages` renders the deck and pushes the result — our single `index.html`, about 5.6 MB — to a
+**separate branch called `gh-pages`** in the zombie-radio repository. GitHub Pages then serves that branch as a website
+at:
+
+**https://alfre2v.github.io/zombie-radio/**
+
+(GitHub's default address for a repository's Pages site: `<owner>.github.io/<repository>/`; it is the address already
+on the "Thank you" slide.) The source — `talk/`, the `.qmd` files — stays on `main` as it is; `gh-pages` holds only the
+rendered output, so it never mixes with the work branches.
+
+### 10.2 The steps
+
+**0. Merge #26 first, and publish from `main`.** Publishing pushes whatever is rendered *on the machine, from the
+branch checked out*. Doing it from `main` after the merge makes the public deck match the repository's record.
+
+**1. Create the empty `gh-pages` branch — once.** Quarto's documentation asks for this branch to exist before the first
+publish. It is an "orphan" branch: no history shared with `main`.
 
 ```bash
-# Publish the deck to a gh-pages branch of this repository, served by GitHub Pages — on the owner's order only
+# A new branch with no history
+git checkout --orphan gh-pages
+# Empty its staging area (destructive: commit or stash any work first)
+git reset --hard
+# One empty commit, so the branch exists
+git commit --allow-empty -m "Initialising gh-pages branch"
+# Put it on GitHub
+git push origin gh-pages
+# Back to work
+git checkout main
+```
+
+**2. Turn on GitHub Pages — once**, in the browser: the repository's **Settings → Pages → Build and deployment →
+Source: "Deploy from a branch" → Branch: `gh-pages`, folder `/ (root)` → Save.** Quarto may set this by itself; check it
+either way.
+
+**3. Publish:**
+
+```bash
+# Render the deck and push it to the gh-pages branch (asks to confirm)
 cd talk && quarto publish gh-pages
 ```
 
-It makes the deck **public** on GitHub Pages; a served copy also plays the Welles clip. Not run at this writing.
+- It asks for confirmation, renders the deck, copies it into `gh-pages` — adding a `.nojekyll` file, which tells GitHub
+  not to reprocess the site with its Jekyll tool — and pushes.
+- It also writes a small **`talk/_publish.yml`** recording where the deck was published: a new file on `main`, reviewed
+  and committed like any other.
+
+**4. Wait a minute, then check.** GitHub builds the site; the repository's **Actions** tab shows a run named "pages
+build and deployment". When it is green, open `https://alfre2v.github.io/zombie-radio/`. The Welles clip plays there,
+because the page is served (§3.3, §7).
+
+**Updating later:** edit, commit, then `cd talk && quarto publish gh-pages` again — it replaces the old version.
+**Taking it down:** turn Pages off in Settings → Pages, or delete the `gh-pages` branch.
+
+### 10.3 Before publishing
+
+- **The speaker notes become public too.** They are inside the HTML, and anyone viewing the published deck can press
+  **S** and read them. Ours hold the owner's full wording, timings and reminders ("check today's price") — nothing
+  sensitive at this writing, but read them with that in mind. Before publishing, scan the rendered file as commits are
+  scanned:
+
+  ```bash
+  # Any machine address in the rendered deck (127.0.0.1 on the commands slide is fine)
+  grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}' talk/_output/index.html | sort -u
+  # The AI provider the slides leave unnamed (expect nothing)
+  grep -c -i -E 'gemini|google' talk/_output/index.html
+  ```
+
+  Run on 2026-10-04 against the deck as rendered that day: the only address was `127.0.0.1`, and the provider's name
+  appeared 0 times (the embedded fonts carry no name either).
+- **It is public at once**, and search engines may index it. The repository is public already, so nothing new is
+  revealed, but the slides become easy to find.
+- **It is an outward-facing action** — a new branch on GitHub and a public website — so under the working agreements it
+  happens only on the owner's order; the agent asks before step 1, before step 3, and before every later re-publish.
+- **An alternative not taken:** a GitHub Actions workflow that renders the deck in the cloud on every push to `main`.
+  Automatic, but it needs Quarto installed in CI, more setup, and it publishes things one may not mean to publish.
+  Manual publishing suits a talk deck better.
 
 ## 11. Before the talk
 
 - Recount the numbers under the timeline (discussions, experiments, tools — counted 2026-10-03).
 - Check the A6000's hourly price on "One command to a GPU" (~$0.50, from the provider survey of 2026-09-13).
 - Update "The 3090 at home" to wherever goal 4 stands.
-- Fill in "Who I am" and the links on the last slide.
+- Fill in "Who I am", and the email, website and LinkedIn on "Thank you" (placeholders).
+- Publish (§10), so the slides' address on "Thank you" works.
 - Re-render with the network up (the fonts, §3.2); rehearse with the speaker view and the live demo against the woken
   cloud box.
