@@ -78,22 +78,54 @@ The bridge from the clip to the show. Set the atmosphere: fun and fake horror.
 
 ## Local AI only
 
-::: {.stats}
-::: {.stat}
-[the words]{.n}<br>Nemotron Nano 9B v2<br>[NVIDIA]{.d}
+::: {.built-on}
+Uses two open-source projects by **Steve Corbett** (scorbo2), MIT-licensed:
 :::
-::: {.stat}
-[the voices]{.n}<br>Qwen3-TTS<br>[Alibaba's Qwen team]{.d}
+
+::: {.stats .two}
+::: {.stat .project}
+[TalkWithMe]{.n}<br>configurable AI chat with voices in and out<br>[github.com/scorbo2/TalkWithMe]{.d}
 :::
-::: {.stat}
-[the ears]{.n}<br>Whisper<br>[OpenAI's open-source speech model]{.d}
+::: {.stat .project}
+[tts-serve]{.n}<br>one server in front of many voice engines<br>[github.com/scorbo2/tts-serve]{.d}
 :::
 :::
 
+::: {.channel}
+::: {.channel-text}
+Steve's YouTube channel, a beacon for the local-AI-first community — pay it a visit:
+
+**No place like localhost**
+
+[youtube.com/@NoPlaceLikeLocalhost](https://www.youtube.com/@NoPlaceLikeLocalhost)
+:::
+::: {.channel-video}
+![](images/localhosters-unite.jpg){fig-alt="Steve Corbett, arms wide open, in his video Localhosters unite!"}
+
+[“Localhosters unite!”]{.d}
+:::
+:::
+
+::: {.built-on}
 Open models, on one GPU we deploy ourselves. No AI API, no keys.
+:::
+
+::: {.stats .compact}
+::: {.stat}
+[the words]{.n}<br>Nemotron Nano 9B v2 [· NVIDIA]{.d}
+:::
+::: {.stat}
+[the voices]{.n}<br>Qwen3-TTS [· Alibaba's Qwen team]{.d}
+:::
+::: {.stat}
+[the ears]{.n}<br>Whisper [· OpenAI, open source]{.d}
+:::
+:::
 
 ::: {.notes}
-The only piece from OpenAI is the open one.
+We built on two open-source projects by Steve Corbett: TalkWithMe (the chat app we forked into TalkWithZombies) and
+tts-serve (the voice server). His channel, No place like localhost, is where he builds them in the open — recommend
+it. The only piece from OpenAI is the open one.
 :::
 
 ## [placeholder] The only zombies not allowed in this apocalypse are...

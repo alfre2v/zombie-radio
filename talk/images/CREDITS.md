@@ -18,6 +18,13 @@ photograph: a Philips Sirius BD 400 A radio receiver (1950), by **Bin im Garten*
 <https://commons.wikimedia.org/wiki/File:Deutsches_Rundfunk-Museum_Ausstellung_auf_der_IFA_2012_PD_02_Radioempf%C3%A4nger_Philips_Sirius_BD_400_A,_1950.JPG>.
 This image stays under CC BY-SA 3.0; the slide credits it.
 
+## `localhosters-unite.jpg`
+
+The thumbnail of **"Localhosters unite!"**, a video by Steve Corbett (scorbo2) on his YouTube channel *No place like
+localhost* (<https://www.youtube.com/@NoPlaceLikeLocalhost>), from a screenshot the owner took (2026-10-03), cropped to
+the video frame and scaled to 480 pixels wide. Shown on the slide that credits Steve's projects and recommends his
+channel.
+
 ## `handprint.jpg`, `zombies.jpg`
 
 The owner's own images (2026-10-03), cropped and scaled for the slides.
