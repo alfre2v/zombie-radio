@@ -241,3 +241,97 @@
   height: 360px;
   margin-bottom: 0.3em;
 }
+
+.reveal .about-block {
+  border-radius: 12px;
+  padding: 0.3em 0.6em 0.4em;
+  background: rgba(17, 17, 17, 0.85);
+  font-size: 0.55em;
+  line-height: 1.35;
+}
+
+.reveal .about-head {
+  display: block;
+  font-size: 1.25em;
+  font-weight: 700;
+  margin-bottom: 0.3em;
+}
+
+.reveal .about-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6em;
+  margin-top: 0.5em;
+}
+
+.reveal .about-card p,
+.reveal .about-block p {
+  margin: 0;
+}
+
+.reveal .about-block ol {
+  margin: 0;
+  padding-left: 1.3em;
+}
+
+.reveal .about-block li {
+  margin: 0.15em 0;
+}
+
+.reveal .about-code {
+  border: 2px solid #b48cff;
+  margin-top: 0.3em;
+}
+
+.reveal .about-code .about-head {
+  color: #b48cff;
+}
+
+.reveal .about-code .about-row {
+  margin-top: 0.9em;
+}
+
+.reveal .about-principles {
+  border: 2px solid #ff8c1a;
+}
+
+.reveal .about-principles .about-head {
+  color: #ff8c1a;
+}
+
+.reveal .about-goals {
+  border: 2px solid #8fd14f;
+}
+
+.reveal .about-goals .about-head {
+  color: #8fd14f;
+}
+
+.reveal .about-card {
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 8px;
+  padding: 0.35em 0.55em;
+  background: rgba(255, 255, 255, 0.03);
+}
+
+.reveal .boxed-columns .columns {
+  display: flex;
+  gap: 0.7em;
+}
+
+.reveal .boxed-columns .column {
+  flex: 1;
+  width: auto !important;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 12px;
+  padding: 0 0.6em 0.4em;
+  background: rgba(255, 255, 255, 0.025);
+}
+
+.reveal .boxed-columns .column h3 {
+  margin-top: 0.3em;
+}
+
+.reveal .about-code + .about-row {
+  margin-top: 1.2em;
+}

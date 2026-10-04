@@ -43,7 +43,7 @@ day or two. The numbers were counted on 2026-10-03 (recount before the talk); th
 voices, cast the voices, fetch from Freesound, prepare the static bed, drive a show, replay a voice chunk.
 :::
 
-## A Halloween broadcast {.smaller}
+## A Halloween broadcast {.smaller .boxed-columns}
 
 ::: {.columns}
 ::: {.column width="50%"}
@@ -74,6 +74,63 @@ Radio photo: Bin im Garten, CC BY-SA 3.0, Wikimedia Commons
 
 ::: {.notes}
 The bridge from the clip to the show. Set the atmosphere: fun and fake horror.
+:::
+
+## About this project
+
+::: {.about-block .about-code}
+[Our code: Two open repositories (MIT)]{.about-head}
+
+::: {.about-row}
+::: {.about-card}
+**github.com/alfre2v/TalkWithZombies** — the app: a fork of TalkWithMe adding the show engine (Python director,
+grammar, streaming voice, listener's turn) and an old-radio stage
+:::
+::: {.about-card}
+**github.com/alfre2v/zombie-radio** — the infrastructure and the record: Ansible and Docker for the model servers and
+the laptop, the voice tools, the specs and design discussions
+:::
+:::
+:::
+
+::: {.about-row}
+::: {.about-block .about-principles}
+[Two principles]{.about-head}
+
+1. **Local AI first, cloud-capable**: every model open and self-hosted; the same deploy to a home GPU or a rented one
+2. **Live improvisation**: the drama is improvised at broadcast time, not scripted
+:::
+::: {.about-block .about-goals}
+[Four goals]{.about-head}
+
+1. Story coherence and improvisation
+2. Emotional voices, in sync with the story
+3. One-command deploy to a cloud GPU
+4. Same deploy, for local GPU
+:::
+:::
+
+::: {.notes}
+The owner's full wording.
+
+The code — two open repositories (MIT License):
+
+github.com/alfre2v/TalkWithZombies — the app: a fork of the open-source TalkWithMe that adds the show engine (the
+Python director, the grammar, the streaming voice, the listener's turn) and the browser stage, styled as an old radio
+set.
+
+github.com/alfre2v/zombie-radio — the infrastructure and the record: Ansible and Docker playbooks that stand up the
+three model servers on a GPU and install the app on a laptop, the tools that cast the voices, and the specs and design
+discussions from the whole build.
+
+Two principles: 1. Local AI first, cloud-capable — every show-time model (dialogue LLM, text-to-speech, speech
+recognition) is open and self-hosted; the backend deploys identically to a home Linux GPU box or a rented cloud GPU
+instance. 2. Theatrical live improvisation with LLMs — the drama is improvised at broadcast time, not scripted.
+
+Goals: 1. Story coherence and improvisation — the LLM improvises a credible human interaction. 2. Emotional voices
+support narration — real voices with emotion, in sync with story. 3. Automated deployment to cloud GPU — easy install
+AI components to a cloud VM (CUDA GPU + Docker). 4. Automated deployment to local GPU — same easy install to local PC
+(CUDA GPU + Docker).
 :::
 
 ## Local AI only
