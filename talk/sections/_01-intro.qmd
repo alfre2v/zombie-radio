@@ -128,6 +128,41 @@ tts-serve (the voice server). His channel, No place like localhost, is where he 
 it. The only piece from OpenAI is the open one.
 :::
 
-## [placeholder] The only zombies not allowed in this apocalypse are...
+## Why not AI APIs (1/2)
 
-The zombie CEOs' image goes here (deferred: an SVG, the companies' logos on the faces).
+::: {.lead}
+The only zombies not allowed in this apocalypse are…
+:::
+
+![](images/ceo-zombies.jpg){.poster .nostretch fig-alt="Satire: four AI companies' CEOs as zombies, reaching for the viewer"}
+
+::: {.lead .centered}
+They *really* want your brain!
+:::
+
+::: {.notes}
+Local AI only: no OpenAI, no Anthropic, no Meta, no xAI.
+:::
+
+## Why not AI APIs (2/2)
+
+::: {.lead}
+An AI provider I pay for, refusing to generate the satirical poster of the CEOs as zombies you saw before, and, after
+I reminded it that satiric representation of public figures is protected free speech in USA, decided to serve me this
+image instead
+:::
+
+::: {.provider-shots}
+![](images/provider-lake.jpg){fig-alt="A calm mountain lake with a wooden pier: what the AI provider generated"}
+
+![](images/provider-reply.jpg){fig-alt="The owner complains; the AI provider apologizes for a bizarre lecture about political satire followed by a picture of a mountain lake"}
+:::
+
+::: {.provider-caption}
+**The only intelligence you own is the one you run on your hardware.**
+:::
+
+::: {.notes}
+A hosted model decides what you may make; a local one does not — the case for local AI first. Its apology even
+misnames the request.
+:::

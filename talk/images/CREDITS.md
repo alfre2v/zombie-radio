@@ -25,6 +25,14 @@ localhost* (<https://www.youtube.com/@NoPlaceLikeLocalhost>), from a screenshot 
 the video frame and scaled to 480 pixels wide. Shown on the slide that credits Steve's projects and recommends his
 channel.
 
-## `handprint.jpg`, `zombies.jpg`
+## `provider-lake.jpg`, `provider-reply.jpg`
 
-The owner's own images (2026-10-03), cropped and scaled for the slides.
+Two crops of one screenshot the owner took of a chat with a paid AI provider (2026-10-03): the mountain lake it
+generated when asked for the CEO zombies poster, and its reply to the owner's complaint; the provider's name in the
+owner's message is pixelated.
+
+## `handprint.jpg`, `zombies.jpg`, `ceo-zombies.jpg`
+
+The owner's own images (2026-10-03), cropped and scaled for the slides; `zombies.jpg` and `ceo-zombies.jpg` were made
+by the owner with an image generator.
+`ceo-zombies.jpg` is satire: caricatures of four AI companies' CEOs as zombies, the punchline of "local AI only".

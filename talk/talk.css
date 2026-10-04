@@ -122,3 +122,54 @@
 .reveal .channel-video .d {
   color: #b8b8b8;
 }
+
+.reveal .provider-shots {
+  display: flex;
+  gap: 0.6em;
+  align-items: center;
+  margin-top: 0.4em;
+}
+
+.reveal .provider-shots p {
+  margin: 0;
+  flex: 1;
+}
+
+.reveal .provider-shots p:last-child {
+  flex: 1.6;
+}
+
+.reveal .provider-shots img {
+  width: 100%;
+  margin: 0;
+  border-radius: 14px;
+}
+
+.reveal .provider-caption {
+  margin-top: 0.8em;
+  text-align: center;
+  font-size: 0.75em;
+}
+
+.reveal .provider-caption p {
+  margin: 0.25em 0;
+}
+
+.reveal .lead {
+  font-size: 0.7em;
+  margin-bottom: 0.3em;
+}
+
+.reveal .lead p {
+  margin: 0.2em 0;
+}
+
+.reveal img.poster {
+  display: block;
+  width: auto;
+  height: 446px;
+  max-height: none;
+  aspect-ratio: 16 / 9;
+  margin: 0.2em auto;
+  border-radius: 10px;
+}
