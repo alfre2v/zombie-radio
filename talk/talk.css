@@ -6,10 +6,10 @@
   pointer-events: none;
   mix-blend-mode: lighten;
   background-blend-mode: lighten;
-  background-image: url("images/_spiderweb.svg"), url("images/handprint.jpg"), url("images/zombies.jpg");
+  background-image: url("images/spiderweb.jpg"), url("images/handprint.jpg"), url("images/zombies.jpg");
   background-repeat: no-repeat, no-repeat, repeat-x;
   background-position: right top, right 0.6vw bottom 9vh, left bottom;
-  background-size: auto 30vh, auto 18vh, auto 15vh;
+  background-size: auto 36vh, auto 18vh, auto 15vh;
 }
 
 .reveal .stats {

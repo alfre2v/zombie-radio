@@ -32,8 +32,8 @@ generated when asked for the CEO zombies poster, and its reply to the owner's co
 owner's message is pixelated.
 
 ## `handprint.jpg`, `zombies.jpg`, `ceo-zombies.jpg`, `scientists-radio.jpg`,
-`scientists-goodbye.jpg`
+`scientists-goodbye.jpg`, `spiderweb.jpg`
 
 The owner's own images (2026-10-03), cropped and scaled for the slides; `zombies.jpg`, `ceo-zombies.jpg` and
-`scientists-radio.jpg` and `scientists-goodbye.jpg` were made by the owner with an image generator.
+`scientists-radio.jpg`, `scientists-goodbye.jpg` and `spiderweb.jpg` were made by the owner with an image generator.
 `ceo-zombies.jpg` is satire: caricatures of four AI companies' CEOs as zombies, the punchline of "local AI only".
