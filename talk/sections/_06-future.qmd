@@ -51,9 +51,72 @@ The Mac: the 64 GB M1 could run the whole stack; the 16 GB demo laptop cannot.
 
 ![](images/scientists-goodbye.jpg){.scene .finale .nostretch fig-alt="The cast takes a bow: scientists and zombies hand in hand on a stage, one zombie holding flowers, the audience applauding"}
 
-::: {.small-note}
-[placeholder] The links.
+::: {.thanks-links}
+::: {.about-row}
+::: {.about-card}
+**The code**<br>[github.com/alfre2v/TalkWithZombies](https://github.com/alfre2v/TalkWithZombies)<br>[github.com/alfre2v/zombie-radio](https://github.com/alfre2v/zombie-radio)
+:::
+::: {.about-card}
+**These slides**<br>[alfre2v.github.io/zombie-radio](https://alfre2v.github.io/zombie-radio/)
+:::
+:::
 
-The radio static is from Freesound — credits at
-[github.com/alfre2v/TalkWithZombies/blob/master/Sounds/bed/CREDITS.md](https://github.com/alfre2v/TalkWithZombies/blob/master/Sounds/bed/CREDITS.md)
+::: {.thanks-contact}
+Alfredo Valles · [github.com/alfre2v](https://github.com/alfre2v) · [placeholder: email] · [placeholder: website] ·
+[placeholder: LinkedIn]
+:::
+:::
+
+::: {.notes}
+The slides' address works once the deck is published to GitHub Pages (quarto publish gh-pages), before the talk.
+:::
+
+## Credits {.credits-slide}
+
+::: {.credits-roll}
+[Zombie-Radio]{.cr-title}
+
+[a radio play for four AI voices, by Alfredo Valles]{.cr-by}
+
+[The cast — real voices from the EARS dataset]{.cr-head}
+
+[Daniel]{.cr-role} [speaker p007]{.cr-name}
+[Moira]{.cr-role} [speaker p026]{.cr-name}
+[Ralph]{.cr-role} [speaker p017]{.cr-name}
+[Samantha]{.cr-role} [speaker p063]{.cr-name}
+[EARS: Meta and the University of Hamburg (Interspeech 2024), CC BY-NC 4.0]{.cr-note}
+
+[The radio static — Freesound]{.cr-head}
+
+[CC BY 4.0]{.cr-role} [AlexMurphy53 · -CASK-]{.cr-name}
+[CC BY 3.0]{.cr-role} [kwahmah_02]{.cr-name}
+[CC0, with thanks]{.cr-role} [wwstudioswastaken · exsil · finneganmilla · nlux · NebulousRoyale]{.cr-name}
+[the clips and their licences: github.com/alfre2v/TalkWithZombies/blob/master/Sounds/bed/CREDITS.md]{.cr-note}
+
+[Built on]{.cr-head}
+
+[TalkWithMe and tts-serve]{.cr-role} [Steve Corbett (scorbo2) · No place like localhost]{.cr-name}
+
+[The models and their servers]{.cr-head}
+
+[the words]{.cr-role} [Nemotron Nano 9B v2 (NVIDIA) on llama.cpp (ggml-org)]{.cr-name}
+[the voices]{.cr-role} [Qwen3-TTS (Alibaba's Qwen team), run by faster-qwen3-tts]{.cr-name}
+[the ears]{.cr-role} [Whisper (OpenAI), served by whisper-fastapi (heimoshuiyu)]{.cr-name}
+
+[Pictures and film]{.cr-head}
+
+[1938]{.cr-role} [Welles in the CBS studio (Dallas Dispatch-Journal) · "Help! Men from Mars!" by Les Callan · Wikimedia Commons, public domain]{.cr-name}
+[the old radio]{.cr-role} [Philips Sirius BD 400 A, photo by Bin im Garten, Wikimedia Commons, CC BY-SA 3.0]{.cr-name}
+["Localhosters unite!"]{.cr-role} [video thumbnail, Steve Corbett]{.cr-name}
+["Interview with a Vibe Coder"]{.cr-role} [Roope Rainisto, YouTube]{.cr-name}
+[the citation]{.cr-role} [Wikipedia, "Hustler Magazine v. Falwell", CC BY-SA 4.0]{.cr-name}
+[the generated images]{.cr-role} [Alfredo Valles]{.cr-name}
+
+[Slides made with Quarto and reveal.js]{.cr-note}
+[Every picture's source and licence: talk/images/CREDITS.md in zombie-radio]{.cr-note}
+:::
+
+::: {.notes}
+Rolling credits, like a film's end: the list scrolls by itself while the slide shows. Required by the licences: the
+EARS voices (CC BY-NC), the CC BY static clips, the CC BY-SA photo and citation.
 :::
