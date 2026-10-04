@@ -31,8 +31,8 @@ Two crops of one screenshot the owner took of a chat with a paid AI provider (20
 generated when asked for the CEO zombies poster, and its reply to the owner's complaint; the provider's name in the
 owner's message is pixelated.
 
-## `handprint.jpg`, `zombies.jpg`, `ceo-zombies.jpg`
+## `handprint.jpg`, `zombies.jpg`, `ceo-zombies.jpg`, `scientists-radio.jpg`
 
-The owner's own images (2026-10-03), cropped and scaled for the slides; `zombies.jpg` and `ceo-zombies.jpg` were made
-by the owner with an image generator.
+The owner's own images (2026-10-03), cropped and scaled for the slides; `zombies.jpg`, `ceo-zombies.jpg` and
+`scientists-radio.jpg` were made by the owner with an image generator.
 `ceo-zombies.jpg` is satire: caricatures of four AI companies' CEOs as zombies, the punchline of "local AI only".

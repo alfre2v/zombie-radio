@@ -4,23 +4,36 @@
 About 10 minutes.
 :::
 
-## [placeholder] Three commands to go on air
+## Commands to go on air
 
 ```bash
-# Wire the box (the address is never shown on screen)
-make ans-set ENV=cloud IP=<the box's address>
-# Open the SSH tunnel to the box
+# Clone the repository
+git clone https://github.com/alfre2v/zombie-radio && cd zombie-radio
+
+# Wire AI box IP in Ansible hosts.yml
+make ans-set ENV=cloud IP=<box-address>
+
+# Deploy the AI components (run only once)
+make ans-deploy ENV=cloud
+
+# Install client (TalkWithZombies) on laptop
+make client-mac
+
+# Open SSH tunnel to AI box
 make ssh-tunnel ENV=cloud
-# Serve the app on the laptop (127.0.0.1 only, the default)
-cd ~/TalkWithZombies-client
-.venv/bin/uvicorn app.main:app --port 8000
+
+# Serve app on laptop (127.0.0.1 by default)
+cd ~/TalkWithZombies-client && .venv/bin/uvicorn app.main:app --port 8000
 ```
 
 ::: {.notes}
-The wiring and the tunnel are done before the talk, not live.
+Everything on this slide is done before the talk, not live: the clone, the wiring, the deploy (once, about 7 minutes
+on a fresh VM), the client's install, the tunnel and the app. On stage, only explain what each line does.
 :::
 
-## Live {background-color="#000000"}
+## Live demo {background-color="#000000"}
+
+![](images/scientists-radio.jpg){.scene .nostretch fig-alt="Four scientists in a lab call for help on a shortwave radio while zombies break through the windows"}
 
 ::: {.notes}
 Switch to the app and start a show; pause it to comment. Voice instabilities and the known defects (a line said under

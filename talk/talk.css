@@ -209,3 +209,12 @@
   text-align: right;
   font-size: 0.35em;
 }
+
+.reveal img.scene {
+  display: block;
+  width: auto;
+  height: 470px;
+  max-height: none;
+  margin: 0.3em auto 0;
+  border-radius: 10px;
+}
