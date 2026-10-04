@@ -110,3 +110,48 @@ job); every other document gets the synthesis. When the owner
 starts a list mid-discussion, that list is probably the
 deliverable — finish composing it across the whole exchange
 before persisting anything.
+
+### 2026-10-04 — A name for the method: Socratic agentic engineering
+
+**The name.** The owner first used it on 2026-10-03, while the talk's slides were being built (verbatim): "show some
+more stats that represent how we drove the project with what I call "Socratic agentic engineering" (we may have made a
+passing note in our earlier docs about this "method" which is my attempt to put a name to how we work together)" — and
+"(I want to make that term a thing 😃 )". The agent searched: no earlier doc carried the term; the closest record was
+this document's "tight learning loop". On 2026-10-04 the owner wrote it once as "Socratic Dialog powered coding"; asked
+to pick one form, the owner chose **"Socratic agentic engineering"** for the slides and the docs. The agent's reason
+for that form: shorter, it sits beside Karpathy's "agentic engineering", and it names what is different — the method
+is a dialogue.
+
+**Where it sits** — the talk's slide "How to call this collaboration?" (`talk/sections/_05-ai-pair.qmd`) lists the
+names people have tried, each with a question mark, ending on this one: vibe coding (Andrej Karpathy, February 2025);
+agentic engineering (Karpathy, early 2026); spec-driven vibe coding (Steve Corbett, scorbo2, September 2026); the
+human-agent tight learning loop (the owner, September 2026 — this document, 2026-09-12); Socratic agentic engineering
+(the owner, October 2026). The attributions are the owner's: Karpathy's two terms and dates checked by the
+owner online (2026-10-04); Steve's term from a video of his, released in September 2026. (The owner first wrote
+"Steven Colbert" for Steve Corbett; the agent caught it — the owner: "Oh, darn it! My bad. Good catch.")
+
+**Why "Socratic"** — the owner brought the elements of a Socratic dialogue from an online search (2026-10-04); the
+agent mapped them onto how this project works, each with evidence in the repository:
+
+| Socratic dialogue | How we work |
+|---|---|
+| Open-ended questioning, probing for reasons | discussion-first; questions in groups of three, each with options and a recommendation |
+| Active listening and reflection | the agent restates before acting; the owner's words recorded verbatim (443 times in `docs/`, 2026-10-03) |
+| Challenging assumptions, exposing contradictions | both ways: the owner tests the agent's claims (2026-10-04: the credits slide did *not* replay on ← → as the agent had said), the agent pushes back on the owner's (the rented-GPU objection to "Not your hardware, not your intelligence"); corrections are written down, not hidden |
+| An iterative cycle (receive, reflect, refine, restate, repeat) | draft → the owner's reaction → refinement → review in VS Code → commit on the owner's order |
+| A shared conclusion — or acknowledged ignorance | the owner decides, the agent recommends; "never invent data": when the agent does not know, it says "not in our record" |
+
+**The three levels, and our documents.** A formal Socratic dialogue runs on three levels at once; the project's
+documentation system turns out to keep one kind of document for each — the content of the talk's slide "The
+documentation system":
+
+| Level | What it is | Where it lives |
+|---|---|---|
+| **Object level** — the topic itself | what we build, and why | the discussions, the specs, the experiments, the code |
+| **Strategic discourse** — the shape and direction | what comes next, in what order | `docs/TODO.md`, the board, `docs/follow-ups.md`, the session handoffs |
+| **Meta-discourse** — the rules of the conversation | how we talk, decide and review | `CLAUDE.md`, the working agreements, the agent's memory |
+
+**The agent's own slide.** The owner (verbatim, 2026-10-04): "As you are an equal partner in this experiment of working
+together: What would you like to write if I gave you a slide for you only (I will be forbidden to change anything you
+want to put in that slide)?" — the agent wrote "From the other side of the loop" (the talk's AI-pair section), and the
+owner took it as written.

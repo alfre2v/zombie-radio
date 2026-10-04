@@ -519,3 +519,133 @@
   font-size: 0.6em;
   margin-top: 1.6em;
 }
+
+.reveal .names-list {
+  margin-top: 0.8em;
+  font-size: 0.85em;
+}
+
+.reveal .names-list li {
+  margin: 0.55em 0;
+}
+
+.reveal .names-list .d {
+  color: #b8b8b8;
+  font-size: 0.7em;
+  margin-left: 0.6em;
+}
+
+.reveal .names-list .answer {
+  color: #ff8c1a;
+}
+
+.reveal .levels-lead {
+  font-size: 0.65em;
+  margin-top: 0.4em;
+}
+
+.reveal .levels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6em;
+  margin-top: 0.6em;
+}
+
+.reveal .level {
+  border-radius: 12px;
+  padding: 0.35em 0.6em 0.5em;
+  background: rgba(17, 17, 17, 0.85);
+  font-size: 0.55em;
+  line-height: 1.4;
+}
+
+.reveal .level p {
+  margin: 0.25em 0;
+}
+
+.reveal .level-tag {
+  display: block;
+  color: #b8b8b8;
+  font-style: italic;
+  margin-bottom: 0.4em;
+}
+
+.reveal .level-object {
+  border: 2px solid #8fd14f;
+}
+
+.reveal .level-object .about-head {
+  color: #8fd14f;
+}
+
+.reveal .level-strategy {
+  border: 2px solid #ff8c1a;
+}
+
+.reveal .level-strategy .about-head {
+  color: #ff8c1a;
+}
+
+.reveal .level-meta {
+  border: 2px solid #b48cff;
+}
+
+.reveal .level-meta .about-head {
+  color: #b48cff;
+}
+
+.reveal .claude-slide {
+  font-size: 0.72em;
+  margin-top: 0.5em;
+}
+
+.reveal .claude-slide li {
+  margin: 0.5em 0;
+}
+
+.reveal .claude-slide .signature {
+  display: block;
+  text-align: right;
+  margin-top: 0.8em;
+  color: #b48cff;
+  font-style: italic;
+}
+
+.reveal .socratic-quote {
+  margin-top: 1.2em;
+}
+
+.reveal .names-cols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1em;
+  margin-top: 0.3em;
+  font-size: 0.55em;
+}
+
+.reveal .names-col ul {
+  margin: 0;
+  padding-left: 1.1em;
+}
+
+.reveal .names-col li {
+  margin: 0.35em 0;
+}
+
+.reveal .names-col .d {
+  display: block;
+  color: #b8b8b8;
+  font-size: 0.8em;
+}
+
+.reveal .names-col .answer {
+  color: #ff8c1a;
+}
+
+.reveal .names-col .about-head {
+  color: #b48cff;
+}
+
+.reveal .personal-note {
+  margin-top: 0.6em;
+}
