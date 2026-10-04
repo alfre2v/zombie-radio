@@ -466,3 +466,51 @@
   line-height: 1.1;
   margin-bottom: 265px;
 }
+
+.reveal .bio {
+  margin-top: 0;
+}
+
+.reveal .bio-name {
+  display: block;
+  font-size: 1.3em;
+  font-weight: 700;
+  color: #ff8c1a;
+  margin-bottom: 0.2em;
+}
+
+.reveal .bio ul {
+  font-size: 0.72em;
+  line-height: 1.4;
+}
+
+.reveal .bio li {
+  margin: 0.35em 0;
+}
+
+.reveal .bio-layout {
+  display: flex;
+  gap: 1.2em;
+  align-items: center;
+  margin-top: 1.6em;
+}
+
+.reveal .bio-photo {
+  flex: 0 0 auto;
+}
+
+.reveal .bio-photo p {
+  margin: 0;
+}
+
+.reveal .bio-layout .bio {
+  flex: 1;
+}
+
+.reveal .bio-photo img {
+  display: block;
+  height: 300px;
+  width: auto;
+  margin: 0;
+  border-radius: 14px;
+}

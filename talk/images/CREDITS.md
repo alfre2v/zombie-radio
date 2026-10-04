@@ -31,6 +31,11 @@ Two crops of one screenshot the owner took of a chat with a paid AI provider (20
 generated when asked for the CEO zombies poster, and its reply to the owner's complaint; the provider's name in the
 owner's message is pixelated.
 
+## `alfredo-atx.jpg`
+
+The owner's own photo (2026-10-04): in a kayak on Lady Bird Lake, downtown Austin behind, wearing a "Zombie Hunters"
+cap; cropped to a portrait and scaled. Shown on "Who I am".
+
 ## `handprint.jpg`, `zombies.jpg`, `ceo-zombies.jpg`, `scientists-radio.jpg`,
 `scientists-goodbye.jpg`, `spiderweb.jpg`
 

@@ -19,10 +19,30 @@ The opening joke. The clip plays from YouTube, so it needs the venue's internet;
 Link: https://www.youtube.com/watch?v=Kl9GO1DUjls
 :::
 
-## [placeholder] Who I am
+## Who I am
+
+::: {.bio-layout}
+::: {.bio}
+[Alfredo Valles]{.bio-name}
+
+- **Senior backend engineer**, 20+ years: Python, APIs, ML/AI in production
+- **Europe**: Zalando, Telefónica Digital · **USA**: DataRobot, Rackspace
+- **Nuclear physicist**: neural networks for biology (peptide–HLA binding), ML before it was cool
+- Loves **Python, Linux and open source**; now building with **local LLMs**
+:::
+::: {.bio-photo}
+![](images/alfredo-atx.jpg){.nostretch fig-alt="Alfredo in a kayak on Lady Bird Lake, downtown Austin behind, wearing a Zombie Hunters cap"}
+:::
+:::
 
 ::: {.notes}
-The owner's words, to come.
+The meetup page's bio: Alfredo Valles is a senior backend engineer with more than 20 years of experience building
+scalable systems, APIs and ML-powered services in Python, for companies in Europe (Zalando, Telefónica Digital) and the
+United States (DataRobot, Rackspace). He trained as a nuclear physicist, and in research he applied neural networks to
+biological problems, such as predicting peptide–HLA binding: machine learning before it was cool. He loves Python,
+Linux and open source. These days he builds with open large language models that he runs himself.
+
+Peptide–HLA binding, aloud: which pieces of a virus the immune system can see.
 :::
 
 ## How this project came to be
