@@ -280,7 +280,7 @@
 
 .reveal .about-code {
   border: 2px solid #b48cff;
-  margin-top: 0.3em;
+  margin-top: 42px;
 }
 
 .reveal .about-code .about-head {
@@ -513,4 +513,9 @@
   width: auto;
   margin: 0;
   border-radius: 14px;
+}
+
+.reveal .bio-contact {
+  font-size: 0.6em;
+  margin-top: 1.6em;
 }

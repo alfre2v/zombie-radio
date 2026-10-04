@@ -35,6 +35,11 @@ Link: https://www.youtube.com/watch?v=Kl9GO1DUjls
 :::
 :::
 
+::: {.thanks-contact .bio-contact}
+Alfredo Valles · [github.com/alfre2v](https://github.com/alfre2v) · [placeholder: email] · [placeholder: website] ·
+[placeholder: LinkedIn]
+:::
+
 ::: {.notes}
 The meetup page's bio: Alfredo Valles is a senior backend engineer with more than 20 years of experience building
 scalable systems, APIs and ML-powered services in Python, for companies in Europe (Zalando, Telefónica Digital) and the
