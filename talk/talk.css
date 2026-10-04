@@ -146,7 +146,7 @@
 }
 
 .reveal .provider-caption {
-  margin-top: 0.8em;
+  margin-top: 0.3em;
   text-align: center;
   font-size: 0.75em;
 }
@@ -172,4 +172,40 @@
   aspect-ratio: 16 / 9;
   margin: 0.2em auto;
   border-radius: 10px;
+}
+
+.reveal .lead.smaller-lead {
+  font-size: 0.58em;
+}
+
+.reveal .provider-shots {
+  width: 72%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.reveal .citation {
+  margin: 0.35em auto 0;
+  width: 88%;
+}
+
+.reveal .citation blockquote {
+  margin: 0;
+  padding: 0.3em 0.8em;
+  width: auto;
+  font-size: 0.5em;
+  font-style: italic;
+  border-left: 4px solid #b48cff;
+  background: rgba(180, 140, 255, 0.07);
+  box-shadow: none;
+}
+
+.reveal .citation blockquote p {
+  margin: 0;
+}
+
+.reveal .citation .credit {
+  display: block;
+  text-align: right;
+  font-size: 0.35em;
 }
