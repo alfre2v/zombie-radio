@@ -449,6 +449,43 @@ Quarto from trying to pack the video into the HTML). It needs:
 The venue's setup is learned on the day; the owner arrives early to work it out (owner action queue: demo-day
 logistics).
 
+### 8.3 Different screens and resolutions
+
+The owner (verbatim, 2026-10-05): "I have no idea how this quarto presentation will behave in a different
+resolution, which will probably be the case on a projector screen. What should we expect on different resolutions, how
+are the slides supposed to grow and shrink?"
+
+**How it works.** The deck is designed on a fixed canvas of 1280×720 (`width` and `height` in `_quarto.yml`, §2.1).
+reveal.js scales that canvas **as one picture** to fit the window, like zooming an image: the layout never reflows —
+every gap, box and line break stays where it was tuned; text grows on a big screen and shrinks on a small one, in
+proportion. A screen of another shape gets the same slide, fitted inside, with empty bands.
+
+**The exception: the decorations.** The zombies, the handprint and the spider web (§6.1) are painted on the window, not
+on the slide, and sized as a share of the window's height (`vh`); the footer and the slide number are on the window too,
+at a fixed pixel size. On a 16:9 screen they line up with the slide exactly as designed; on another shape they sit at
+the window's edges while the slide floats inside its bands.
+
+**Tested 2026-10-05** — the slide "Local AI only" rendered by headless Chrome at three screen sizes:
+
+| Screen | What happened |
+|---|---|
+| 1920×1080 (16:9, most projectors) | identical to the 1280×720 design, 1.5 times bigger; every tuned gap holds; the footer and slide number look a little smaller, at their fixed pixel size |
+| 1280×800 (16:10, many laptops, some projectors) | the same slide with a thin band above; the zombies at the window's bottom edge, lower than designed — more room between them and the content |
+| 1024×768 (4:3, older projectors) | the slide shrunk to the width, wide bands above and below; the zombies and the web at the window's edges, clear of the content; text smaller but readable |
+
+So **the layout is safe at any resolution**, and the tight spots tuned against the zombies (the channel box on "Local
+AI only", the captions above their heads) are exact on any 16:9 screen and only get more room on other shapes. The cost
+of a non-16:9 projector is the empty bands and slightly smaller text — nothing to fix in the deck.
+
+**At the venue, three things matter more than the projector's resolution:**
+
+1. **Present full screen (press F).** A browser window with its tabs and address bar is shorter than 16:9: the slide
+   shrinks with bands at the sides, and the decorations shift as on a 16:10 screen. Full screen gives the deck the whole
+   display.
+2. **Keep the browser's zoom at 100 %** (Cmd-0 resets it). A zoomed page changes the window size reveal.js sees.
+3. **Use the projector's native resolution** in System Settings → Displays, if macOS does not pick it. A scaled
+   resolution can make everything blurry (the layout stays the same).
+
 ## 9. Checking an edit (the agent's four steps)
 
 After the owner edits the slides, the agent checks with these commands — run from the repository's root:
