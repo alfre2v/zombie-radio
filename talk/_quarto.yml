@@ -1,6 +1,8 @@
 project:
   type: default
   output-dir: _output
+  resources:
+    - images/favicon.svg
 
 format:
   revealjs:
@@ -14,4 +16,6 @@ format:
     embed-resources: false
     css: talk.css
     chalkboard: true
+    include-in-header:
+      text: '<link rel="icon" type="image/svg+xml" href="images/favicon.svg">'
     footer: "Zombie-Radio · Austin Python Meetup · October 2026"
