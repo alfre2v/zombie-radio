@@ -837,3 +837,52 @@
 .reveal .commands pre.numberSource code > span {
   left: 0 !important;
 }
+
+.reveal .director pre {
+  margin-top: 0.9em;
+  position: relative;
+  z-index: 1;
+  background: rgba(14, 14, 14, 0.96);
+}
+
+.reveal .director pre code {
+  font-size: 1.12em;
+  line-height: 1.3;
+  max-height: none;
+  background: transparent;
+}
+
+.reveal .director div.sourceCode {
+  margin-top: 30px;
+}
+
+.reveal .grammar-slide h2 + p {
+  margin-top: 30px;
+}
+
+.reveal .grammar-slide p:has(.wrote-label) {
+  margin-top: 40px;
+}
+
+.reveal .grammar-slide pre,
+.reveal .grammar-slide div.sourceCode {
+  border-color: #b48cff !important;
+}
+
+.reveal .slides section.gpu-slide > .columns {
+  display: flex;
+  margin-top: 20px;
+}
+
+.reveal .gpu-slide div.sourceCode,
+.reveal .home-slide div.sourceCode {
+  margin-top: 46px;
+}
+
+.reveal .gpu-slide div.sourceCode code {
+  font-size: 22px;
+}
+
+.reveal .gpu-slide .column > :first-child {
+  margin-top: 0;
+}
