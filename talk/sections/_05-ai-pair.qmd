@@ -36,10 +36,8 @@ by the owner online (2026-10-04); "spec-driven vibe coding" from Steve's video r
 learning loop is docs/discussions/2026-09-12-tight-learning-loop.md; "Socratic agentic engineering" named on
 2026-10-03.
 
-The right column, from skeptic to awed — to verify before the talk: Penrose's exact words and where he said them;
-Harari as a source for "alien intelligence"; Karpathy's "people spirits" (his Software 3.0 talk, June 2025). Bender,
-Gebru et al.: "On the Dangers of Stochastic Parrots" (2021); Ted Chiang: "ChatGPT Is a Blurry JPEG of the Web", The New
-Yorker, February 2023.
+The right column, from skeptic to awed; Penrose, Harari and Karpathy's "people spirits". Bender, Gebru et al.: "On the Dangers of Stochastic Parrots" (2021); Ted Chiang: "ChatGPT Is a Blurry
+JPEG of the Web", The New Yorker, February 2023.
 :::
 
 ## The documentation system

@@ -649,3 +649,57 @@
 .reveal .personal-note {
   margin-top: 0.6em;
 }
+
+.reveal .welles-row {
+  display: flex;
+  gap: 0.8em;
+  align-items: center;
+  margin-top: 50px;
+}
+
+.reveal .welles-video {
+  flex: 0 0 auto;
+}
+
+.reveal .welles-video iframe {
+  display: block;
+  max-width: none;
+}
+
+.reveal .welles-photos {
+  flex: 1;
+}
+
+.reveal .welles-photos p {
+  margin: 0;
+}
+
+.reveal .welles-photos img {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin: 0 0 0.2em;
+}
+
+.reveal .welles-video p,
+.reveal .video-1938 p {
+  margin: 0;
+}
+
+.reveal .welles-video .credit {
+  display: block;
+  margin-top: 0.3em;
+}
+
+.reveal .video-1938 {
+  margin-top: 0.4em;
+}
+
+.reveal .video-1938 iframe {
+  display: block;
+  margin: 0 auto;
+}
+
+.reveal .video-1938 + .credit {
+  margin-top: 0.3em;
+}
