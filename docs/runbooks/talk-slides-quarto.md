@@ -422,15 +422,53 @@ Quarto from trying to pack the video into the HTML). It needs:
 
 ## 8. Presenting
 
-### 8.1 Keys
+### 8.1 Keys, and what else reveal.js can do
+
+The owner (verbatim, 2026-10-05): "One thing that I notice is that when one opens the "notes" view (pressing "S"),
+there is more to this reveal.js window that it seems at first: For once, if one presses Esc, it shows a slideshow view
+map of all the slides by section, so one can jump quickly to the slide one need... What other reveal.js secrets are
+worth knowing?"
+
+Checked against the deck itself (2026-10-05): its help overlay (press **?**) and the plugins it loads (`quarto-line-
+highlight`, `pdf-export`, `menu`, `quarto-support`, `mathjax2`, `notes`, `search`, `zoom`).
+
+**Moving**
 
 | Key | Does |
 |---|---|
-| → or Space | the next slide, or the next step of a slide (the components diagram, the highlighted code line) |
-| ← | back |
-| **S** | the **speaker view**: a second window with the current slide, the next slide, a clock, a timer, and the notes |
+| → , Space, N | the next slide, or the next step of a slide (the components diagram, the highlighted code line) |
+| ← , P | back |
+| **Alt + ← / →** | next / previous slide **skipping the build-up steps** (past "The components" without its three zones) |
+| **Shift + ← / →** | jump to the first / last slide |
+| **G** | **jump to slide**: type its number, then Enter (`G 22 Enter`) |
+| **Esc** or **O** | the overview: every slide as a grid by section; arrows to move, Enter to open |
+| **M** | the **menu** (also the ☰ in the bottom-left corner): every slide by title, and tools. This M is the deck's; the M that mutes the static belongs to the app's page, another window — no conflict |
+| **Ctrl + Shift + F** | **search** the deck's text, Enter to jump to the match — fastest when a question names something on a slide |
+
+**On stage**
+
+| Key | Does |
+|---|---|
+| **B** or **.** | **pause**: a black screen; again to come back — while talking with the room, answering a question, or switching to the live app |
 | **F** | full screen |
-| **O** or Esc | the overview: every slide as a grid, to jump anywhere |
+| **Alt + click** | **zoom** into what is clicked; Alt + click again to zoom out — the dense diagrams, the Artificial Analysis chart, the grammar |
+| **S** | the **speaker view** (below) |
+| **?** | the help overlay, every key |
+
+**Other modes**
+
+| Key | Does |
+|---|---|
+| **E** | **PDF export mode**: press E, then print from the browser (Cmd-P, save as PDF) — one page per slide; a backup for a USB stick. Animations (the rolling credits, the build-ups) print as still frames |
+| **R** | **scroll view**: the deck as one long scrolling page — for reviewing, not for presenting |
+
+**The speaker view (S)** — a second window with the current slide, the next slide, that slide's notes, a clock and a
+**timer** (click it to reset it when the talk starts: it shows how long you have been talking, against the plan of about
+33 minutes); a layout button in its corner rearranges the panes; the slides can be driven from it, so the projector
+never needs the mouse.
+
+**Not enabled: a chalkboard** (drawing on the slides with the mouse) — one line in `_quarto.yml` (`chalkboard: true`),
+but it takes over the **B** key, used here to pause; left off.
 
 ### 8.2 Keeping the notes private
 
