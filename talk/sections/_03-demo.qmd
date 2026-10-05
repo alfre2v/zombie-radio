@@ -83,4 +83,37 @@ IF SOMETHING IS OFF
 ::: {.notes}
 Switch to the app and start a show; pause it to comment. Voice instabilities and the known defects (a line said under
 the wrong name) explained openly. Fallback: Task 7's video.
+
+BEFORE (backstage) — tunnel open and make check shows three ok; app on 127.0.0.1:8000; open http://localhost:8000/show,
+pick a look; browser full screen, zoom 100 %, sound output on the room's speakers. The installed client runs the demo's
+defaults: debug off, a random seed per run, static bed on, filter off.
+
+STARTING — press Start: the browser asks for the microphone once, then. The first round is the slowest (about 6.8 s,
+the voice cold); later gaps 3.7-4.9 s, filled by the static. If Start shows an error, read it: a context too small, or
+a persona without a voice.
+
+WHAT THE AUDIENCE HEARS, IN ORDER — Samantha's sign-on (who they are, where, the receiver is dead), then the cast
+talking among themselves, an event read out every 2 ± 1 rounds. 60-180 s of audio after the start, THE CALL: someone
+says the receiver works again and Samantha calls out — the RECEIVER sign lights and the radio listens.
+
+TALKING BACK — after the call (and after each answer), "Listening… 10 s" and the Hold to talk button lights. Hold the
+button or SPACE while speaking, let go when done (a press is capped at 30 s). Say a character's name to pick who
+answers ("Samantha, can you hear me?"); they ask who you are first, then where you are, then what they need (supplies,
+a way out, help finding the lab). Your words show as a caption; doubtful words are marked. 5 ± 1 answers, then the
+receiver breaks down. Silence: one re-call; two silences in a row and the receiver is switched off.
+
+KEYS — SPACE hold to talk · M mute the static · F flip its AM filter (the old-radio band). Stop and Resume on the
+bottom bar.
+
+PAUSING TO COMMENT — press Stop: it cuts the voice and abandons the round in flight. Resume continues the same run
+(after a listening round, the window opens first). A page reload starts a new run.
+
+IF SOMETHING GOES WRONG — "the round request failed": the tunnel (curl localhost:8080/health), then Resume. Lines but no
+sound: the browser's sound, then the voice (localhost:8001/capabilities). No static: M was pressed. The talk button
+never lights: the microphone was refused — allow it and reload. If the network or the box is gone: the canned video.
+
+WHAT MAY HAPPEN, SAY IT OPENLY — a voice wobbles or garbles a word now and then (cloned voices, one recording per mood,
+the mood clips set the level: some moods are quieter); a cast member may say another's line (Daniel introducing
+himself as Samantha, seen once); the cast improvise places and details — that's the feature, not a bug.
 :::
+
