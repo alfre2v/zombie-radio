@@ -224,7 +224,7 @@ tts-serve (the voice server). His channel, No place like localhost, is where he 
 it. The only piece from OpenAI is the open one.
 :::
 
-## Why not AI APIs (1/2)
+## Why not AI APIs (1/3)
 
 ::: {.lead}
 The only zombies not allowed in this apocalypse are…
@@ -240,7 +240,34 @@ They *really* want your brain!
 Local AI only: no OpenAI, no Anthropic, no Meta, no xAI.
 :::
 
-## Why not AI APIs (2/2)
+## Why not AI APIs (2/3)
+
+::: {.elephant}
+::: {.elephant-pic}
+![](images/ceo-macbook.jpg){.nostretch fig-alt="Satire: a zombie tech CEO hugging a MacBook in a graveyard, an Anthropic tombstone behind"}
+
+[Actually, one zombie CEO got in after all…]{.banner}
+:::
+::: {.elephant-chart}
+![](images/intelligence-index.png){.nostretch fig-alt="The Artificial Analysis Intelligence Index: an open Qwen 27B model at 34, marked Hope"}
+
+::: {.credit .centered}
+Artificial Analysis Intelligence Index (artificialanalysis.ai); "Hope" added by Alfredo
+:::
+:::
+:::
+
+::: {.elephant-why}
+This project was built with Claude Code — local models aren't there yet for coding. But they're getting close.
+:::
+
+::: {.notes}
+The elephant in the room: a talk about local AI only, built with Claude. The show runs on open models only; the
+building used a hosted coding agent. The hope: an open model of 27B parameters (Qwen3.8 27B) already scores 34 on the
+Artificial Analysis Intelligence Index — small enough to run at home.
+:::
+
+## Why not AI APIs (3/3)
 
 ::: {.lead .smaller-lead}
 An AI provider I pay for, refusing to generate the satirical poster of the CEOs as zombies you saw before, and, after

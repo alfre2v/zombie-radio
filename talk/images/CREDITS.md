@@ -36,9 +36,16 @@ owner's message is pixelated.
 The owner's own photo (2026-10-04): in a kayak on Lady Bird Lake, downtown Austin behind, wearing a "Zombie Hunters"
 cap; cropped to a portrait and scaled. Shown on "Who I am".
 
-## `handprint.jpg`, `zombies.jpg`, `ceo-zombies.jpg`, `scientists-radio.jpg`,
+## `intelligence-index.png`
+
+A screenshot of the Artificial Analysis Intelligence Index chart (artificialanalysis.ai), taken by the owner on
+2026-10-05, with the owner's own annotation ("Hope", an arrow to Qwen3.8 27B); scaled to 1,400 pixels wide. Credited
+on its slide.
+
+## `handprint.jpg`, `zombies.jpg`, `ceo-zombies.jpg`, `ceo-macbook.jpg`, `scientists-radio.jpg`,
 `scientists-goodbye.jpg`, `spiderweb.jpg`
 
-The owner's own images (2026-10-03), cropped and scaled for the slides; `zombies.jpg`, `ceo-zombies.jpg` and
-`scientists-radio.jpg`, `scientists-goodbye.jpg` and `spiderweb.jpg` were made by the owner with an image generator.
-`ceo-zombies.jpg` is satire: caricatures of four AI companies' CEOs as zombies, the punchline of "local AI only".
+The owner's own images (2026-10-03 to 2026-10-05), cropped and scaled for the slides. All but `handprint.jpg` were
+made by the owner with an image generator. `ceo-zombies.jpg` and `ceo-macbook.jpg` are satire: caricatures of AI
+companies' CEOs as zombies — the punchline of "local AI only", and the one zombie CEO who got in (the coding agent this
+project was built with).
