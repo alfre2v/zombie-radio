@@ -175,6 +175,22 @@ AI components to a cloud VM (CUDA GPU + Docker). 4. Automated deployment to loca
 ## Local AI only
 
 ::: {.built-on}
+Open models, on one GPU we deploy ourselves. No AI API, no keys.
+:::
+
+::: {.stats .compact}
+::: {.stat}
+[the words]{.n}<br>Nemotron Nano 9B v2 [· NVIDIA]{.d}
+:::
+::: {.stat}
+[the voices]{.n}<br>Qwen3-TTS [· Alibaba's Qwen team]{.d}
+:::
+::: {.stat}
+[the ears]{.n}<br>Whisper [· OpenAI, open source]{.d}
+:::
+:::
+
+::: {.built-on}
 Uses two open-source projects by **Steve Corbett** (scorbo2), MIT-licensed:
 :::
 
@@ -199,22 +215,6 @@ Steve's YouTube channel, a beacon for the local-AI-first community — pay it a 
 ![](images/localhosters-unite.jpg){fig-alt="Steve Corbett, arms wide open, in his video Localhosters unite!"}
 
 [“Localhosters unite!”]{.d}
-:::
-:::
-
-::: {.built-on}
-Open models, on one GPU we deploy ourselves. No AI API, no keys.
-:::
-
-::: {.stats .compact}
-::: {.stat}
-[the words]{.n}<br>Nemotron Nano 9B v2 [· NVIDIA]{.d}
-:::
-::: {.stat}
-[the voices]{.n}<br>Qwen3-TTS [· Alibaba's Qwen team]{.d}
-:::
-::: {.stat}
-[the ears]{.n}<br>Whisper [· OpenAI, open source]{.d}
 :::
 :::
 
