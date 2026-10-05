@@ -46,7 +46,7 @@ All of the deck is in the `talk/` folder of this repository:
 | `talk/talk.css` | the look: colours, sizes, spacing, the boxes and cards, the Halloween decorations |
 | `talk/images/` | every picture: photos and generated images (`.jpg`), the diagrams (`_*.svg`), the scripts that draw the diagrams (`make_*_svg.py`), and `CREDITS.md` |
 | `talk/data/` | the numbers behind a chart, kept in git (`trim-run-2026-10-01T17-48-37.csv`) |
-| `talk/_output/` | **the rendered deck**, a static website: `index.html`, `index_files/` (reveal.js and its plugins), `images/`, `talk.css` — about 18 MB; generated, never edited, kept out of git |
+| `talk/_output/` | **the rendered deck**, a static website: `index.html`, `site_libs/` (reveal.js and its plugins), `images/`, `talk.css`, `search.json` (a site search index the deck does not use) — about 10 MB; generated, never edited, kept out of git |
 | `talk/.quarto/` | Quarto's working files — generated, kept out of git |
 
 The section files start with an underscore (`_01-intro.qmd`) on purpose: Quarto skips files whose name starts with `_`
@@ -59,8 +59,12 @@ slide.
 
 ```yaml
 project:
-  type: default
+  type: website              # a website project: publishing uploads the whole rendered folder (§10)
   output-dir: _output        # the rendered deck goes to talk/_output/
+  render:
+    - index.qmd              # render the deck only, not images/CREDITS.md as a page of its own
+  resources:
+    - images/favicon.svg     # the tab icon, copied into the rendered folder
 
 format:
   revealjs:
@@ -583,15 +587,16 @@ Then, as for every change in this repository: review in VS Code, commit only on 
 staged diff (`git diff --cached | grep -Eo '([0-9]{1,3}\.){3}[0-9]{1,3}'` — `127.0.0.1` on the commands slide is
 fine), push on the owner's order.
 
-## 10. Publishing to GitHub Pages (not done yet)
+## 10. Publishing to GitHub Pages (first published 2026-10-05)
 
 The owner (verbatim, 2026-10-04): "Not that I want to publish the talk yet, but I am curious how is the process of
 publishing to GitHub Pages. Walk me through the steps required." — the walk-through, kept here. **Nothing in this
-section had been run at this writing.**
+section had been run at this writing.** It was first run on 2026-10-05, after #26 merged; what happened, and the one
+correction it needed, are in §10.4.
 
 ### 10.1 What publishing does
 
-`quarto publish gh-pages` renders the deck and pushes the result — the `_output/` folder, about 18 MB — to a
+`quarto publish gh-pages` renders the deck and pushes the result — the `_output/` folder, about 10 MB — to a
 **separate branch called `gh-pages`** in the zombie-radio repository. GitHub Pages then serves that branch as a website
 at:
 
@@ -624,7 +629,8 @@ git checkout main
 
 **2. Turn on GitHub Pages — once**, in the browser: the repository's **Settings → Pages → Build and deployment →
 Source: "Deploy from a branch" → Branch: `gh-pages`, folder `/ (root)` → Save.** Quarto may set this by itself; check it
-either way.
+either way. On 2026-10-05 nothing had to be done: after the first publish, GitHub showed Pages on, served from
+`gh-pages`, folder `/`.
 
 **3. Publish:**
 
@@ -635,8 +641,8 @@ cd talk && quarto publish gh-pages
 
 - It asks for confirmation, renders the deck, copies it into `gh-pages` — adding a `.nojekyll` file, which tells GitHub
   not to reprocess the site with its Jekyll tool — and pushes.
-- It also writes a small **`talk/_publish.yml`** recording where the deck was published: a new file on `main`, reviewed
-  and committed like any other.
+- Quarto's documentation says it also writes a small **`talk/_publish.yml`** recording where the deck was published (a
+  new file, reviewed and committed like any other). The first publish of 2026-10-05 wrote none.
 
 **4. Wait a minute, then check.** GitHub builds the site; the repository's **Actions** tab shows a run named "pages
 build and deployment". When it is green, open `https://alfre2v.github.io/zombie-radio/`. The Welles clip plays there,
@@ -649,8 +655,9 @@ because the page is served (§3.3, §7).
 
 - **The speaker notes become public too.** They are inside the HTML, and anyone viewing the published deck can press
   **S** and read them. Ours hold the owner's full wording, timings and reminders ("check today's price") — nothing
-  sensitive at this writing, but read them with that in mind. Before publishing, scan the rendered file as commits are
-  scanned:
+  sensitive at this writing, but read them with that in mind. **The owner's decision (2026-10-05): publish the notes as
+  they are** — "Accept them as they are", over a pass rewriting them for the public or a deck without notes. Before
+  publishing, scan the rendered file as commits are scanned:
 
   ```bash
   # Any machine address in the rendered deck (127.0.0.1 on the commands slide is fine)
@@ -668,6 +675,31 @@ because the page is served (§3.3, §7).
 - **An alternative not taken:** a GitHub Actions workflow that renders the deck in the cloud on every push to `main`.
   Automatic, but it needs Quarto installed in CI, more setup, and it publishes things one may not mean to publish.
   Manual publishing suits a talk deck better.
+
+### 10.4 The first publish (2026-10-05)
+
+The owner, after merging #26 (verbatim): "PR merged. Let's publish now the gh pages to see how it looks" — publishing
+before the talk, so the address on "Thank you" works when shown; republished after any later change (the owner's
+choice that day, over publishing after the talk).
+
+1. **The `gh-pages` branch** was created as in step 1, from `main`.
+2. **The scans of §10.3** on the fresh render: the only address `127.0.0.1` (five other hits were numbers inside the
+   GitHub icon's drawing, not addresses); the provider's name 0 times.
+3. **`quarto publish gh-pages` refused:** "The specified path (…/talk) is not a website, manuscript or book project so
+   cannot be published." The deck was then a project of type `default`, and Quarto publishes a whole folder only for a
+   website, a book or a manuscript.
+4. **Published as a single document instead** — `quarto publish gh-pages index.qmd`. The deck went up, but **without the
+   Halloween decorations**: a document's publish uploads only the files the page itself points to, and the zombies, the
+   handprint and the spider web are named only in `talk.css`. On the live site they answered 404.
+5. **The correction: the project became a website** (`type: website` in `_quarto.yml`, §2.1), tested first on a copy
+   of `talk/`: the render folder holds the decorations, and a website's publish uploads that whole folder. The owner
+   asked whether that would fix it ("would making it a website project fix the issue? How complex would that change of
+   project type be?"), then: "go ahead, website type with the render line". The `render:` line keeps
+   `images/CREDITS.md` from being rendered as a page of its own and published beside the deck. What else changed: the
+   reveal.js files moved from `index_files/libs/` to `site_libs/`, and the render adds a `search.json`, a site search
+   index the deck does not use. The slides look the same.
+6. **Then republished** from `main`, once the correction merged, with the plain `cd talk && quarto publish gh-pages` of
+   step 3.
 
 ## 11. Before the talk
 

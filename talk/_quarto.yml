@@ -1,6 +1,8 @@
 project:
-  type: default
+  type: website
   output-dir: _output
+  render:
+    - index.qmd
   resources:
     - images/favicon.svg
 
