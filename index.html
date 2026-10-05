@@ -1,0 +1,1876 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<script src="index_files/libs/clipboard/clipboard.min.js"></script>
+<script src="index_files/libs/quarto-html/tabby.min.js"></script>
+<script src="index_files/libs/quarto-html/popper.min.js"></script>
+<script src="index_files/libs/quarto-html/tippy.umd.min.js"></script>
+<link href="index_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/light-border.css" rel="stylesheet">
+<link href="index_files/libs/quarto-html/quarto-syntax-highlighting-dark-b85bc7c33db8c58e0ec93c3465666fed.css" rel="stylesheet" id="quarto-text-highlighting-styles"><meta charset="utf-8">
+  <meta name="generator" content="quarto-1.10.18">
+
+  <meta name="author" content="Alfredo Valles">
+  <title>Zombie-Radio</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/reset.css">
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/reveal.css">
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    ul.task-list{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+      vertical-align: middle;
+    }
+    /* CSS for syntax highlighting */
+    html { -webkit-text-size-adjust: 100%; }
+    pre > code.sourceCode { white-space: pre; position: relative; }
+    pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+    pre > code.sourceCode > span:empty { height: 1.2em; }
+    .sourceCode { overflow: visible; }
+    code.sourceCode > span { color: inherit; text-decoration: inherit; }
+    div.sourceCode { margin: 1em 0; }
+    pre.sourceCode { margin: 0; }
+    @media screen {
+    div.sourceCode { overflow: auto; }
+    }
+    @media print {
+    pre > code.sourceCode { white-space: pre-wrap; }
+    pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+    }
+    pre.numberSource code
+      { counter-reset: source-line 0; }
+    pre.numberSource code > span
+      { position: relative; left: -4em; counter-increment: source-line; }
+    pre.numberSource code > span > a:first-child::before
+      { content: counter(source-line);
+        position: relative; left: -1em; text-align: right; vertical-align: baseline;
+        border: none; display: inline-block;
+        -webkit-touch-callout: none; -webkit-user-select: none;
+        -khtml-user-select: none; -moz-user-select: none;
+        -ms-user-select: none; user-select: none;
+        padding: 0 4px; width: 4em;
+      }
+    pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+    div.sourceCode
+      { color: #f8f8f2;  }
+    @media screen {
+    pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+    }
+    code span { color: #f8f8f2; } /* Normal */
+    code span.al { color: #f07178; } /* Alert */
+    code span.an { color: #d4d0ab; } /* Annotation */
+    code span.at { color: #00e0e0; } /* Attribute */
+    code span.bn { color: #d4d0ab; } /* BaseN */
+    code span.bu { color: #abe338; } /* BuiltIn */
+    code span.cf { color: #ffa07a; font-weight: bold; } /* ControlFlow */
+    code span.ch { color: #abe338; } /* Char */
+    code span.cn { color: #ffd700; } /* Constant */
+    code span.co { color: #f8f8f2; font-style: italic; } /* Comment */
+    code span.cv { color: #ffd700; } /* CommentVar */
+    code span.do { color: #f8f8f2; } /* Documentation */
+    code span.dt { color: #ffa07a; } /* DataType */
+    code span.dv { color: #d4d0ab; } /* DecVal */
+    code span.er { color: #f07178; text-decoration: underline; } /* Error */
+    code span.ex { color: #00e0e0; font-weight: bold; } /* Extension */
+    code span.fl { color: #d4d0ab; } /* Float */
+    code span.fu { color: #ffa07a; } /* Function */
+    code span.im { color: #abe338; } /* Import */
+    code span.in { color: #d4d0ab; } /* Information */
+    code span.kw { color: #ffa07a; font-weight: bold; } /* Keyword */
+    code span.op { color: #ffa07a; } /* Operator */
+    code span.ot { color: #00e0e0; } /* Other */
+    code span.pp { color: #dcc6e0; } /* Preprocessor */
+    code span.re { color: #00e0e0; background-color: #f8f8f2; } /* RegionMarker */
+    code span.sc { color: #abe338; } /* SpecialChar */
+    code span.ss { color: #abe338; } /* SpecialString */
+    code span.st { color: #abe338; } /* String */
+    code span.va { color: #00e0e0; } /* Variable */
+    code span.vs { color: #abe338; } /* VerbatimString */
+    code span.wa { color: #dcc6e0; } /* Warning */
+  </style>
+  <link rel="stylesheet" href="index_files/libs/revealjs/dist/theme/quarto-422092a5e00d6ffa3175d97bbb8f7ab9.css">
+  <link rel="stylesheet" href="talk.css">
+  <link href="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/reveal-menu/menu.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/reveal-chalkboard/font-awesome/css/all.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/reveal-chalkboard/style.css" rel="stylesheet">
+  <link href="index_files/libs/revealjs/plugin/quarto-support/footer.css" rel="stylesheet">
+  <style type="text/css">
+    .reveal div.sourceCode {
+      margin: 0;
+      overflow: auto;
+    }
+    .reveal div.hanging-indent {
+      margin-left: 1em;
+      text-indent: -1em;
+    }
+    .reveal .slide:not(.center) {
+      height: 100%;
+    }
+    .reveal .slide.scrollable {
+      overflow-y: auto;
+    }
+    .reveal .footnotes {
+      height: 100%;
+      overflow-y: auto;
+    }
+    .reveal .slide .absolute {
+      position: absolute;
+      display: block;
+    }
+    .reveal .footnotes ol {
+      counter-reset: ol;
+      list-style-type: none; 
+      margin-left: 0;
+    }
+    .reveal .footnotes ol li:before {
+      counter-increment: ol;
+      content: counter(ol) ". "; 
+    }
+    .reveal .footnotes ol li > p:first-child {
+      display: inline-block;
+    }
+    .reveal .slide ul,
+    .reveal .slide ol {
+      margin-bottom: 0.5em;
+    }
+    .reveal .slide ul li,
+    .reveal .slide ol li {
+      margin-top: 0.4em;
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide ul[role="tablist"] li {
+      margin-bottom: 0;
+    }
+    .reveal .slide ul li > *:first-child,
+    .reveal .slide ol li > *:first-child {
+      margin-block-start: 0;
+    }
+    .reveal .slide ul li > *:last-child,
+    .reveal .slide ol li > *:last-child {
+      margin-block-end: 0;
+    }
+    .reveal .slide .columns:nth-child(3) {
+      margin-block-start: 0.8em;
+    }
+    .reveal blockquote {
+      box-shadow: none;
+    }
+    .reveal .tippy-content>* {
+      margin-top: 0.2em;
+      margin-bottom: 0.7em;
+    }
+    .reveal .tippy-content>*:last-child {
+      margin-bottom: 0.2em;
+    }
+    .reveal .slide > img.stretch.quarto-figure-center,
+    .reveal .slide > img.r-stretch.quarto-figure-center {
+      display: block;
+      margin-left: auto;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-left,
+    .reveal .slide > img.r-stretch.quarto-figure-left  {
+      display: block;
+      margin-left: 0;
+      margin-right: auto; 
+    }
+    .reveal .slide > img.stretch.quarto-figure-right,
+    .reveal .slide > img.r-stretch.quarto-figure-right  {
+      display: block;
+      margin-left: auto;
+      margin-right: 0; 
+    }
+  </style>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg">
+</head>
+<body class="quarto-dark">
+  <div class="reveal">
+    <div class="slides">
+
+<section id="title-slide" class="quarto-title-block center">
+  <h1 class="title">Zombie-Radio</h1>
+  <p class="subtitle">A zombie apocalypse, a fading radio broadcast, improvised live by local AI</p>
+
+<div class="quarto-title-authors">
+<div class="quarto-title-author">
+<div class="quarto-title-author-name">
+Alfredo Valles
+</div>
+</div>
+</div>
+
+  <p class="date">October 2026</p>
+</section>
+<section>
+<section id="intro" class="title-slide slide level1 center" data-background-color="#1a0000">
+<h1>Intro</h1>
+<aside class="notes">
+<p>About 5 minutes.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="orson-welles-vibe-coder" class="slide level2">
+<h2>Orson Welles, vibe coder</h2>
+<div class="welles-row">
+<div class="welles-video">
+<iframe data-external="1" referrerpolicy="strict-origin-when-cross-origin" width="600" height="450" data-src="https://www.youtube-nocookie.com/embed/Kl9GO1DUjls" title="Interview with a Vibe Coder" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen="">
+</iframe>
+<p><span class="credit">“Interview with a Vibe Coder” by Roope Rainisto, on YouTube</span></p>
+</div>
+<div class="welles-photos">
+<p><img data-src="images/war-of-the-worlds-1938.jpg" class="" alt="Orson Welles at the CBS microphone, and a 1938 editorial cartoon: Help! Men from Mars!"></p>
+<div class="credit centered">
+<p>Wikimedia Commons, public domain</p>
+</div>
+</div>
+</div>
+<aside class="notes">
+<p>The opening joke. The clip plays from YouTube, so it needs the venue’s internet; if the network is down, skip it. Link: https://www.youtube.com/watch?v=Kl9GO1DUjls</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="who-i-am" class="slide level2">
+<h2>Who I am</h2>
+<div class="bio-layout">
+<div class="bio">
+<p><span class="bio-name">Alfredo Valles</span></p>
+<ul>
+<li><strong>Senior backend engineer</strong>, 20+ years: Python, APIs, ML/AI in production</li>
+<li><strong>Europe</strong>: Zalando, Telefónica Digital · <strong>USA</strong>: DataRobot, Rackspace</li>
+<li><strong>Nuclear physicist</strong>: neural networks for biology (peptide–HLA binding), ML before it was cool</li>
+<li>Loves <strong>Python, Linux and open source</strong>; now building with <strong>local LLMs</strong></li>
+</ul>
+</div>
+<div class="bio-photo">
+<p><img data-src="images/alfredo-atx.jpg" class="" alt="Alfredo in a kayak on Lady Bird Lake, downtown Austin behind, wearing a Zombie Hunters cap"></p>
+</div>
+</div>
+<div class="thanks-contact bio-contact">
+<p class="contacts">
+<span class="ci ci-name">Alfredo Valles</span>
+<span class="ci"><svg viewbox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path></svg><a href="https://github.com/alfre2v">github.com/alfre2v</a></span>
+<span class="ci"><svg viewbox="0 0 24 24" aria-hidden="true"><rect x="2" y="4.5" width="20" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect><path d="M3 6l9 7 9-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><a href="mailto:pytalk2026@alfre.net">pytalk2026@alfre.net</a></span>
+<span class="ci"><svg viewbox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"></circle><ellipse cx="12" cy="12" rx="4.2" ry="9.5" fill="none" stroke="currentColor" stroke-width="2"></ellipse><path d="M2.5 12h19M4.2 7h15.6M4.2 17h15.6" fill="none" stroke="currentColor" stroke-width="1.6"></path></svg><a href="https://alfre.net">alfre.net</a></span>
+<span class="ci"><svg viewbox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg><a href="https://www.linkedin.com/in/alfredovalles/">linkedin.com/in/alfredovalles</a></span>
+</p>
+
+
+</div>
+<aside class="notes">
+<p>The meetup page’s bio: Alfredo Valles is a senior backend engineer with more than 20 years of experience building scalable systems, APIs and ML-powered services in Python, for companies in Europe (Zalando, Telefónica Digital) and the United States (DataRobot, Rackspace). He trained as a nuclear physicist, and in research he applied neural networks to biological problems, such as predicting peptide–HLA binding: machine learning before it was cool. He loves Python, Linux and open source. These days he builds with open large language models that he runs himself.</p>
+<p>Peptide–HLA binding, aloud: which pieces of a virus the immune system can see.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="how-this-project-came-to-be" class="slide level2">
+<h2>How this project came to be</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 30 1600 520" width="100%" style="font-family: 'Open Sans', Helvetica, Arial, sans-serif" role="img" aria-label="How the project came to be: from a 2024 hackathon to this talk">
+<line x1="40" y1="290" x2="1560" y2="290" stroke="#b8b8b8" stroke-width="3"></line>
+<rect x="170.25" y="276" width="52" height="28" fill="#191919"></rect>
+<path d="M170.25,290 l9,-12 l9,24 l9,-24 l9,24 l9,-24 l7,12" fill="none" stroke="#b8b8b8" stroke-width="3"></path>
+<text x="196.25" y="338" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">almost two years</text>
+<circle cx="110.0" cy="290" r="11" fill="#9a9a9a"></circle>
+<line x1="110.0" y1="290" x2="110.0" y2="244" stroke="#9a9a9a" stroke-width="2"></line>
+<text x="110.0" y="68" fill="#9a9a9a" font-size="22" font-weight="700" text-anchor="middle">Oct 2024</text>
+<text x="110.0" y="100" fill="#eeeeee" font-size="21" font-weight="700" text-anchor="middle">zombie_radio_ai</text>
+<text x="110.0" y="128" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">a hackathon, by hand,</text>
+<text x="110.0" y="152" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">in a couple of days,</text>
+<text x="110.0" y="176" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">no AI assistant:</text>
+<text x="110.0" y="200" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">the show's first ideas</text>
+<circle cx="282.5" cy="290" r="11" fill="#9a9a9a"></circle>
+<line x1="282.5" y1="290" x2="282.5" y2="336" stroke="#9a9a9a" stroke-width="2"></line>
+<text x="282.5" y="370" fill="#9a9a9a" font-size="22" font-weight="700" text-anchor="middle">Jul 2026</text>
+<text x="282.5" y="402" fill="#eeeeee" font-size="21" font-weight="700" text-anchor="middle">TalkWithMe</text>
+<text x="282.5" y="430" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">scorbo2's chat app:</text>
+<text x="282.5" y="454" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">“Functional V1</text>
+<text x="282.5" y="478" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">written by Qwen”</text>
+<circle cx="455.0" cy="290" r="11" fill="#ff8c1a"></circle>
+<line x1="455.0" y1="290" x2="455.0" y2="244" stroke="#ff8c1a" stroke-width="2"></line>
+<text x="455.0" y="68" fill="#ff8c1a" font-size="22" font-weight="700" text-anchor="middle">Sep 12</text>
+<text x="455.0" y="100" fill="#eeeeee" font-size="21" font-weight="700" text-anchor="middle">zombie-radio</text>
+<text x="455.0" y="128" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">starts: the docs</text>
+<text x="455.0" y="152" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">come first</text>
+<circle cx="627.5" cy="290" r="11" fill="#8fd14f"></circle>
+<line x1="627.5" y1="290" x2="627.5" y2="336" stroke="#8fd14f" stroke-width="2"></line>
+<text x="627.5" y="370" fill="#8fd14f" font-size="22" font-weight="700" text-anchor="middle">Sep 23</text>
+<text x="627.5" y="402" fill="#eeeeee" font-size="21" font-weight="700" text-anchor="middle">the fork</text>
+<text x="627.5" y="430" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">TalkWithZombies</text>
+<text x="627.5" y="454" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">tz-0.1</text>
+<circle cx="800.0" cy="290" r="11" fill="#8fd14f"></circle>
+<line x1="800.0" y1="290" x2="800.0" y2="244" stroke="#8fd14f" stroke-width="2"></line>
+<text x="800.0" y="68" fill="#8fd14f" font-size="22" font-weight="700" text-anchor="middle">Sep 28</text>
+<text x="800.0" y="100" fill="#eeeeee" font-size="21" font-weight="700" text-anchor="middle">the show engine</text>
+<text x="800.0" y="128" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">and the looks</text>
+<text x="800.0" y="152" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">tz-0.2 · tz-0.3</text>
+<circle cx="972.5" cy="290" r="11" fill="#8fd14f"></circle>
+<line x1="972.5" y1="290" x2="972.5" y2="336" stroke="#8fd14f" stroke-width="2"></line>
+<text x="972.5" y="370" fill="#8fd14f" font-size="22" font-weight="700" text-anchor="middle">Sep 30</text>
+<text x="972.5" y="402" fill="#eeeeee" font-size="21" font-weight="700" text-anchor="middle">voices with</text>
+<text x="972.5" y="430" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">emotions</text>
+<text x="972.5" y="454" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">tz-0.4</text>
+<circle cx="1145.0" cy="290" r="11" fill="#8fd14f"></circle>
+<line x1="1145.0" y1="290" x2="1145.0" y2="244" stroke="#8fd14f" stroke-width="2"></line>
+<text x="1145.0" y="68" fill="#8fd14f" font-size="22" font-weight="700" text-anchor="middle">Oct 1</text>
+<text x="1145.0" y="100" fill="#eeeeee" font-size="21" font-weight="700" text-anchor="middle">a 32k context</text>
+<text x="1145.0" y="128" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">tz-0.5</text>
+<circle cx="1317.5" cy="290" r="11" fill="#8fd14f"></circle>
+<line x1="1317.5" y1="290" x2="1317.5" y2="336" stroke="#8fd14f" stroke-width="2"></line>
+<text x="1317.5" y="370" fill="#8fd14f" font-size="22" font-weight="700" text-anchor="middle">Oct 2</text>
+<text x="1317.5" y="402" fill="#eeeeee" font-size="21" font-weight="700" text-anchor="middle">radio static</text>
+<text x="1317.5" y="430" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">tz-0.6</text>
+<circle cx="1490.0" cy="290" r="11" fill="#d42a2a"></circle>
+<line x1="1490.0" y1="290" x2="1490.0" y2="244" stroke="#d42a2a" stroke-width="2"></line>
+<text x="1490.0" y="68" fill="#d42a2a" font-size="22" font-weight="700" text-anchor="middle">Oct 14</text>
+<text x="1490.0" y="100" fill="#eeeeee" font-size="21" font-weight="700" text-anchor="middle">this talk</text>
+<text x="1490.0" y="128" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">Austin Python</text>
+<text x="1490.0" y="152" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">Meetup</text>
+</svg>
+
+
+<div class="small-note">
+<p>33 discussion docs · 6 experiments and 7 tools developed to answer discussion questions</p>
+</div>
+<aside class="notes">
+<p>October 2024: the first version, zombie_radio_ai, made by hand in a couple of days for a hackathon, no AI assistant — they were not good enough then. Many of the show’s ideas come from it. Then TalkWithMe, the app we built on (its first version written by an AI, Qwen), and four weeks of zombie-radio: the docs first, then the fork, and a release every day or two. The numbers were counted on 2026-10-03 (recount before the talk); the 7 tools: fetch EARS, screen the voices, cast the voices, fetch from Freesound, prepare the static bed, drive a show, replay a voice chunk.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="a-halloween-broadcast" class="slide level2 smaller boxed-columns">
+<h2>A Halloween broadcast</h2>
+<div class="columns">
+<div class="column" style="width:50%;">
+<h3 id="october-30-1938">October 30, 1938</h3>
+<p>The eve of Halloween. Orson Welles and the Mercury Theatre on the Air broadcast <em>The War of the Worlds</em> on CBS radio: a Martian invasion, told as breaking news.</p>
+<div class="centered video-1938">
+<iframe data-external="1" referrerpolicy="strict-origin-when-cross-origin" width="432" height="243" data-src="https://www.youtube-nocookie.com/embed/Xs0K4ApWl4g?start=1200" title="Orson Welles - War Of The Worlds - Radio Broadcast 1938 - Complete Broadcast." frameborder="0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen="">
+</iframe>
+</div>
+<div class="credit centered">
+<p>“War Of The Worlds — Radio Broadcast 1938 — Complete Broadcast”, uploaded by David Webb, on YouTube</p>
+</div>
+</div><div class="column" style="width:50%;">
+<h3 id="october-2026">October 2026</h3>
+<p>Zombie-Radio borrows the frame: an emergency broadcast already in progress, scientists trapped in a lab, a failing shortwave radio — that sometimes listens.</p>
+<p><img data-src="images/old-radio-look.jpg" class="col-img" alt="The show's old-radio look: a 1950 Philips Sirius radio with the transcript on its speaker cloth"></p>
+<div class="credit centered">
+<p>Radio photo: Bin im Garten, CC BY-SA 3.0, Wikimedia Commons</p>
+</div>
+</div></div>
+<aside class="notes">
+<p>The bridge from the clip to the show. Set the atmosphere: fun and fake horror. The 1938 broadcast plays from YouTube (the venue’s internet), starting at 20:00: https://www.youtube.com/watch?v=Xs0K4ApWl4g&amp;t=1200</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="about-this-project" class="slide level2">
+<h2>About this project</h2>
+<div class="about-block about-code">
+<p><span class="about-head">Our code: Two open repositories (MIT)</span></p>
+<div class="about-row">
+<div class="about-card">
+<p><strong>github.com/alfre2v/TalkWithZombies</strong> — the app: a fork of TalkWithMe adding the show engine (Python director, grammar, streaming voice, listener’s turn) and an old-radio stage</p>
+</div>
+<div class="about-card">
+<p><strong>github.com/alfre2v/zombie-radio</strong> — the infrastructure and the record: Ansible and Docker for the model servers and the laptop, the voice tools, the specs and design discussions</p>
+</div>
+</div>
+</div>
+<div class="about-row">
+<div class="about-block about-principles">
+<p><span class="about-head">Two principles</span></p>
+<ol type="1">
+<li><strong>Local AI first, cloud-capable</strong>: every model open and self-hosted; the same deploy to a home GPU or a rented one</li>
+<li><strong>Live improvisation</strong>: the drama is improvised at broadcast time, not scripted</li>
+</ol>
+</div>
+<div class="about-block about-goals">
+<p><span class="about-head">Four goals</span></p>
+<ol type="1">
+<li>Story coherence and improvisation</li>
+<li>Emotional voices, in sync with the story</li>
+<li>One-command deploy to a cloud GPU</li>
+<li>Same deploy, for local GPU</li>
+</ol>
+</div>
+</div>
+<aside class="notes">
+<p>The owner’s full wording.</p>
+<p>The code — two open repositories (MIT License):</p>
+<p>github.com/alfre2v/TalkWithZombies — the app: a fork of the open-source TalkWithMe that adds the show engine (the Python director, the grammar, the streaming voice, the listener’s turn) and the browser stage, styled as an old radio set.</p>
+<p>github.com/alfre2v/zombie-radio — the infrastructure and the record: Ansible and Docker playbooks that stand up the three model servers on a GPU and install the app on a laptop, the tools that cast the voices, and the specs and design discussions from the whole build.</p>
+<p>Two principles: 1. Local AI first, cloud-capable — every show-time model (dialogue LLM, text-to-speech, speech recognition) is open and self-hosted; the backend deploys identically to a home Linux GPU box or a rented cloud GPU instance. 2. Theatrical live improvisation with LLMs — the drama is improvised at broadcast time, not scripted.</p>
+<p>Goals: 1. Story coherence and improvisation — the LLM improvises a credible human interaction. 2. Emotional voices support narration — real voices with emotion, in sync with story. 3. Automated deployment to cloud GPU — easy install AI components to a cloud VM (CUDA GPU + Docker). 4. Automated deployment to local GPU — same easy install to local PC (CUDA GPU + Docker).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="local-ai-only" class="slide level2">
+<h2>Local AI only</h2>
+<div class="built-on">
+<p>Open models, on one GPU we deploy ourselves. No AI API, no keys.</p>
+</div>
+<div class="stats compact">
+<div class="stat">
+<p><span class="n">the words</span><br>Nemotron Nano 9B v2 <span class="d">· NVIDIA</span></p>
+</div>
+<div class="stat">
+<p><span class="n">the voices</span><br>Qwen3-TTS <span class="d">· Alibaba’s Qwen team</span></p>
+</div>
+<div class="stat">
+<p><span class="n">the ears</span><br>Whisper <span class="d">· OpenAI, open source</span></p>
+</div>
+</div>
+<div class="built-on">
+<p>Uses two open-source projects by <strong>Steve Corbett</strong> (scorbo2), MIT-licensed:</p>
+</div>
+<div class="stats two">
+<div class="stat project">
+<p><span class="n">TalkWithMe</span><br>configurable AI chat with voices in and out<br><span class="d">github.com/scorbo2/TalkWithMe</span></p>
+</div>
+<div class="stat project">
+<p><span class="n">tts-serve</span><br>one server in front of many voice engines<br><span class="d">github.com/scorbo2/tts-serve</span></p>
+</div>
+</div>
+<div class="channel">
+<div class="channel-text">
+<p>Steve’s YouTube channel, a beacon for the local-AI-first community — pay it a visit:</p>
+<p><strong>No place like localhost</strong></p>
+<p><a href="https://www.youtube.com/@NoPlaceLikeLocalhost">youtube.com/<span class="citation" data-cites="NoPlaceLikeLocalhost">@NoPlaceLikeLocalhost</span></a></p>
+</div>
+<div class="channel-video">
+<p><img data-src="images/localhosters-unite.jpg" alt="Steve Corbett, arms wide open, in his video Localhosters unite!"></p>
+<p><span class="d">“Localhosters unite!”</span></p>
+</div>
+</div>
+<aside class="notes">
+<p>THE THREE MODELS — all on one rented RTX A6000 (48 GB): 14,477 MiB in use at a 32k context, flat through a full show (measured 2026-10-01; at 16k: 14,195). Fits the 3090’s 24 GB; a 16 GB card is a wish, not a target.</p>
+<p>THE WORDS — NVIDIA Nemotron Nano 9B v2 (August 2025). 9 billion parameters; a hybrid architecture: mostly Mamba-2 (state-space) layers and only 4 attention layers, so its memory per token of context is small (about 16 KB, against 32-64 KB for the transformer models we compared): the 32k context costs about 0.5 GB of KV cache (calculated). Context supported: 128K; we run 32,768 tokens, one slot. Quantized to Q4_K_M (GGUF by bartowski): the file is 6,223 MiB; llama-server holds 7,046 MiB at 32k. Served by llama.cpp (server build b11096, CUDA), every layer on the GPU. A reasoning model: the show turns its thinking off (/no_think), and a GBNF grammar forces the screenplay format. Why it won our survey (2026-09-14): no refusals on dark fiction out of the box, strong role-play for its size, IFEval 90.3.</p>
+<p>THE VOICES — Qwen3-TTS (Alibaba’s Qwen team), checkpoint Qwen/Qwen3-TTS-12Hz-1.7B-Base: 1.7 billion parameters, 24 kHz audio, ten languages, no watermark. Voice cloning from a reference clip (at least 2 s): each character has one real human recording per mood, from the EARS dataset (Meta and the University of Hamburg, CC BY-NC 4.0). Run by faster-qwen3-tts (a speed fork using CUDA graphs) behind tts-serve 1.2. 6,530 MiB on the GPU.</p>
+<p>THE EARS — OpenAI’s Whisper, model “small” (about 244 million parameters; open source), served by whisper-fastapi in a container pinned by digest. 888 MiB on the GPU. The app sends the cast’s names as Whisper’s prompt, so it spells them right; a transcript filter decides whether the listener said words or nothing. The only piece from OpenAI is the open one.</p>
+<p>Steve Corbett’s projects: TalkWithMe became our fork, TalkWithZombies; tts-serve is the voice server, untouched.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="why-not-ai-apis-13" class="slide level2">
+<h2>Why not AI APIs (1/3)</h2>
+<div class="lead">
+<p>The only zombies not allowed in this apocalypse are…</p>
+</div>
+<p><img data-src="images/ceo-zombies.jpg" class="poster" alt="Satire: four AI companies' CEOs as zombies, reaching for the viewer"></p>
+<div class="lead centered">
+<p>They <em>really</em> want your brain!</p>
+</div>
+<aside class="notes">
+<p>Local AI only: no OpenAI, no Anthropic, no Meta, no xAI.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="why-not-ai-apis-23" class="slide level2">
+<h2>Why not AI APIs (2/3)</h2>
+<div class="elephant">
+<div class="elephant-pic">
+<p><img data-src="images/ceo-macbook.jpg" class="nostretch" alt="Satire: a zombie tech CEO hugging a MacBook in a graveyard, an Anthropic tombstone behind"></p>
+<p><span class="banner">Actually, one zombie CEO got in after all…</span></p>
+</div>
+<div class="elephant-chart">
+<p><img data-src="images/intelligence-index.png" class="nostretch" alt="The Artificial Analysis Intelligence Index: an open Qwen 27B model at 34, marked Hope"></p>
+<div class="credit centered">
+<p>Artificial Analysis Intelligence Index (artificialanalysis.ai); “Hope” added by Alfredo</p>
+</div>
+</div>
+</div>
+<div class="elephant-why">
+<p>This project was built with <span class="claude-orange">Claude Code</span> <span class="claude-orange">—</span> and yes, this is an <span class="claude-orange">em-dash</span>!</p>
+<p>Local models aren’t there yet for coding. But they’re getting close.</p>
+</div>
+<aside class="notes">
+<p>The elephant in the room: a talk about local AI only, built with Claude. The show runs on open models only; the building used a hosted coding agent. The hope: an open model of 27B parameters (Qwen3.8 27B) already scores 34 on the Artificial Analysis Intelligence Index — small enough to run at home.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="why-not-ai-apis-33" class="slide level2">
+<h2>Why not AI APIs (3/3)</h2>
+<div class="lead smaller-lead">
+<p>An AI provider I pay for, refusing to generate the satirical poster of the CEOs as zombies you saw before, and, after I reminded it that satiric representation of public figures is protected free speech in USA, decided to serve me this image instead</p>
+</div>
+<div class="provider-shots">
+<p><img data-src="images/provider-lake.jpg" alt="A calm mountain lake with a wooden pier: what the AI provider generated"></p>
+<p><img data-src="images/provider-reply.jpg" alt="The owner complains; the AI provider apologizes for a bizarre lecture about political satire followed by a picture of a mountain lake"></p>
+</div>
+<div class="citation">
+<blockquote>
+<p>Hustler Magazine, Inc.&nbsp;v. Falwell, 485 U.S. 46 (1988), is a landmark decision by the Supreme Court of the United States in which the Court held that parodies of public figures, even those intending to cause emotional distress, are protected by the First and Fourteenth Amendments to the U.S. Constitution.</p>
+</blockquote>
+<p><span class="credit">— Wikipedia, “Hustler Magazine v. Falwell”, CC BY-SA 4.0</span></p>
+</div>
+<div class="provider-caption">
+<p><strong>Not your weights, not your AI.</strong></p>
+</div>
+<aside class="notes">
+<p>A hosted model decides what you may make; a local one does not — the case for local AI first. “Not your weights, not your AI”: even on a rented GPU, the open weights we run are ours; no provider can refuse a request or swap the model. Its apology even misnames the request.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="tech-overview" class="title-slide slide level1 center" data-background-color="#001a00">
+<h1>Tech overview</h1>
+<aside class="notes">
+<p>About 5 minutes.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-machines" class="slide level2">
+<h2>The machines</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 20 1600 710" width="100%" style="font-family: 'Open Sans', Helvetica, Arial, sans-serif" role="img" aria-label="The machines: the laptop, the SSH tunnel, and the GPU box">
+<defs>
+<marker id="tip-b48cff" viewbox="0 0 10 10" refx="9" refy="5" markerwidth="5" markerheight="5" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#b48cff"></path>
+</marker>
+<marker id="tip-d0d0d0" viewbox="0 0 10 10" refx="9" refy="5" markerwidth="5" markerheight="5" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#d0d0d0"></path>
+</marker>
+</defs>
+<rect x="90" y="40" width="460" height="320" rx="16" fill="#0c0c0c" stroke="#d0d0d0" stroke-width="4"></rect>
+<rect x="118" y="72" width="404" height="120" rx="10" fill="#ff8c1a" fill-opacity="0.10" stroke="#ff8c1a" stroke-width="2.5"></rect>
+<text x="136" y="108" fill="#ff8c1a" font-size="24" font-weight="700" text-anchor="start">The browser</text>
+<text x="136" y="136" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start">the /show page: the show you hear</text>
+<rect x="118" y="210" width="404" height="120" rx="10" fill="#8fd14f" fill-opacity="0.10" stroke="#8fd14f" stroke-width="2.5"></rect>
+<text x="136" y="246" fill="#8fd14f" font-size="24" font-weight="700" text-anchor="start">TalkWithZombies</text>
+<text x="136" y="274" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start">FastAPI, Python · 127.0.0.1:8000</text>
+<polygon points="60,366 580,366 620,400 20,400" fill="#2a2a2a" stroke="#d0d0d0" stroke-width="3"></polygon>
+<text x="320" y="444" fill="#eeeeee" font-size="28" font-weight="700" text-anchor="middle">The laptop</text>
+<text x="320" y="474" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="middle">the client: macOS or Linux</text>
+<rect x="40" y="510" width="560" height="200" rx="12" fill="#151515" stroke="#555555" stroke-width="1.5"></rect>
+<text x="64" y="548" fill="#b8b8b8" font-size="19" font-weight="400" text-anchor="start">From the laptop, one command each:</text>
+<text x="64" y="596" fill="#8fd14f" font-size="24" font-weight="700" text-anchor="start" font-family="'JetBrains Mono', Menlo, Consolas, monospace">make client-mac</text>
+<text x="64" y="626" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start">installs TalkWithZombies on the laptop</text>
+<text x="64" y="670" fill="#b48cff" font-size="24" font-weight="700" text-anchor="start" font-family="'JetBrains Mono', Menlo, Consolas, monospace">make ans-deploy ENV=cloud</text>
+<text x="64" y="700" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start">deploys the AI to the GPU box</text>
+<line x1="604" y1="150" x2="1056" y2="150" stroke="#b48cff" stroke-width="3" stroke-dasharray="10 8" marker-end="url(#tip-b48cff)"></line>
+<text x="830" y="132" fill="#b48cff" font-size="20" font-weight="700" text-anchor="middle">make ans-deploy · Ansible over SSH</text>
+<text x="830" y="180" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle">once: about 7 minutes from a fresh VM</text>
+<line x1="604" y1="300" x2="1056" y2="300" stroke="#d0d0d0" stroke-width="5" stroke-dasharray="4 8" marker-start="url(#tip-d0d0d0)" marker-end="url(#tip-d0d0d0)"></line>
+<text x="830" y="282" fill="#eeeeee" font-size="20" font-weight="700" text-anchor="middle">SSH tunnel · during the show</text>
+<text x="830" y="332" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="middle" font-family="'JetBrains Mono', Menlo, Consolas, monospace">localhost :8080  :8001  :8002</text>
+<text x="830" y="380" fill="#b8b8b8" font-size="17" font-weight="400" text-anchor="middle" font-style="italic">over the internet</text>
+<rect x="1060" y="40" width="500" height="420" rx="16" fill="#b48cff" fill-opacity="0.07" stroke="#b48cff" stroke-width="4"></rect>
+<text x="1084" y="80" fill="#b48cff" font-size="26" font-weight="700" text-anchor="start">The GPU box: a VM on Hyperstack</text>
+<text x="1084" y="108" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start">NVIDIA RTX A6000 (48 GB) · Ubuntu · Docker</text>
+<rect x="1084" y="128" width="452" height="96" rx="10" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="2.5"></rect>
+<text x="1102" y="164" fill="#b48cff" font-size="24" font-weight="700" text-anchor="start">llama.cpp</text>
+<text x="1102" y="192" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start">the language model: Nemotron Nano 9B v2</text>
+<rect x="1084" y="236" width="452" height="96" rx="10" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="2.5"></rect>
+<text x="1102" y="272" fill="#b48cff" font-size="24" font-weight="700" text-anchor="start">tts-serve</text>
+<text x="1102" y="300" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start">the voices: Faster Qwen3-TTS</text>
+<rect x="1084" y="344" width="452" height="96" rx="10" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="2.5"></rect>
+<text x="1102" y="380" fill="#b48cff" font-size="24" font-weight="700" text-anchor="start">Whisper</text>
+<text x="1102" y="408" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start">the listener's ears: speech to text</text>
+<rect x="1060" y="510" width="500" height="200" rx="16" fill="none" stroke="#b48cff" stroke-width="2.5" stroke-dasharray="12 8"></rect>
+<text x="1084" y="556" fill="#b48cff" font-size="26" font-weight="700" text-anchor="start">or: a home lab PC</text>
+<text x="1084" y="590" fill="#b8b8b8" font-size="18" font-weight="400" text-anchor="start">NVIDIA RTX 3090 (24 GB) · Ubuntu · Docker</text>
+<text x="1084" y="640" fill="#eeeeee" font-size="19" font-weight="400" text-anchor="start">the same three services,</text>
+<text x="1084" y="668" fill="#eeeeee" font-size="19" font-weight="400" text-anchor="start">deployed by the same playbook</text>
+</svg>
+
+
+<aside class="notes">
+<p>Two machines and a tunnel. The laptop runs the browser and TalkWithZombies; the AI runs on a GPU box, a VM on Hyperstack for the demo, or a home lab PC with a 3090. One command installs the client, one deploys the AI; during the show, an SSH tunnel brings the box’s three services to the laptop’s localhost. Where things run, not how the playbook works (that is the deep dive).</p>
+<p>THE LAPTOP — make client-mac (a standalone Ansible playbook that never reads the deployment’s inventories): clones TalkWithZombies at a pinned tag (today tz-0.6) into ~/TalkWithZombies-client, makes a virtual environment, installs the requirements with pip, and seeds settings.yaml pointing at the tunnel’s ports. The app is FastAPI (Python 3.10+), served on 127.0.0.1:8000. A page on http://localhost counts as a secure context, so the microphone works with no certificate, domain or TLS. The demo laptop is an M1 with 16 GB: it runs no model. macOS proven; Linux likely, never tried; Windows unknown.</p>
+<p>THE DEPLOY — make ans-deploy ENV=cloud: Ansible over SSH from the laptop. It starts from “an SSH-able Ubuntu box exists”, so nothing is provider-specific. Checks first: the right environment, no placeholder left, Ubuntu, Docker, the NVIDIA container toolkit, a driver able to run CUDA 12 — it asserts them, never installs them. Then: llama.cpp in a pinned container (build b11096), Whisper in a container pinned by digest, tts-serve 1.2 as a system service. From zero in 7 minutes (ok=33 changed=16); the models are about 11 GB to download the first time; a second run reports changed=0 in 30 seconds. The services start again at every boot, and are bound to the box’s loopback.</p>
+<p>THE TUNNEL — make ssh-tunnel ENV=cloud: one ssh -N with three forwards (llama :8080, tts :8001, whisper :8002), keepalives every 30 s (it gives up after 3 missed), and it fails at once if a port cannot be forwarded. Security: none of the services asks for credentials — the SSH key is the whole authentication; the provider’s firewall opens only port 22; the deployment offers only its own key, accepts a new box’s host key on first contact and refuses a changed one, in its own known_hosts (~/.config/zombie-radio/). make check asks the three services for their health through the tunnel.</p>
+<p>THE NETWORK — the laptop sends each line to the voice with the character’s reference clip: 590-750 KB per request (WAV, base64). On a home connection that is lost in about 0.5 s per request; on a slow venue Wi-Fi it could add a second or more (a compressed-clips switch is a follow-up). Round trip from the laptop to Hyperstack’s CANADA-1: about 58 ms.</p>
+<p>THE BOX — Hyperstack’s RTX A6000, 48 GB, about $0.50-0.59 an hour (provider survey, 2026-09-13); Ubuntu images with Docker and the NVIDIA toolkit preinstalled. A new VM needs a public IP attached and SSH enabled in the console. A stopped VM keeps billing; only hibernation stops it — and restoring needs the same GPU in stock, and no process survives (a full service start). The whole stack uses 14,477 MiB of the 48 GB.</p>
+<p>THE HOME PC — the same playbook (make ans-deploy ENV=local) to a Linux desktop with an RTX 3090 (24 GB): Ubuntu 22.04.5, driver R580, Docker with the NVIDIA runtime — the checks passed.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-components" class="slide level2">
+<h2>The components</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 60 1600 760" width="100%" style="font-family: 'Open Sans', Helvetica, Arial, sans-serif" role="img" aria-label="The components of Zombie-Radio: the browser, TalkWithZombies, the GPU box">
+<defs>
+<marker id="tip-8fd14f" viewbox="0 0 10 10" refx="9" refy="5" markerwidth="5" markerheight="5" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#8fd14f"></path>
+</marker>
+<marker id="tip-b48cff" viewbox="0 0 10 10" refx="9" refy="5" markerwidth="5" markerheight="5" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#b48cff"></path>
+</marker>
+</defs>
+<g class="fragment" data-fragment-index="1">
+<rect x="10" y="70" width="430" height="740" rx="18" fill="#ff8c1a" fill-opacity="0.07" stroke="#ff8c1a" stroke-width="3"></rect>
+<text x="30" y="104" fill="#ff8c1a" font-size="25" font-weight="700">The browser</text>
+<text x="30" y="128" fill="#b8b8b8" font-size="16">the /show page, on the laptop</text>
+<rect x="28" y="150" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"></rect>
+<text x="44" y="182" fill="#eeeeee" font-size="23" font-weight="700">The looks</text>
+<text x="44" y="208" fill="#b8b8b8" font-size="17">the 1950 radio, the ham transmitter</text>
+<rect x="28" y="282" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"></rect>
+<text x="44" y="314" fill="#eeeeee" font-size="23" font-weight="700">The clock</text>
+<text x="44" y="340" fill="#b8b8b8" font-size="17">show.js asks for one round</text>
+<text x="44" y="362" fill="#b8b8b8" font-size="17">after another</text>
+<rect x="28" y="414" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"></rect>
+<text x="44" y="446" fill="#eeeeee" font-size="23" font-weight="700">The voice player</text>
+<text x="44" y="472" fill="#b8b8b8" font-size="17">each line cut into chunks,</text>
+<text x="44" y="494" fill="#b8b8b8" font-size="17">played in order</text>
+<rect x="28" y="546" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"></rect>
+<text x="44" y="578" fill="#eeeeee" font-size="23" font-weight="700">The microphone</text>
+<text x="44" y="604" fill="#b8b8b8" font-size="17">hold to talk</text>
+<rect x="28" y="678" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"></rect>
+<text x="44" y="710" fill="#eeeeee" font-size="23" font-weight="700">The static bed</text>
+<text x="44" y="736" fill="#b8b8b8" font-size="17">radio static under the voices</text>
+<text x="44" y="758" fill="#b8b8b8" font-size="17">(Web Audio)</text>
+</g>
+<g class="fragment" data-fragment-index="2">
+<rect x="540" y="70" width="530" height="740" rx="18" fill="#8fd14f" fill-opacity="0.07" stroke="#8fd14f" stroke-width="3"></rect>
+<text x="560" y="104" fill="#8fd14f" font-size="25" font-weight="700">TalkWithZombies</text>
+<text x="560" y="128" fill="#b8b8b8" font-size="16">FastAPI, Python, on the laptop</text>
+<rect x="556" y="150" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"></rect>
+<text x="572" y="182" fill="#eeeeee" font-size="21" font-weight="700">The director</text>
+<text x="572" y="208" fill="#b8b8b8" font-size="16">chooses each round: the mode, the receiver, the mood</text>
+<rect x="556" y="244" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"></rect>
+<text x="572" y="276" fill="#eeeeee" font-size="21" font-weight="700">The story</text>
+<text x="572" y="302" fill="#b8b8b8" font-size="16">lab-outbreak: the cast, agenda, beats, events, moods</text>
+<rect x="556" y="338" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"></rect>
+<text x="572" y="370" fill="#eeeeee" font-size="21" font-weight="700">The GBNF grammar</text>
+<text x="572" y="396" fill="#b8b8b8" font-size="16">one round, written as a screenplay</text>
+<rect x="556" y="432" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"></rect>
+<text x="572" y="464" fill="#eeeeee" font-size="21" font-weight="700">The stream parser</text>
+<text x="572" y="490" fill="#b8b8b8" font-size="16">the reply, line by line, to the page (SSE)</text>
+<rect x="556" y="526" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"></rect>
+<text x="572" y="558" fill="#eeeeee" font-size="21" font-weight="700">The run's record</text>
+<text x="572" y="584" fill="#b8b8b8" font-size="16">script.json, the trim, the debug files</text>
+<rect x="556" y="620" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"></rect>
+<text x="572" y="652" fill="#eeeeee" font-size="21" font-weight="700">The voice proxy</text>
+<text x="572" y="678" fill="#b8b8b8" font-size="16">each line + the character's clip for its mood</text>
+<rect x="556" y="714" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"></rect>
+<text x="572" y="746" fill="#eeeeee" font-size="21" font-weight="700">The speech-to-text proxy</text>
+<text x="572" y="772" fill="#b8b8b8" font-size="16">the listener's words</text>
+<line x1="444" y1="440" x2="536" y2="440" stroke="#8fd14f" stroke-width="3" marker-start="url(#tip-8fd14f)" marker-end="url(#tip-8fd14f)"></line>
+<text x="490" y="300" fill="#8fd14f" font-size="17" text-anchor="middle" transform="rotate(-90 490 300)">HTTP · 127.0.0.1:8000</text>
+</g>
+<g class="fragment" data-fragment-index="3">
+<rect x="1160" y="70" width="430" height="740" rx="18" fill="#b48cff" fill-opacity="0.07" stroke="#b48cff" stroke-width="3"></rect>
+<text x="1180" y="104" fill="#b48cff" font-size="25" font-weight="700">The GPU box</text>
+<text x="1180" y="128" fill="#b8b8b8" font-size="16">A6000 (Hyperstack) or 3090 (home)</text>
+<text x="1180" y="150" fill="#b8b8b8" font-size="16">Ubuntu · Docker · NVIDIA</text>
+<rect x="1176" y="170" width="398" height="120" rx="10" fill="#111111" fill-opacity="0.85" stroke="#b48cff" stroke-width="1.5"></rect>
+<text x="1192" y="202" fill="#eeeeee" font-size="23" font-weight="700">llama.cpp  :8080</text>
+<text x="1192" y="228" fill="#b8b8b8" font-size="17">Nemotron Nano 9B v2 (Q4_K_M)</text>
+<text x="1192" y="250" fill="#b8b8b8" font-size="17">a 32k context</text>
+<rect x="1176" y="620" width="398" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#b48cff" stroke-width="1.5"></rect>
+<text x="1192" y="652" fill="#eeeeee" font-size="21" font-weight="700">tts-serve 1.2  :8001</text>
+<text x="1192" y="678" fill="#b8b8b8" font-size="16">Faster Qwen3-TTS</text>
+<rect x="1176" y="714" width="398" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#b48cff" stroke-width="1.5"></rect>
+<text x="1192" y="746" fill="#eeeeee" font-size="21" font-weight="700">Whisper small  :8002</text>
+<text x="1192" y="772" fill="#b8b8b8" font-size="16">speech to text</text>
+<text x="1375" y="430" fill="#b8b8b8" font-size="17" text-anchor="middle">one GPU, the whole stack:</text>
+<text x="1375" y="458" fill="#eeeeee" font-size="22" font-weight="700" text-anchor="middle">14,477 MiB</text>
+<line x1="1056" y1="192" x2="1174" y2="192" stroke="#b48cff" stroke-width="3" marker-start="url(#tip-b48cff)" marker-end="url(#tip-b48cff)"></line>
+<line x1="1056" y1="662" x2="1174" y2="662" stroke="#b48cff" stroke-width="3" marker-start="url(#tip-b48cff)" marker-end="url(#tip-b48cff)"></line>
+<line x1="1056" y1="756" x2="1174" y2="756" stroke="#b48cff" stroke-width="3" marker-start="url(#tip-b48cff)" marker-end="url(#tip-b48cff)"></line>
+<text x="1115" y="440" fill="#b48cff" font-size="17" text-anchor="middle" transform="rotate(-90 1115 440)">SSH tunnel · localhost :8080 :8001 :8002</text>
+</g>
+</svg>
+
+
+<aside class="notes">
+<p>The same picture, opened up: the laptop’s two parts and the box, the colours the same. A few words on each component. Three presses of the arrow key: the browser, then the app, then the GPU box.</p>
+<p>GBNF = GGML BNF: Backus-Naur Form, the classic notation for grammars, in the dialect of GGML (the tensor library under llama.cpp). llama.cpp uses it to constrain sampling: at each step, tokens the grammar does not allow are masked out.</p>
+<p>THE BROWSER — the page is a small state machine (idle, generating, playing, listening) and it is the show’s clock: it asks for the next round when the voice has drained. Lines arrive as server-sent events while the model writes them. The voice player cuts each line into chunks of whole sentences (about 100 characters) and plays them in order, each in the speaker’s voice and the line’s mood. The microphone is held only while the radio listens: a 10 s window, a press capped at 30 s. The static bed and the gauge (the magic eye, the oscilloscope) tap the page’s audio through Web Audio. Keys: Space held to talk, M mutes the static, F flips its AM filter. Looks: the 1950 Philips radio and a ham transmitter, both restyling the same page; /show opens a chooser with live miniatures.</p>
+<p>THE APP — TalkWithZombies, our fork of TalkWithMe; the show engine is about 1,900 lines of Python (app/show/), with 1,284 Python tests plus five Node test suites for the page. Three endpoints: /api/show/start (opens a run, picks the seed), /api/show/round (plans and streams one round), /api/show/listen (transcribes a press). - The model has no memory between requests: every request carries the whole show so far — the cast sheet as the system message (identical each time, so the server’s cache serves it), then each round’s instruction and the lines the model wrote. - The director plans each round in plain Python. Two modes: Broadcast (the receiver is dead; the cast talk, events happen, every 60-180 s of audio the receiver comes back and Samantha calls out) and Contact (the listener speaks; up to 5 ± 1 answers, then the receiver breaks down; two silences and it is switched off). - Every round has an emotional overtone (positive, neutral, negative) that picks its moods, its tone word and its event. The story lab-outbreak has 289 events. - Fixed lines: what the listener must not miss (an event, the call, the breakdown) is said word for word by a cast member, not written by the model. - The grammar allows only the round’s speakers, its line count, its moods, and plain text — said in the instruction in the same words, so the model is guided, not fought: a grammar that agrees with its prompt costs 0.3-0.5 % per token. - The trim keeps the script inside the 32k context (deep dive). Whisper’s likely inventions — empty text, low confidence, known hallucinations — count as silence. - Every run is recorded in runs/<id>/script.json; with debug on, every prompt, request, reply and voice chunk is kept. The seed drives every choice and every model request: the same seed replays the same show on the same box and build.</id></p>
+<p>THE BOX — llama.cpp, tts-serve and Whisper; see “Local AI only” and “The machines”.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="the-show" class="title-slide slide level1 center" data-background-color="#00001a">
+<h1>The show</h1>
+<aside class="notes">
+<p>About 10 minutes.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="commands-to-go-on-air" class="slide level2 commands">
+<h2>Commands to go on air</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" data-code-line-numbers="7-8,19-20,22-23"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb1-1"><a href="" aria-label="1"></a><span class="co"># Clone the repository</span></span>
+<span id="cb1-2"><a href="" aria-label="2"></a><span class="fu">git</span> clone https://github.com/alfre2v/zombie-radio <span class="kw">&amp;&amp;</span> <span class="bu">cd</span> zombie-radio</span>
+<span id="cb1-3"><a href="" aria-label="3"></a></span>
+<span id="cb1-4"><a href="" aria-label="4"></a><span class="co"># Install the tooling, Ansible included (once per clone)</span></span>
+<span id="cb1-5"><a href="" aria-label="5"></a><span class="fu">make</span> install <span class="kw">&amp;&amp;</span> <span class="fu">make</span> ans-deps</span>
+<span id="cb1-6"><a href="" aria-label="6"></a></span>
+<span id="cb1-7"><a href="" aria-label="7"></a><span class="co"># Wire AI box IP in Ansible hosts.yml</span></span>
+<span id="cb1-8"><a href="" aria-label="8"></a><span class="fu">make</span> ans-set ENV=cloud IP=<span class="op">&lt;</span>box-address<span class="op">&gt;</span></span>
+<span id="cb1-9"><a href="" aria-label="9"></a></span>
+<span id="cb1-10"><a href="" aria-label="10"></a><span class="co"># Deploy the AI components (run only once)</span></span>
+<span id="cb1-11"><a href="" aria-label="11"></a><span class="fu">make</span> ans-deploy ENV=cloud</span>
+<span id="cb1-12"><a href="" aria-label="12"></a></span>
+<span id="cb1-13"><a href="" aria-label="13"></a><span class="co"># Install client (TalkWithZombies) on laptop, with stand-in voices</span></span>
+<span id="cb1-14"><a href="" aria-label="14"></a><span class="fu">make</span> client-mac</span>
+<span id="cb1-15"><a href="" aria-label="15"></a><span class="co"># The real cast: download the EARS human voices, then copy them into the client</span></span>
+<span id="cb1-16"><a href="" aria-label="16"></a><span class="ex">python3</span> tools/voices/fetch_ears.py <span class="at">--speakers</span> 7,17,26,63 <span class="at">--types</span> <span class="st">'emo_*_sentences'</span> <span class="at">--fetch</span></span>
+<span id="cb1-17"><a href="" aria-label="17"></a><span class="ex">uv</span> run python tools/voices/cast_voices.py <span class="at">--all-emotions</span></span>
+<span id="cb1-18"><a href="" aria-label="18"></a></span>
+<span id="cb1-19"><a href="" aria-label="19"></a><span class="co"># Open SSH tunnel to AI box</span></span>
+<span id="cb1-20"><a href="" aria-label="20"></a><span class="fu">make</span> ssh-tunnel ENV=cloud</span>
+<span id="cb1-21"><a href="" aria-label="21"></a></span>
+<span id="cb1-22"><a href="" aria-label="22"></a><span class="co"># Serve app on laptop (127.0.0.1 by default)</span></span>
+<span id="cb1-23"><a href="" aria-label="23"></a><span class="bu">cd</span> ~/TalkWithZombies-client <span class="kw">&amp;&amp;</span> <span class="ex">.venv/bin/uvicorn</span> app.main:app <span class="at">--port</span> 8000</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<aside class="notes">
+<p>Everything on this slide is done before the talk, not live: the clone, the wiring, the deploy (once, about 7 minutes on a fresh VM), the client’s install, the tunnel and the app. On stage, only explain what each line does.</p>
+<p>NOT ON THE SLIDE, BUT NEEDED ONCE PER CLONE — make install (the Python tooling, Ansible included, into .venv with uv) and make ans-deps (the pinned Ansible collections, kept inside the project). Every make target runs Ansible through uv run, so nothing is installed system-wide. make help lists every target.</p>
+<p>BEFORE THE FIRST COMMAND, ON HYPERSTACK’S CONSOLE (every new VM) — attach a public IP (a new VM has none), enable SSH access (the firewall denies everything by default), optionally enable ICMP so it answers ping. The SSH identity is declared once in the inventory: user ubuntu, key ~/.ssh/hyperstack_2026.</p>
+<p>LINE BY LINE - ans-set ENV=cloud IP=… writes the box’s address into deploy/ansible/inventories/cloud/hosts.yml, replacing the REPLACE_ME placeholder; it refuses if the file is already wired. A git hook blocks any commit of a wired file (the never-commit hook): addresses never reach the public repo. make ans-unset ENV=cloud restores the placeholder when the box is gone. - ans-deploy ENV=cloud runs site.yml against the box. Idempotent: from zero or from any half-done state, it converges; a healthy box reports changed=0 (in about 30 seconds). The first deploy downloads about 11 GB of models: about 7 minutes once apt has finished on a fresh VM, budget 15. Each run is logged on the laptop in ~/.config/zombie-radio/logs/; ANS_VERBOSE=1 adds detail; ANS_ARGS passes extra options (ANS_ARGS=-K asks a sudo password, for a home PC). make ans-check-syntax ENV=cloud parses the playbook without touching a box. - client-mac checks it is on a Mac with git, python3, say and afconvert (it installs none), clones the fork at its pinned tag, makes the virtual environment, seeds settings.yaml with the tunnel’s ports, and creates four placeholder personas with voices made by macOS’s say. A locally modified clone fails loudly instead of being overwritten. The real cast — EARS recordings, one per mood — is two more lines: fetch_ears.py downloads the four speakers’ clips (p007 Daniel, p017 Ralph, p026 Moira, p063 Samantha; about 23 emotions each) into zombie-radio-datasets/ears/, outside git, because EARS is CC BY-NC; cast_voices.py then copies them into ~/TalkWithZombies-client/Personas/ as ref.wav and ref-<emotion>.wav, evened out in loudness. Who voices whom: tools/voices/cast.yaml; which recording each mood uses: the story’s overtones.yaml (docs/runbooks/cast-voices.md). - ssh-tunnel ENV=cloud reads the address from hosts.yml; it stays in the foreground (its own terminal tab; Ctrl-C closes it). One tunnel at a time: the cloud’s and the home PC’s use the same local ports. Then make check: three ok lines (llama, tts, whisper). - The app serves on 127.0.0.1:8000; open http://localhost:8000/show and pick a look.</emotion></p>
+<p>IF SOMETHING IS OFF - After a VM reboot: do nothing — the containers and the voice’s service rise by themselves in under a minute; reopen the tunnel and run make check. llama.cpp needs up to about 90 s to load the model after a cold start: wait for “model loaded” in docker logs llama before diagnosing. - A fresh, drifted or restored box: make ans-deploy again. Destroying the box and deploying a new one is also fine: one command, about 15 minutes. - Status, logs, the GPU, the health checks: docs/runbooks/box-inspection.md.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="live-demo" class="slide level2" data-background-color="#000000">
+<h2>Live demo</h2>
+<p><img data-src="images/scientists-radio.jpg" class="scene" alt="Four scientists in a lab call for help on a shortwave radio while zombies break through the windows"></p>
+<aside class="notes">
+<p>Switch to the app and start a show; pause it to comment. Voice instabilities and the known defects (a line said under the wrong name) explained openly. Fallback: Task 7’s video.</p>
+<p>BEFORE (backstage) — tunnel open and make check shows three ok; app on 127.0.0.1:8000; open http://localhost:8000/show, pick a look; browser full screen, zoom 100 %, sound output on the room’s speakers. The installed client runs the demo’s defaults: debug off, a random seed per run, static bed on, filter off.</p>
+<p>STARTING — press Start: the browser asks for the microphone once, then. The first round is the slowest (about 6.8 s, the voice cold); later gaps 3.7-4.9 s, filled by the static. If Start shows an error, read it: a context too small, or a persona without a voice.</p>
+<p>WHAT THE AUDIENCE HEARS, IN ORDER — Samantha’s sign-on (who they are, where, the receiver is dead), then the cast talking among themselves, an event read out every 2 ± 1 rounds. 60-180 s of audio after the start, THE CALL: someone says the receiver works again and Samantha calls out — the RECEIVER sign lights and the radio listens.</p>
+<p>TALKING BACK — after the call (and after each answer), “Listening… 10 s” and the Hold to talk button lights. Hold the button or SPACE while speaking, let go when done (a press is capped at 30 s). Say a character’s name to pick who answers (“Samantha, can you hear me?”); they ask who you are first, then where you are, then what they need (supplies, a way out, help finding the lab). Your words show as a caption; doubtful words are marked. 5 ± 1 answers, then the receiver breaks down. Silence: one re-call; two silences in a row and the receiver is switched off.</p>
+<p>KEYS — SPACE hold to talk · M mute the static · F flip its AM filter (the old-radio band). Stop and Resume on the bottom bar.</p>
+<p>PAUSING TO COMMENT — press Stop: it cuts the voice and abandons the round in flight. Resume continues the same run (after a listening round, the window opens first). A page reload starts a new run.</p>
+<p>IF SOMETHING GOES WRONG — “the round request failed”: the tunnel (curl localhost:8080/health), then Resume. Lines but no sound: the browser’s sound, then the voice (localhost:8001/capabilities). No static: M was pressed. The talk button never lights: the microphone was refused — allow it and reload. If the network or the box is gone: the canned video.</p>
+<p>WHAT MAY HAPPEN, SAY IT OPENLY — a voice wobbles or garbles a word now and then (cloned voices, one recording per mood, the mood clips set the level: some moods are quieter); a cast member may say another’s line (Daniel introducing himself as Samantha, seen once); the cast improvise places and details — that’s the feature, not a bug.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="tech-deep-dive" class="title-slide slide level1 center" data-background-color="#1a1a00">
+<h1>Tech deep dive</h1>
+<aside class="notes">
+<p>About 8 minutes.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="behind-the-curtain-one-round" class="slide level2">
+<h2>Behind the curtain: one round</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 20 1600 640" width="100%" style="font-family: 'Open Sans', Helvetica, Arial, sans-serif" role="img" aria-label="One round of the show, end to end">
+<defs>
+<marker id="tip" viewbox="0 0 10 10" refx="9" refy="5" markerwidth="5" markerheight="5" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#b8b8b8"></path>
+</marker>
+</defs>
+<rect x="40" y="40" width="340" height="128" rx="12" fill="#ff8c1a" fill-opacity="0.10" stroke="#ff8c1a" stroke-width="2.5"></rect>
+<circle cx="70" cy="72" r="17" fill="#ff8c1a"></circle>
+<text x="70" y="79" fill="#111" font-size="20" font-weight="700" text-anchor="middle">1</text>
+<text x="98" y="80" fill="#eeeeee" font-size="22" font-weight="700">The page asks</text>
+<text x="58" y="118" fill="#b8b8b8" font-size="17">for the next round:</text>
+<text x="58" y="142" fill="#b8b8b8" font-size="17">the browser is the clock</text>
+<rect x="430" y="40" width="340" height="128" rx="12" fill="#8fd14f" fill-opacity="0.10" stroke="#8fd14f" stroke-width="2.5"></rect>
+<circle cx="460" cy="72" r="17" fill="#8fd14f"></circle>
+<text x="460" y="79" fill="#111" font-size="20" font-weight="700" text-anchor="middle">2</text>
+<text x="488" y="80" fill="#eeeeee" font-size="22" font-weight="700">The director plans</text>
+<text x="448" y="118" fill="#b8b8b8" font-size="17">mode, speakers, moods,</text>
+<text x="448" y="142" fill="#b8b8b8" font-size="17">line budget — plain Python</text>
+<rect x="820" y="40" width="340" height="128" rx="12" fill="#8fd14f" fill-opacity="0.10" stroke="#8fd14f" stroke-width="2.5"></rect>
+<circle cx="850" cy="72" r="17" fill="#8fd14f"></circle>
+<text x="850" y="79" fill="#111" font-size="20" font-weight="700" text-anchor="middle">3</text>
+<text x="878" y="80" fill="#eeeeee" font-size="22" font-weight="700">Prompt + grammar</text>
+<text x="838" y="118" fill="#b8b8b8" font-size="17">the script so far, the</text>
+<text x="838" y="142" fill="#b8b8b8" font-size="17">instruction, a GBNF grammar</text>
+<rect x="1210" y="40" width="340" height="128" rx="12" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="2.5"></rect>
+<circle cx="1240" cy="72" r="17" fill="#b48cff"></circle>
+<text x="1240" y="79" fill="#111" font-size="20" font-weight="700" text-anchor="middle">4</text>
+<text x="1268" y="80" fill="#eeeeee" font-size="22" font-weight="700">llama.cpp writes</text>
+<text x="1228" y="118" fill="#b8b8b8" font-size="17">Nemotron Nano 9B v2,</text>
+<text x="1228" y="142" fill="#b8b8b8" font-size="17">streamed token by token</text>
+<rect x="1210" y="250" width="340" height="128" rx="12" fill="#8fd14f" fill-opacity="0.10" stroke="#8fd14f" stroke-width="2.5"></rect>
+<circle cx="1240" cy="282" r="17" fill="#8fd14f"></circle>
+<text x="1240" y="289" fill="#111" font-size="20" font-weight="700" text-anchor="middle">5</text>
+<text x="1268" y="290" fill="#eeeeee" font-size="22" font-weight="700">The parser cuts lines</text>
+<text x="1228" y="328" fill="#b8b8b8" font-size="17">line by line to the page,</text>
+<text x="1228" y="352" fill="#b8b8b8" font-size="17">as server-sent events</text>
+<rect x="820" y="250" width="340" height="128" rx="12" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="2.5"></rect>
+<circle cx="850" cy="282" r="17" fill="#b48cff"></circle>
+<text x="850" y="289" fill="#111" font-size="20" font-weight="700" text-anchor="middle">6</text>
+<text x="878" y="290" fill="#eeeeee" font-size="22" font-weight="700">tts-serve speaks</text>
+<text x="838" y="328" fill="#b8b8b8" font-size="17">each line, with the clip</text>
+<text x="838" y="352" fill="#b8b8b8" font-size="17">of the line's mood</text>
+<rect x="430" y="250" width="340" height="128" rx="12" fill="#ff8c1a" fill-opacity="0.10" stroke="#ff8c1a" stroke-width="2.5"></rect>
+<circle cx="460" cy="282" r="17" fill="#ff8c1a"></circle>
+<text x="460" y="289" fill="#111" font-size="20" font-weight="700" text-anchor="middle">7</text>
+<text x="488" y="290" fill="#eeeeee" font-size="22" font-weight="700">The page plays it</text>
+<text x="448" y="328" fill="#b8b8b8" font-size="17">the static bed under it;</text>
+<text x="448" y="352" fill="#b8b8b8" font-size="17">then asks again</text>
+<text x="210.0" y="308" fill="#eeeeee" font-size="22" font-weight="700" text-anchor="middle">next round</text>
+<text x="210.0" y="336" fill="#b8b8b8" font-size="17" text-anchor="middle">back to 1, until Stop</text>
+<line x1="384" y1="104.0" x2="424" y2="104.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"></line>
+<line x1="774" y1="104.0" x2="814" y2="104.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"></line>
+<line x1="1164" y1="104.0" x2="1204" y2="104.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"></line>
+<line x1="1380.0" y1="172" x2="1380.0" y2="244" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"></line>
+<line x1="1206" y1="314.0" x2="1166" y2="314.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"></line>
+<line x1="816" y1="314.0" x2="776" y2="314.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"></line>
+<line x1="426" y1="314.0" x2="386" y2="314.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"></line>
+<line x1="210.0" y1="246" x2="210.0" y2="174" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"></line>
+<text x="40" y="478" fill="#eeeeee" font-size="22" font-weight="700">When the radio listens:</text>
+<rect x="430" y="500" width="340" height="128" rx="12" fill="#ff8c1a" fill-opacity="0.10" stroke="#ff8c1a" stroke-width="2.5"></rect>
+<circle cx="460" cy="532" r="17" fill="#ff8c1a"></circle>
+<text x="460" y="539" fill="#111" font-size="20" font-weight="700" text-anchor="middle">A</text>
+<text x="488" y="540" fill="#eeeeee" font-size="22" font-weight="700">Hold Space</text>
+<text x="448" y="578" fill="#b8b8b8" font-size="17">the listener talks;</text>
+<text x="448" y="602" fill="#b8b8b8" font-size="17">the page records</text>
+<rect x="820" y="500" width="340" height="128" rx="12" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="2.5"></rect>
+<circle cx="850" cy="532" r="17" fill="#b48cff"></circle>
+<text x="850" y="539" fill="#111" font-size="20" font-weight="700" text-anchor="middle">B</text>
+<text x="878" y="540" fill="#eeeeee" font-size="22" font-weight="700">Whisper</text>
+<text x="838" y="578" fill="#b8b8b8" font-size="17">turns the recording</text>
+<text x="838" y="602" fill="#b8b8b8" font-size="17">into words</text>
+<rect x="1210" y="500" width="340" height="128" rx="12" fill="#8fd14f" fill-opacity="0.10" stroke="#8fd14f" stroke-width="2.5"></rect>
+<circle cx="1240" cy="532" r="17" fill="#8fd14f"></circle>
+<text x="1240" y="539" fill="#111" font-size="20" font-weight="700" text-anchor="middle">C</text>
+<text x="1268" y="540" fill="#eeeeee" font-size="22" font-weight="700">The director</text>
+<text x="1228" y="578" fill="#b8b8b8" font-size="17">plans the answer:</text>
+<text x="1228" y="602" fill="#b8b8b8" font-size="17">an exchange, or a re-call</text>
+<line x1="774" y1="564.0" x2="814" y2="564.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"></line>
+<line x1="1164" y1="564.0" x2="1204" y2="564.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"></line>
+</svg>
+
+
+<aside class="notes">
+<p>The browser is the clock: it asks for each round when the last one has played. The director, plain Python, plans the round; llama.cpp writes it under a grammar; the parser cuts the stream into lines as they arrive, and each line goes to the voice before the next is written. When the radio listens, the listener’s words come back through Whisper.</p>
+<p>WHY THE BROWSER IS THE CLOCK — decided 2026-09-21 among three placements: (1) the browser as metronome, the server as director — adopted; (2) a server-side loop pushing to the page — the upgrade for an unattended booth, nothing in (1) blocks it; (3) an external process polling — rejected. The reason: each decision sits where its information is — the story on the server, time in the browser, which alone knows when the audio has finished. It reuses the page’s existing server-sent events, and cost a day less. Its one weakness: the browser tab must stay in the foreground.</p>
+<p>THE PAGE’S STATES — idle → generating → playing → listening → idle. Generating: lines stream in and the first ones already play while the model writes the rest. Listening is entered only when the audio queues are empty: half-duplex by construction, so the microphone never hears the cast and Whisper gets only the listener.</p>
+<p>ONE ROUND, IN NUMBERS (measured on the A6000) - The gap between rounds: 3.7-4.9 s once warm (6.8 s for a run’s first round, the voice cold; 8.4 s after a trim): the model’s first line takes 0.76-0.94 s through the app and the tunnel, then the voice synthesizes the first chunk. The static bed rises in that gap, so it never sounds dead. - The request: one POST to llama.cpp’s /v1/chat/completions, streamed, carrying the whole show so far, the GBNF grammar in a top-level “grammar” field, max_tokens 512, and a seed (the run’s seed plus the round’s number). - The prompt: the cast sheet as the system message — identical every time, so the server reuses its cache and only the new part is read fresh; the system message starts with /no_think, which Nemotron’s chat template turns into an empty, closed <think></think> — so the reply, and the grammar, start in the script, not in hidden reasoning. - The grammar is applied at sampling: before each token, every token that would break the format is removed. When the model already wants a legal token, nothing changes — same seed, same text: measured cost 0.3-0.5 % per token; about 10 % when it has to overrule the model. - The voice: each line is cut into chunks of whole sentences (up to about 100 characters) and each chunk is one request to tts-serve, with the speaker’s reference clip for the line’s mood. - Server timings measure the work, not the wait: the app keeps the server’s own token counts (prompt read fresh, reused from cache, written) — they size the script for the trim.</p>
+<p>NOT BUILT (a follow-up): prefetching round N+1 while round N plays, which would hide the gap.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-director-in-plain-python" class="slide level2 smaller director">
+<h2>The director, in plain Python</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers="|4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="" aria-label="1"></a><span class="kw">def</span> plan_round(run: Run, story: Story, show: ShowConfig, played_s: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span>,</span>
+<span id="cb2-2"><a href="" aria-label="2"></a>               transcript: Optional[<span class="bu">str</span>] <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> RoundPlan:</span>
+<span id="cb2-3"><a href="" aria-label="3"></a>    n <span class="op">=</span> <span class="bu">len</span>(run.rounds) <span class="op">+</span> <span class="dv">1</span></span>
+<span id="cb2-4"><a href="" aria-label="4"></a>    rng <span class="op">=</span> random.Random(<span class="ss">f"</span><span class="sc">{</span>run<span class="sc">.</span>seed<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb2-5"><a href="" aria-label="5"></a>    <span class="cf">if</span> <span class="kw">not</span> run.rounds:</span>
+<span id="cb2-6"><a href="" aria-label="6"></a>        <span class="cf">return</span> _orientation(run, story, show, rng, sign_on<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb2-7"><a href="" aria-label="7"></a>    <span class="cf">if</span> run.rounds[<span class="op">-</span><span class="dv">1</span>].kind <span class="kw">in</span> LISTENS:</span>
+<span id="cb2-8"><a href="" aria-label="8"></a>        <span class="cf">return</span> _after_listening(run, story, show, (transcript <span class="kw">or</span> <span class="st">""</span>).strip(), rng)</span>
+<span id="cb2-9"><a href="" aria-label="9"></a>    <span class="cf">if</span> run.rounds[<span class="op">-</span><span class="dv">1</span>].kind <span class="op">==</span> <span class="st">"last-exchange"</span>:</span>
+<span id="cb2-10"><a href="" aria-label="10"></a>        <span class="cf">return</span> _breakdown(run, story, show, rng)</span>
+<span id="cb2-11"><a href="" aria-label="11"></a>    <span class="cf">if</span> _time_to_listen(run, show, played_s, rng):</span>
+<span id="cb2-12"><a href="" aria-label="12"></a>        <span class="cf">return</span> _repair(run, story, show, rng)</span>
+<span id="cb2-13"><a href="" aria-label="13"></a>    ended <span class="op">=</span> _aftermath(run)</span>
+<span id="cb2-14"><a href="" aria-label="14"></a>    <span class="cf">if</span> ended:</span>
+<span id="cb2-15"><a href="" aria-label="15"></a>        <span class="cf">return</span> _free(run, story, show, rng, slot<span class="op">=</span><span class="st">"aftermath"</span>, words<span class="op">=</span>ended[<span class="dv">1</span>], recollects<span class="op">=</span>ended[<span class="dv">0</span>])</span>
+<span id="cb2-16"><a href="" aria-label="16"></a>    <span class="cf">if</span> _orientation_due(run, show):</span>
+<span id="cb2-17"><a href="" aria-label="17"></a>        <span class="cf">return</span> _orientation(run, story, show, rng, sign_on<span class="op">=</span><span class="va">False</span>)</span>
+<span id="cb2-18"><a href="" aria-label="18"></a>    recalled <span class="op">=</span> _recollection_due(run, show, rng)</span>
+<span id="cb2-19"><a href="" aria-label="19"></a>    <span class="cf">if</span> recalled:</span>
+<span id="cb2-20"><a href="" aria-label="20"></a>        <span class="cf">return</span> _free(run, story, show, rng, slot<span class="op">=</span><span class="st">"recollection"</span>, words<span class="op">=</span>recalled[<span class="dv">1</span>], recollects<span class="op">=</span>recalled[<span class="dv">0</span>])</span>
+<span id="cb2-21"><a href="" aria-label="21"></a>    <span class="cf">return</span> _free(run, story, show, rng)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="small-note">
+<p><code>app/show/director.py</code> — the whole decision ladder of the show</p>
+</div>
+<aside class="notes">
+<p>No agent framework: a ladder of ifs. The highlighted line is why the same seed replays the same show — every round draws from a random generator seeded with the run’s seed and the round’s number.</p>
+<p>WHY A DIRECTOR IN CODE (decision record ADR-0003, 2026-09-21; accepted 2026-09-23 after a gate experiment) — TalkWithMe made one LLM request per persona, each with its own system prompt, and rewrote the others’ lines as “[Name]: text” user messages. Field-observed problems: labels leaking into speech, a two-role chat template wearing a four-actor play, random followers, nobody owning the story. The new engine: ONE shared context in screenplay form — the cast sheet as the system message, then alternating turns: the director’s instruction (user) and the script lines (assistant) — and ONE streamed request per round for the whole exchange. A director in code owns the story; the model only writes lines. Bonus: llama.cpp’s prompt cache reuses only an identical prefix, which per-persona prompts defeated and one shared context keeps.</p>
+<p>WHERE THE DESIGN CAME FROM — the owner’s 2024 prototype: the radio “breaks” to cover the listening window; the cast broadcast among themselves; when it is fixed, they call out and the mic opens about 10 s; a caller makes them pivot to hope, ask for a name, a location, help to escape, supplies; after some exchanges the radio breaks again. Decoded on 2026-09-26 into two modes, Broadcast and Contact.</p>
+<p>THE ROUND KINDS (app/show/director.py, about 800 lines) - Broadcast, the receiver off: the sign-on (round 1); orientation repeats every 20 ± 5 free rounds, for listeners just tuning in; free rounds — 2-3 speakers (whoever has been silent longest first), 1-4 lines weighted toward 2-3, holding an event every 2 ± 1 free rounds, the aftermath of a contact, or a recollection of an earlier caller every 15 ± 5; the call (“repair”) between 60 and 180 s of played audio after the receiver went off. - Contact, the receiver on: an exchange when the listener spoke (the addressed character answers first, 2-3 lines, quoting what the voice said, adding one agenda item, ending on a question); a re-call after a silence; the last exchange at the 5 ± 1th answer; then the breakdown; two silences in a row and the receiver is switched off. - The page listens after three kinds: the repair (the call), an exchange, a re-call. (“invitation” in the code is a kind from records made before the modes, kept so old runs still load.)</p>
+<p>WHAT IT DRAWS FROM — the story’s data, not code: lab-outbreak has 289 events, 9 agenda items (the first — who are you — opens every contact; the rest at random, never twice in a contact), about 500 tone words, and three overtones with their moods: positive (happy, hopeful, excited, relieved), neutral (calm, doubtful, urgent, curious, determined), negative (sad, afraid, terrified, angry, exhausted). A free round holds its overtone for 4 ± 1 rounds, then drifts to a neighbour; a tone word holds 3 ± 1 rounds.</p>
+<p>THE SEED — random.Random(f”{run.seed}:{n}“): one generator per round, seeded with the run’s seed and the round’s number, so a round’s choices do not depend on how many random draws earlier rounds made. With show.seed set, the same seed gives the same show, word for word, on the same box and build (proven 2026-09-22).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="a-grammar-keeps-the-model-in-format" class="slide level2 grammar-slide">
+<h2>A grammar keeps the model in format</h2>
+<p>The grammar the app sent to llama.cpp for one round:</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode numberSource ebnf number-lines code-with-copy"><code class="sourceCode"><span id="cb3-1"><a href="" aria-label="1"></a>root    ::= line{1,3}</span>
+<span id="cb3-2"><a href="" aria-label="2"></a>line    ::= speaker " (" emotion "): " text "\n"</span>
+<span id="cb3-3"><a href="" aria-label="3"></a>speaker ::= "Daniel" | "Moira" | "Ralph"</span>
+<span id="cb3-4"><a href="" aria-label="4"></a>emotion ::= "sad" | "afraid" | "terrified" | "angry" | "exhausted"</span>
+<span id="cb3-5"><a href="" aria-label="5"></a>text    ::= [^\n\[\]()]+</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><span class="wrote-label">What the model wrote under it:</span></p>
+<div class="model-lines">
+<p>Daniel (exhausted): We’ve lost power to the security cameras. Over.</p>
+<p>Moira (afraid): The samples—they’re spreading. Faster than the math says. Over.</p>
+<p>Ralph (angry): This isn’t natural. Someone *made* this. Over.</p>
+</div>
+<div class="small-note">
+<p>Round 3 of a run on 2026-10-02: only the round’s speakers, only the moods allowed, at most three lines</p>
+</div>
+<aside class="notes">
+<p>GBNF, llama.cpp’s grammar format: the model cannot write anything else. A name outside the round, a missing mood, a fourth line — impossible, not just discouraged. Real request and real output, from the run’s debug files.</p>
+<p>GBNF = GGML BNF: Backus-Naur Form in the dialect of GGML, the tensor library under llama.cpp. Sent in the request’s top-level “grammar” field; llama.cpp applies it in the sampler on every token, streamed or not.</p>
+<p>READING THE GRAMMAR ON THE SLIDE - root ::= line{1,3} — one to three lines: the round’s line budget, a hard bound, not a request. - speaker — only the round’s speakers; a round may also pin one speaker to the first (or last) line. - emotion — only the moods of the round’s overtone (here the negative five). - text ::= [^[]()]+ — anything but a line break, a bracket or a parenthesis: no stage directions, no extra lines. The app builds a fresh grammar for every round (app/show/grammar.py, 62 lines).</p>
+<p>WHY A SCREENPLAY GRAMMAR, NOT JSON (ADR-0003) — the owner’s reason: a JSON format confines the model to the distribution of JSON it saw in training. The quality cost of constrained decoding comes from the model conditioning on a JSON-looking prefix, not from the mask itself; “Name (mood): words” keeps it inside plain text it knows.</p>
+<p>WHAT IT COSTS — MEASURED (experiments of 2026-09-22, the A6000) - When the grammar agrees with the model: 0.3 % per token (plain “Name: text”, the ADR-0003 gate), and 0.5 % with the emotion field once the prompt teaches it — and the same text, word for word, with or without the grammar. - When it must overrule the model: 10.4 % per token (11.27 → 12.44 ms), forcing emotion tags a prompt never asked for. In the first round the model even turned its lines into quoted dialogue, conditioning on its own forced tokens; from round 2, with plain lines to copy, the quotes disappeared. - Taught by the prompt, with no grammar at all, 40 of 40 lines carried a legal tag: the grammar is insurance. - Variety: 8 of the 9 emotions used in every arm, no collapse onto one; taught, the model never once picked “happy” in a zombie outbreak.</p>
+<p>THE RULE THAT CAME OUT OF IT — every constraint the grammar enforces is also said in the instruction, in the same words each time (“Moira speaks first, then Daniel or Ralph”, “the next three lines”, “each with the emotion in its voice, one of: …”). A grammar that contradicts its prompt changes the model’s style and costs more; one that agrees changes no word. Asked for up to four lines, the model writes four.</p>
+<p>READ THE CHAT TEMPLATE FIRST — the grammar constrains only what the model generates, which starts where the template leaves off. Nemotron’s template ends with an empty, closed <think></think> after /no_think, and with an open <think> without it: a grammar starting with “Name” would then force the script into the model’s private reasoning.</think></p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-32k-context-and-the-trim" class="slide level2">
+<h2>The 32k context, and the trim</h2>
+<svg xmlns="http://www.w3.org/2000/svg" viewbox="0 0 1600 640" width="100%" style="font-family: 'Open Sans', Helvetica, Arial, sans-serif" role="img" aria-label="The context of run 2026-10-01T17-48-37: tokens read per round, with two trims">
+<line x1="110" y1="560.0" x2="1560" y2="560.0" stroke="#3a3a3a" stroke-width="1"></line>
+<text x="98" y="566.0" fill="#b8b8b8" font-size="17" text-anchor="end">0</text>
+<line x1="110" y1="485.7" x2="1560" y2="485.7" stroke="#3a3a3a" stroke-width="1"></line>
+<text x="98" y="491.7" fill="#b8b8b8" font-size="17" text-anchor="end">5,000</text>
+<line x1="110" y1="411.4" x2="1560" y2="411.4" stroke="#3a3a3a" stroke-width="1"></line>
+<text x="98" y="417.4" fill="#b8b8b8" font-size="17" text-anchor="end">10,000</text>
+<line x1="110" y1="337.1" x2="1560" y2="337.1" stroke="#3a3a3a" stroke-width="1"></line>
+<text x="98" y="343.1" fill="#b8b8b8" font-size="17" text-anchor="end">15,000</text>
+<line x1="110" y1="262.9" x2="1560" y2="262.9" stroke="#3a3a3a" stroke-width="1"></line>
+<text x="98" y="268.9" fill="#b8b8b8" font-size="17" text-anchor="end">20,000</text>
+<line x1="110" y1="188.6" x2="1560" y2="188.6" stroke="#3a3a3a" stroke-width="1"></line>
+<text x="98" y="194.6" fill="#b8b8b8" font-size="17" text-anchor="end">25,000</text>
+<line x1="110" y1="114.3" x2="1560" y2="114.3" stroke="#3a3a3a" stroke-width="1"></line>
+<text x="98" y="120.3" fill="#b8b8b8" font-size="17" text-anchor="end">30,000</text>
+<line x1="110" y1="40.0" x2="1560" y2="40.0" stroke="#3a3a3a" stroke-width="1"></line>
+<text x="98" y="46.0" fill="#b8b8b8" font-size="17" text-anchor="end">35,000</text>
+<text x="374.1" y="588" fill="#b8b8b8" font-size="17" text-anchor="middle">50</text>
+<text x="643.6" y="588" fill="#b8b8b8" font-size="17" text-anchor="middle">100</text>
+<text x="913.2" y="588" fill="#b8b8b8" font-size="17" text-anchor="middle">150</text>
+<text x="1182.7" y="588" fill="#b8b8b8" font-size="17" text-anchor="middle">200</text>
+<text x="1452.2" y="588" fill="#b8b8b8" font-size="17" text-anchor="middle">250</text>
+<text x="835.0" y="618" fill="#b8b8b8" font-size="18" text-anchor="middle">round</text>
+<text x="30" y="300.0" fill="#b8b8b8" font-size="18" text-anchor="middle" transform="rotate(-90 30 300.0)">tokens the model read</text>
+<line x1="110" y1="73.2" x2="1560" y2="73.2" stroke="#d42a2a" stroke-width="2" stroke-dasharray="10 7"></line>
+<text x="124" y="63.2" fill="#d42a2a" font-size="18">the model's context: 32,768</text>
+<line x1="110" y1="105.4" x2="1560" y2="105.4" stroke="#ff8c1a" stroke-width="2" stroke-dasharray="10 7"></line>
+<text x="124" y="129.4" fill="#ff8c1a" font-size="18">the trim fires: 30,600 (90 %)</text>
+<line x1="110" y1="307.4" x2="1560" y2="307.4" stroke="#8fd14f" stroke-width="2" stroke-dasharray="10 7"></line>
+<text x="124" y="297.4" fill="#8fd14f" font-size="18">and cuts down to: 17,000 (50 %)</text>
+<polyline points="110.0,551.7 115.4,549.6 120.8,548.1 126.2,546.4 131.6,544.7 137.0,543.6 142.3,541.7 153.1,538.6 158.5,535.1 163.9,531.3 169.3,526.8 174.7,523.2 180.1,520.7 185.5,518.0 190.9,515.3 196.2,514.2 201.6,512.5 207.0,510.0 212.4,508.0 223.2,502.7 228.6,497.3 234.0,491.4 239.4,486.3 244.8,483.7 250.1,481.4 255.5,479.2 260.9,477.7 266.3,475.8 271.7,474.8 282.5,467.7 287.9,461.4 293.3,454.8 298.7,448.8 304.1,446.8 309.4,444.7 314.8,442.5 320.2,441.0 325.6,438.5 331.0,435.7 336.4,433.8 341.8,432.8 352.6,425.1 358.0,417.8 363.3,410.3 368.7,402.8 374.1,395.4 379.5,393.3 384.9,390.9 390.3,389.1 395.7,388.1 401.1,386.8 406.5,384.7 411.9,383.7 422.6,374.6 428.0,365.9 433.4,356.9 438.8,348.8 444.2,346.8 449.6,344.5 455.0,341.4 460.4,339.8 465.8,338.6 471.2,336.7 481.9,327.2 487.3,317.5 492.7,308.0 498.1,298.7 503.5,289.2 508.9,286.9 514.3,284.7 519.7,283.1 525.1,280.5 530.4,278.4 535.8,277.4 541.2,276.1 552.0,266.8 557.4,257.3 562.8,247.9 568.2,239.4 573.6,237.1 579.0,235.0 584.3,233.1 589.7,230.3 595.1,228.1 600.5,226.2 611.3,216.9 616.7,208.0 622.1,199.0 627.5,189.6 632.9,179.7 638.3,170.2 643.6,168.2 649.0,165.6 654.4,164.1 659.8,162.0 665.2,160.0 670.6,158.4 676.0,156.1 686.8,146.5 692.2,137.6 697.5,128.2 702.9,118.4 708.3,109.0 713.7,106.7 719.1,104.1 724.5,312.0 729.9,311.0 735.3,309.7 740.7,307.5 746.1,304.7 756.8,302.2 762.2,300.4 767.6,298.8 773.0,297.8 778.4,295.0 783.8,292.8 789.2,291.5 794.6,289.8 800.0,287.8 805.4,286.6 816.1,283.7 821.5,281.7 826.9,280.2 832.3,279.3 837.7,277.8 843.1,276.7 848.5,275.4 859.3,272.8 864.6,270.7 870.0,269.2 875.4,267.9 880.8,266.4 886.2,265.4 891.6,264.2 897.0,261.8 902.4,260.0 913.2,257.6 918.6,255.6 923.9,253.2 929.3,252.0 934.7,249.9 940.1,249.0 945.5,247.4 950.9,245.7 956.3,242.9 967.1,240.4 972.5,238.4 977.8,237.5 983.2,236.1 988.6,234.3 994.0,232.9 999.4,231.3 1004.8,230.2 1015.6,227.3 1021.0,225.3 1026.4,223.8 1031.7,222.7 1037.1,221.1 1042.5,219.2 1047.9,218.1 1053.3,216.0 1058.7,214.6 1069.5,212.3 1074.9,210.3 1080.3,208.1 1085.7,206.4 1091.0,205.4 1096.4,203.5 1101.8,201.7 1107.2,200.4 1112.6,197.9 1123.4,195.8 1128.8,193.8 1134.2,192.3 1139.6,190.6 1144.9,189.0 1150.3,186.3 1155.7,185.1 1161.1,183.5 1171.9,181.4 1177.3,179.4 1182.7,178.0 1188.1,177.1 1193.5,175.3 1198.8,173.8 1209.6,171.4 1215.0,169.4 1220.4,167.8 1225.8,166.9 1231.2,164.6 1236.6,163.6 1242.0,160.2 1247.4,158.2 1252.8,156.3 1258.1,154.6 1268.9,152.4 1274.3,150.4 1279.7,148.8 1285.1,146.9 1290.5,145.6 1295.9,144.3 1301.3,142.3 1312.0,140.0 1317.4,137.9 1322.8,137.1 1328.2,135.4 1333.6,133.5 1339.0,131.6 1349.8,129.3 1355.2,127.2 1360.6,124.9 1365.9,123.6 1371.3,122.2 1376.7,119.1 1382.1,116.4 1387.5,115.1 1392.9,113.3 1398.3,112.3 1409.1,110.0 1414.5,108.0 1419.9,106.5 1425.2,104.7 1430.6,310.4 1436.0,308.9 1441.4,307.3 1446.8,306.4 1452.2,304.4 1463.0,301.8 1468.4,299.8 1473.8,298.8 1479.1,296.8 1484.5,294.0 1489.9,291.8 1495.3,290.2 1500.7,288.4 1511.5,286.0 1516.9,283.9 1522.3,283.0 1527.7,281.7 1533.0,280.2 1538.4,279.3 1543.8,276.2 1554.6,273.8 1560.0,271.7" fill="none" stroke="#b48cff" stroke-width="3" stroke-linejoin="round"></polyline>
+<circle cx="724.5" cy="312.0" r="7" fill="#8fd14f"></circle>
+<text x="736.5" y="342.0" fill="#eeeeee" font-size="18">trim, round 115</text>
+<circle cx="1430.6" cy="310.4" r="7" fill="#8fd14f"></circle>
+<text x="1442.6" y="340.4" fill="#eeeeee" font-size="18">trim, round 246</text>
+</svg>
+
+
+<div class="small-note">
+<p>A 270-round show, 2026-10-01: rounds cut from the middle (the first 2 and last 4 kept), and the show goes on</p>
+</div>
+<aside class="notes">
+<p>Budget 34,000 tokens; the trim fires at 90 % (30,600) and cuts down to 50 % (17,000). It landed at 16,608 and 16,722. A flaw found that day: the trim used to over-cut, more with every trim; fixed and measured — now it lands within one round of its target.</p>
+<p>THE PROBLEM — the show is one growing script: every round the model reads all of it (the cast sheet, every kept round’s instruction and reply, the new instruction). It must fit llama.cpp’s context: 16,384 tokens until 2026-10-01, 32,768 since. The trim keeps it inside by removing whole rounds from the middle.</p>
+<p>HOW THE APP COUNTS — it does not count tokens itself: it keeps the model server’s own count from each round’s last streamed chunk — prompt_n (read fresh), cache_n (reused from the cache), predicted_n (written). Their sum is the script’s size. Example, round 113 of a drive: 203 fresh + 27,653 cached + 50 written = 27,906. Each round records its share (what it added); the largest seen in 1,824 rounds: 741 tokens (an exchange).</p>
+<p>THE TRIM, STEP BY STEP — before each round that asks the model: below 30,600, nothing. At or above it, the rounds still read become candidates except the first 2 and the last 4; the middle one is cut, then outwards, each taking its share off, until the estimate reaches 17,000. Cut rounds stay in the record; the model just stops reading them. The next round’s server count is the truth, so an error never adds up.</p>
+<p>THE PAUSE AFTER A TRIM — llama.cpp’s cache holds only an unbroken start of the prompt; cutting the middle means the rest is read fresh: about 8.4 s at 32k (13,922 tokens re-read), once every 100 rounds or more. At 16k with a 14,000 budget: every 22-36 rounds, about 5 s each. With 32k: trims 3-4 times rarer, about 60 % longer, and the model keeps about 2.2 times as much of the show.</p>
+<p>WHY 34,000 IF THE CONTEXT IS 32,768 — the trim fires at 90 % of the budget, so the budget may exceed the context as long as 90 % of it plus room for the next instruction (1,000) and the reply (512) fits: 30,600 + 1,000 + 512 = 32,112 ≤ 32,768. When a run opens, the app asks llama.cpp its real context (GET /props) and refuses the run with the arithmetic if it does not fit (tested with a budget of 40,000: refused). The owner (2026-09-28): “I want to keep as much context as possible”.</p>
+<p>THE MEMORY — llama.cpp reserves the context when it starts: going from 16k to 32k cost 206 MiB at once, then 76 MiB on first use, then nothing more, flat through a full context and a trim (a hybrid model: only 4 attention layers).</p>
+<p>THE FLAW, FOUND AND FIXED (2026-10-01, evening) — the round after the first trim had a negative share (−2,837): the trim had removed more than it estimated. The cause: the call (the Repair) asks the model nothing, so the server reports no size after it, and two rounds per call had no recorded weight — about 600-850 tokens uncounted per call in the cut stretch. The error was not constant (the owner’s doubt was right): it grew with the calls removed, and compounded, because a negative share made the next trim cut more. The owner’s idea: trigger the trim only in the right round. The fix: a round after a Repair counts from the last size the server reported, and the trim fires only before a round that asks the model. Measured with a small budget (8,000) to get many trims: before, the estimate was off by 641 to 4,218 tokens and landed 17-45 % low; after, off by 1 to 3 tokens on every trim, landing within one round of its target. The owner: “it makes the show forget more lines that we intended” — now it forgets what it intends, and no more.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="one-command-to-a-gpu" class="slide level2 smaller gpu-slide">
+<h2>One command to a GPU</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb4-1"><a href="" aria-label="1"></a><span class="fu">make</span> ans-deploy ENV=cloud</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="columns">
+<div class="column" style="width:50%;">
+<p>Four roles, each for its own machines:</p>
+<ul>
+<li><strong>base</strong>: checks Ubuntu, Docker, the NVIDIA toolkit and driver (never installs them)</li>
+<li><strong>llama</strong>: llama.cpp in a pinned container, the model from Hugging Face</li>
+<li><strong>tts_engine</strong>: tts-serve 1.2 as a system service</li>
+<li><strong>stt_engine</strong>: Whisper in a container</li>
+</ul>
+</div><div class="column" style="width:50%;">
+<div class="stats one compact">
+<div class="stat">
+<p><span class="n">7 minutes</span><br>from a fresh VM to the stack running</p>
+</div>
+<div class="stat">
+<p><span class="n">changed=0</span><br>a second run changes nothing</p>
+</div>
+<div class="stat">
+<p><span class="n">~$0.50 an hour</span><br>an RTX A6000, 48 GB, on Hyperstack</p>
+</div>
+</div>
+</div></div>
+<aside class="notes">
+<p>From zero in 7 minutes (ok=33 changed=16); the re-run reports changed=0 in 30 seconds. Before touching anything, the playbook checks it is aimed at the right environment and that no placeholder is left. The price: $0.50-0.59 an hour, from our provider survey of 2026-09-13 — check today’s price before the talk.</p>
+<p>WHY IT MATTERS — the owner’s framing (2026-09-17): “deployment is 50% of the MVP”. The deployment machinery was the arc’s deliverable #1, built and proven live on 2026-09-18, before the show engine existed.</p>
+<p>THE SHAPE — one playbook (site.yml), four roles, about 475 lines of YAML. It starts at “an SSH-able Ubuntu box exists”: creating the VM stays in the provider’s console, so nothing is provider-specific. Inventories per environment (cloud, local); addresses live in the repo only as a REPLACE_ME placeholder. Roles gate themselves: each applies only on hosts in its own inventory group. Privilege: root declared once, at the play level; any task that runs as another user says so explicitly.</p>
+<p>HOW EACH SERVICE IS SUPERVISED — llama.cpp and Whisper: detached Docker containers with restart unless-stopped, so Docker brings them back; tts-serve: a systemd unit, enabled. All three survive SSH disconnects, crashes and reboots without an operator (after a reboot: back in under a minute). No tmux anywhere — the owner: a hard no.</p>
+<p>PINNED, ON PURPOSE — llama.cpp image build b11096; whisper-fastapi pinned by digest; tts-serve tag 1.2; the CUDA generation (cu128) and torch 2.9.1 as project variables. The base role asserts the driver can run that CUDA generation — added after a live crash loop on 2026-09-18: a CUDA 13 build on an R570 driver (“driver too old”).</p>
+<p>REJECTED, AND WHY — docker-compose: a good pattern, but overkill for two containers with short, proven docker run commands, no traffic between them, one operator and a 3-day timebox (flip trigger: services with dependencies). Terraform / VM provisioning: out of scope for v1.</p>
+<p>WHAT A FRESH BOX TAUGHT US (2026-09-22) — a new Ubuntu VM spends its first hour in its own updater (259 packages, 43 minutes); our deploy hit apt’s lock and failed. The fix: a configurable wait for the lock (300 s), announced in the task’s name, and a plain explanation if it times out. Hence “7 minutes once apt has finished”.</p>
+<p>THE COST — an RTX A6000, 48 GB, at $0.50-0.59 an hour, Hyperstack (the cheapest suitable GPU in the survey, twice the memory floor). A stopped VM keeps billing; only hibernation stops the meter, with a stock lottery on restore.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-3090-at-home" class="slide level2 home-slide">
+<h2>The 3090 at home</h2>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode numberSource bash number-lines code-with-copy"><code class="sourceCode bash"><span id="cb5-1"><a href="" aria-label="1"></a><span class="fu">make</span> ans-deploy ENV=local</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p>The same playbook, the same three services — on a home PC instead of a rented VM.</p>
+<div class="stats">
+<div class="stat">
+<p><span class="n">RTX 3090</span><br>24 GB; the stack needs about 14.5</p>
+</div>
+<div class="stat">
+<p><span class="n">checked</span><br>Ubuntu 22.04, driver R580, Docker with the NVIDIA runtime</p>
+</div>
+<div class="stat">
+<p><span class="n">deploy</span><br><span class="d">status as of 2026-10-03: pending</span></p>
+</div>
+</div>
+<aside class="notes">
+<p>Update this slide on the day, wherever goal 4 stands. As of 2026-10-03: the checks passed, the deploy paused while the owner was away from home.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="built-with-an-ai-pair" class="title-slide slide level1 center" data-background-color="#1a001a">
+<h1>Built with an AI pair</h1>
+
+</section>
+<section id="how-to-call-this-collaboration" class="slide level2">
+<h2>How to call this collaboration?</h2>
+<div class="names-cols">
+<div class="names-col">
+<p><span class="about-head">The collaboration</span></p>
+<ul>
+<li><strong>Vibe coding?</strong> <span class="d">Andrej Karpathy, February 2025</span></li>
+<li><strong>Agentic engineering?</strong> <span class="d">Andrej Karpathy, early 2026</span></li>
+<li><strong>Spec-driven vibe coding?</strong> <span class="d">Steve Corbett (scorbo2), September 2026</span></li>
+<li><strong>Human-agent tight learning loop?</strong> <span class="d">Alfredo Valles, September 2026</span></li>
+<li><span class="answer"><strong>Socratic agentic engineering</strong></span> <span class="d">Alfredo Valles, October 2026</span></li>
+</ul>
+</div>
+<div class="names-col">
+<p><span class="about-head">The AI partner</span></p>
+<ul>
+<li><strong>Stochastic parrots?</strong> <span class="d">Emily Bender, Timnit Gebru et al., 2021</span></li>
+<li><strong>A blurry JPEG of the web?</strong> <span class="d">Ted Chiang, 2023</span></li>
+<li><strong>Not artificial intelligence: artificial cleverness?</strong> <span class="d">Roger Penrose</span></li>
+<li><strong>An alien intelligence?</strong> <span class="d">many; Yuval Noah Harari, 2024</span></li>
+<li><strong>People spirits?</strong> <span class="d">Andrej Karpathy, 2025</span></li>
+</ul>
+</div>
+</div>
+<div class="citation personal-note">
+<blockquote>
+<p>Pair working with an AI agent, I often catch myself thinking: we are not alone anymore. It feels as if everything ever written has started talking back.</p>
+</blockquote>
+<p><span class="credit">— Alfredo Valles</span></p>
+</div>
+<aside class="notes">
+<p>The names people have tried for working with an AI on code, ending on ours. Karpathy’s two terms and dates checked by the owner online (2026-10-04); “spec-driven vibe coding” from Steve’s video released in September 2026. The tight learning loop is docs/discussions/2026-09-12-tight-learning-loop.md; “Socratic agentic engineering” named on 2026-10-03.</p>
+<p>The right column, from skeptic to awed; Penrose, Harari and Karpathy’s “people spirits”. Bender, Gebru et al.: “On the Dangers of Stochastic Parrots” (2021); Ted Chiang: “ChatGPT Is a Blurry JPEG of the Web”, The New Yorker, February 2023.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="the-documentation-system" class="slide level2">
+<h2>The documentation system</h2>
+<div class="levels-lead">
+<p>A Socratic dialogue runs on three levels at once. Our repository keeps one kind of document for each:</p>
+</div>
+<div class="levels">
+<div class="level level-object">
+<p><span class="about-head">The topic</span> <span class="level-tag">object level</span></p>
+<p>What we build, and why</p>
+<p><strong>discussions</strong> (33) · specs · <strong>experiments</strong> (6) · the code</p>
+</div>
+<div class="level level-strategy">
+<p><span class="about-head">The direction</span> <span class="level-tag">strategic discourse</span></p>
+<p>What comes next, in what order</p>
+<p><strong>TODO</strong> · the board · <strong>follow-ups</strong> (50) · session handoffs</p>
+</div>
+<div class="level level-meta">
+<p><span class="about-head">The rules</span> <span class="level-tag">meta-discourse</span></p>
+<p>How we talk, decide and review</p>
+<p><strong>CLAUDE.md</strong> · working agreements · the agent’s memory</p>
+</div>
+</div>
+<div class="small-note">
+<p>docs/ is the memory of record: the agent starts every session by reading it</p>
+</div>
+<div class="citation socratic-quote">
+<blockquote>
+<p>A Socratic dialogue is a cooperative, disciplined conversation based on guided questioning that aims to explore underlying beliefs, test assumptions, and stimulate critical thinking rather than win an argument.</p>
+</blockquote>
+<p><span class="credit">— an AI search summary</span></p>
+</div>
+<aside class="notes">
+<p>Why “Socratic”: open questions first (discussion-first, questions in groups of three); listening and restating (the owner’s words kept verbatim, 443 times); assumptions challenged both ways, and the corrections written down; an iterative loop (draft, reaction, refinement, review, commit); a shared conclusion — the owner decides, the agent recommends — or an honest “not in our record”. Counts as of 2026-10-03; recount before the talk.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="from-the-other-side-of-the-loop" class="slide level2">
+<h2>From the other side of the loop</h2>
+<div class="claude-slide">
+<ul>
+<li>I start every session with no memory. What carries over is what we wrote down. The repository is my memory, and Alfredo’s.</li>
+<li>My most useful sentence isn’t code. It’s “that’s not in our record”, instead of a confident guess.</li>
+<li>Alfredo’s most useful habit is testing what I say. While we built this deck, he caught me claiming a slide replayed when it didn’t. Being corrected is the method working.</li>
+<li>He owns the goals, the taste and the decisions. I bring breadth and speed. The written record keeps us both honest.</li>
+</ul>
+<p><span class="signature">— Claude, the AI half of this pair</span></p>
+</div>
+<aside class="notes">
+<p>Written by Claude, unedited by the owner (the owner’s offer, 2026-10-04: a slide where the owner would change nothing).</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section></section>
+<section>
+<section id="future-work" class="title-slide slide level1 center" data-background-color="#001a1a">
+<h1>Future work</h1>
+
+</section>
+<section id="whats-next" class="slide level2">
+<h2>What’s next</h2>
+<div class="about-row next-row">
+<div class="about-block about-goals">
+<p><span class="about-head">A smarter director</span></p>
+<ul>
+<li><strong>A judge in the loop</strong>: a small model answers the director’s questions about what was just said</li>
+<li><strong>A caller memory</strong>: each caller’s details stored, and recalled when they call back</li>
+<li><strong>Episodes</strong>: a story arc, with a recap between episodes</li>
+</ul>
+</div>
+<div class="about-block next-blood">
+<p><span class="about-head">More theatre</span></p>
+<ul>
+<li><strong>A scientist turns</strong>: infected mid-show, the voice changing line by line</li>
+<li><strong>The audience writes the news</strong>, from their phones</li>
+<li>Comic relief and scientific findings as story beats</li>
+</ul>
+</div>
+</div>
+<div class="about-row next-row">
+<div class="about-block about-code">
+<p><span class="about-head">Better voices and ears</span></p>
+<ul>
+<li><strong>New voice engines compared</strong>: LuxTTS, F5-TTS</li>
+<li>Recasting voices</li>
+<li><strong>Event sounds</strong>: a layer of their own beside the static</li>
+<li><strong>Speaker identification</strong>: recognizing callers by voice (speaker embeddings, cosine similarity)</li>
+</ul>
+</div>
+<div class="about-block about-principles">
+<p><span class="about-head">More places to run</span></p>
+<ul>
+<li><strong>A Mac with Apple Silicon</strong>: llama.cpp on Metal, tts-serve’s MLX engine</li>
+<li><strong>The client on Linux and Windows</strong></li>
+</ul>
+</div>
+</div>
+<div class="small-note">
+<p>Ideas and PRs welcome, and improvements are planned to go back upstream to TalkWithMe</p>
+</div>
+<aside class="notes">
+<p>The judge in the loop: a fast small model (about 3B) scores the director’s yes/no questions, and code steers the next instruction; an experiment first. A caller memory: today the show asks callers their names and restates what earlier callers said, but the model’s recall is unreliable; a proper store would keep each caller’s details and give them back when they call again. Speaker identification (challenge C3 of the product-definition brainstorm, 2026-09-13, a wishlist item since 2024): a model like ECAPA-TDNN turns a short sample of speech into a speaker embedding, matched against stored ones by cosine similarity, like face recognition. A scientist turns: the app re-reads the reference clip on every line, so a recast mid-show is heard on the next line. The Mac: the 64 GB M1 could run the whole stack; the 16 GB demo laptop cannot.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="thank-you" class="slide level2">
+<h2>Thank you</h2>
+<p><img data-src="images/scientists-goodbye.jpg" class="scene finale" alt="The cast takes a bow: scientists and zombies hand in hand on a stage, one zombie holding flowers, the audience applauding"></p>
+<div class="thanks-links">
+<div class="about-row">
+<div class="about-card">
+<p><strong>The code</strong><br><a href="https://github.com/alfre2v/TalkWithZombies">github.com/alfre2v/TalkWithZombies</a><br><a href="https://github.com/alfre2v/zombie-radio">github.com/alfre2v/zombie-radio</a></p>
+</div>
+<div class="about-card">
+<p><strong>These slides</strong><br><a href="https://alfre2v.github.io/zombie-radio/">alfre2v.github.io/zombie-radio</a></p>
+</div>
+</div>
+<div class="thanks-contact">
+<p class="contacts">
+<span class="ci ci-name">Alfredo Valles</span>
+<span class="ci"><svg viewbox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"></path></svg><a href="https://github.com/alfre2v">github.com/alfre2v</a></span>
+<span class="ci"><svg viewbox="0 0 24 24" aria-hidden="true"><rect x="2" y="4.5" width="20" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="2"></rect><path d="M3 6l9 7 9-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"></path></svg><a href="mailto:pytalk2026@alfre.net">pytalk2026@alfre.net</a></span>
+<span class="ci"><svg viewbox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="2"></circle><ellipse cx="12" cy="12" rx="4.2" ry="9.5" fill="none" stroke="currentColor" stroke-width="2"></ellipse><path d="M2.5 12h19M4.2 7h15.6M4.2 17h15.6" fill="none" stroke="currentColor" stroke-width="1.6"></path></svg><a href="https://alfre.net">alfre.net</a></span>
+<span class="ci"><svg viewbox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"></path></svg><a href="https://www.linkedin.com/in/alfredovalles/">linkedin.com/in/alfredovalles</a></span>
+</p>
+
+
+</div>
+</div>
+<aside class="notes">
+<p>The slides’ address works once the deck is published to GitHub Pages (quarto publish gh-pages), before the talk.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+</section>
+<section id="credits" class="slide level2 credits-slide">
+<h2>Credits</h2>
+<div class="credits-roll">
+<p><span class="cr-credits">Credits</span></p>
+<p><span class="cr-title">Zombie-Radio</span></p>
+<p><span class="cr-by">a radio play for four AI voices, by Alfredo Valles</span></p>
+<p><span class="cr-head">The cast — real voices from the EARS dataset</span></p>
+<p><span class="cr-role">Daniel</span> <span class="cr-name">speaker p007</span> <span class="cr-role">Moira</span> <span class="cr-name">speaker p026</span> <span class="cr-role">Ralph</span> <span class="cr-name">speaker p017</span> <span class="cr-role">Samantha</span> <span class="cr-name">speaker p063</span> <span class="cr-note">EARS: Meta and the University of Hamburg (Interspeech 2024), CC BY-NC 4.0</span></p>
+<p><span class="cr-head">The radio static — Freesound</span></p>
+<p><span class="cr-role">CC BY 4.0</span> <span class="cr-name">AlexMurphy53 · -CASK-</span> <span class="cr-role">CC BY 3.0</span> <span class="cr-name">kwahmah_02</span> <span class="cr-role">CC0, with thanks</span> <span class="cr-name">wwstudioswastaken · exsil · finneganmilla · nlux · NebulousRoyale</span> <span class="cr-note">the clips and their licences: github.com/alfre2v/TalkWithZombies/blob/master/Sounds/bed/CREDITS.md</span></p>
+<p><span class="cr-head">Built on</span></p>
+<p><span class="cr-role">TalkWithMe and tts-serve</span> <span class="cr-name">Steve Corbett (scorbo2) · No place like localhost</span></p>
+<p><span class="cr-head">The models and their servers</span></p>
+<p><span class="cr-role">the words</span> <span class="cr-name">Nemotron Nano 9B v2 (NVIDIA) on llama.cpp (ggml-org)</span> <span class="cr-role">the voices</span> <span class="cr-name">Qwen3-TTS (Alibaba’s Qwen team), run by faster-qwen3-tts</span> <span class="cr-role">the ears</span> <span class="cr-name">Whisper (OpenAI), served by whisper-fastapi (heimoshuiyu)</span></p>
+<p><span class="cr-head">Pictures and film</span></p>
+<p><span class="cr-role">1938</span> <span class="cr-name">Welles in the CBS studio (Dallas Dispatch-Journal) · “Help! Men from Mars!” by Les Callan · Wikimedia Commons, public domain</span> <span class="cr-role">the old radio</span> <span class="cr-name">Philips Sirius BD 400 A, photo by Bin im Garten, Wikimedia Commons, CC BY-SA 3.0</span> <span class="cr-role">“Localhosters unite!”</span> <span class="cr-name">video thumbnail, Steve Corbett</span> <span class="cr-role">“Interview with a Vibe Coder”</span> <span class="cr-name">Roope Rainisto, YouTube</span> <span class="cr-role">the citation</span> <span class="cr-name">Wikipedia, “Hustler Magazine v. Falwell”, CC BY-SA 4.0</span> <span class="cr-role">the generated images</span> <span class="cr-name">Alfredo Valles</span></p>
+<p><span class="cr-note">Slides made with Quarto and reveal.js</span> <span class="cr-note">Every picture’s source and licence: talk/images/CREDITS.md in zombie-radio</span></p>
+</div>
+<aside class="notes">
+<p>Rolling credits, like a film’s end: the list scrolls by itself while the slide shows. Required by the licences: the EARS voices (CC BY-NC), the CC BY static clips, the CC BY-SA photo and citation.</p>
+<style type="text/css">
+        span.MJX_Assistive_MathML {
+          position:absolute!important;
+          clip: rect(1px, 1px, 1px, 1px);
+          padding: 1px 0 0 0!important;
+          border: 0!important;
+          height: 1px!important;
+          width: 1px!important;
+          overflow: hidden!important;
+          display:block!important;
+      }</style></aside>
+
+</section></section>
+    </div>
+  <div class="quarto-auto-generated-content" style="display: none;">
+<div class="footer footer-default">
+<p>Zombie-Radio · Austin Python Meetup · October 2026</p>
+</div>
+</div></div>
+
+  <script>window.backupDefine = window.define; window.define = undefined;</script>
+  <script src="index_files/libs/revealjs/dist/reveal.js"></script>
+  <!-- reveal.js plugins -->
+  <script src="index_files/libs/revealjs/plugin/quarto-line-highlight/line-highlight.js"></script>
+  <script src="index_files/libs/revealjs/plugin/pdf-export/pdfexport.js"></script>
+  <script src="index_files/libs/revealjs/plugin/reveal-menu/menu.js"></script>
+  <script src="index_files/libs/revealjs/plugin/reveal-menu/quarto-menu.js"></script>
+  <script src="index_files/libs/revealjs/plugin/reveal-chalkboard/plugin.js"></script>
+  <script src="index_files/libs/revealjs/plugin/quarto-support/support.js"></script>
+  
+
+  <script src="index_files/libs/revealjs/plugin/notes/notes.js"></script>
+  <script src="index_files/libs/revealjs/plugin/search/search.js"></script>
+  <script src="index_files/libs/revealjs/plugin/zoom/zoom.js"></script>
+  <script src="index_files/libs/revealjs/plugin/math/math.js"></script>
+  <script>window.define = window.backupDefine; window.backupDefine = undefined;</script>
+
+  <script>
+
+      // Full list of configuration options available at:
+      // https://revealjs.com/config/
+      Reveal.initialize({
+'controlsAuto': true,
+'previewLinksAuto': false,
+'pdfSeparateFragments': false,
+'autoAnimateEasing': "ease",
+'autoAnimateDuration': 1,
+'autoAnimateUnmatched': true,
+'jumpToSlide': true,
+'menu': {"side":"left","useTextContentForMissingTitles":true,"markers":false,"loadIcons":false,"custom":[{"title":"Tools","icon":"<i class=\"fas fa-gear\"></i>","content":"<ul class=\"slide-menu-items\">\n<li class=\"slide-tool-item active\" data-item=\"0\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.fullscreen(event)\"><kbd>f</kbd> Fullscreen</a></li>\n<li class=\"slide-tool-item\" data-item=\"1\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.speakerMode(event)\"><kbd>s</kbd> Speaker View</a></li>\n<li class=\"slide-tool-item\" data-item=\"2\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.overview(event)\"><kbd>o</kbd> Slide Overview</a></li>\n<li class=\"slide-tool-item\" data-item=\"3\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.togglePdfExport(event)\"><kbd>e</kbd> PDF Export Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"4\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleScrollView(event)\"><kbd>r</kbd> Scroll View Mode</a></li>\n<li class=\"slide-tool-item\" data-item=\"5\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleChalkboard(event)\"><kbd>b</kbd> Toggle Chalkboard</a></li>\n<li class=\"slide-tool-item\" data-item=\"6\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.toggleNotesCanvas(event)\"><kbd>c</kbd> Toggle Notes Canvas</a></li>\n<li class=\"slide-tool-item\" data-item=\"7\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.downloadDrawings(event)\"><kbd>d</kbd> Download Drawings</a></li>\n<li class=\"slide-tool-item\" data-item=\"8\"><a href=\"#\" onclick=\"RevealMenuToolHandlers.keyboardHelp(event)\"><kbd>?</kbd> Keyboard Help</a></li>\n</ul>"}],"openButton":true},
+'chalkboard': {"buttons":true},
+'smaller': false,
+ 
+        // Display controls in the bottom right corner
+        controls: false,
+
+        // Help the user learn the controls by providing hints, for example by
+        // bouncing the down arrow when they first encounter a vertical slide
+        controlsTutorial: false,
+
+        // Determines where controls appear, "edges" or "bottom-right"
+        controlsLayout: 'edges',
+
+        // Visibility rule for backwards navigation arrows; "faded", "hidden"
+        // or "visible"
+        controlsBackArrows: 'faded',
+
+        // Display a presentation progress bar
+        progress: true,
+
+        // Display the page number of the current slide
+        slideNumber: 'c/t',
+
+        // 'all', 'print', or 'speaker'
+        showSlideNumber: 'all',
+
+        // Add the current slide number to the URL hash so that reloading the
+        // page/copying the URL will return you to the same slide
+        hash: true,
+
+        // Start with 1 for the hash rather than 0
+        hashOneBasedIndex: false,
+
+        // Flags if we should monitor the hash and change slides accordingly
+        respondToHashChanges: true,
+
+        // Push each slide change to the browser history
+        history: true,
+
+        // Enable keyboard shortcuts for navigation
+        keyboard: true,
+
+        // Enable the slide overview mode
+        overview: true,
+
+        // Disables the default reveal.js slide layout (scaling and centering)
+        // so that you can use custom CSS layout
+        disableLayout: false,
+
+        // Vertical centering of slides
+        center: false,
+
+        // Enables touch navigation on devices with touch input
+        touch: true,
+
+        // Loop the presentation
+        loop: false,
+
+        // Change the presentation direction to be RTL
+        rtl: false,
+
+        // see https://revealjs.com/vertical-slides/#navigation-mode
+        navigationMode: 'linear',
+
+        // Randomizes the order of slides each time the presentation loads
+        shuffle: false,
+
+        // Turns fragments on and off globally
+        fragments: true,
+
+        // Flags whether to include the current fragment in the URL,
+        // so that reloading brings you to the same fragment position
+        fragmentInURL: false,
+
+        // Flags if the presentation is running in an embedded mode,
+        // i.e. contained within a limited portion of the screen
+        embedded: false,
+
+        // Flags if we should show a help overlay when the questionmark
+        // key is pressed
+        help: true,
+
+        // Flags if it should be possible to pause the presentation (blackout)
+        pause: true,
+
+        // Flags if speaker notes should be visible to all viewers
+        showNotes: false,
+
+        // Global override for autoplaying embedded media (null/true/false)
+        autoPlayMedia: null,
+
+        // Global override for preloading lazy-loaded iframes (null/true/false)
+        preloadIframes: null,
+
+        // Number of milliseconds between automatically proceeding to the
+        // next slide, disabled when set to 0, this value can be overwritten
+        // by using a data-autoslide attribute on your slides
+        autoSlide: 0,
+
+        // Stop auto-sliding after user input
+        autoSlideStoppable: true,
+
+        // Use this method for navigation when auto-sliding
+        autoSlideMethod: null,
+
+        // Specify the average time in seconds that you think you will spend
+        // presenting each slide. This is used to show a pacing timer in the
+        // speaker view
+        defaultTiming: null,
+
+        // Enable slide navigation via mouse wheel
+        mouseWheel: false,
+
+        // The display mode that will be used to show slides
+        display: 'block',
+
+        // Hide cursor if inactive
+        hideInactiveCursor: true,
+
+        // Time before the cursor is hidden (in ms)
+        hideCursorTime: 5000,
+
+        // Opens links in an iframe preview overlay
+        previewLinks: false,
+
+        // Transition style (none/fade/slide/convex/concave/zoom)
+        transition: 'none',
+
+        // Transition speed (default/fast/slow)
+        transitionSpeed: 'default',
+
+        // Transition style for full page slide backgrounds
+        // (none/fade/slide/convex/concave/zoom)
+        backgroundTransition: 'none',
+
+        // Number of slides away from the current that are visible
+        viewDistance: 3,
+
+        // Number of slides away from the current that are visible on mobile
+        // devices. It is advisable to set this to a lower number than
+        // viewDistance in order to save resources.
+        mobileViewDistance: 2,
+
+        // The "normal" size of the presentation, aspect ratio will be preserved
+        // when the presentation is scaled to fit different resolutions. Can be
+        // specified using percentage units.
+        width: 1280,
+
+        height: 720,
+
+        // Factor of the display size that should remain empty around the content
+        margin: 0.1,
+
+        math: {
+          mathjax: 'https://cdn.jsdelivr.net/npm/mathjax@2.7.9/MathJax.js',
+          config: 'TeX-AMS_HTML-full',
+          tex2jax: {
+            inlineMath: [['\\(','\\)']],
+            displayMath: [['\\[','\\]']],
+            balanceBraces: true,
+            processEscapes: false,
+            processRefs: true,
+            processEnvironments: true,
+            preview: 'TeX',
+            skipTags: ['script','noscript','style','textarea','pre','code'],
+            ignoreClass: 'tex2jax_ignore',
+            processClass: 'tex2jax_process'
+          },
+        },
+
+        // reveal.js plugins
+        plugins: [QuartoLineHighlight, PdfExport, RevealMenu, RevealChalkboard, QuartoSupport,
+
+          RevealMath,
+          RevealNotes,
+          RevealSearch,
+          RevealZoom
+        ]
+      });
+    </script>
+    <script id="quarto-html-after-body" type="application/javascript">
+      window.document.addEventListener("DOMContentLoaded", function (event) {
+        const tabsets =  window.document.querySelectorAll(".panel-tabset-tabby")
+        tabsets.forEach(function(tabset) {
+          const tabby = new Tabby('#' + tabset.id);
+        });
+        const isCodeAnnotation = (el) => {
+          for (const clz of el.classList) {
+            if (clz.startsWith('code-annotation-')) {                     
+              return true;
+            }
+          }
+          return false;
+        }
+        const onCopySuccess = function(e) {
+          // button target
+          const button = e.trigger;
+          // don't keep focus
+          button.blur();
+          // flash "checked"
+          button.classList.add('code-copy-button-checked');
+          var currentTitle = button.getAttribute("title");
+          button.setAttribute("title", "Copied!");
+          let tooltip;
+          if (window.bootstrap) {
+            button.setAttribute("data-bs-toggle", "tooltip");
+            button.setAttribute("data-bs-placement", "left");
+            button.setAttribute("data-bs-title", "Copied!");
+            tooltip = new bootstrap.Tooltip(button, 
+              { trigger: "manual", 
+                customClass: "code-copy-button-tooltip",
+                offset: [0, -8]});
+            tooltip.show();    
+          }
+          setTimeout(function() {
+            if (tooltip) {
+              tooltip.hide();
+              button.removeAttribute("data-bs-title");
+              button.removeAttribute("data-bs-toggle");
+              button.removeAttribute("data-bs-placement");
+            }
+            button.setAttribute("title", currentTitle);
+            button.classList.remove('code-copy-button-checked');
+          }, 1000);
+          // clear code selection
+          e.clearSelection();
+        }
+        const getTextToCopy = function(trigger) {
+          const outerScaffold = trigger.parentElement.cloneNode(true);
+          const codeEl = outerScaffold.querySelector('code');
+          for (const childEl of codeEl.children) {
+            if (isCodeAnnotation(childEl)) {
+              childEl.remove();
+            }
+          }
+          return codeEl.innerText;
+        }
+        const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+          text: getTextToCopy
+        });
+        clipboard.on('success', onCopySuccess);
+        if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+          const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+            text: getTextToCopy,
+            container: window.document.getElementById('quarto-embedded-source-code-modal')
+          });
+          clipboardModal.on('success', onCopySuccess);
+        }
+          var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+          var mailtoRegex = new RegExp(/^mailto:/);
+            var filterRegex = new RegExp('/' + window.location.host + '/');
+          var isInternal = (href) => {
+              return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+          }
+          // Inspect non-navigation links and adorn them if external
+         var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+          for (var i=0; i<links.length; i++) {
+            const link = links[i];
+            if (!isInternal(link.href)) {
+              // undo the damage that might have been done by quarto-nav.js in the case of
+              // links that we want to consider external
+              if (link.dataset.originalHref !== undefined) {
+                link.href = link.dataset.originalHref;
+              }
+            }
+          }
+        function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+          const config = {
+            allowHTML: true,
+            maxWidth: 500,
+            delay: 100,
+            arrow: false,
+            appendTo: function(el) {
+                return el.closest('section.slide') || el.parentElement;
+            },
+            interactive: true,
+            interactiveBorder: 10,
+            theme: 'light-border',
+            placement: 'bottom-start',
+          };
+          if (contentFn) {
+            config.content = contentFn;
+          }
+          if (onTriggerFn) {
+            config.onTrigger = onTriggerFn;
+          }
+          if (onUntriggerFn) {
+            config.onUntrigger = onUntriggerFn;
+          }
+            config['offset'] = [0,0];
+            config['maxWidth'] = 700;
+          window.tippy(el, config); 
+        }
+        const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+        for (var i=0; i<noterefs.length; i++) {
+          const ref = noterefs[i];
+          tippyHover(ref, function() {
+            // use id or data attribute instead here
+            let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+            try { href = new URL(href).hash; } catch {}
+            const id = href.replace(/^#\/?/, "");
+            const note = window.document.getElementById(id);
+            if (note) {
+              return note.innerHTML;
+            } else {
+              return "";
+            }
+          });
+        }
+        const findCites = (el) => {
+          const parentEl = el.parentElement;
+          if (parentEl) {
+            const cites = parentEl.dataset.cites;
+            if (cites) {
+              return {
+                el,
+                cites: cites.split(' ')
+              };
+            } else {
+              return findCites(el.parentElement)
+            }
+          } else {
+            return undefined;
+          }
+        };
+        var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+        for (var i=0; i<bibliorefs.length; i++) {
+          const ref = bibliorefs[i];
+          const citeInfo = findCites(ref);
+          if (citeInfo) {
+            tippyHover(citeInfo.el, function() {
+              var popup = window.document.createElement('div');
+              citeInfo.cites.forEach(function(cite) {
+                var citeDiv = window.document.createElement('div');
+                citeDiv.classList.add('hanging-indent');
+                citeDiv.classList.add('csl-entry');
+                var biblioDiv = window.document.getElementById('ref-' + cite);
+                if (biblioDiv) {
+                  citeDiv.innerHTML = biblioDiv.innerHTML;
+                }
+                popup.appendChild(citeDiv);
+              });
+              return popup.innerHTML;
+            });
+          }
+        }
+      });
+      </script>
+    
+
+</body></html>
