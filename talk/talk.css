@@ -886,3 +886,36 @@
 .reveal .gpu-slide .column > :first-child {
   margin-top: 0;
 }
+
+.reveal .contacts {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 0.35em 1em;
+  margin: 0;
+  font-size: 0.9em;
+}
+
+.reveal .contacts .ci {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  white-space: nowrap;
+}
+
+.reveal .contacts .ci svg {
+  width: 1em;
+  height: 1em;
+  flex: none;
+  color: #b8b8b8;
+}
+
+/* Navigation arrows in the bottom bar, beside the page count: only in use with controls: true and
+   controls-layout: bottom-right in _quarto.yml (commented out there). */
+.reveal .controls {
+  bottom: 6px;
+  right: 74px;
+  font-size: 6px;
+}

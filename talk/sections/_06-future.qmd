@@ -62,8 +62,9 @@ The Mac: the 64 GB M1 could run the whole stack; the 16 GB demo laptop cannot.
 :::
 
 ::: {.thanks-contact}
-Alfredo Valles · [github.com/alfre2v](https://github.com/alfre2v) · [placeholder: email] · [placeholder: website] ·
-[placeholder: LinkedIn]
+```{=html}
+{{< include images/_contacts.html >}}
+```
 :::
 :::
 

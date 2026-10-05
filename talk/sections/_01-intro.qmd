@@ -8,7 +8,7 @@ About 5 minutes.
 
 ::: {.welles-row}
 ::: {.welles-video}
-<iframe data-external="1" referrerpolicy="strict-origin-when-cross-origin" width="600" height="450" src="https://www.youtube-nocookie.com/embed/Kl9GO1DUjls"
+<iframe data-external="1" referrerpolicy="strict-origin-when-cross-origin" width="600" height="450" data-src="https://www.youtube-nocookie.com/embed/Kl9GO1DUjls"
 title="Interview with a Vibe Coder" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture"
 allowfullscreen></iframe>
 
@@ -45,8 +45,9 @@ Link: https://www.youtube.com/watch?v=Kl9GO1DUjls
 :::
 
 ::: {.thanks-contact .bio-contact}
-Alfredo Valles · [github.com/alfre2v](https://github.com/alfre2v) · [placeholder: email] · [placeholder: website] ·
-[placeholder: LinkedIn]
+```{=html}
+{{< include images/_contacts.html >}}
+```
 :::
 
 ::: {.notes}
@@ -87,7 +88,7 @@ The eve of Halloween. Orson Welles and the Mercury Theatre on the Air broadcast 
 a Martian invasion, told as breaking news.
 
 ::: {.centered .video-1938}
-<iframe data-external="1" referrerpolicy="strict-origin-when-cross-origin" width="432" height="243" src="https://www.youtube-nocookie.com/embed/Xs0K4ApWl4g?start=1200"
+<iframe data-external="1" referrerpolicy="strict-origin-when-cross-origin" width="432" height="243" data-src="https://www.youtube-nocookie.com/embed/Xs0K4ApWl4g?start=1200"
 title="Orson Welles - War Of The Worlds - Radio Broadcast 1938 - Complete Broadcast." frameborder="0"
 allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
 :::
