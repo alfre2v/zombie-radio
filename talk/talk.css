@@ -654,11 +654,12 @@
   display: flex;
   gap: 0.8em;
   align-items: center;
-  margin-top: 50px;
+  margin-top: 61px;
 }
 
 .reveal .welles-video {
   flex: 0 0 auto;
+  margin-left: 210px;
 }
 
 .reveal .welles-video iframe {
@@ -668,6 +669,14 @@
 
 .reveal .welles-photos {
   flex: 1;
+  text-align: right;
+}
+
+.reveal .welles-photos .credit {
+  display: block;
+  width: 283px;
+  margin-left: auto;
+  text-align: center;
 }
 
 .reveal .welles-photos p {
@@ -676,7 +685,10 @@
 
 .reveal .welles-photos img {
   display: block;
-  width: 100%;
+  width: 283px;
+  max-width: none;
+  margin-left: auto !important;
+  margin-right: 0 !important;
   height: auto;
   margin: 0 0 0.2em;
 }
@@ -689,6 +701,14 @@
 .reveal .welles-video .credit {
   display: block;
   margin-top: 0.3em;
+}
+
+.reveal .welles-video iframe {
+  margin: 0 !important;
+}
+
+.reveal .welles-video p:has(iframe) {
+  line-height: 0;
 }
 
 .reveal .video-1938 {
@@ -707,7 +727,7 @@
 .reveal .elephant {
   display: flex;
   gap: 0.8em;
-  align-items: center;
+  align-items: flex-start;
   margin-top: 0.5em;
 }
 
@@ -717,7 +737,7 @@
 
 .reveal .elephant-pic {
   position: relative;
-  flex: 1;
+  flex: 1.772;
   line-height: 0;
 }
 
@@ -746,12 +766,13 @@
 }
 
 .reveal .elephant-chart {
-  flex: 1.1;
+  flex: 2.115;
 }
 
 .reveal .elephant-chart img {
   display: block;
   width: 100%;
+  max-width: 100%;
   height: auto;
   margin: 0;
   border-radius: 10px;
@@ -759,7 +780,16 @@
 }
 
 .reveal .elephant-why {
-  margin-top: 0.8em;
+  margin-top: 1.8em;
   text-align: center;
   font-size: 0.65em;
+}
+
+.reveal .elephant-why p {
+  margin: 0.6em 0;
+}
+
+.reveal .claude-orange {
+  color: #d97757;
+  font-weight: 700;
 }

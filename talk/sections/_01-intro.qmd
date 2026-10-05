@@ -8,7 +8,7 @@ About 5 minutes.
 
 ::: {.welles-row}
 ::: {.welles-video}
-<iframe data-external="1" referrerpolicy="strict-origin-when-cross-origin" width="640" height="360" src="https://www.youtube-nocookie.com/embed/Kl9GO1DUjls"
+<iframe data-external="1" referrerpolicy="strict-origin-when-cross-origin" width="600" height="450" src="https://www.youtube-nocookie.com/embed/Kl9GO1DUjls"
 title="Interview with a Vibe Coder" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture"
 allowfullscreen></iframe>
 
@@ -258,7 +258,9 @@ Artificial Analysis Intelligence Index (artificialanalysis.ai); "Hope" added by 
 :::
 
 ::: {.elephant-why}
-This project was built with Claude Code — local models aren't there yet for coding. But they're getting close.
+This project was built with [Claude Code]{.claude-orange} [—]{.claude-orange} and yes, this is an [em-dash]{.claude-orange}!
+
+Local models aren't there yet for coding. But they're getting close.
 :::
 
 ::: {.notes}
