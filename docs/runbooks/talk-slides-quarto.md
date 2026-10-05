@@ -25,7 +25,7 @@ file; the deck itself is generated.
   The version installed: **1.10.18** (`quarto --version`). The download was `quarto-1.10.18-macos.pkg`, 247.7 MB, from
   Quarto's GitHub releases; licence MIT "With the exceptions noted below" (the tools it bundles, such as Pandoc).
 - **Why Quarto** (decided 2026-10-03, over Google Slides, Marp, a Claude Artifact deck and others): the slides are text
-  in git, so the agent edits them and the owner reviews them in VS Code; it renders **one self-contained HTML file**
+  in git, so the agent edits them and the owner reviews them in VS Code; it renders a **static website** (a folder)
   that runs from the laptop with **no network at the venue**; and it can be published on GitHub Pages after the talk.
   The full comparison: [discussion 2026-10-03] the-talk §2.
 
@@ -46,7 +46,7 @@ All of the deck is in the `talk/` folder of this repository:
 | `talk/talk.css` | the look: colours, sizes, spacing, the boxes and cards, the Halloween decorations |
 | `talk/images/` | every picture: photos and generated images (`.jpg`), the diagrams (`_*.svg`), the scripts that draw the diagrams (`make_*_svg.py`), and `CREDITS.md` |
 | `talk/data/` | the numbers behind a chart, kept in git (`trim-run-2026-10-01T17-48-37.csv`) |
-| `talk/_output/` | **the rendered deck** (`index.html`, about 5.6 MB) — generated, never edited, kept out of git |
+| `talk/_output/` | **the rendered deck**, a static website: `index.html`, `index_files/` (reveal.js and its plugins), `images/`, `talk.css` — about 18 MB; generated, never edited, kept out of git |
 | `talk/.quarto/` | Quarto's working files — generated, kept out of git |
 
 The section files start with an underscore (`_01-intro.qmd`) on purpose: Quarto skips files whose name starts with `_`
@@ -69,13 +69,21 @@ format:
     height: 720
     slide-number: true       # the "7 / 30" in the bottom-right corner
     hash: true               # each slide gets its own address (…/index.html#/about-this-project)
-    embed-resources: true    # one self-contained HTML file: images, fonts and scripts inside it
+    embed-resources: false   # a folder, not one file: the chalkboard requires it
     css: talk.css            # our own styles, on top of the theme
+    chalkboard: true         # draw on the slides (§8.1)
     footer: "Zombie-Radio · Austin Python Meetup · October 2026"
 ```
 
-`embed-resources: true` is what makes the deck work **offline**: every image and script is packed into
-`_output/index.html`. The exception is the Welles clip, which plays from YouTube (§7).
+**The rendered deck is a static website.** `talk/_output/` holds plain HTML, CSS, JavaScript and images, no
+server-side code: copy the whole folder to any web server (nginx, Apache, a storage bucket, GitHub Pages) and open
+`index.html` at the server's address — the folder, not `index.html` alone, which loads its scripts and pictures from the
+files beside it. It works offline, served from the laptop; the exception is the two YouTube clips (§7).
+
+Until 2026-10-05 the deck was **one self-contained file** (`embed-resources: true`: every image and script packed into
+`index.html`, about 5.6 MB). The chalkboard cannot work that way — Quarto refuses: "Reveal plugin 'RevealChalkboard is
+not compatible with self-contained output" — so the owner traded the single file for the chalkboard (verbatim: "Let's
+try it, if we don't like it we can revert everything in git."). The PDF export (§8.1, E) is the one-file backup.
 
 ## 3. The workflow: edit, save, look
 
@@ -449,7 +457,7 @@ highlight`, `pdf-export`, `menu`, `quarto-support`, `mathjax2`, `notes`, `search
 
 | Key | Does |
 |---|---|
-| **B** or **.** | **pause**: a black screen; again to come back — while talking with the room, answering a question, or switching to the live app |
+| **.** | **pause**: a black screen; again to come back (B, its other key, now opens the chalkboard's blackboard) |
 | **F** | full screen |
 | **Alt + click** | **zoom** into what is clicked; Alt + click again to zoom out — the dense diagrams, the Artificial Analysis chart, the grammar |
 | **S** | the **speaker view** (below) |
@@ -467,8 +475,21 @@ highlight`, `pdf-export`, `menu`, `quarto-support`, `mathjax2`, `notes`, `search
 33 minutes); a layout button in its corner rearranges the panes; the slides can be driven from it, so the projector
 never needs the mouse.
 
-**Not enabled: a chalkboard** (drawing on the slides with the mouse) — one line in `_quarto.yml` (`chalkboard: true`),
-but it takes over the **B** key, used here to pause; left off.
+**The chalkboard** (enabled 2026-10-05) — draw on the slides with the mouse: circle a number on the trim chart,
+underline a line of the grammar, sketch on a blank board. Keys, from the deck's help overlay:
+
+| Key | Does |
+|---|---|
+| **C** | **draw on the current slide**: the cursor becomes a pen, drag to draw; C again to stop |
+| **B** | **the blackboard**: a separate board over the slide, to sketch on; B again to go back |
+| **X** / **Y** | next / previous pen colour |
+| **Del** | clear the drawings on this slide |
+| **Backspace** | clear all the drawings, on every slide |
+| **D** | download the drawings (a JSON file) |
+
+Two icons in the bottom-left corner, beside the ☰ menu — a board and a pen — open the same two modes with the mouse.
+Drawings stay with their slide while moving around, until cleared; they never change the slides themselves. It needs
+the deck rendered as a folder (§2.1).
 
 ### 8.2 Keeping the notes private
 
@@ -570,7 +591,7 @@ section had been run at this writing.**
 
 ### 10.1 What publishing does
 
-`quarto publish gh-pages` renders the deck and pushes the result — our single `index.html`, about 5.6 MB — to a
+`quarto publish gh-pages` renders the deck and pushes the result — the `_output/` folder, about 18 MB — to a
 **separate branch called `gh-pages`** in the zombie-radio repository. GitHub Pages then serves that branch as a website
 at:
 
