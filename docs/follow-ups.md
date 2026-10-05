@@ -1284,6 +1284,22 @@ reader's memory):
   so the chat's settings page and its `PUT` are untouched. Tests: the
   reply carries the loaded values, not the file's.
 
+## The client on Linux and Windows — proven, and the voice tools without `afconvert` (owner, 2026-10-03) — after the demo
+
+- **The gap:** the client (TalkWithZombies on the laptop) is proven only on macOS. Its app has no
+  operating-system-specific code, and the page is plain browser features, so Linux is likely and Windows plausible —
+  **never tried**. What ties us to macOS is the tooling: the installer (`make client-mac`: `say` for the starter
+  voices, `afconvert`) and the voice tools (`tools/voices/cast_voices.py`, `screen_voices.py`: `afconvert`). Upstream's
+  README names no operating system ("Python 3.10+"). Read in [discussion 2026-10-03] client-os-support §2-§3.
+- **The owner (verbatim, 2026-10-03):** "do we even know if TalkWithMe supports Windows? Do you think any of our
+  features interfere with running TalkWithZombies in Linux or Windows?"
+- **Trigger:** after the demo (2026-10-08); Linux sooner, with Task 11.2 (the manual install on the 3090).
+- **Fix shape:**
+  1. **Linux:** the manual install on the 3090 (Task 11.2), then perhaps `make client-linux`.
+  2. **Windows:** the fork's test suite on GitHub Actions' `windows-latest` runner (free for public repositories) —
+     no Windows PC needed; then a manual start (`.venv\Scripts\uvicorn`, the tunnel with Windows' own OpenSSH).
+  3. **The voice tools on Linux:** `ffmpeg` in place of `afconvert` (or a choice of the two).
+
 ## A cast member says another's line — Daniel introduces himself as Samantha (owner, 2026-10-02) — deferred past the demo
 
 - **Status 2026-10-02 — DEFERRED PAST THE DEMO.** The owner (verbatim): "We are also not going to execute in this

@@ -42,7 +42,7 @@ it is detail.*
   local GPU (the 3090) — **built, never run; the 3090 checked
   (2026-10-02, all passed), then paused by the owner (2026-10-03) until
   the owner is home again** ([discussion 2026-10-02]
-  local-gpu-deployment-plan §9).
+  local-gpu-deployment-plan §9; Task 11, with the client on Linux).
 - **The engine and the looks** — Task 6 done 2026-09-28 (the fork's
   `tz-0.2`, "Done in this arc"); the looks the same night — a chooser at
   `/show`, `old-radio` and `amateur-radio-transmitter` with a live gauge
@@ -424,7 +424,12 @@ the agent keeps this current. These carry across arcs.*
   this: Add a task for preparing the talk itself"). The slides and the
   talk's script for the Austin Python Meetup (October 2026) — the
   content is the owner's; the agent helps with material, figures and
-  checks. What to highlight is already listed: the four goals and where
+  checks. **Under way (2026-10-03):** the slides in Quarto, the source in
+  a `talk/` folder of this repository, published on GitHub Pages; the
+  show live with Task 7's video as the fallback; the owner's structure
+  (intro, tech overview, the app demo, a tech deep dive, built with an
+  AI pair, future work; about 33 minutes plus questions)
+  ([discussion 2026-10-03] the-talk). What to highlight is already listed: the four goals and where
   each stands ([discussion 2026-09-30] demo-goals §1, §3) and the pool of
   creative goals the owner marked as "current features we can highlight
   in the talk" (§6: behind the curtain — the director, the grammar, the
@@ -465,6 +470,27 @@ the agent keeps this current. These carry across arcs.*
   3. [~] **Credits for the talk** — moved into Task 9 (one line on the
      last slide, a link to the fork's `Sounds/bed/CREDITS.md`). The owner:
      "yes, close 10.3 into Task 9".
+- [ ] **Task 11 — Goal 4, the 3090** (the demo's goal 4: automated
+  deployment to a local GPU; a task group of its own, the owner,
+  2026-10-03). Two parts, both on the owner's Linux desktop with the
+  RTX 3090:
+  1. [ ] **The deploy** — **paused 2026-10-03 until the owner is home
+     again**; the 3090's checks all passed, sudo by keyboard (`-K`)
+     decided; resumes with the decisions D1-D5, then the plan's §6 from
+     step 2 ([discussion 2026-10-02] local-gpu-deployment-plan §9).
+  2. [ ] **The client on Linux** — **first, a manual client install on
+     the 3090, every step written down; then decide whether a `make
+     client-linux` (an Ansible playbook that installs the app and then
+     prints the manual steps left, ready to copy and paste) is wise.**
+     The owner (verbatim, 2026-10-03): "Add a Task featured prominently
+     in the TODO near (or inside the Task group for the 3090) to
+     evaluate if the `client-linux` route is wise, or in any case, to
+     exercise a manual client install in the 3090 and see how it all
+     works together." What differs from the Mac: the starter voices
+     (`say`) and the voice tools (`afconvert`) are macOS only. On the
+     3090 the client and the GPU stack share one machine: no tunnel, the
+     client's `localhost` ports are the services' own
+     ([discussion 2026-10-03] client-os-support §4).
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes

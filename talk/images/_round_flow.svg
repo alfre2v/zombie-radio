@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 20 1600 640" width="100%" style="font-family: 'Open Sans', Helvetica, Arial, sans-serif" role="img" aria-label="One round of the show, end to end">
+<defs>
+<marker id="tip" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#b8b8b8"/>
+</marker>
+</defs>
+<rect x="40" y="40" width="340" height="128" rx="12" fill="#ff8c1a" fill-opacity="0.10" stroke="#ff8c1a" stroke-width="2.5"/>
+<circle cx="70" cy="72" r="17" fill="#ff8c1a"/>
+<text x="70" y="79" fill="#111" font-size="20" font-weight="700" text-anchor="middle">1</text>
+<text x="98" y="80" fill="#eeeeee" font-size="22" font-weight="700">The page asks</text>
+<text x="58" y="118" fill="#b8b8b8" font-size="17">for the next round:</text>
+<text x="58" y="142" fill="#b8b8b8" font-size="17">the browser is the clock</text>
+<rect x="430" y="40" width="340" height="128" rx="12" fill="#8fd14f" fill-opacity="0.10" stroke="#8fd14f" stroke-width="2.5"/>
+<circle cx="460" cy="72" r="17" fill="#8fd14f"/>
+<text x="460" y="79" fill="#111" font-size="20" font-weight="700" text-anchor="middle">2</text>
+<text x="488" y="80" fill="#eeeeee" font-size="22" font-weight="700">The director plans</text>
+<text x="448" y="118" fill="#b8b8b8" font-size="17">mode, speakers, moods,</text>
+<text x="448" y="142" fill="#b8b8b8" font-size="17">line budget — plain Python</text>
+<rect x="820" y="40" width="340" height="128" rx="12" fill="#8fd14f" fill-opacity="0.10" stroke="#8fd14f" stroke-width="2.5"/>
+<circle cx="850" cy="72" r="17" fill="#8fd14f"/>
+<text x="850" y="79" fill="#111" font-size="20" font-weight="700" text-anchor="middle">3</text>
+<text x="878" y="80" fill="#eeeeee" font-size="22" font-weight="700">Prompt + grammar</text>
+<text x="838" y="118" fill="#b8b8b8" font-size="17">the script so far, the</text>
+<text x="838" y="142" fill="#b8b8b8" font-size="17">instruction, a GBNF grammar</text>
+<rect x="1210" y="40" width="340" height="128" rx="12" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="2.5"/>
+<circle cx="1240" cy="72" r="17" fill="#b48cff"/>
+<text x="1240" y="79" fill="#111" font-size="20" font-weight="700" text-anchor="middle">4</text>
+<text x="1268" y="80" fill="#eeeeee" font-size="22" font-weight="700">llama.cpp writes</text>
+<text x="1228" y="118" fill="#b8b8b8" font-size="17">Nemotron Nano 9B v2,</text>
+<text x="1228" y="142" fill="#b8b8b8" font-size="17">streamed token by token</text>
+<rect x="1210" y="250" width="340" height="128" rx="12" fill="#8fd14f" fill-opacity="0.10" stroke="#8fd14f" stroke-width="2.5"/>
+<circle cx="1240" cy="282" r="17" fill="#8fd14f"/>
+<text x="1240" y="289" fill="#111" font-size="20" font-weight="700" text-anchor="middle">5</text>
+<text x="1268" y="290" fill="#eeeeee" font-size="22" font-weight="700">The parser cuts lines</text>
+<text x="1228" y="328" fill="#b8b8b8" font-size="17">line by line to the page,</text>
+<text x="1228" y="352" fill="#b8b8b8" font-size="17">as server-sent events</text>
+<rect x="820" y="250" width="340" height="128" rx="12" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="2.5"/>
+<circle cx="850" cy="282" r="17" fill="#b48cff"/>
+<text x="850" y="289" fill="#111" font-size="20" font-weight="700" text-anchor="middle">6</text>
+<text x="878" y="290" fill="#eeeeee" font-size="22" font-weight="700">tts-serve speaks</text>
+<text x="838" y="328" fill="#b8b8b8" font-size="17">each line, with the clip</text>
+<text x="838" y="352" fill="#b8b8b8" font-size="17">of the line&#x27;s mood</text>
+<rect x="430" y="250" width="340" height="128" rx="12" fill="#ff8c1a" fill-opacity="0.10" stroke="#ff8c1a" stroke-width="2.5"/>
+<circle cx="460" cy="282" r="17" fill="#ff8c1a"/>
+<text x="460" y="289" fill="#111" font-size="20" font-weight="700" text-anchor="middle">7</text>
+<text x="488" y="290" fill="#eeeeee" font-size="22" font-weight="700">The page plays it</text>
+<text x="448" y="328" fill="#b8b8b8" font-size="17">the static bed under it;</text>
+<text x="448" y="352" fill="#b8b8b8" font-size="17">then asks again</text>
+<text x="210.0" y="308" fill="#eeeeee" font-size="22" font-weight="700" text-anchor="middle">next round</text>
+<text x="210.0" y="336" fill="#b8b8b8" font-size="17" text-anchor="middle">back to 1, until Stop</text>
+<line x1="384" y1="104.0" x2="424" y2="104.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"/>
+<line x1="774" y1="104.0" x2="814" y2="104.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"/>
+<line x1="1164" y1="104.0" x2="1204" y2="104.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"/>
+<line x1="1380.0" y1="172" x2="1380.0" y2="244" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"/>
+<line x1="1206" y1="314.0" x2="1166" y2="314.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"/>
+<line x1="816" y1="314.0" x2="776" y2="314.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"/>
+<line x1="426" y1="314.0" x2="386" y2="314.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"/>
+<line x1="210.0" y1="246" x2="210.0" y2="174" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"/>
+<text x="40" y="478" fill="#eeeeee" font-size="22" font-weight="700">When the radio listens:</text>
+<rect x="430" y="500" width="340" height="128" rx="12" fill="#ff8c1a" fill-opacity="0.10" stroke="#ff8c1a" stroke-width="2.5"/>
+<circle cx="460" cy="532" r="17" fill="#ff8c1a"/>
+<text x="460" y="539" fill="#111" font-size="20" font-weight="700" text-anchor="middle">A</text>
+<text x="488" y="540" fill="#eeeeee" font-size="22" font-weight="700">Hold Space</text>
+<text x="448" y="578" fill="#b8b8b8" font-size="17">the listener talks;</text>
+<text x="448" y="602" fill="#b8b8b8" font-size="17">the page records</text>
+<rect x="820" y="500" width="340" height="128" rx="12" fill="#b48cff" fill-opacity="0.10" stroke="#b48cff" stroke-width="2.5"/>
+<circle cx="850" cy="532" r="17" fill="#b48cff"/>
+<text x="850" y="539" fill="#111" font-size="20" font-weight="700" text-anchor="middle">B</text>
+<text x="878" y="540" fill="#eeeeee" font-size="22" font-weight="700">Whisper</text>
+<text x="838" y="578" fill="#b8b8b8" font-size="17">turns the recording</text>
+<text x="838" y="602" fill="#b8b8b8" font-size="17">into words</text>
+<rect x="1210" y="500" width="340" height="128" rx="12" fill="#8fd14f" fill-opacity="0.10" stroke="#8fd14f" stroke-width="2.5"/>
+<circle cx="1240" cy="532" r="17" fill="#8fd14f"/>
+<text x="1240" y="539" fill="#111" font-size="20" font-weight="700" text-anchor="middle">C</text>
+<text x="1268" y="540" fill="#eeeeee" font-size="22" font-weight="700">The director</text>
+<text x="1228" y="578" fill="#b8b8b8" font-size="17">plans the answer:</text>
+<text x="1228" y="602" fill="#b8b8b8" font-size="17">an exchange, or a re-call</text>
+<line x1="774" y1="564.0" x2="814" y2="564.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"/>
+<line x1="1164" y1="564.0" x2="1204" y2="564.0" stroke="#b8b8b8" stroke-width="3" marker-end="url(#tip)"/>
+</svg>

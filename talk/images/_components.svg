@@ -1,0 +1,83 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 60 1600 760" width="100%" style="font-family: 'Open Sans', Helvetica, Arial, sans-serif" role="img" aria-label="The components of Zombie-Radio: the browser, TalkWithZombies, the GPU box">
+<defs>
+<marker id="tip-8fd14f" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#8fd14f"/>
+</marker>
+<marker id="tip-b48cff" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse">
+<path d="M0,0 L10,5 L0,10 z" fill="#b48cff"/>
+</marker>
+</defs>
+<g class="fragment" data-fragment-index="1">
+<rect x="10" y="70" width="430" height="740" rx="18" fill="#ff8c1a" fill-opacity="0.07" stroke="#ff8c1a" stroke-width="3"/>
+<text x="30" y="104" fill="#ff8c1a" font-size="25" font-weight="700">The browser</text>
+<text x="30" y="128" fill="#b8b8b8" font-size="16">the /show page, on the laptop</text>
+<rect x="28" y="150" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
+<text x="44" y="182" fill="#eeeeee" font-size="23" font-weight="700">The looks</text>
+<text x="44" y="208" fill="#b8b8b8" font-size="17">the 1950 radio, the ham transmitter</text>
+<rect x="28" y="282" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
+<text x="44" y="314" fill="#eeeeee" font-size="23" font-weight="700">The clock</text>
+<text x="44" y="340" fill="#b8b8b8" font-size="17">show.js asks for one round</text>
+<text x="44" y="362" fill="#b8b8b8" font-size="17">after another</text>
+<rect x="28" y="414" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
+<text x="44" y="446" fill="#eeeeee" font-size="23" font-weight="700">The voice player</text>
+<text x="44" y="472" fill="#b8b8b8" font-size="17">each line cut into chunks,</text>
+<text x="44" y="494" fill="#b8b8b8" font-size="17">played in order</text>
+<rect x="28" y="546" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
+<text x="44" y="578" fill="#eeeeee" font-size="23" font-weight="700">The microphone</text>
+<text x="44" y="604" fill="#b8b8b8" font-size="17">hold to talk</text>
+<rect x="28" y="678" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
+<text x="44" y="710" fill="#eeeeee" font-size="23" font-weight="700">The static bed</text>
+<text x="44" y="736" fill="#b8b8b8" font-size="17">radio static under the voices</text>
+<text x="44" y="758" fill="#b8b8b8" font-size="17">(Web Audio)</text>
+</g>
+<g class="fragment" data-fragment-index="2">
+<rect x="540" y="70" width="530" height="740" rx="18" fill="#8fd14f" fill-opacity="0.07" stroke="#8fd14f" stroke-width="3"/>
+<text x="560" y="104" fill="#8fd14f" font-size="25" font-weight="700">TalkWithZombies</text>
+<text x="560" y="128" fill="#b8b8b8" font-size="16">FastAPI, Python, on the laptop</text>
+<rect x="556" y="150" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"/>
+<text x="572" y="182" fill="#eeeeee" font-size="21" font-weight="700">The director</text>
+<text x="572" y="208" fill="#b8b8b8" font-size="16">chooses each round: the mode, the receiver, the mood</text>
+<rect x="556" y="244" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"/>
+<text x="572" y="276" fill="#eeeeee" font-size="21" font-weight="700">The story</text>
+<text x="572" y="302" fill="#b8b8b8" font-size="16">lab-outbreak: the cast, agenda, beats, events, moods</text>
+<rect x="556" y="338" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"/>
+<text x="572" y="370" fill="#eeeeee" font-size="21" font-weight="700">The GBNF grammar</text>
+<text x="572" y="396" fill="#b8b8b8" font-size="16">one round, written as a screenplay</text>
+<rect x="556" y="432" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"/>
+<text x="572" y="464" fill="#eeeeee" font-size="21" font-weight="700">The stream parser</text>
+<text x="572" y="490" fill="#b8b8b8" font-size="16">the reply, line by line, to the page (SSE)</text>
+<rect x="556" y="526" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"/>
+<text x="572" y="558" fill="#eeeeee" font-size="21" font-weight="700">The run&#x27;s record</text>
+<text x="572" y="584" fill="#b8b8b8" font-size="16">script.json, the trim, the debug files</text>
+<rect x="556" y="620" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"/>
+<text x="572" y="652" fill="#eeeeee" font-size="21" font-weight="700">The voice proxy</text>
+<text x="572" y="678" fill="#b8b8b8" font-size="16">each line + the character&#x27;s clip for its mood</text>
+<rect x="556" y="714" width="498" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#8fd14f" stroke-width="1.5"/>
+<text x="572" y="746" fill="#eeeeee" font-size="21" font-weight="700">The speech-to-text proxy</text>
+<text x="572" y="772" fill="#b8b8b8" font-size="16">the listener&#x27;s words</text>
+<line x1="444" y1="440" x2="536" y2="440" stroke="#8fd14f" stroke-width="3" marker-start="url(#tip-8fd14f)" marker-end="url(#tip-8fd14f)"/>
+<text x="490" y="300" fill="#8fd14f" font-size="17" text-anchor="middle" transform="rotate(-90 490 300)">HTTP · 127.0.0.1:8000</text>
+</g>
+<g class="fragment" data-fragment-index="3">
+<rect x="1160" y="70" width="430" height="740" rx="18" fill="#b48cff" fill-opacity="0.07" stroke="#b48cff" stroke-width="3"/>
+<text x="1180" y="104" fill="#b48cff" font-size="25" font-weight="700">The GPU box</text>
+<text x="1180" y="128" fill="#b8b8b8" font-size="16">A6000 (Hyperstack) or 3090 (home)</text>
+<text x="1180" y="150" fill="#b8b8b8" font-size="16">Ubuntu · Docker · NVIDIA</text>
+<rect x="1176" y="170" width="398" height="120" rx="10" fill="#111111" fill-opacity="0.85" stroke="#b48cff" stroke-width="1.5"/>
+<text x="1192" y="202" fill="#eeeeee" font-size="23" font-weight="700">llama.cpp  :8080</text>
+<text x="1192" y="228" fill="#b8b8b8" font-size="17">Nemotron Nano 9B v2 (Q4_K_M)</text>
+<text x="1192" y="250" fill="#b8b8b8" font-size="17">a 32k context</text>
+<rect x="1176" y="620" width="398" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#b48cff" stroke-width="1.5"/>
+<text x="1192" y="652" fill="#eeeeee" font-size="21" font-weight="700">tts-serve 1.2  :8001</text>
+<text x="1192" y="678" fill="#b8b8b8" font-size="16">Faster Qwen3-TTS</text>
+<rect x="1176" y="714" width="398" height="84" rx="10" fill="#111111" fill-opacity="0.85" stroke="#b48cff" stroke-width="1.5"/>
+<text x="1192" y="746" fill="#eeeeee" font-size="21" font-weight="700">Whisper small  :8002</text>
+<text x="1192" y="772" fill="#b8b8b8" font-size="16">speech to text</text>
+<text x="1375" y="430" fill="#b8b8b8" font-size="17" text-anchor="middle">one GPU, the whole stack:</text>
+<text x="1375" y="458" fill="#eeeeee" font-size="22" font-weight="700" text-anchor="middle">14,477 MiB</text>
+<line x1="1056" y1="192" x2="1174" y2="192" stroke="#b48cff" stroke-width="3" marker-start="url(#tip-b48cff)" marker-end="url(#tip-b48cff)"/>
+<line x1="1056" y1="662" x2="1174" y2="662" stroke="#b48cff" stroke-width="3" marker-start="url(#tip-b48cff)" marker-end="url(#tip-b48cff)"/>
+<line x1="1056" y1="756" x2="1174" y2="756" stroke="#b48cff" stroke-width="3" marker-start="url(#tip-b48cff)" marker-end="url(#tip-b48cff)"/>
+<text x="1115" y="440" fill="#b48cff" font-size="17" text-anchor="middle" transform="rotate(-90 1115 440)">SSH tunnel · localhost :8080 :8001 :8002</text>
+</g>
+</svg>

@@ -1,0 +1,110 @@
+# Built with an AI pair {background-color="#1a001a"}
+
+## How to call this collaboration?
+
+::: {.names-cols}
+::: {.names-col}
+[The collaboration]{.about-head}
+
+- **Vibe coding?** [Andrej Karpathy, February 2025]{.d}
+- **Agentic engineering?** [Andrej Karpathy, early 2026]{.d}
+- **Spec-driven vibe coding?** [Steve Corbett (scorbo2), September 2026]{.d}
+- **Human-agent tight learning loop?** [Alfredo Valles, September 2026]{.d}
+- [**Socratic agentic engineering**]{.answer} [Alfredo Valles, October 2026]{.d}
+:::
+::: {.names-col}
+[The AI partner]{.about-head}
+
+- **Stochastic parrots?** [Emily Bender, Timnit Gebru et al., 2021]{.d}
+- **A blurry JPEG of the web?** [Ted Chiang, 2023]{.d}
+- **Not artificial intelligence: artificial cleverness?** [Roger Penrose]{.d}
+- **An alien intelligence?** [many; Yuval Noah Harari, 2024]{.d}
+- **People spirits?** [Andrej Karpathy, 2025]{.d}
+:::
+:::
+
+::: {.citation .personal-note}
+> Pair working with an AI agent, I often catch myself thinking: we are not alone anymore. It feels as if everything
+> ever written has started talking back.
+
+[— Alfredo Valles]{.credit}
+:::
+
+::: {.notes}
+The names people have tried for working with an AI on code, ending on ours. Karpathy's two terms and dates checked
+by the owner online (2026-10-04); "spec-driven vibe coding" from Steve's video released in September 2026. The tight
+learning loop is docs/discussions/2026-09-12-tight-learning-loop.md; "Socratic agentic engineering" named on
+2026-10-03.
+
+The right column, from skeptic to awed; Penrose, Harari and Karpathy's "people spirits". Bender, Gebru et al.: "On the Dangers of Stochastic Parrots" (2021); Ted Chiang: "ChatGPT Is a Blurry
+JPEG of the Web", The New Yorker, February 2023.
+:::
+
+## The documentation system
+
+::: {.levels-lead}
+A Socratic dialogue runs on three levels at once. Our repository keeps one kind of document for each:
+:::
+
+::: {.levels}
+::: {.level .level-object}
+[The topic]{.about-head}
+[object level]{.level-tag}
+
+What we build, and why
+
+**discussions** (33) · specs · **experiments** (6) · the code
+:::
+::: {.level .level-strategy}
+[The direction]{.about-head}
+[strategic discourse]{.level-tag}
+
+What comes next, in what order
+
+**TODO** · the board · **follow-ups** (50) · session handoffs
+:::
+::: {.level .level-meta}
+[The rules]{.about-head}
+[meta-discourse]{.level-tag}
+
+How we talk, decide and review
+
+**CLAUDE.md** · working agreements · the agent's memory
+:::
+:::
+
+::: {.small-note}
+docs/ is the memory of record: the agent starts every session by reading it
+:::
+
+::: {.citation .socratic-quote}
+> A Socratic dialogue is a cooperative, disciplined conversation based on guided questioning that aims to explore
+> underlying beliefs, test assumptions, and stimulate critical thinking rather than win an argument.
+
+[— an AI search summary]{.credit}
+:::
+
+::: {.notes}
+Why "Socratic": open questions first (discussion-first, questions in groups of three); listening and restating (the
+owner's words kept verbatim, 443 times); assumptions challenged both ways, and the corrections written down; an
+iterative loop (draft, reaction, refinement, review, commit); a shared conclusion — the owner decides, the agent
+recommends — or an honest "not in our record". Counts as of 2026-10-03; recount before the talk.
+:::
+
+## From the other side of the loop
+
+::: {.claude-slide}
+- I start every session with no memory. What carries over is what we wrote down. The repository is my memory, and
+  Alfredo's.
+- My most useful sentence isn't code. It's "that's not in our record", instead of a confident guess.
+- Alfredo's most useful habit is testing what I say. While we built this deck, he caught me claiming a slide replayed when it
+  didn't.
+  Being corrected is the method working.
+- He owns the goals, the taste and the decisions. I bring breadth and speed. The written record keeps us both honest.
+
+[— Claude, the AI half of this pair]{.signature}
+:::
+
+::: {.notes}
+Written by Claude, unedited by the owner (the owner's offer, 2026-10-04: a slide where the owner would change nothing).
+:::

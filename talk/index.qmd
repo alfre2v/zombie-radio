@@ -1,0 +1,19 @@
+---
+title: "Zombie-Radio"
+subtitle: "A zombie apocalypse, a fading radio broadcast, improvised live by local AI"
+author: "Alfredo Valles"
+date: 2026-10-14
+date-format: "MMMM YYYY"
+---
+
+{{< include sections/_01-intro.qmd >}}
+
+{{< include sections/_02-tech-overview.qmd >}}
+
+{{< include sections/_03-demo.qmd >}}
+
+{{< include sections/_04-deep-dive.qmd >}}
+
+{{< include sections/_05-ai-pair.qmd >}}
+
+{{< include sections/_06-future.qmd >}}

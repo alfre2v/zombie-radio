@@ -1,0 +1,324 @@
+# Tech deep dive {background-color="#1a1a00"}
+
+::: {.notes}
+About 8 minutes.
+:::
+
+## Behind the curtain: one round
+
+```{=html}
+{{< include images/_round_flow.svg >}}
+```
+
+::: {.notes}
+The browser is the clock: it asks for each round when the last one has played. The director, plain Python, plans the
+round; llama.cpp writes it under a grammar; the parser cuts the stream into lines as they arrive, and each line goes to
+the voice before the next is written. When the radio listens, the listener's words come back through Whisper.
+
+WHY THE BROWSER IS THE CLOCK — decided 2026-09-21 among three placements: (1) the browser as metronome, the server as
+director — adopted; (2) a server-side loop pushing to the page — the upgrade for an unattended booth, nothing in (1)
+blocks it; (3) an external process polling — rejected. The reason: each decision sits where its information is — the
+story on the server, time in the browser, which alone knows when the audio has finished. It reuses the page's
+existing server-sent events, and cost a day less. Its one weakness: the browser tab must stay in the foreground.
+
+THE PAGE'S STATES — idle → generating → playing → listening → idle. Generating: lines stream in and the first ones
+already play while the model writes the rest. Listening is entered only when the audio queues are empty: half-duplex
+by construction, so the microphone never hears the cast and Whisper gets only the listener.
+
+ONE ROUND, IN NUMBERS (measured on the A6000)
+- The gap between rounds: 3.7-4.9 s once warm (6.8 s for a run's first round, the voice cold; 8.4 s after a trim):
+  the model's first line takes 0.76-0.94 s through the app and the tunnel, then the voice synthesizes the first chunk.
+  The static bed rises in that gap, so it never sounds dead.
+- The request: one POST to llama.cpp's /v1/chat/completions, streamed, carrying the whole show so far, the GBNF grammar
+  in a top-level "grammar" field, max_tokens 512, and a seed (the run's seed plus the round's number).
+- The prompt: the cast sheet as the system message — identical every time, so the server reuses its cache and only
+  the new part is read fresh; the system message starts with /no_think, which Nemotron's chat template turns into an
+  empty, closed <think></think> — so the reply, and the grammar, start in the script, not in hidden reasoning.
+- The grammar is applied at sampling: before each token, every token that would break the format is removed. When the
+  model already wants a legal token, nothing changes — same seed, same text: measured cost 0.3-0.5 % per token; about
+  10 % when it has to overrule the model.
+- The voice: each line is cut into chunks of whole sentences (up to about 100 characters) and each chunk is one
+  request to tts-serve, with the speaker's reference clip for the line's mood.
+- Server timings measure the work, not the wait: the app keeps the server's own token counts (prompt read fresh,
+  reused from cache, written) — they size the script for the trim.
+
+NOT BUILT (a follow-up): prefetching round N+1 while round N plays, which would hide the gap.
+:::
+
+## The director, in plain Python {.smaller .director}
+
+```{.python code-line-numbers="|4"}
+def plan_round(run: Run, story: Story, show: ShowConfig, played_s: float = 0.0,
+               transcript: Optional[str] = None) -> RoundPlan:
+    n = len(run.rounds) + 1
+    rng = random.Random(f"{run.seed}:{n}")
+    if not run.rounds:
+        return _orientation(run, story, show, rng, sign_on=True)
+    if run.rounds[-1].kind in LISTENS:
+        return _after_listening(run, story, show, (transcript or "").strip(), rng)
+    if run.rounds[-1].kind == "last-exchange":
+        return _breakdown(run, story, show, rng)
+    if _time_to_listen(run, show, played_s, rng):
+        return _repair(run, story, show, rng)
+    ended = _aftermath(run)
+    if ended:
+        return _free(run, story, show, rng, slot="aftermath", words=ended[1], recollects=ended[0])
+    if _orientation_due(run, show):
+        return _orientation(run, story, show, rng, sign_on=False)
+    recalled = _recollection_due(run, show, rng)
+    if recalled:
+        return _free(run, story, show, rng, slot="recollection", words=recalled[1], recollects=recalled[0])
+    return _free(run, story, show, rng)
+```
+
+::: {.small-note}
+`app/show/director.py` — the whole decision ladder of the show
+:::
+
+::: {.notes}
+No agent framework: a ladder of ifs. The highlighted line is why the same seed replays the same show — every round
+draws from a random generator seeded with the run's seed and the round's number.
+
+WHY A DIRECTOR IN CODE (decision record ADR-0003, 2026-09-21; accepted 2026-09-23 after a gate experiment) —
+TalkWithMe made one LLM request per persona, each with its own system prompt, and rewrote the others' lines as
+"[Name]: text" user messages. Field-observed problems: labels leaking into speech, a two-role chat template wearing a
+four-actor play, random followers, nobody owning the story. The new engine: ONE shared context in screenplay form —
+the cast sheet as the system message, then alternating turns: the director's instruction (user) and the script lines
+(assistant) — and ONE streamed request per round for the whole exchange. A director in code owns the story; the
+model only writes lines. Bonus: llama.cpp's prompt cache reuses only an identical prefix, which per-persona prompts
+defeated and one shared context keeps.
+
+WHERE THE DESIGN CAME FROM — the owner's 2024 prototype: the radio "breaks" to cover the listening window; the cast
+broadcast among themselves; when it is fixed, they call out and the mic opens about 10 s; a caller makes them pivot
+to hope, ask for a name, a location, help to escape, supplies; after some exchanges the radio breaks again. Decoded on
+2026-09-26 into two modes, Broadcast and Contact.
+
+THE ROUND KINDS (app/show/director.py, about 800 lines)
+- Broadcast, the receiver off: the sign-on (round 1); orientation repeats every 20 ± 5 free rounds, for listeners
+  just tuning in; free rounds — 2-3 speakers (whoever has been silent longest first), 1-4 lines weighted toward 2-3,
+  holding an event every 2 ± 1 free rounds, the aftermath of a contact, or a recollection of an earlier caller every
+  15 ± 5; the call ("repair") between 60 and 180 s of played audio after the receiver went off.
+- Contact, the receiver on: an exchange when the listener spoke (the addressed character answers first, 2-3 lines,
+  quoting what the voice said, adding one agenda item, ending on a question); a re-call after a silence; the last
+  exchange at the 5 ± 1th answer; then the breakdown; two silences in a row and the receiver is switched off.
+- The page listens after three kinds: the repair (the call), an exchange, a re-call. ("invitation" in the code is a
+  kind from records made before the modes, kept so old runs still load.)
+
+WHAT IT DRAWS FROM — the story's data, not code: lab-outbreak has 289 events, 9 agenda items (the first — who are
+you — opens every contact; the rest at random, never twice in a contact), about 500 tone words, and three overtones
+with their moods: positive (happy, hopeful, excited, relieved), neutral (calm, doubtful, urgent, curious,
+determined), negative (sad, afraid, terrified, angry, exhausted). A free round holds its overtone for 4 ± 1 rounds,
+then drifts to a neighbour; a tone word holds 3 ± 1 rounds.
+
+THE SEED — random.Random(f"{run.seed}:{n}"): one generator per round, seeded with the run's seed and the round's
+number, so a round's choices do not depend on how many random draws earlier rounds made. With show.seed set, the
+same seed gives the same show, word for word, on the same box and build (proven 2026-09-22).
+:::
+
+## A grammar keeps the model in format {.grammar-slide}
+
+The grammar the app sent to llama.cpp for one round:
+
+```{.ebnf}
+root    ::= line{1,3}
+line    ::= speaker " (" emotion "): " text "\n"
+speaker ::= "Daniel" | "Moira" | "Ralph"
+emotion ::= "sad" | "afraid" | "terrified" | "angry" | "exhausted"
+text    ::= [^\n\[\]()]+
+```
+
+[What the model wrote under it:]{.wrote-label}
+
+::: {.model-lines}
+Daniel (exhausted): We’ve lost power to the security cameras. Over.
+
+Moira (afraid): The samples—they’re spreading. Faster than the math says. Over.
+
+Ralph (angry): This isn’t natural. Someone \*made\* this. Over.
+:::
+
+::: {.small-note}
+Round 3 of a run on 2026-10-02: only the round's speakers, only the moods allowed, at most three lines
+:::
+
+::: {.notes}
+GBNF, llama.cpp's grammar format: the model cannot write anything else. A name outside the round, a missing mood, a
+fourth line — impossible, not just discouraged. Real request and real output, from the run's debug files.
+
+GBNF = GGML BNF: Backus-Naur Form in the dialect of GGML, the tensor library under llama.cpp. Sent in the request's
+top-level "grammar" field; llama.cpp applies it in the sampler on every token, streamed or not.
+
+READING THE GRAMMAR ON THE SLIDE
+- root ::= line{1,3} — one to three lines: the round's line budget, a hard bound, not a request.
+- speaker — only the round's speakers; a round may also pin one speaker to the first (or last) line.
+- emotion — only the moods of the round's overtone (here the negative five).
+- text ::= [^\n\[\]()]+ — anything but a line break, a bracket or a parenthesis: no stage directions, no extra
+  lines. The app builds a fresh grammar for every round (app/show/grammar.py, 62 lines).
+
+WHY A SCREENPLAY GRAMMAR, NOT JSON (ADR-0003) — the owner's reason: a JSON format confines the model to the
+distribution of JSON it saw in training. The quality cost of constrained decoding comes from the model conditioning on
+a JSON-looking prefix, not from the mask itself; "Name (mood): words" keeps it inside plain text it knows.
+
+WHAT IT COSTS — MEASURED (experiments of 2026-09-22, the A6000)
+- When the grammar agrees with the model: 0.3 % per token (plain "Name: text", the ADR-0003 gate), and 0.5 % with the
+  emotion field once the prompt teaches it — and the same text, word for word, with or without the grammar.
+- When it must overrule the model: 10.4 % per token (11.27 → 12.44 ms), forcing emotion tags a prompt never asked
+  for. In the first round the model even turned its lines into quoted dialogue, conditioning on its own forced tokens;
+  from round 2, with plain lines to copy, the quotes disappeared.
+- Taught by the prompt, with no grammar at all, 40 of 40 lines carried a legal tag: the grammar is insurance.
+- Variety: 8 of the 9 emotions used in every arm, no collapse onto one; taught, the model never once picked "happy" in
+  a zombie outbreak.
+
+THE RULE THAT CAME OUT OF IT — every constraint the grammar enforces is also said in the instruction, in the same
+words each time ("Moira speaks first, then Daniel or Ralph", "the next three lines", "each with the emotion in its
+voice, one of: …"). A grammar that contradicts its prompt changes the model's style and costs more; one that agrees
+changes no word. Asked for up to four lines, the model writes four.
+
+READ THE CHAT TEMPLATE FIRST — the grammar constrains only what the model generates, which starts where the template
+leaves off. Nemotron's template ends with an empty, closed <think></think> after /no_think, and with an open <think>
+without it: a grammar starting with "Name" would then force the script into the model's private reasoning.
+:::
+
+## The 32k context, and the trim
+
+```{=html}
+{{< include images/_trim_chart.svg >}}
+```
+
+::: {.small-note}
+A 270-round show, 2026-10-01: rounds cut from the middle (the first 2 and last 4 kept), and the show goes on
+:::
+
+::: {.notes}
+Budget 34,000 tokens; the trim fires at 90 % (30,600) and cuts down to 50 % (17,000). It landed at 16,608 and 16,722.
+A flaw found that day: the trim used to over-cut, more with every trim; fixed and measured — now it lands within one
+round of its target.
+
+THE PROBLEM — the show is one growing script: every round the model reads all of it (the cast sheet, every kept
+round's instruction and reply, the new instruction). It must fit llama.cpp's context: 16,384 tokens until 2026-10-01,
+32,768 since. The trim keeps it inside by removing whole rounds from the middle.
+
+HOW THE APP COUNTS — it does not count tokens itself: it keeps the model server's own count from each round's last
+streamed chunk — prompt_n (read fresh), cache_n (reused from the cache), predicted_n (written). Their sum is the
+script's size. Example, round 113 of a drive: 203 fresh + 27,653 cached + 50 written = 27,906. Each round records its
+share (what it added); the largest seen in 1,824 rounds: 741 tokens (an exchange).
+
+THE TRIM, STEP BY STEP — before each round that asks the model: below 30,600, nothing. At or above it, the rounds
+still read become candidates except the first 2 and the last 4; the middle one is cut, then outwards, each taking its
+share off, until the estimate reaches 17,000. Cut rounds stay in the record; the model just stops reading them. The
+next round's server count is the truth, so an error never adds up.
+
+THE PAUSE AFTER A TRIM — llama.cpp's cache holds only an unbroken start of the prompt; cutting the middle means the
+rest is read fresh: about 8.4 s at 32k (13,922 tokens re-read), once every 100 rounds or more. At 16k with a 14,000
+budget: every 22-36 rounds, about 5 s each. With 32k: trims 3-4 times rarer, about 60 % longer, and the model keeps
+about 2.2 times as much of the show.
+
+WHY 34,000 IF THE CONTEXT IS 32,768 — the trim fires at 90 % of the budget, so the budget may exceed the context as
+long as 90 % of it plus room for the next instruction (1,000) and the reply (512) fits: 30,600 + 1,000 + 512 = 32,112
+≤ 32,768. When a run opens, the app asks llama.cpp its real context (GET /props) and refuses the run with the
+arithmetic if it does not fit (tested with a budget of 40,000: refused). The owner (2026-09-28): "I want to keep as
+much context as possible".
+
+THE MEMORY — llama.cpp reserves the context when it starts: going from 16k to 32k cost 206 MiB at once, then 76 MiB on
+first use, then nothing more, flat through a full context and a trim (a hybrid model: only 4 attention layers).
+
+THE FLAW, FOUND AND FIXED (2026-10-01, evening) — the round after the first trim had a negative share (−2,837): the
+trim had removed more than it estimated. The cause: the call (the Repair) asks the model nothing, so the server reports
+no size after it, and two rounds per call had no recorded weight — about 600-850 tokens uncounted per call in the cut
+stretch. The error was not constant (the owner's doubt was right): it grew with the calls removed, and compounded,
+because a negative share made the next trim cut more. The owner's idea: trigger the trim only in the right round. The
+fix: a round after a Repair counts from the last size the server reported, and the trim fires only before a round
+that asks the model. Measured with a small budget (8,000) to get many trims: before, the estimate was off by 641 to
+4,218 tokens and landed 17-45 % low; after, off by 1 to 3 tokens on every trim, landing within one round of its
+target. The owner: "it makes the show forget more lines that we intended" — now it forgets what it intends, and no
+more.
+:::
+
+## One command to a GPU {.smaller .gpu-slide}
+
+```bash
+make ans-deploy ENV=cloud
+```
+
+::: {.columns}
+::: {.column width="50%"}
+Four roles, each for its own machines:
+
+- **base**: checks Ubuntu, Docker, the NVIDIA toolkit and driver (never installs them)
+- **llama**: llama.cpp in a pinned container, the model from Hugging Face
+- **tts_engine**: tts-serve 1.2 as a system service
+- **stt_engine**: Whisper in a container
+:::
+::: {.column width="50%"}
+::: {.stats .one .compact}
+::: {.stat}
+[7 minutes]{.n}<br>from a fresh VM to the stack running
+:::
+::: {.stat}
+[changed=0]{.n}<br>a second run changes nothing
+:::
+::: {.stat}
+[~$0.50 an hour]{.n}<br>an RTX A6000, 48 GB, on Hyperstack
+:::
+:::
+:::
+:::
+
+::: {.notes}
+From zero in 7 minutes (ok=33 changed=16); the re-run reports changed=0 in 30 seconds. Before touching anything, the
+playbook checks it is aimed at the right environment and that no placeholder is left. The price: $0.50-0.59 an hour,
+from our provider survey of 2026-09-13 — check today's price before the talk.
+
+WHY IT MATTERS — the owner's framing (2026-09-17): "deployment is 50% of the MVP". The deployment machinery was the
+arc's deliverable #1, built and proven live on 2026-09-18, before the show engine existed.
+
+THE SHAPE — one playbook (site.yml), four roles, about 475 lines of YAML. It starts at "an SSH-able Ubuntu box exists":
+creating the VM stays in the provider's console, so nothing is provider-specific. Inventories per environment (cloud,
+local); addresses live in the repo only as a REPLACE_ME placeholder. Roles gate themselves: each applies only on hosts
+in its own inventory group. Privilege: root declared once, at the play level; any task that runs as another user says
+so explicitly.
+
+HOW EACH SERVICE IS SUPERVISED — llama.cpp and Whisper: detached Docker containers with restart unless-stopped, so
+Docker brings them back; tts-serve: a systemd unit, enabled. All three survive SSH disconnects, crashes and reboots
+without an operator (after a reboot: back in under a minute). No tmux anywhere — the owner: a hard no.
+
+PINNED, ON PURPOSE — llama.cpp image build b11096; whisper-fastapi pinned by digest; tts-serve tag 1.2; the CUDA
+generation (cu128) and torch 2.9.1 as project variables. The base role asserts the driver can run that CUDA
+generation — added after a live crash loop on 2026-09-18: a CUDA 13 build on an R570 driver ("driver too old").
+
+REJECTED, AND WHY — docker-compose: a good pattern, but overkill for two containers with short, proven docker run
+commands, no traffic between them, one operator and a 3-day timebox (flip trigger: services with dependencies).
+Terraform / VM provisioning: out of scope for v1.
+
+WHAT A FRESH BOX TAUGHT US (2026-09-22) — a new Ubuntu VM spends its first hour in its own updater (259 packages, 43
+minutes); our deploy hit apt's lock and failed. The fix: a configurable wait for the lock (300 s), announced in the
+task's name, and a plain explanation if it times out. Hence "7 minutes once apt has finished".
+
+THE COST — an RTX A6000, 48 GB, at $0.50-0.59 an hour, Hyperstack (the cheapest suitable GPU in the survey, twice the
+memory floor). A stopped VM keeps billing; only hibernation stops the meter, with a stock lottery on restore.
+:::
+
+## The 3090 at home {.home-slide}
+
+```bash
+make ans-deploy ENV=local
+```
+
+The same playbook, the same three services — on a home PC instead of a rented VM.
+
+::: {.stats}
+::: {.stat}
+[RTX 3090]{.n}<br>24 GB; the stack needs about 14.5
+:::
+::: {.stat}
+[checked]{.n}<br>Ubuntu 22.04, driver R580, Docker with the NVIDIA runtime
+:::
+::: {.stat}
+[deploy]{.n}<br>[status as of 2026-10-03: pending]{.d}
+:::
+:::
+
+::: {.notes}
+Update this slide on the day, wherever goal 4 stands. As of 2026-10-03: the checks passed, the deploy paused while the
+owner was away from home.
+:::

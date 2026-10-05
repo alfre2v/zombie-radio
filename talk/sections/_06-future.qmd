@@ -1,0 +1,125 @@
+# Future work {background-color="#001a1a"}
+
+## What's next
+
+::: {.about-row .next-row}
+::: {.about-block .about-goals}
+[A smarter director]{.about-head}
+
+- **A judge in the loop**: a small model answers the director's questions about what was just said
+- **A caller memory**: each caller's details stored, and recalled when they call back
+- **Episodes**: a story arc, with a recap between episodes
+:::
+::: {.about-block .next-blood}
+[More theatre]{.about-head}
+
+- **A scientist turns**: infected mid-show, the voice changing line by line
+- **The audience writes the news**, from their phones
+- Comic relief and scientific findings as story beats
+:::
+:::
+
+::: {.about-row .next-row}
+::: {.about-block .about-code}
+[Better voices and ears]{.about-head}
+
+- **New voice engines compared**: LuxTTS, F5-TTS
+- Recasting voices
+- **Event sounds**: a layer of their own beside the static
+- **Speaker identification**: recognizing callers by voice (speaker embeddings, cosine similarity)
+:::
+::: {.about-block .about-principles}
+[More places to run]{.about-head}
+
+- **A Mac with Apple Silicon**: llama.cpp on Metal, tts-serve's MLX engine
+- **The client on Linux and Windows**
+:::
+:::
+
+::: {.small-note}
+Ideas and PRs welcome, and improvements are planned to go back upstream to TalkWithMe
+:::
+
+::: {.notes}
+The judge in the loop: a fast small model (about 3B) scores the director's yes/no questions, and code steers the next
+instruction; an experiment first. A caller memory: today the show asks callers their names and restates what earlier callers said, but the model's recall is unreliable; a proper store would keep each caller's details and give them back when they call again. Speaker identification (challenge C3 of the product-definition brainstorm, 2026-09-13, a wishlist item since 2024): a model like ECAPA-TDNN turns a short sample of speech into a speaker embedding, matched against stored ones by cosine similarity, like face recognition. A
+scientist turns: the app re-reads the reference clip on every line, so a recast mid-show is heard on the next line.
+The Mac: the 64 GB M1 could run the whole stack; the 16 GB demo laptop cannot.
+:::
+
+## Thank you
+
+![](images/scientists-goodbye.jpg){.scene .finale .nostretch fig-alt="The cast takes a bow: scientists and zombies hand in hand on a stage, one zombie holding flowers, the audience applauding"}
+
+::: {.thanks-links}
+::: {.about-row}
+::: {.about-card}
+**The code**<br>[github.com/alfre2v/TalkWithZombies](https://github.com/alfre2v/TalkWithZombies)<br>[github.com/alfre2v/zombie-radio](https://github.com/alfre2v/zombie-radio)
+:::
+::: {.about-card}
+**These slides**<br>[alfre2v.github.io/zombie-radio](https://alfre2v.github.io/zombie-radio/)
+:::
+:::
+
+::: {.thanks-contact}
+```{=html}
+{{< include images/_contacts.html >}}
+```
+:::
+:::
+
+::: {.notes}
+The slides' address works once the deck is published to GitHub Pages (quarto publish gh-pages), before the talk.
+:::
+
+## Credits {.credits-slide}
+
+::: {.credits-roll}
+[Credits]{.cr-credits}
+
+[Zombie-Radio]{.cr-title}
+
+[a radio play for four AI voices, by Alfredo Valles]{.cr-by}
+
+[The cast — real voices from the EARS dataset]{.cr-head}
+
+[Daniel]{.cr-role} [speaker p007]{.cr-name}
+[Moira]{.cr-role} [speaker p026]{.cr-name}
+[Ralph]{.cr-role} [speaker p017]{.cr-name}
+[Samantha]{.cr-role} [speaker p063]{.cr-name}
+[EARS: Meta and the University of Hamburg (Interspeech 2024), CC BY-NC 4.0]{.cr-note}
+
+[The radio static — Freesound]{.cr-head}
+
+[CC BY 4.0]{.cr-role} [AlexMurphy53 · -CASK-]{.cr-name}
+[CC BY 3.0]{.cr-role} [kwahmah_02]{.cr-name}
+[CC0, with thanks]{.cr-role} [wwstudioswastaken · exsil · finneganmilla · nlux · NebulousRoyale]{.cr-name}
+[the clips and their licences: github.com/alfre2v/TalkWithZombies/blob/master/Sounds/bed/CREDITS.md]{.cr-note}
+
+[Built on]{.cr-head}
+
+[TalkWithMe and tts-serve]{.cr-role} [Steve Corbett (scorbo2) · No place like localhost]{.cr-name}
+
+[The models and their servers]{.cr-head}
+
+[the words]{.cr-role} [Nemotron Nano 9B v2 (NVIDIA) on llama.cpp (ggml-org)]{.cr-name}
+[the voices]{.cr-role} [Qwen3-TTS (Alibaba's Qwen team), run by faster-qwen3-tts]{.cr-name}
+[the ears]{.cr-role} [Whisper (OpenAI), served by whisper-fastapi (heimoshuiyu)]{.cr-name}
+
+[Pictures and film]{.cr-head}
+
+[1938]{.cr-role} [Welles in the CBS studio (Dallas Dispatch-Journal) · "Help! Men from Mars!" by Les Callan · Wikimedia Commons, public domain]{.cr-name}
+[the old radio]{.cr-role} [Philips Sirius BD 400 A, photo by Bin im Garten, Wikimedia Commons, CC BY-SA 3.0]{.cr-name}
+["Localhosters unite!"]{.cr-role} [video thumbnail, Steve Corbett]{.cr-name}
+["Interview with a Vibe Coder"]{.cr-role} [Roope Rainisto, YouTube]{.cr-name}
+[the citation]{.cr-role} [Wikipedia, "Hustler Magazine v. Falwell", CC BY-SA 4.0]{.cr-name}
+[the generated images]{.cr-role} [Alfredo Valles]{.cr-name}
+
+[Slides made with Quarto and reveal.js]{.cr-note}
+[Every picture's source and licence: talk/images/CREDITS.md in zombie-radio]{.cr-note}
+:::
+
+::: {.notes}
+Rolling credits, like a film's end: the list scrolls by itself while the slide shows. Required by the licences: the
+EARS voices (CC BY-NC), the CC BY static clips, the CC BY-SA photo and citation.
+:::

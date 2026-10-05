@@ -1,0 +1,323 @@
+# Intro {background-color="#1a0000"}
+
+::: {.notes}
+About 5 minutes.
+:::
+
+## Orson Welles, vibe coder
+
+::: {.welles-row}
+::: {.welles-video}
+<iframe data-external="1" referrerpolicy="strict-origin-when-cross-origin" width="600" height="450" data-src="https://www.youtube-nocookie.com/embed/Kl9GO1DUjls"
+title="Interview with a Vibe Coder" frameborder="0" allow="autoplay; encrypted-media; picture-in-picture"
+allowfullscreen></iframe>
+
+[“Interview with a Vibe Coder” by Roope Rainisto, on YouTube]{.credit}
+:::
+::: {.welles-photos}
+![](images/war-of-the-worlds-1938.jpg){.nostretch fig-alt="Orson Welles at the CBS microphone, and a 1938 editorial cartoon: Help! Men from Mars!"}
+
+::: {.credit .centered}
+Wikimedia Commons, public domain
+:::
+:::
+:::
+
+::: {.notes}
+The opening joke. The clip plays from YouTube, so it needs the venue's internet; if the network is down, skip it.
+Link: https://www.youtube.com/watch?v=Kl9GO1DUjls
+:::
+
+## Who I am
+
+::: {.bio-layout}
+::: {.bio}
+[Alfredo Valles]{.bio-name}
+
+- **Senior backend engineer**, 20+ years: Python, APIs, ML/AI in production
+- **Europe**: Zalando, Telefónica Digital · **USA**: DataRobot, Rackspace
+- **Nuclear physicist**: neural networks for biology (peptide–HLA binding), ML before it was cool
+- Loves **Python, Linux and open source**; now building with **local LLMs**
+:::
+::: {.bio-photo}
+![](images/alfredo-atx.jpg){.nostretch fig-alt="Alfredo in a kayak on Lady Bird Lake, downtown Austin behind, wearing a Zombie Hunters cap"}
+:::
+:::
+
+::: {.thanks-contact .bio-contact}
+```{=html}
+{{< include images/_contacts.html >}}
+```
+:::
+
+::: {.notes}
+The meetup page's bio: Alfredo Valles is a senior backend engineer with more than 20 years of experience building
+scalable systems, APIs and ML-powered services in Python, for companies in Europe (Zalando, Telefónica Digital) and the
+United States (DataRobot, Rackspace). He trained as a nuclear physicist, and in research he applied neural networks to
+biological problems, such as predicting peptide–HLA binding: machine learning before it was cool. He loves Python,
+Linux and open source. These days he builds with open large language models that he runs himself.
+
+Peptide–HLA binding, aloud: which pieces of a virus the immune system can see.
+:::
+
+## How this project came to be
+
+```{=html}
+{{< include images/_timeline.svg >}}
+```
+
+::: {.small-note}
+33 discussion docs · 6 experiments and 7 tools developed to answer discussion questions
+:::
+
+::: {.notes}
+October 2024: the first version, zombie_radio_ai, made by hand in a couple of days for a hackathon, no AI assistant —
+they were not good enough then. Many of the show's ideas come from it. Then TalkWithMe, the app we built on (its first
+version written by an AI, Qwen), and four weeks of zombie-radio: the docs first, then the fork, and a release every
+day or two. The numbers were counted on 2026-10-03 (recount before the talk); the 7 tools: fetch EARS, screen the
+voices, cast the voices, fetch from Freesound, prepare the static bed, drive a show, replay a voice chunk.
+:::
+
+## A Halloween broadcast {.smaller .boxed-columns}
+
+::: {.columns}
+::: {.column width="50%"}
+### October 30, 1938
+
+The eve of Halloween. Orson Welles and the Mercury Theatre on the Air broadcast *The War of the Worlds* on CBS radio:
+a Martian invasion, told as breaking news.
+
+::: {.centered .video-1938}
+<iframe data-external="1" referrerpolicy="strict-origin-when-cross-origin" width="432" height="243" data-src="https://www.youtube-nocookie.com/embed/Xs0K4ApWl4g?start=1200"
+title="Orson Welles - War Of The Worlds - Radio Broadcast 1938 - Complete Broadcast." frameborder="0"
+allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen></iframe>
+:::
+
+::: {.credit .centered}
+“War Of The Worlds — Radio Broadcast 1938 — Complete Broadcast”, uploaded by David Webb, on YouTube
+:::
+:::
+::: {.column width="50%"}
+### October 2026
+
+Zombie-Radio borrows the frame: an emergency broadcast already in progress, scientists trapped in a lab, a failing
+shortwave radio — that sometimes listens.
+
+![](images/old-radio-look.jpg){.col-img fig-alt="The show's old-radio look: a 1950 Philips Sirius radio with the transcript on its speaker cloth"}
+
+::: {.credit .centered}
+Radio photo: Bin im Garten, CC BY-SA 3.0, Wikimedia Commons
+:::
+:::
+:::
+
+::: {.notes}
+The bridge from the clip to the show. Set the atmosphere: fun and fake horror. The 1938 broadcast plays from YouTube
+(the venue's internet), starting at 20:00: https://www.youtube.com/watch?v=Xs0K4ApWl4g&t=1200
+:::
+
+## About this project
+
+::: {.about-block .about-code}
+[Our code: Two open repositories (MIT)]{.about-head}
+
+::: {.about-row}
+::: {.about-card}
+**github.com/alfre2v/TalkWithZombies** — the app: a fork of TalkWithMe adding the show engine (Python director,
+grammar, streaming voice, listener's turn) and an old-radio stage
+:::
+::: {.about-card}
+**github.com/alfre2v/zombie-radio** — the infrastructure and the record: Ansible and Docker for the model servers and
+the laptop, the voice tools, the specs and design discussions
+:::
+:::
+:::
+
+::: {.about-row}
+::: {.about-block .about-principles}
+[Two principles]{.about-head}
+
+1. **Local AI first, cloud-capable**: every model open and self-hosted; the same deploy to a home GPU or a rented one
+2. **Live improvisation**: the drama is improvised at broadcast time, not scripted
+:::
+::: {.about-block .about-goals}
+[Four goals]{.about-head}
+
+1. Story coherence and improvisation
+2. Emotional voices, in sync with the story
+3. One-command deploy to a cloud GPU
+4. Same deploy, for local GPU
+:::
+:::
+
+::: {.notes}
+The owner's full wording.
+
+The code — two open repositories (MIT License):
+
+github.com/alfre2v/TalkWithZombies — the app: a fork of the open-source TalkWithMe that adds the show engine (the
+Python director, the grammar, the streaming voice, the listener's turn) and the browser stage, styled as an old radio
+set.
+
+github.com/alfre2v/zombie-radio — the infrastructure and the record: Ansible and Docker playbooks that stand up the
+three model servers on a GPU and install the app on a laptop, the tools that cast the voices, and the specs and design
+discussions from the whole build.
+
+Two principles: 1. Local AI first, cloud-capable — every show-time model (dialogue LLM, text-to-speech, speech
+recognition) is open and self-hosted; the backend deploys identically to a home Linux GPU box or a rented cloud GPU
+instance. 2. Theatrical live improvisation with LLMs — the drama is improvised at broadcast time, not scripted.
+
+Goals: 1. Story coherence and improvisation — the LLM improvises a credible human interaction. 2. Emotional voices
+support narration — real voices with emotion, in sync with story. 3. Automated deployment to cloud GPU — easy install
+AI components to a cloud VM (CUDA GPU + Docker). 4. Automated deployment to local GPU — same easy install to local PC
+(CUDA GPU + Docker).
+:::
+
+## Local AI only
+
+::: {.built-on}
+Open models, on one GPU we deploy ourselves. No AI API, no keys.
+:::
+
+::: {.stats .compact}
+::: {.stat}
+[the words]{.n}<br>Nemotron Nano 9B v2 [· NVIDIA]{.d}
+:::
+::: {.stat}
+[the voices]{.n}<br>Qwen3-TTS [· Alibaba's Qwen team]{.d}
+:::
+::: {.stat}
+[the ears]{.n}<br>Whisper [· OpenAI, open source]{.d}
+:::
+:::
+
+::: {.built-on}
+Uses two open-source projects by **Steve Corbett** (scorbo2), MIT-licensed:
+:::
+
+::: {.stats .two}
+::: {.stat .project}
+[TalkWithMe]{.n}<br>configurable AI chat with voices in and out<br>[github.com/scorbo2/TalkWithMe]{.d}
+:::
+::: {.stat .project}
+[tts-serve]{.n}<br>one server in front of many voice engines<br>[github.com/scorbo2/tts-serve]{.d}
+:::
+:::
+
+::: {.channel}
+::: {.channel-text}
+Steve's YouTube channel, a beacon for the local-AI-first community — pay it a visit:
+
+**No place like localhost**
+
+[youtube.com/@NoPlaceLikeLocalhost](https://www.youtube.com/@NoPlaceLikeLocalhost)
+:::
+::: {.channel-video}
+![](images/localhosters-unite.jpg){fig-alt="Steve Corbett, arms wide open, in his video Localhosters unite!"}
+
+[“Localhosters unite!”]{.d}
+:::
+:::
+
+::: {.notes}
+THE THREE MODELS — all on one rented RTX A6000 (48 GB): 14,477 MiB in use at a 32k context, flat through a full show
+(measured 2026-10-01; at 16k: 14,195). Fits the 3090's 24 GB; a 16 GB card is a wish, not a target.
+
+THE WORDS — NVIDIA Nemotron Nano 9B v2 (August 2025). 9 billion parameters; a hybrid architecture: mostly Mamba-2
+(state-space) layers and only 4 attention layers, so its memory per token of context is small (about 16 KB, against
+32-64 KB for the transformer models we compared): the 32k context costs about 0.5 GB of KV cache (calculated). Context
+supported: 128K; we run 32,768 tokens, one slot. Quantized to Q4_K_M (GGUF by bartowski): the file is 6,223 MiB;
+llama-server holds 7,046 MiB at 32k. Served by llama.cpp (server build b11096, CUDA), every layer on the GPU. A
+reasoning model: the show turns its thinking off (/no_think), and a GBNF grammar forces the screenplay format. Why it
+won our survey (2026-09-14): no refusals on dark fiction out of the box, strong role-play for its size, IFEval 90.3.
+
+THE VOICES — Qwen3-TTS (Alibaba's Qwen team), checkpoint Qwen/Qwen3-TTS-12Hz-1.7B-Base: 1.7 billion parameters, 24 kHz
+audio, ten languages, no watermark. Voice cloning from a reference clip (at least 2 s): each character has one real
+human recording per mood, from the EARS dataset (Meta and the University of Hamburg, CC BY-NC 4.0). Run by
+faster-qwen3-tts (a speed fork using CUDA graphs) behind tts-serve 1.2. 6,530 MiB on the GPU.
+
+THE EARS — OpenAI's Whisper, model "small" (about 244 million parameters; open source), served by whisper-fastapi in a
+container pinned by digest. 888 MiB on the GPU. The app sends the cast's names as Whisper's prompt, so it spells them
+right; a transcript filter decides whether the listener said words or nothing. The only piece from
+OpenAI is the open one.
+
+Steve Corbett's projects: TalkWithMe became our fork, TalkWithZombies; tts-serve is the voice server, untouched.
+:::
+
+## Why not AI APIs (1/3)
+
+::: {.lead}
+The only zombies not allowed in this apocalypse are…
+:::
+
+![](images/ceo-zombies.jpg){.poster .nostretch fig-alt="Satire: four AI companies' CEOs as zombies, reaching for the viewer"}
+
+::: {.lead .centered}
+They *really* want your brain!
+:::
+
+::: {.notes}
+Local AI only: no OpenAI, no Anthropic, no Meta, no xAI.
+:::
+
+## Why not AI APIs (2/3)
+
+::: {.elephant}
+::: {.elephant-pic}
+![](images/ceo-macbook.jpg){.nostretch fig-alt="Satire: a zombie tech CEO hugging a MacBook in a graveyard, an Anthropic tombstone behind"}
+
+[Actually, one zombie CEO got in after all…]{.banner}
+:::
+::: {.elephant-chart}
+![](images/intelligence-index.png){.nostretch fig-alt="The Artificial Analysis Intelligence Index: an open Qwen 27B model at 34, marked Hope"}
+
+::: {.credit .centered}
+Artificial Analysis Intelligence Index (artificialanalysis.ai); "Hope" added by Alfredo
+:::
+:::
+:::
+
+::: {.elephant-why}
+This project was built with [Claude Code]{.claude-orange} [—]{.claude-orange} and yes, this is an [em-dash]{.claude-orange}!
+
+Local models aren't there yet for coding. But they're getting close.
+:::
+
+::: {.notes}
+The elephant in the room: a talk about local AI only, built with Claude. The show runs on open models only; the
+building used a hosted coding agent. The hope: an open model of 27B parameters (Qwen3.8 27B) already scores 34 on the
+Artificial Analysis Intelligence Index — small enough to run at home.
+:::
+
+## Why not AI APIs (3/3)
+
+::: {.lead .smaller-lead}
+An AI provider I pay for, refusing to generate the satirical poster of the CEOs as zombies you saw before, and, after
+I reminded it that satiric representation of public figures is protected free speech in USA, decided to serve me this
+image instead
+:::
+
+::: {.provider-shots}
+![](images/provider-lake.jpg){fig-alt="A calm mountain lake with a wooden pier: what the AI provider generated"}
+
+![](images/provider-reply.jpg){fig-alt="The owner complains; the AI provider apologizes for a bizarre lecture about political satire followed by a picture of a mountain lake"}
+:::
+
+::: {.citation}
+> Hustler Magazine, Inc. v. Falwell, 485 U.S. 46 (1988), is a landmark decision by the Supreme Court of the United
+> States in which the Court held that parodies of public figures, even those intending to cause emotional distress,
+> are protected by the First and Fourteenth Amendments to the U.S. Constitution.
+
+[— Wikipedia, "Hustler Magazine v. Falwell", CC BY-SA 4.0]{.credit}
+:::
+
+::: {.provider-caption}
+**Not your weights, not your AI.**
+:::
+
+::: {.notes}
+A hosted model decides what you may make; a local one does not — the case for local AI first. "Not your weights,
+not your AI": even on a rented GPU, the open weights we run are ours; no provider can refuse a request or swap the
+model. Its apology even
+misnames the request.
+:::
