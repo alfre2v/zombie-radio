@@ -4,11 +4,14 @@
 About 10 minutes.
 :::
 
-## Commands to go on air
+## Commands to go on air {.commands}
 
-```bash
+```{.bash code-line-numbers="7-8,19-20,22-23"}
 # Clone the repository
 git clone https://github.com/alfre2v/zombie-radio && cd zombie-radio
+
+# Install the tooling, Ansible included (once per clone)
+make install && make ans-deps
 
 # Wire AI box IP in Ansible hosts.yml
 make ans-set ENV=cloud IP=<box-address>
@@ -16,8 +19,11 @@ make ans-set ENV=cloud IP=<box-address>
 # Deploy the AI components (run only once)
 make ans-deploy ENV=cloud
 
-# Install client (TalkWithZombies) on laptop
+# Install client (TalkWithZombies) on laptop, with stand-in voices
 make client-mac
+# The real cast: download the EARS human voices, then copy them into the client
+python3 tools/voices/fetch_ears.py --speakers 7,17,26,63 --types 'emo_*_sentences' --fetch
+uv run python tools/voices/cast_voices.py --all-emotions
 
 # Open SSH tunnel to AI box
 make ssh-tunnel ENV=cloud
@@ -29,6 +35,45 @@ cd ~/TalkWithZombies-client && .venv/bin/uvicorn app.main:app --port 8000
 ::: {.notes}
 Everything on this slide is done before the talk, not live: the clone, the wiring, the deploy (once, about 7 minutes
 on a fresh VM), the client's install, the tunnel and the app. On stage, only explain what each line does.
+
+NOT ON THE SLIDE, BUT NEEDED ONCE PER CLONE — make install (the Python tooling, Ansible included, into .venv with uv)
+and make ans-deps (the pinned Ansible collections, kept inside the project). Every make target runs Ansible through
+uv run, so nothing is installed system-wide. make help lists every target.
+
+BEFORE THE FIRST COMMAND, ON HYPERSTACK'S CONSOLE (every new VM) — attach a public IP (a new VM has none), enable SSH
+access (the firewall denies everything by default), optionally enable ICMP so it answers ping. The SSH identity is
+declared once in the inventory: user ubuntu, key ~/.ssh/hyperstack_2026.
+
+LINE BY LINE
+- ans-set ENV=cloud IP=… writes the box's address into deploy/ansible/inventories/cloud/hosts.yml, replacing the
+  REPLACE_ME placeholder; it refuses if the file is already wired. A git hook blocks any commit of a wired file
+  (the never-commit hook): addresses never reach the public repo. make ans-unset ENV=cloud restores the placeholder when the box
+  is gone.
+- ans-deploy ENV=cloud runs site.yml against the box. Idempotent: from zero or from any half-done state, it converges;
+  a healthy box reports changed=0 (in about 30 seconds). The first deploy downloads about 11 GB of models: about 7
+  minutes once apt has finished on a fresh VM, budget 15. Each run is logged on the laptop in
+  ~/.config/zombie-radio/logs/; ANS_VERBOSE=1 adds detail; ANS_ARGS passes extra options (ANS_ARGS=-K asks a sudo
+  password, for a home PC). make ans-check-syntax ENV=cloud parses the playbook without touching a box.
+- client-mac checks it is on a Mac with git, python3, say and afconvert (it installs none), clones the fork at its
+  pinned tag, makes the virtual environment, seeds settings.yaml with the tunnel's ports, and creates four placeholder
+  personas with voices made by macOS's say. A locally modified clone fails loudly instead of being overwritten. The
+  real cast — EARS recordings, one per mood — is two more lines: fetch_ears.py downloads the four speakers' clips
+  (p007 Daniel, p017 Ralph, p026 Moira, p063 Samantha; about 23 emotions each) into zombie-radio-datasets/ears/,
+  outside git, because EARS is CC BY-NC; cast_voices.py then copies them into ~/TalkWithZombies-client/Personas/ as
+  ref.wav and ref-<emotion>.wav, evened out in loudness. Who voices whom: tools/voices/cast.yaml; which recording each
+  mood uses: the story's overtones.yaml (docs/runbooks/cast-voices.md).
+- ssh-tunnel ENV=cloud reads the address from hosts.yml; it stays in the foreground (its own terminal tab; Ctrl-C
+  closes it). One tunnel at a time: the cloud's and the home PC's use the same local ports. Then make check: three ok
+  lines (llama, tts, whisper).
+- The app serves on 127.0.0.1:8000; open http://localhost:8000/show and pick a look.
+
+IF SOMETHING IS OFF
+- After a VM reboot: do nothing — the containers and the voice's service rise by themselves in under a minute; reopen
+  the tunnel and run make check. llama.cpp needs up to about 90 s to load the model after a cold start: wait for
+  "model loaded" in docker logs llama before diagnosing.
+- A fresh, drifted or restored box: make ans-deploy again. Destroying the box and deploying a new one is also fine:
+  one command, about 15 minutes.
+- Status, logs, the GPU, the health checks: docs/runbooks/box-inspection.md.
 :::
 
 ## Live demo {background-color="#000000"}

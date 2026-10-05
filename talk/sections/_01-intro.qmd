@@ -219,9 +219,28 @@ Steve's YouTube channel, a beacon for the local-AI-first community — pay it a 
 :::
 
 ::: {.notes}
-We built on two open-source projects by Steve Corbett: TalkWithMe (the chat app we forked into TalkWithZombies) and
-tts-serve (the voice server). His channel, No place like localhost, is where he builds them in the open — recommend
-it. The only piece from OpenAI is the open one.
+THE THREE MODELS — all on one rented RTX A6000 (48 GB): 14,477 MiB in use at a 32k context, flat through a full show
+(measured 2026-10-01; at 16k: 14,195). Fits the 3090's 24 GB; a 16 GB card is a wish, not a target.
+
+THE WORDS — NVIDIA Nemotron Nano 9B v2 (August 2025). 9 billion parameters; a hybrid architecture: mostly Mamba-2
+(state-space) layers and only 4 attention layers, so its memory per token of context is small (about 16 KB, against
+32-64 KB for the transformer models we compared): the 32k context costs about 0.5 GB of KV cache (calculated). Context
+supported: 128K; we run 32,768 tokens, one slot. Quantized to Q4_K_M (GGUF by bartowski): the file is 6,223 MiB;
+llama-server holds 7,046 MiB at 32k. Served by llama.cpp (server build b11096, CUDA), every layer on the GPU. A
+reasoning model: the show turns its thinking off (/no_think), and a GBNF grammar forces the screenplay format. Why it
+won our survey (2026-09-14): no refusals on dark fiction out of the box, strong role-play for its size, IFEval 90.3.
+
+THE VOICES — Qwen3-TTS (Alibaba's Qwen team), checkpoint Qwen/Qwen3-TTS-12Hz-1.7B-Base: 1.7 billion parameters, 24 kHz
+audio, ten languages, no watermark. Voice cloning from a reference clip (at least 2 s): each character has one real
+human recording per mood, from the EARS dataset (Meta and the University of Hamburg, CC BY-NC 4.0). Run by
+faster-qwen3-tts (a speed fork using CUDA graphs) behind tts-serve 1.2. 6,530 MiB on the GPU.
+
+THE EARS — OpenAI's Whisper, model "small" (about 244 million parameters; open source), served by whisper-fastapi in a
+container pinned by digest. 888 MiB on the GPU. The app sends the cast's names as Whisper's prompt, so it spells them
+right; a transcript filter decides whether the listener said words or nothing. The only piece from
+OpenAI is the open one.
+
+Steve Corbett's projects: TalkWithMe became our fork, TalkWithZombies; tts-serve is the voice server, untouched.
 :::
 
 ## Why not AI APIs (1/3)

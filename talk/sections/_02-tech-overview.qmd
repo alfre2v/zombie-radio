@@ -15,6 +15,39 @@ Two machines and a tunnel. The laptop runs the browser and TalkWithZombies; the 
 Hyperstack for the demo, or a home lab PC with a 3090. One command installs the client, one deploys the AI; during the
 show, an SSH tunnel brings the box's three services to the laptop's localhost. Where things run, not how the playbook
 works (that is the deep dive).
+
+THE LAPTOP — make client-mac (a standalone Ansible playbook that never reads the deployment's inventories): clones
+TalkWithZombies at a pinned tag (today tz-0.6) into ~/TalkWithZombies-client, makes a virtual environment, installs the
+requirements with pip, and seeds settings.yaml pointing at the tunnel's ports. The app is FastAPI (Python 3.10+),
+served on 127.0.0.1:8000. A page on http://localhost counts as a secure context, so the microphone works with no
+certificate, domain or TLS. The demo laptop is an M1 with 16 GB: it runs no model. macOS proven; Linux likely, never
+tried; Windows unknown.
+
+THE DEPLOY — make ans-deploy ENV=cloud: Ansible over SSH from the laptop. It starts from "an SSH-able Ubuntu box
+exists", so nothing is provider-specific. Checks first: the right environment, no placeholder left, Ubuntu, Docker, the
+NVIDIA container toolkit, a driver able to run CUDA 12 — it asserts them, never installs them. Then: llama.cpp in a
+pinned container (build b11096), Whisper in a container pinned by digest, tts-serve 1.2 as a system service. From zero
+in 7 minutes (ok=33 changed=16); the models are about 11 GB to download the first time; a second run reports changed=0
+in 30 seconds. The services start again at every boot, and are bound to the box's loopback.
+
+THE TUNNEL — make ssh-tunnel ENV=cloud: one ssh -N with three forwards (llama :8080, tts :8001, whisper :8002),
+keepalives every 30 s (it gives up after 3 missed), and it fails at once if a port cannot be forwarded. Security: none
+of the services asks for credentials — the SSH key is the whole authentication; the provider's firewall opens only
+port 22; the deployment offers only its own key, accepts a new box's host key on first contact and refuses a changed
+one, in its own known_hosts (~/.config/zombie-radio/). make check asks the three services for their health through
+the tunnel.
+
+THE NETWORK — the laptop sends each line to the voice with the character's reference clip: 590-750 KB per request (WAV,
+base64). On a home connection that is lost in about 0.5 s per request; on a slow venue Wi-Fi it could add a second or
+more (a compressed-clips switch is a follow-up). Round trip from the laptop to Hyperstack's CANADA-1: about 58 ms.
+
+THE BOX — Hyperstack's RTX A6000, 48 GB, about $0.50-0.59 an hour (provider survey, 2026-09-13); Ubuntu images with
+Docker and the NVIDIA toolkit preinstalled. A new VM needs a public IP attached and SSH enabled in the console. A
+stopped VM keeps billing; only hibernation stops it — and restoring needs the same GPU in stock, and no process
+survives (a full service start). The whole stack uses 14,477 MiB of the 48 GB.
+
+THE HOME PC — the same playbook (make ans-deploy ENV=local) to a Linux desktop with an RTX 3090 (24 GB): Ubuntu
+22.04.5, driver R580, Docker with the NVIDIA runtime — the checks passed.
 :::
 
 ## The components
@@ -26,4 +59,37 @@ works (that is the deep dive).
 ::: {.notes}
 The same picture, opened up: the laptop's two parts and the box, the colours the same. A few words on each component.
 Three presses of the arrow key: the browser, then the app, then the GPU box.
+
+GBNF = GGML BNF: Backus-Naur Form, the classic notation for grammars, in the dialect of GGML (the tensor library under
+llama.cpp). llama.cpp uses it to constrain sampling: at each step, tokens the grammar does not allow are masked out.
+
+THE BROWSER — the page is a small state machine (idle, generating, playing, listening) and it is the show's clock: it
+asks for the next round when the voice has drained. Lines arrive as server-sent events while the model writes them.
+The voice player cuts each line into chunks of whole sentences (about 100 characters) and plays them in order, each in
+the speaker's voice and the line's mood. The microphone is held only while the radio listens: a 10 s window, a press
+capped at 30 s. The static bed and the gauge (the magic eye, the oscilloscope) tap the page's audio through Web Audio.
+Keys: Space held to talk, M mutes the static, F flips its AM filter. Looks: the 1950 Philips radio and a ham
+transmitter, both restyling the same page; /show opens a chooser with live miniatures.
+
+THE APP — TalkWithZombies, our fork of TalkWithMe; the show engine is about 1,900 lines of Python (app/show/), with
+1,284 Python tests plus five Node test suites for the page. Three endpoints: /api/show/start (opens a run, picks the
+seed), /api/show/round (plans and streams one round), /api/show/listen (transcribes a press).
+- The model has no memory between requests: every request carries the whole show so far — the cast sheet as the
+  system message (identical each time, so the server's cache serves it), then each round's instruction and the lines
+  the model wrote.
+- The director plans each round in plain Python. Two modes: Broadcast (the receiver is dead; the cast talk, events
+  happen, every 60-180 s of audio the receiver comes back and Samantha calls out) and Contact (the listener speaks; up
+  to 5 ± 1 answers, then the receiver breaks down; two silences and it is switched off).
+- Every round has an emotional overtone (positive, neutral, negative) that picks its moods, its tone word and its
+  event. The story lab-outbreak has 289 events.
+- Fixed lines: what the listener must not miss (an event, the call, the breakdown) is said word for word by a cast
+  member, not written by the model.
+- The grammar allows only the round's speakers, its line count, its moods, and plain text — said in the instruction in
+  the same words, so the model is guided, not fought: a grammar that agrees with its prompt costs 0.3-0.5 % per token.
+- The trim keeps the script inside the 32k context (deep dive). Whisper's likely inventions — empty text, low
+  confidence, known hallucinations — count as silence.
+- Every run is recorded in runs/<id>/script.json; with debug on, every prompt, request, reply and voice chunk is kept.
+  The seed drives every choice and every model request: the same seed replays the same show on the same box and build.
+
+THE BOX — llama.cpp, tts-serve and Whisper; see "Local AI only" and "The machines".
 :::

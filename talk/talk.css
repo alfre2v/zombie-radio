@@ -801,3 +801,39 @@
 .reveal .stats.compact + .built-on {
   margin-top: 1.1em;
 }
+
+.reveal .commands pre {
+  margin-top: 0.2em;
+  position: relative;
+  z-index: 1;
+  background: rgba(14, 14, 14, 0.96);
+}
+
+.reveal .commands pre code {
+  background: transparent;
+}
+
+.reveal .commands pre code {
+  font-size: 0.88em;
+  line-height: 1.25;
+  max-height: none;
+}
+
+.reveal .commands pre.number-lines code > span > a::before,
+.reveal .commands pre.numberSource code > span > a::before {
+  display: none;
+}
+
+.reveal .commands pre.numberSource code {
+  padding-left: 0.6em;
+}
+
+.reveal .commands pre.numberSource {
+  margin-left: 0;
+  padding-left: 0;
+  border-left: none;
+}
+
+.reveal .commands pre.numberSource code > span {
+  left: 0 !important;
+}
