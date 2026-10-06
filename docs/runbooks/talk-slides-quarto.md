@@ -648,8 +648,12 @@ cd talk && quarto publish gh-pages
 
 - It asks for confirmation, renders the deck, copies it into `gh-pages` — adding a `.nojekyll` file, which tells GitHub
   not to reprocess the site with its Jekyll tool — and pushes.
+- As a website, it also adds **`robots.txt`** and **`sitemap.xml`**: together they tell search engines where the deck
+  is (the sitemap lists its one page, `https://alfre2v.github.io/zombie-radio/index.html`). Harmless — the deck is
+  public anyway — but it makes the deck easier to find.
 - Quarto's documentation says it also writes a small **`talk/_publish.yml`** recording where the deck was published (a
-  new file, reviewed and committed like any other). The first publish of 2026-10-05 wrote none.
+  new file, reviewed and committed like any other). Neither publish of 2026-10-05 wrote one — the first as a
+  document, nor the second as a website.
 
 **4. Wait a minute, then check.** GitHub builds the site; the repository's **Actions** tab shows a run named "pages
 build and deployment". When it is green, open `https://alfre2v.github.io/zombie-radio/`. The Welles clip plays there,
@@ -705,8 +709,12 @@ choice that day, over publishing after the talk).
    `images/CREDITS.md` from being rendered as a page of its own and published beside the deck. What else changed: the
    reveal.js files moved from `index_files/libs/` to `site_libs/`, and the render adds a `search.json`, a site search
    index the deck does not use. The slides look the same.
-6. **Then republished** from `main`, once the correction merged, with the plain `cd talk && quarto publish gh-pages` of
-   step 3.
+6. **Then republished** from `main`, once the correction merged (#27), with the plain `cd talk && quarto publish
+   gh-pages` of step 3 — the owner: "merged, republish now". Before it, a fresh render (`talk/_output` emptied first)
+   and the scans of §10.3, with the same result as step 2. Checked on the live site once GitHub had built it: the
+   zombies, the handprint, the spider web, the favicon and `site_libs/` answered 200; the old `index_files/` and
+   `CREDITS.html` were gone (404); a screenshot of "A Halloween broadcast" showed the decorations and the War of the
+   Worlds player.
 
 ## 11. Before the talk
 
