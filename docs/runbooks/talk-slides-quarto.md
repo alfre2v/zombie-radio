@@ -268,7 +268,14 @@ def plan_round(...):
 
 - The language after the backticks (`bash`, `python`, `ebnf`) sets the colouring.
 - `code-line-numbers="|4"` adds a **step**: the block first shows whole, then one press of → highlights line 4 (the
-  director's seeded random generator).
+  director's seeded random generator). **Dropped from the director's slide on 2026-10-05.** The owner noticed the
+  slide needed two presses to move on and looked the same after the first. reveal.js draws the step as a copy of the
+  code laid over the original, every other line dimmed, and the slide's style made the code's background transparent, so
+  the bright original showed through and the highlight was invisible. An opaque background fixed it (tested), but the
+  owner chose to drop the step (verbatim): "the presentation is long enough and I don't even think we will make it to
+  this slide." **The trap, for any future step:** a highlighted code block needs an opaque background on its `code`.
+  A highlight with no step, as on "Commands to go on air" (`code-line-numbers="7-8,19-20,22-23"`), has no copy and no
+  such trap.
 - **An apostrophe in a `bash` block can break the colouring:** the highlighter takes `'` as the start of a quoted
   string, and with no closing quote everything after it turns green. That happened with `<the box's address>`;
   `<box-address>` fixed it.
