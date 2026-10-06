@@ -21,7 +21,7 @@ ANS_VERBOSITY := $(if $(ANS_VERBOSE),-v,)
 SSH_TOFU_OPTS := -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new \
                  -o UserKnownHostsFile=$(ZR_CONF_DIR)/known_hosts
 
-.PHONY: help install ans-deps ans-config ans-lint ans-deploy ans-check-syntax check ssh-tunnel client-mac ans-set ans-unset
+.PHONY: help install ans-deps ans-config ans-lint ans-deploy ans-check-syntax ans-start ans-stop check ssh-tunnel client-mac ans-set ans-unset
 
 help:
 	@echo "Available targets:"
@@ -31,7 +31,9 @@ help:
 	@echo "  ans-lint            lint the deployment (playbook + roles)"
 	@echo "  ans-deploy ENV=x    converge env x's GPU box(es): run site.yml [ANS_ARGS=...]"
 	@echo "                      (runs logged to ~/.config/zombie-radio/logs/; ANS_VERBOSE=1 adds -v)"
-	@echo "  ans-check-syntax ENV=x  hostless syntax parse of site.yml against env x"
+	@echo "  ans-check-syntax ENV=x  hostless syntax parse of site.yml and services.yml against env x"
+	@echo "  ans-start ENV=x     start env x's deployed services and wait for them [ANS_ARGS=...]"
+	@echo "  ans-stop ENV=x      stop env x's services (a deploy or ans-start brings them back)"
 	@echo "  check               health-check all services from the laptop, through the tunnel"
 	@echo "  ans-set ENV=x IP=y  wire env x's hosts.yml to box IP y (replaces the sentinel)"
 	@echo "  ans-unset ENV=x     restore env x's hosts.yml to the committed sentinel"
@@ -76,6 +78,15 @@ ans-check-syntax:
 	$(call require_ansible_env,ans-check-syntax)
 	uv run ansible-playbook -i $(ANSIBLE_DIR)/inventories/$(ENV) \
 	    $(ANSIBLE_DIR)/site.yml --syntax-check
+	uv run ansible-playbook -i $(ANSIBLE_DIR)/inventories/$(ENV) \
+	    $(ANSIBLE_DIR)/services.yml --syntax-check
+
+ans-start ans-stop:
+	$(call require_ansible_env,$@)
+	$(call ensure_control_dirs)
+	ANSIBLE_LOG_PATH="$${ANSIBLE_LOG_PATH:-$(ANS_LOG_DIR)/$(ENV)-$(@:ans-%=%)-$(ANS_LOG_STAMP).log}" \
+	uv run ansible-playbook -i $(ANSIBLE_DIR)/inventories/$(ENV) $(ANSIBLE_DIR)/services.yml \
+	    -e zr_services_state=$(if $(filter ans-start,$@),started,stopped) $(ANS_VERBOSITY) $(ANS_ARGS)
 
 check:
 	@curl -sf http://localhost:8080/health > /dev/null && echo "llama:   ok" || echo "llama:   FAIL"

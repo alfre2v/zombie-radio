@@ -1,0 +1,63 @@
+---
+# Start or stop the deployed services without a deploy.
+# Run: make ans-start ENV=<env> / make ans-stop ENV=<env>
+
+- name: Start or stop the Zombie-Radio services
+  hosts: all
+  become: true
+  gather_facts: false
+
+  vars:
+    zr_services_state: started
+    zr_tts_unit: "tts-{{ zr_tts_engine }}"
+    zr_services_health:
+      - {group: llama, url: "http://{{ zr_bind_host }}:{{ zr_llama_port }}/health"}
+      - {group: tts_engine, url: "http://{{ zr_bind_host }}:{{ zr_tts_port }}/capabilities"}
+      - {group: stt_engine, url: "http://{{ zr_bind_host }}:{{ zr_stt_port }}/docs"}
+
+  pre_tasks:
+    - name: Assert this inventory's environment identity
+      ansible.builtin.import_tasks: tasks/preflight-environment.yml
+
+    - name: Assert no REPLACE_ME sentinel survives into this run
+      ansible.builtin.import_tasks: tasks/preflight-placeholders.yml
+
+    - name: Assert the requested state
+      ansible.builtin.assert:
+        that:
+          - zr_services_state in ['started', 'stopped']
+        quiet: true
+
+  tasks:
+    - name: Start or stop the llama container
+      when: "'llama' in group_names"
+      community.docker.docker_container:
+        name: llama
+        state: "{{ zr_services_state }}"
+
+    - name: Start or stop the whisper container
+      when: "'stt_engine' in group_names"
+      community.docker.docker_container:
+        name: whisper
+        state: "{{ zr_services_state }}"
+
+    - name: Start or stop the tts service
+      when: "'tts_engine' in group_names"
+      ansible.builtin.systemd:
+        name: "{{ zr_tts_unit }}"
+        state: "{{ zr_services_state }}"
+
+    - name: Wait for each started service to answer
+      when:
+        - zr_services_state == 'started'
+        - item.group in group_names
+      ansible.builtin.uri:
+        url: "{{ item.url }}"
+      register: zr_services_probe
+      until: zr_services_probe.status == 200
+      retries: 30
+      delay: 10
+      check_mode: false
+      loop: "{{ zr_services_health }}"
+      loop_control:
+        label: "{{ item.group }}"

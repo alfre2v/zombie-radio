@@ -27,6 +27,10 @@ ansible_ssh_common_args: >-
 
 zr_bind_host: 127.0.0.1
 
+# Whether the three services come back at every boot (the containers' restart
+# policy, the voice unit's enabled). A deploy starts them either way.
+zr_start_at_boot: true
+
 # Seconds the base role's apt task waits for the package lock; a fresh Ubuntu
 # box may be running its first-boot unattended-upgrades (found live 2026-09-22).
 zr_apt_lock_timeout: 300

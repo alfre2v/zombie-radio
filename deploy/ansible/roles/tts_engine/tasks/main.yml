@@ -43,10 +43,10 @@
         mode: "0644"
       notify: Restart the tts service
 
-    - name: Enable and start the tts service
+    - name: Start the tts service, enabled at boot or not
       ansible.builtin.systemd:
         name: "{{ tts_engine_unit }}"
-        enabled: true
+        enabled: "{{ tts_engine_start_at_boot | bool }}"
         state: started
         daemon_reload: true
 

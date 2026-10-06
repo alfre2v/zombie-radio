@@ -11,6 +11,7 @@ stt_engine_port: "{{ zr_stt_port }}"
 stt_engine_image: "{{ zr_stt_image }}"
 stt_engine_model: "{{ zr_stt_model }}"
 stt_engine_cache_dir: "{{ zr_stt_cache_dir }}"
+stt_engine_start_at_boot: "{{ zr_start_at_boot }}"
 
 # Small budget: /docs answers as soon as the server binds — whisper lazy-loads
 # its model at the first STT request, not at start.

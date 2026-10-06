@@ -3,3 +3,4 @@ zr_environment: local
 # The owner's RTX 3090 desktop, with Ansible running on the box itself.
 ansible_user: alfredo
 zr_service_user: alfredo
+zr_start_at_boot: false
