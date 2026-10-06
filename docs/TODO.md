@@ -29,7 +29,7 @@ this arc".
 
 ## Now — where the arc stands
 
-*Updated 2026-10-02. Read this section first; everything below
+*Updated 2026-10-06. Read this section first; everything below
 it is detail.*
 
 - **The demo's four goals** (the owner, 2026-09-30; the README's "What
@@ -39,10 +39,14 @@ it is detail.*
   2026-10-02 — below); 2. emotional voices in support of the
   narration — **met** (2026-09-30, below); 3. automated deployment to a
   cloud GPU — **met** (since 2026-09-18); 4. automated deployment to a
-  local GPU (the 3090) — **built, never run; the 3090 checked
-  (2026-10-02, all passed), then paused by the owner (2026-10-03) until
-  the owner is home again** ([discussion 2026-10-02]
-  local-gpu-deployment-plan §9; Task 11, with the client on Linux).
+  local GPU (the 3090) — **resumed 2026-10-06: the 3090 checked
+  (2026-10-02, all passed); D1, D3 and D4 decided and built on
+  `alfre2v/linux-3090` (two environments, `local` and `lan`; nothing
+  starts at boot; `make ans-start` / `ans-stop`; every download in
+  `~/zombie-radio-data`); deployed the same night with `ENV=local`, a
+  second run at `changed=0`; `lan` from the laptop and a show against
+  the 3090 next** ([discussion 2026-10-02] local-gpu-deployment-plan
+  §10.10; Task 11, with the client on Linux).
 - **The engine and the looks** — Task 6 done 2026-09-28 (the fork's
   `tz-0.2`, "Done in this arc"); the looks the same night — a chooser at
   `/show`, `old-radio` and `amateur-radio-transmitter` with a live gauge
@@ -104,8 +108,8 @@ it is detail.*
   (Task 9) ([discussion 2026-10-01] sound-effects §8.20-§8.23).
 - **Next** — the agent's recommended order (2026-09-30), not yet ruled
   by the owner beyond its first pick (the 32k work, done): goal 4, **the
-  3090** (paused 2026-10-03 until the owner is home; resumes with the
-  plan's decisions D1-D5) → ~~names-only A~~ (deferred past
+  3090** (resumed 2026-10-06, deployed with `ENV=local`; next, `lan`
+  from the laptop and a show — the plan's §10.11) → ~~names-only A~~ (deferred past
   the demo, 2026-10-02) → ~~sound effects~~ (done: the static bed,
   `tz-0.6`) → **Task 10.1, the narrower-filter test** → **Task 7, the
   canned episode** (a MUST: a video of the app working, the owner
@@ -474,10 +478,26 @@ the agent keeps this current. These carry across arcs.*
   deployment to a local GPU; a task group of its own, the owner,
   2026-10-03). Two parts, both on the owner's Linux desktop with the
   RTX 3090:
-  1. [ ] **The deploy** — **paused 2026-10-03 until the owner is home
-     again**; the 3090's checks all passed, sudo by keyboard (`-K`)
-     decided; resumes with the decisions D1-D5, then the plan's §6 from
-     step 2 ([discussion 2026-10-02] local-gpu-deployment-plan §9).
+  1. [ ] **The deploy** — **resumed 2026-10-06** (paused 2026-10-03 to
+     10-05); the 3090's checks all passed, sudo by keyboard (`-K`). On
+     `alfre2v/linux-3090` (built, not yet deployed): D1 — two
+     environments, `local` (Ansible on the 3090) and `lan` (from the
+     laptop, a copy of `cloud`); D3 — user `alfredo`, the key
+     `~/.ssh/zombie_radio_3090`, `make ssh-tunnel` reading the env's
+     overrides; D4 — nothing starts at boot (`zr_start_at_boot`), `make
+     ans-start` / `ans-stop` for every environment; every download in
+     `~/zombie-radio-data`; the Makefile's macOS-only `sed` fixed; the
+     runbook `docs/runbooks/home-gpu-3090.md`. **Deployed 2026-10-06**
+     by the owner with `ENV=local` (about 8½ minutes; three failures on
+     the way, each fixed: a stale apt key, the project's Python picked
+     for the modules, a stale ghcr.io login); a second run at
+     `changed=0`; the stack 12,598 MiB on the 3090
+     ([discussion 2026-10-02] local-gpu-deployment-plan §10.10).
+     **Next:** `lan` from the laptop and a show against the 3090 (the
+     talk's evidence); the reboot test and `ans-start`'s first real run
+     (postponed by the owner). D2 and D5 ruled: the tunnel; goal 4
+     met when a show from the laptop against the 3090 is recorded
+     (§10.12).
   2. [ ] **The client on Linux** — **first, a manual client install on
      the 3090, every step written down; then decide whether a `make
      client-linux` (an Ansible playbook that installs the app and then

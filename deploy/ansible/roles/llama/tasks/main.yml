@@ -16,7 +16,7 @@
         image: "{{ llama_image }}"
         pull: missing
         state: started
-        restart_policy: unless-stopped
+        restart_policy: "{{ 'unless-stopped' if llama_start_at_boot | bool else 'no' }}"
         network_mode: host
         device_requests:
           - driver: nvidia

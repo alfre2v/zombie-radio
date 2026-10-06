@@ -21,7 +21,7 @@ ANS_VERBOSITY := $(if $(ANS_VERBOSE),-v,)
 SSH_TOFU_OPTS := -o IdentitiesOnly=yes -o StrictHostKeyChecking=accept-new \
                  -o UserKnownHostsFile=$(ZR_CONF_DIR)/known_hosts
 
-.PHONY: help install ans-deps ans-config ans-lint ans-deploy ans-check-syntax check ssh-tunnel client-mac ans-set ans-unset
+.PHONY: help install ans-deps ans-config ans-lint ans-deploy ans-check-syntax ans-start ans-stop check ssh-tunnel client-mac ans-set ans-unset
 
 help:
 	@echo "Available targets:"
@@ -31,7 +31,9 @@ help:
 	@echo "  ans-lint            lint the deployment (playbook + roles)"
 	@echo "  ans-deploy ENV=x    converge env x's GPU box(es): run site.yml [ANS_ARGS=...]"
 	@echo "                      (runs logged to ~/.config/zombie-radio/logs/; ANS_VERBOSE=1 adds -v)"
-	@echo "  ans-check-syntax ENV=x  hostless syntax parse of site.yml against env x"
+	@echo "  ans-check-syntax ENV=x  hostless syntax parse of site.yml and services.yml against env x"
+	@echo "  ans-start ENV=x     start env x's deployed services and wait for them [ANS_ARGS=...]"
+	@echo "  ans-stop ENV=x      stop env x's services (a deploy or ans-start brings them back)"
 	@echo "  check               health-check all services from the laptop, through the tunnel"
 	@echo "  ans-set ENV=x IP=y  wire env x's hosts.yml to box IP y (replaces the sentinel)"
 	@echo "  ans-unset ENV=x     restore env x's hosts.yml to the committed sentinel"
@@ -76,6 +78,15 @@ ans-check-syntax:
 	$(call require_ansible_env,ans-check-syntax)
 	uv run ansible-playbook -i $(ANSIBLE_DIR)/inventories/$(ENV) \
 	    $(ANSIBLE_DIR)/site.yml --syntax-check
+	uv run ansible-playbook -i $(ANSIBLE_DIR)/inventories/$(ENV) \
+	    $(ANSIBLE_DIR)/services.yml --syntax-check
+
+ans-start ans-stop:
+	$(call require_ansible_env,$@)
+	$(call ensure_control_dirs)
+	ANSIBLE_LOG_PATH="$${ANSIBLE_LOG_PATH:-$(ANS_LOG_DIR)/$(ENV)-$(@:ans-%=%)-$(ANS_LOG_STAMP).log}" \
+	uv run ansible-playbook -i $(ANSIBLE_DIR)/inventories/$(ENV) $(ANSIBLE_DIR)/services.yml \
+	    -e zr_services_state=$(if $(filter ans-start,$@),started,stopped) $(ANS_VERBOSITY) $(ANS_ARGS)
 
 check:
 	@curl -sf http://localhost:8080/health > /dev/null && echo "llama:   ok" || echo "llama:   FAIL"
@@ -95,7 +106,7 @@ ans-set:
 	    echo "$(ENV) hosts.yml carries no sentinel (ansible_host: $$current) — make ans-unset ENV=$(ENV) first"; \
 	    exit 2; \
 	 fi; \
-	 sed -i '' 's/REPLACE_ME_box_ip/$(IP)/' "$$hosts"; \
+	 sed -i.bak 's/REPLACE_ME_box_ip/$(IP)/' "$$hosts" && rm -f "$$hosts.bak" || exit 2; \
 	 echo "wired: $(ENV) ansible_host -> $(IP)"
 
 ans-unset:
@@ -115,12 +126,13 @@ ssh-tunnel:
 	$(call require_ansible_env,ssh-tunnel)
 	$(call ensure_control_dirs)
 	@host="$$(awk '/ansible_host:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/$(ENV)/hosts.yml")"; \
-	 user="$$(awk '/^ansible_user:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/common_vars.yml")"; \
-	 key="$$(awk -F'"' '/^ansible_ssh_private_key_file:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/common_vars.yml")"; \
+	 vars="$(ANSIBLE_DIR)/inventories/$(ENV)/group_vars/all/99-$(ENV).yml $(ANSIBLE_DIR)/inventories/common_vars.yml"; \
+	 user="$$(awk '/^ansible_user:/ {print $$2; exit}' $$vars)"; \
+	 key="$$(awk -F'"' '/^ansible_ssh_private_key_file:/ {print $$2; exit}' $$vars)"; \
 	 case "$$key" in "~"*) key="$$HOME$${key#\~}";; esac; \
 	 test -n "$$host" || { echo "no ansible_host found in inventories/$(ENV)/hosts.yml"; exit 2; }; \
 	 case "$$host" in REPLACE_ME*) echo "$(ENV) hosts.yml still carries the REPLACE_ME sentinel"; exit 2;; esac; \
-	 test -n "$$key" || { echo "no ansible_ssh_private_key_file found in inventories/common_vars.yml"; exit 2; }; \
+	 test -n "$$key" || { echo "no ansible_ssh_private_key_file found in 99-$(ENV).yml or common_vars.yml"; exit 2; }; \
 	 echo "Tunnel to $$host: llama :8080 / tts :8001 / whisper :8002   (Ctrl-C closes it)"; \
 	 ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
 	     -i "$$key" $(SSH_TOFU_OPTS) \

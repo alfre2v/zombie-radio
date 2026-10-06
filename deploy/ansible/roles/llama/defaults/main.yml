@@ -14,6 +14,7 @@ llama_model_hf: "{{ zr_llama_model_hf }}"
 llama_ctx: "{{ zr_llama_ctx }}"
 llama_ngl: "{{ zr_llama_ngl }}"
 llama_parallel: "{{ zr_llama_parallel }}"
+llama_start_at_boot: "{{ zr_start_at_boot }}"
 
 # Health budget sized for the cold path: first deploy downloads ~6 GB, every
 # start reloads the model (~90 s). Warm restarts pass in the first probes.

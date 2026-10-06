@@ -10,6 +10,15 @@
         group: "{{ tts_engine_service_user }}"
         mode: "0755"
 
+    - name: Ensure the voice's model cache directory exists
+      when: tts_engine_hf_home | length > 0
+      ansible.builtin.file:
+        path: "{{ tts_engine_hf_home }}"
+        state: directory
+        owner: "{{ tts_engine_service_user }}"
+        group: "{{ tts_engine_service_user }}"
+        mode: "0755"
+
     - name: Create the venv (seeded with wheel and setuptools)
       become: true
       become_user: "{{ tts_engine_service_user }}"
@@ -43,10 +52,10 @@
         mode: "0644"
       notify: Restart the tts service
 
-    - name: Enable and start the tts service
+    - name: Start the tts service, enabled at boot or not
       ansible.builtin.systemd:
         name: "{{ tts_engine_unit }}"
-        enabled: true
+        enabled: "{{ tts_engine_start_at_boot | bool }}"
         state: started
         daemon_reload: true
 

@@ -512,14 +512,24 @@ to run the show: `docs/runbooks/show-page.md` (the page) and
 
 ## §7. Deployment and operations
 
-- **Targets:** Linux only; the same Ansible deployment for a home GPU
-  box and a cloud box (`deploy/ansible/`, inventories `local` and
-  `cloud`). One command, `make ans-deploy ENV=<env>`, converges a box
-  that has only SSH, Ubuntu and Docker to the whole model stack; a
-  second run changes nothing. `ANS_ARGS="--check --diff"` shows what a
-  deploy would change without applying it. The box's address is wired
-  with `make ans-set ENV=<env> IP=<address>` and removed with
-  `make ans-unset`.
+- **Targets:** Linux only; the same Ansible deployment for a cloud
+  box and a home GPU box (`deploy/ansible/`), one inventory per
+  environment: `cloud`; `lan`, the home box deployed from the laptop
+  over SSH; `local`, the same box deployed from itself, without SSH
+  (its modules run on the box's system Python, not on the project's
+  `.venv`, which a local run would otherwise pick from the PATH).
+  Ansible runs from macOS or Linux. One command,
+  `make ans-deploy ENV=<env>`, converges a box that has only SSH,
+  Ubuntu and Docker to the whole model stack; a second run changes
+  nothing. On a box already deployed, `ANS_ARGS="--check --diff"` shows
+  what a deploy would change without applying it; on a box never
+  deployed, a dry run stalls at the first health check, because it
+  starts no service. The box's address is wired with
+  `make ans-set ENV=<env> IP=<address>` (for the home box, the SSH
+  alias `zr-3090`, so no address enters the file) and removed with
+  `make ans-unset`. Each environment's `99-<env>.yml` overrides the
+  shared settings (`common_vars.yml`): the user, the SSH key, and the
+  two settings below.
 - **The box:** a pinned provider image with a mature NVIDIA driver
   branch — `R570 CUDA 12.8 with Docker` on Ubuntu 24.04, or
   `Ubuntu Server 22.04 LTS R550 CUDA 12.4 with Docker`. The contract
@@ -536,10 +546,24 @@ to run the show: `docs/runbooks/show-page.md` (the page) and
   container or virtual environment. A fresh box may hold the apt lock
   in Ubuntu's own updater for its first hour; the base role waits up
   to five minutes for it and then says why it stopped.
+- **The home box:** the owner's Linux desktop with an RTX 3090
+  (24 GB), Ubuntu 22.04 and a driver of the R580 branch, also used for
+  other work. Its user's sudo asks for a password, typed at each
+  deploy, start or stop (`ANS_ARGS=-K`). How to operate it:
+  `docs/runbooks/home-gpu-3090.md`.
 - **The services:** containers for llama.cpp and Whisper, a systemd
   unit for tts-serve, all bound to the box's loopback, all pinned
-  (§4). They come back by themselves after a reboot, in under a
-  minute. A box is disposable: destroying it and deploying a new one
+  (§4). Whether they come back after a reboot is one setting,
+  `zr_start_at_boot`: on the cloud box they do, by themselves, in
+  under a minute; on the home box nothing starts at boot. A deploy
+  starts them either way; `make ans-start ENV=<env>` starts them by
+  hand and waits until each answers, `make ans-stop` stops them. Where
+  the downloads go is the other: on the cloud box, under the
+  service user's home (`~/models`, `~/.cache/huggingface`, the voice's
+  environment in `~/faster_qwen3tts`); on the home box, every model and
+  the voice's environment in one folder, `~/zombie-radio-data`
+  (`zr_data_dir`; the voice's checkpoint through `HF_HOME`), apart from
+  the Docker images. A box is disposable: destroying it and deploying a new one
   takes one command and about 7-15 minutes, most of it model
   downloads.
 - **The laptop:** `make client-mac` installs TalkWithZombies at a
@@ -547,8 +571,9 @@ to run the show: `docs/runbooks/show-page.md` (the page) and
   playbook that never reads the deployment inventories
   (`deploy/ansible/client-talkwithme-mac.yml`): the clone, a virtual
   environment, and seeded settings pointing at the tunnel's ports.
-  `make ssh-tunnel ENV=<env>` opens the tunnel; `make check` asks all
-  three services for their health through it.
+  `make ssh-tunnel ENV=<env>` opens the tunnel, as the environment's
+  user and with its key; `make check` asks all three services for
+  their health through it.
 - **Providers:** Hyperstack first (proven), Scaleway as the European
   alternate, Vast.ai for development; the deployment starts at "an
   SSH-able Ubuntu box exists", so nothing in it is specific to a
@@ -690,7 +715,8 @@ What the first release still needs, or has not settled:
   [discussion 2026-10-01] sound-effects (the research, then the static
   bed: its design, its build, the clips chosen by ear).
 - **Deployment:** [discussion 2026-09-17] ansible-deployment-shape;
-  [discussion 2026-09-13] cloud-gpu-provider-survey;
+  [discussion 2026-09-13] cloud-gpu-provider-survey; [discussion
+  2026-10-02] local-gpu-deployment-plan (the home box);
   `deploy/ansible/README.md`.
 - **Measurements:** `docs/experiments/` — the remote-split test
   (2026-09-14), the ADR-0003 gate and the emotion-field cost

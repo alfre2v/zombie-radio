@@ -1,11 +1,9 @@
 ---
-zr_environment: local
-# The owner's RTX 3090 desktop, with Ansible running on the box itself.
+zr_environment: lan
+# The owner's RTX 3090 desktop on the home network, deployed from the laptop.
 ansible_user: alfredo
 zr_service_user: alfredo
-# The box's own Python, as over SSH: a local run inherits make's PATH, where
-# uv puts the project's .venv first (no requests, which the Docker modules need).
-ansible_python_interpreter: /usr/bin/python3
+ansible_ssh_private_key_file: "~/.ssh/zombie_radio_3090"
 zr_start_at_boot: false
 # Every model and the voice's Python environment, in one folder.
 zr_data_dir: "/home/{{ zr_service_user }}/zombie-radio-data"
