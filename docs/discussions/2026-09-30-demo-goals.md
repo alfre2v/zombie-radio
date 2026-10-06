@@ -349,3 +349,10 @@ a third party gateway, as I already explained."
   owner's four goals (§1), names-only A and the canned episode (Task 7) — the
   owner: "I doubt we will have time to execute."
 
+
+## §8. Addendum, 2026-10-06 — goal 4 met
+
+The 3090 deployed from zero by the playbook (`ENV=local`), a second run at `changed=0`, then from the laptop: the same
+box through the `lan` environment at `changed=0`, the SSH tunnel, and a show against the 3090 — the owner: "Yes, very
+good show actually." The owner (verbatim): "goal 4 met, recording into Task 7, small PR now". All four goals' status:
+1 largely met, 2 met, 3 met, 4 met. Details: [discussion 2026-10-02] local-gpu-deployment-plan §10.13.

@@ -39,14 +39,12 @@ it is detail.*
   2026-10-02 — below); 2. emotional voices in support of the
   narration — **met** (2026-09-30, below); 3. automated deployment to a
   cloud GPU — **met** (since 2026-09-18); 4. automated deployment to a
-  local GPU (the 3090) — **resumed 2026-10-06: the 3090 checked
-  (2026-10-02, all passed); D1, D3 and D4 decided and built on
-  `alfre2v/linux-3090` (two environments, `local` and `lan`; nothing
-  starts at boot; `make ans-start` / `ans-stop`; every download in
-  `~/zombie-radio-data`); deployed the same night with `ENV=local`, a
-  second run at `changed=0`; `lan` from the laptop and a show against
-  the 3090 next** ([discussion 2026-10-02] local-gpu-deployment-plan
-  §10.10; Task 11, with the client on Linux).
+  local GPU (the 3090) — **met (2026-10-06):** deployed from zero with
+  `ENV=local`, a second run at `changed=0`, then from the laptop: `lan`
+  at `changed=0`, the tunnel, and a show against the 3090 — the owner:
+  "Yes, very good show actually." (#29; [discussion 2026-10-02]
+  local-gpu-deployment-plan §10.13). Its recording joins Task 7; the
+  client on Linux stays Task 11.2.
 - **The engine and the looks** — Task 6 done 2026-09-28 (the fork's
   `tz-0.2`, "Done in this arc"); the looks the same night — a chooser at
   `/show`, `old-radio` and `amateur-radio-transmitter` with a live gauge
@@ -107,9 +105,8 @@ it is detail.*
   picks done (the one-by-one review), the credits moved into the talk
   (Task 9) ([discussion 2026-10-01] sound-effects §8.20-§8.23).
 - **Next** — the agent's recommended order (2026-09-30), not yet ruled
-  by the owner beyond its first pick (the 32k work, done): goal 4, **the
-  3090** (resumed 2026-10-06, deployed with `ENV=local`; next, `lan`
-  from the laptop and a show — the plan's §10.11) → ~~names-only A~~ (deferred past
+  by the owner beyond its first pick (the 32k work, done): ~~goal 4, the
+  3090~~ (met 2026-10-06, the plan's §10.13) → ~~names-only A~~ (deferred past
   the demo, 2026-10-02) → ~~sound effects~~ (done: the static bed,
   `tz-0.6`) → **Task 10.1, the narrower-filter test** → **Task 7, the
   canned episode** (a MUST: a video of the app working, the owner
@@ -421,6 +418,9 @@ the agent keeps this current. These carry across arcs.*
   recording also captures the browser's sound. If the video is
   published, its description carries the static's credits line (Task
   9). The runbook promotion deferred from the last arc lands here.
+  **Also the recording of a show against the home 3090**, the talk's
+  evidence for goal 4 (the owner, 2026-10-06: "recording into Task 7";
+  [discussion 2026-10-02] local-gpu-deployment-plan §10.13).
   **Before demo day, re-examine** the follow-up "Compressed
   reference clips, switchable on and off" (the owner, 2026-09-30): if
   the venue's uplink is slow, build the switch and turn it on.
@@ -478,9 +478,9 @@ the agent keeps this current. These carry across arcs.*
   deployment to a local GPU; a task group of its own, the owner,
   2026-10-03). Two parts, both on the owner's Linux desktop with the
   RTX 3090:
-  1. [ ] **The deploy** — **resumed 2026-10-06** (paused 2026-10-03 to
-     10-05); the 3090's checks all passed, sudo by keyboard (`-K`). On
-     `alfre2v/linux-3090` (built, not yet deployed): D1 — two
+  1. [x] **The deploy** — **DONE 2026-10-06: goal 4 met** (paused
+     2026-10-03 to 10-05); the 3090's checks all passed, sudo by
+     keyboard (`-K`). Built on `alfre2v/linux-3090` (#29): D1 — two
      environments, `local` (Ansible on the 3090) and `lan` (from the
      laptop, a copy of `cloud`); D3 — user `alfredo`, the key
      `~/.ssh/zombie_radio_3090`, `make ssh-tunnel` reading the env's
@@ -493,11 +493,13 @@ the agent keeps this current. These carry across arcs.*
      for the modules, a stale ghcr.io login); a second run at
      `changed=0`; the stack 12,598 MiB on the 3090
      ([discussion 2026-10-02] local-gpu-deployment-plan §10.10).
-     **Next:** `lan` from the laptop and a show against the 3090 (the
-     talk's evidence); the reboot test and `ans-start`'s first real run
-     (postponed by the owner). D2 and D5 ruled: the tunnel; goal 4
-     met when a show from the laptop against the 3090 is recorded
-     (§10.12).
+     D2 and D5 ruled: the tunnel; proven at home (§10.12). **From the
+     laptop** (the owner, after #29 merged): `lan` at `changed=0` (the
+     owner: "close enough" — not a `lan` deploy from zero), the tunnel
+     and `make check`, a show against the 3090 ("very good show
+     actually"). The owner: "goal 4 met, recording into Task 7, small PR
+     now" (§10.13). **Left, outside goal 4:** the reboot test and
+     `ans-start`'s first real run (postponed by the owner).
   2. [ ] **The client on Linux** — **first, a manual client install on
      the 3090, every step written down; then decide whether a `make
      client-linux` (an Ansible playbook that installs the app and then

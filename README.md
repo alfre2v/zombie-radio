@@ -33,7 +33,7 @@ The talk at the Austin Python Meetup sets out to show four things
    GPU, and Docker with access to that GPU. *(Already demonstrated.)*
 4. **Automated deployment to a local GPU** — the same installation
    works on a local PC running Ubuntu with an RTX 3090 (24 GB) or
-   better.
+   better. *(Demonstrated on the owner's RTX 3090.)*
 
 ## Status
 

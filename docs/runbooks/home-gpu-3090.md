@@ -4,8 +4,10 @@
 reach and remove the model-service stack on the owner's Linux desktop
 (hostname `aorusX570`, an RTX 3090 with 24 GB). **Proven on the 3090
 (2026-10-06):** a deploy from zero with `ENV=local` (about 8½ minutes)
-and a second run at `changed=0`. **Not yet run there:** `lan`, the
-reboot test, `make ans-start` / `ans-stop`, the removal recipe. The
+and a second run at `changed=0`; from the laptop, `lan` at `changed=0`
+(on the box `local` had deployed), the tunnel, and a show. **Not yet
+run there:** a `lan` deploy from zero, the reboot test, `make
+ans-start` / `ans-stop`, the removal recipe. The
 why: [discussion 2026-10-02] local-gpu-deployment-plan §10.*
 
 ## The box, and how it differs from the cloud

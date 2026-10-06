@@ -46,8 +46,9 @@ Docker and the NVIDIA toolkit preinstalled. A new VM needs a public IP attached 
 stopped VM keeps billing; only hibernation stops it — and restoring needs the same GPU in stock, and no process
 survives (a full service start). The whole stack uses 14,477 MiB of the 48 GB.
 
-THE HOME PC — the same playbook (make ans-deploy ENV=local) to a Linux desktop with an RTX 3090 (24 GB): Ubuntu
-22.04.5, driver R580, Docker with the NVIDIA runtime — the checks passed.
+THE HOME PC — the same playbook to a Linux desktop with an RTX 3090 (24 GB): make ans-deploy ENV=lan from the laptop, or
+ENV=local on the PC itself. Ubuntu 22.04.5, driver R580, Docker with the NVIDIA runtime — deployed, and a show run
+from the laptop through the tunnel (goal 4 met).
 :::
 
 ## The components

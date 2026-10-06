@@ -98,3 +98,9 @@ The owner home again; resumed from a Claude session on the 3090. D1 (two environ
 (nothing starts at boot; `make ans-start` / `ans-stop`) decided and built on `alfre2v/linux-3090`, every download in
 `~/zombie-radio-data`; deployed the same night with `ENV=local`, a second run at `changed=0`. Details: [discussion
 2026-10-02] local-gpu-deployment-plan §10.
+
+## §7. Addendum, 2026-10-06 — item 4 (goal 4, the 3090) done
+
+Goal 4 met: from the laptop, `lan` at `changed=0`, the tunnel, a show against the 3090. Its recording joins Task 7 (the
+owner: "goal 4 met, recording into Task 7, small PR now"). Details: [discussion 2026-10-02] local-gpu-deployment-plan
+§10.13.
