@@ -1,0 +1,6 @@
+---
+zr_environment: lan
+# The owner's RTX 3090 desktop on the home network, deployed from the laptop.
+ansible_user: alfredo
+zr_service_user: alfredo
+ansible_ssh_private_key_file: "~/.ssh/zombie_radio_3090"

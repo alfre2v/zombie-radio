@@ -95,7 +95,7 @@ ans-set:
 	    echo "$(ENV) hosts.yml carries no sentinel (ansible_host: $$current) — make ans-unset ENV=$(ENV) first"; \
 	    exit 2; \
 	 fi; \
-	 sed -i '' 's/REPLACE_ME_box_ip/$(IP)/' "$$hosts"; \
+	 sed -i.bak 's/REPLACE_ME_box_ip/$(IP)/' "$$hosts" && rm -f "$$hosts.bak" || exit 2; \
 	 echo "wired: $(ENV) ansible_host -> $(IP)"
 
 ans-unset:
@@ -115,12 +115,13 @@ ssh-tunnel:
 	$(call require_ansible_env,ssh-tunnel)
 	$(call ensure_control_dirs)
 	@host="$$(awk '/ansible_host:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/$(ENV)/hosts.yml")"; \
-	 user="$$(awk '/^ansible_user:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/common_vars.yml")"; \
-	 key="$$(awk -F'"' '/^ansible_ssh_private_key_file:/ {print $$2; exit}' "$(ANSIBLE_DIR)/inventories/common_vars.yml")"; \
+	 vars="$(ANSIBLE_DIR)/inventories/$(ENV)/group_vars/all/99-$(ENV).yml $(ANSIBLE_DIR)/inventories/common_vars.yml"; \
+	 user="$$(awk '/^ansible_user:/ {print $$2; exit}' $$vars)"; \
+	 key="$$(awk -F'"' '/^ansible_ssh_private_key_file:/ {print $$2; exit}' $$vars)"; \
 	 case "$$key" in "~"*) key="$$HOME$${key#\~}";; esac; \
 	 test -n "$$host" || { echo "no ansible_host found in inventories/$(ENV)/hosts.yml"; exit 2; }; \
 	 case "$$host" in REPLACE_ME*) echo "$(ENV) hosts.yml still carries the REPLACE_ME sentinel"; exit 2;; esac; \
-	 test -n "$$key" || { echo "no ansible_ssh_private_key_file found in inventories/common_vars.yml"; exit 2; }; \
+	 test -n "$$key" || { echo "no ansible_ssh_private_key_file found in 99-$(ENV).yml or common_vars.yml"; exit 2; }; \
 	 echo "Tunnel to $$host: llama :8080 / tts :8001 / whisper :8002   (Ctrl-C closes it)"; \
 	 ssh -N -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o ServerAliveCountMax=3 \
 	     -i "$$key" $(SSH_TOFU_OPTS) \
