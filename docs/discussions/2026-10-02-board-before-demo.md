@@ -91,3 +91,10 @@ Kept as follow-ups (`docs/follow-ups.md`); nothing to do before 2026-10-08.
   ok..." **Resumes when the owner is home again**, with the decisions D1-D5. Goal 4 stays a demo goal.
 - **Items 1 and 2 (the filter test, the video)** need a box: the cloud box, woken for them — the 3090 cannot stand in
   while the owner is away from it.
+
+## §6. Addendum, 2026-10-06 — item 4 (goal 4, the 3090) resumed
+
+The owner home again; resumed from a Claude session on the 3090. D1 (two environments, `local` and `lan`), D3 and D4
+(nothing starts at boot; `make ans-start` / `ans-stop`) decided and built on `alfre2v/linux-3090`, every download in
+`~/zombie-radio-data`; deployed the same night with `ENV=local`, a second run at `changed=0`. Details: [discussion
+2026-10-02] local-gpu-deployment-plan §10.

@@ -3,7 +3,9 @@
 *Living, undated (runbooks convention). The quick-scout commands
 for a box the playbook has converged: what runs, is it what we
 expect, where the logs are. Everything here is read-only. SSH in
-as `ubuntu` (or run one-offs via `ssh ubuntu@<ip> '<cmd>'`).*
+as `ubuntu` (or run one-offs via `ssh ubuntu@<ip> '<cmd>'`); on
+the home 3090, as `alfredo` (`ssh zr-3090`), and its downloads
+live under `~/zombie-radio-data` (`runbooks/home-gpu-3090.md`).*
 
 ## Containers (llama, whisper)
 
@@ -18,7 +20,8 @@ config actually landed:
 docker inspect -f '{{.Name}}: restart={{.HostConfig.RestartPolicy.Name}} net={{.HostConfig.NetworkMode}}' llama whisper
 ```
 
-Expect `restart=unless-stopped net=host` on both.
+Expect `restart=unless-stopped net=host` on both; on the 3090,
+`restart=no` (nothing starts at its boot).
 
 ## The tts systemd unit
 
@@ -28,7 +31,7 @@ systemctl is-enabled tts-faster_qwen3tts docker
 ```
 
 Expect `active (running)`, and `enabled` twice (both switches the
-reboot auto-rise depends on). A crash-looping unit shows
+reboot auto-rise depends on); on the 3090, `disabled` for the voice. A crash-looping unit shows
 `activating (auto-restart)` and a rising "restart counter" —
 go straight to its journal.
 
@@ -129,7 +132,8 @@ du -sh ~/models ~/.cache/huggingface
 
 `~/models` = llama's GGUF cache (HF-hub-style blobs, no .gguf
 extension). `~/.cache/huggingface` = TTS checkpoint + whisper
-model, shared tree.
+model, shared tree. On the 3090, all of it sits under
+`~/zombie-radio-data` (`du -sh ~/zombie-radio-data/*`).
 
 ## The converge invariant
 

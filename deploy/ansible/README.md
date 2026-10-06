@@ -7,8 +7,9 @@ loopback-bound behind an SSH tunnel.
 
 Design doctrine and rationale:
 `docs/discussions/2026-09-17-ansible-deployment-shape.md`.
-Operations: `docs/runbooks/service-restart-sequence.md` and
-`docs/runbooks/box-inspection.md`.
+Operations: `docs/runbooks/service-restart-sequence.md`,
+`docs/runbooks/box-inspection.md`, and for the home 3090
+`docs/runbooks/home-gpu-3090.md`.
 
 ## Quick start (from a fresh clone, all via the top-level Makefile)
 
@@ -21,8 +22,8 @@ make ssh-tunnel ENV=cloud   # separate terminal, stays open
 make check        # three ok lines = stack reachable from the laptop
 ```
 
-`make help` lists everything else (`ans-lint`, `ans-check-syntax`,
-`ans-config`).
+`make help` lists everything else (`ans-start`, `ans-stop`,
+`ans-lint`, `ans-check-syntax`, `ans-config`).
 
 ## Layout in one breath
 
@@ -30,8 +31,12 @@ make check        # three ok lines = stack reachable from the laptop
   privilege doctrine: roles assume root; `become_user` marks
   exceptions). Control-node preflights run BEFORE facts: an
   unwired or misdirected run fails having dialed nothing.
-- `inventories/<env>/` — one directory per ENVIRONMENT (cloud,
-  local), never targeted together; shared truth in
+- `services.yml` — starts or stops the deployed services without
+  a deploy (`make ans-start` / `ans-stop`), behind the same
+  preflights.
+- `inventories/<env>/` — one directory per ENVIRONMENT (`cloud`;
+  `lan` and `local`, the home 3090 from the laptop or from
+  itself), never targeted together; shared truth in
   `inventories/common_vars.yml`, symlinked as `00-common.yml`;
   `99-<env>.yml` overrides. Service-shaped groups (`llama`,
   `tts_engine`, `stt_engine`) state the topology.
@@ -75,7 +80,8 @@ prints the liturgy).
   the arc journal, entries 2026-09-18/19.
 - Deploy runs log to `~/.config/zombie-radio/logs/`.
 - SSH: the identity is declared (`ansible_ssh_private_key_file`
-  in common_vars) and is the only key offered; unknown host keys
+  in common_vars, or the env's `99-<env>.yml`) and is the only key
+  offered; unknown host keys
   are accepted automatically on first contact (TOFU — no manual
   `ssh` before deploying), recorded in
   `~/.config/zombie-radio/known_hosts`. Providers recycle IPs: a

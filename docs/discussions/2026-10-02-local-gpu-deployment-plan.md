@@ -6,16 +6,22 @@
 deployment to a local GPU, the owner's 3090): what is already built, what the
 playbook requires and does to a machine, the decisions to make, the facts to
 gather, and an executable plan; meant to guide the task when it opens.
-**Status:** PAUSED (2026-10-03) — scouting done (2026-10-02, evening),
-nothing built; the task not opened yet. **§8 (the same night):** an SSH key
+**Status:** IN PROGRESS (since 2026-10-06; paused 2026-10-03 to 10-05) — scouting done (2026-10-02, evening).
+**§8 (the same night):** an SSH key
 login from the Mac to the 3090 (`ssh zr-3090`, done), the repo cloned there,
 a Claude session there with the Mac's memory copied and a ready prompt
 (§8.4). **§9 (2026-10-02 night to 10-03):** the memory copied and checked,
 **the §5 checks all passed**, sudo by keyboard (`-K`) decided, the owner's
 lean on D4 (no start at boot) estimated; **paused by the owner while away
-from home** (§9.5).
-**Trigger to revisit:** the owner home again — then the decisions (§4),
-then §6 from step 2.
+from home** (§9.5). **§10 (2026-10-06): resumed** from a Claude session on
+the 3090 — D1 (both `local` and a new `lan`), D3 and D4 (nothing at boot;
+`make ans-start` / `ans-stop`) decided and built on `alfre2v/linux-3090`,
+every download in `~/zombie-radio-data`, the Makefile's macOS-only `sed`
+fixed. **§10.10 (the same night): deployed** with `ENV=local` — three
+failures on the way (a stale apt key, Ansible picking the project's
+Python, a stale ghcr.io login), then `changed=16` and a second run at
+`changed=0`; the reboot test postponed.
+**Trigger to revisit:** `lan` from the laptop, or the reboot test (§10.11).
 
 ## §1. Why this document
 
@@ -467,3 +473,213 @@ I am not at home now, so the only way to execute the AI heavy parts would be to 
   box, woken for them (the owner: "which is ok"); the 3090 cannot stand in while the owner is away from it.
 - **Left as is on the 3090:** the repo at `6f02b45`; the copied memory (a snapshot of 2026-10-02 — it drifts from the
   Mac's from now on); the Code session; the SSH server, enabled. Nothing deployed, nothing installed by the agent.
+
+## §10. Addendum, 2026-10-06 — resumed from the 3090: D1, D3 and D4 decided, the branch `alfre2v/linux-3090`
+
+### §10.1 A Claude session on the 3090, and what it saw
+
+The session §8.4 prepared started on the 3090 (2026-10-02, night) and re-ran §5's checks from inside, read-only: the
+same results as §9.2 (driver 580.178.04; 557 MiB of the GPU in use, all of it the desktop: Xorg, gnome-shell, Chrome,
+the Claude app; the CUDA version the driver reports, which the base role compares with the pin's major 12: 13.0).
+**New, from inside:**
+
+- **Ollama is a system service, active and enabled at boot** (`systemctl is-active ollama`, `is-enabled`; §9.2 had
+  only the account's groups). Idle, it held no GPU memory; a loaded model would compete with the stack's ~14.5 GB.
+- **Two containers already run:** `mongodb` (27017) and `portainer` (8000 and 9443), both open on the network. Neither
+  takes the stack's ports; **but 8000 is the client's port** (`uvicorn … --port 8000`), which matters for Task 11.2.
+- **The never-commit hook was not armed on the 3090's clone** (`git config core.hooksPath` empty): `make install`, the
+  only thing that arms it, had never run there (§10.6).
+
+On 2026-10-05 the owner resumed goal 4 ("I have merged some PRs in the repo since you last look at it, but nothing
+that changes this task"); the work below is of 2026-10-06.
+
+### §10.2 D1 — both: `local` as built, and a new `lan`
+
+The agent's summary of 2026-10-05 offered D1 (b) as if it worked today. **The owner (verbatim):** "It cannot run from
+the laptop in our current inventory, the local inventory has `ansible_host: localhost`, so if you try running from
+the laptop is not going to end well. I think you have not read our ansible inventories, have you?" — it had not: the
+summary came from §2's description; §4's row for (b) names the inventory change it needs, and the summary dropped it.
+`ansible_connection: local` makes Ansible run every task on the machine it runs on: from the laptop, the playbook would
+target the Mac.
+
+**The owner (verbatim):** "Now, on the other hand, we could easily copy the cloud inventory, change almost nothing,
+and call it localnetwork or something like that, and then we could pretty much do it remote from the laptop." Asked to
+build one or both: "(2) build both." The name: "(3) let's do `lan`. It's shorter."
+
+**Decided:** two environments for the one box, both converging it to the same state.
+- **`local`** — as built: Ansible on the 3090 itself, no SSH.
+- **`lan`** — a copy of `cloud`: the sentinel `REPLACE_ME_box_ip  # NEVER_COMMIT`, wired with
+  `make ans-set ENV=lan IP=zr-3090` (the SSH alias, so no address ever enters the file; §8.5 point 2). The story of
+  §8.5 point 9: the same playbook, from the same laptop, to a rented GPU or a GPU at home.
+
+Nothing in the Makefile or the playbook names the environments: `require_ansible_env` accepts any folder under
+`inventories/`, and the preflight requires only `zr_environment` to equal the folder's name.
+
+### §10.3 D3 — the user and the key
+
+Both 3090 environments set `ansible_user: alfredo` and `zr_service_user: alfredo` in their `99-<env>.yml`; `lan` also
+sets `ansible_ssh_private_key_file: "~/.ssh/zombie_radio_3090"`. **`make ssh-tunnel` now reads the user and key from
+the env's `99-<env>.yml` first, then `common_vars.yml`** (one `awk` over both files, the first match wins; §8.5
+point 2's fix). The tunnel works after a `local` deploy as well: it needs only the laptop's wired `lan` inventory.
+
+### §10.4 D4 — nothing starts at boot; start and stop by hand, in every environment
+
+**The owner (verbatim):** "On D4 "Should the services start at every boot?"...  You are right. I do not want the
+starting on a new restart."
+
+**Built as §9.4 shaped it:** a switch `zr_start_at_boot` — `true` in `common_vars.yml` (the cloud unchanged), `false`
+in `99-local.yml` and `99-lan.yml`. The containers' restart policy follows it (`unless-stopped` or `no`), and so does
+the voice unit's `enabled`. A deploy still starts all three.
+
+**Starting and stopping by hand** — offered as `make` targets or a runbook recipe; **the owner (verbatim):** "(i) make
+targets for start/stop. and why only make them work for `ENV=local|lan`? I may want to also stop and start the
+services in the cloud environment. Any impediment to making this start/stop support cloud too?" — none: the new
+playbook `services.yml` reads whatever inventory `ENV` names. `make ans-start ENV=<env>` starts the three services and
+waits until each answers; `make ans-stop ENV=<env>` stops them; the 3090's need `ANS_ARGS=-K`. On the cloud, a stop
+does not change the next boot: the voice comes back (its unit enabled), the containers stay stopped (Docker remembers a
+manual stop); and stopped services still bill.
+
+### §10.5 Every download in one folder
+
+**Found:** the owner's home on the 3090 already holds **a 43 GB Hugging Face cache** (`~/.cache/huggingface`, mode
+`0775`, 19 models). By default the Whisper role points its cache there: it would set the folder to `0755` and mount it
+into a container that runs as root, leaving root-owned files in the owner's personal cache; the voice's checkpoint
+(about 5 GB) lands there too (`docs/runbooks/box-inspection.md`: "TTS checkpoint + whisper model, shared tree").
+
+Offered: (A) llama's models and Whisper's cache into a project folder; (B) the same, plus `HF_HOME` for the voice's
+unit. **The owner (verbatim):** "(B) for the data: I want every downloaded model to sits in one folder." Then, of the
+voice's Python environment (`~/faster_qwen3tts`, several GB): "I want fix (1) "The voice's environment
+(~/faster_qwen3tts)". The pip cache does not worry me. That's ok."
+
+**Built:** `zr_data_dir: ~/zombie-radio-data` in both 3090 environments, holding `models/` (llama), `whisper-cache/`,
+`voice-cache/` (the voice's `HF_HOME`) and `faster_qwen3tts/` (the voice's environment and tts-serve). Two new project
+settings, each defaulting to the cloud's current value: `zr_tts_hf_home` (empty: the user's default) and `zr_tts_root`.
+Folders the file module creates on the way belong to the same owner (read in Ansible's `file` module). **Outside the
+folder, by design:** the two Docker images (Docker keeps every image of the machine in one store, `/var/lib/docker`;
+moving it is a machine-wide Docker setting the playbook never touches), the voice's systemd unit, pip's cache, and two
+apt packages from the base role (`python3-venv`, `sox`, neither on the 3090 before). The removal recipe:
+`docs/runbooks/home-gpu-3090.md`. **To check at the first deploy:** that the voice's checkpoint lands in
+`voice-cache/` (believed, from `HF_HOME`; not yet seen).
+
+### §10.6 The Makefile on Linux
+
+`make ans-set` used `sed -i ''`, macOS's form; Linux's sed takes `''` as the script and the substitution as a file
+name. **Measured** on the 3090 (GNU sed 4.8, on a scratch copy): `sed: can't read s/REPLACE_ME_box_ip/zr-3090/: No such
+file or directory`, exit 2, the file unchanged. **The owner (verbatim):** "Really? So the agent coded a mac dependent
+syntax into the Makefile ? Wow." The line came with #5 (`8aa9ebf`, 2026-09-21), when the Makefile only ever ran on the
+Mac; a Mac session's handoff lists `sed -i ''` among its shell habits (session handoff 6) — a habit of the agent's
+shell that reached shared code, never run on Linux. **Fixed:** `sed -i.bak … && rm -f ….bak || exit 2` (works with
+both seds; a failed substitution now stops instead of printing "wired"). Tested on the 3090: wired, refused a second
+wiring, unwired. The rest of the Makefile was read for macOS-only commands: none found. `ans-unset` (`git restore`)
+was never affected.
+
+`make ans-check-syntax` now also parses `services.yml`. **The owner (verbatim):** "Makefile lines 81 and 82. WTF is
+that?" — the agent had added the second command without proposing it, and offered to revert it or fold it into one
+line; the owner: "leave it as it is. On second thought is not so bad."
+
+### §10.7 The 3090 as a control node — run by the owner
+
+**The owner (verbatim):** "(4) Yes, but let me issue the commands, guide me one by one, I want to run them in my
+console. (Later I will transfer this duties to you but for the first installs I wan to get a feel of it)" — on the
+3090, in the owner's terminal: `make install` (the project's Ansible in `.venv`, `ansible [core 2.21.4]`; the hook
+armed, `core.hooksPath` `.githooks`), then `make ans-deps` (`community.docker` 5.3.0, inside the repo). The owner:
+"done, collections installed".
+
+### §10.8 The branch
+
+**The owner (verbatim):** "Ok, let's open a branch to do fix any Makefile portability issue and also to do anything we
+need to get this thing running in linux." Its scope: "(1) Keep this branch to the deploy and do the client next, so
+each PR stays reviewable." — `alfre2v/linux-3090`, from `main` at `5734dbc`; Task 11.2 (the client on Linux) gets its
+own branch. And: "Green light to any runbook edits that you can do that explain the steps to operate the project."
+
+**What it holds:** the Makefile (the `sed` fix, the tunnel reading the env's overrides, `ans-start` / `ans-stop`, the
+syntax check of both playbooks); `services.yml`; the boot switch and the voice's two path settings in the three
+roles and `common_vars.yml`; `inventories/lan/`; `99-local.yml`; a new runbook, `docs/runbooks/home-gpu-3090.md`;
+updates to `service-restart-sequence.md`, `box-inspection.md` and `deploy/ansible/README.md`.
+
+**Verified on the 3090 (no deploy):** the syntax parse of both playbooks for `cloud`, `local` and `lan`; `ansible-lint`
+clean on the `production` profile; **the cloud's voice unit renders byte-identical to before** (so the next cloud
+deploy does not restart the voice); each environment's resolved paths and users (the cloud's unchanged).
+
+### §10.9 Next
+
+D2 (the tunnel for the laptop's client; none for a client on the 3090) and D5 (proven at home) stay the agent's
+leans; not yet ruled. Then §6 from step 5, on the owner's go:
+
+1. **The first deploy, `local`**, by the owner on the 3090: `make ans-deploy ENV=local ANS_ARGS=-K`. **No `--check`
+   dry run first:** in check mode the containers are not started, but the roles' health waits run anyway
+   (`check_mode: false`): llama's would poll a server that never started, 60 × 15 s, and fail.
+2. A second run at `changed=0`.
+3. **D4's proof:** a reboot of the 3090 — nothing running, the GPU free — then `make ans-start ENV=local
+   ANS_ARGS=-K`, the three ports answering.
+4. Measure (§6 step 7); where the voice's checkpoint landed (§10.5).
+5. **`lan` from the laptop**: `make ans-set ENV=lan IP=zr-3090`, `make ans-deploy ENV=lan ANS_ARGS=-K` (expected
+   `changed=0`: the same box, the same settings), the tunnel, a show — the evidence for the talk; the slide "The 3090
+   at home" updated.
+
+### §10.10 The first deploy (2026-10-06, night): three failures, then `changed=16` and `changed=0`
+
+Run by the owner on the 3090, `make ans-deploy ENV=local ANS_ARGS=-K`; the logs in `~/.config/zombie-radio/logs/`.
+
+**A dry run first? No.** §10.9 had warned that `--check` stalls on a never-deployed box. **The owner (verbatim):** "I
+think we had a similar problem before and we solved by adding  `check_mode: false` to the tasks..." — the fix of
+2026-09-24 (`b9e4d18`, #11): under `--check` Ansible skips `command` and `shell` tasks, and `uri` has no check mode at
+all (`check_mode: support: none`), so six read-only tasks were marked `check_mode: false` and the dry run passed — on
+the A6000, where the services were already running. On a never-deployed box the same marking makes the health waits
+poll servers that a dry run never started. A fix for fresh boxes (skip a health wait when a dry run reports it would
+have started the service) was offered; the owner went on to the deploy.
+
+**Failure 1 — the apt cache (01:20).** The base role's package step failed after five retries with an empty reason.
+**The owner (verbatim):** "I tried doing the install, it failed in the apt cache, I do not understand why [...] Maybe
+I entered the wrong password for become?" — no: the facts had already been gathered with sudo. An `apt-get update` run
+by the agent into a scratch folder (no sudo, the system's lists untouched) showed the cause: **HashiCorp's apt source**
+(`/etc/apt/sources.list.d/hashicorp.list`, for Vagrant) is now signed with a key, `FC9CA96ACA026560`, that the
+machine's keyring for it (`AA16FCBCA621E701`, 2023-2028) did not hold — `NO_PUBKEY`, "The repository ... is not
+signed". A machine problem, not the project's: any `apt-get update` failed. The owner refreshed the keyring from
+HashiCorp after checking that it carried the new key: "done, key refreshed, apt update is clean."
+
+**Failure 2 — no `requests` (01:27).** The llama container's task failed: "Failed to import the required Python
+library (requests) on aorusX570's Python /home/alfredo/workspace/hackTNT_2026/zombie-radio-claude/.venv/bin/python3.12".
+**The owner (verbatim):** "How is it possible that the request library is not installed here, but it did not fail on
+the cloud?" — over SSH, Ansible's interpreter discovery searches **the box's** PATH (the cloud's Ubuntu: only its
+system Python, which ships `requests`); with `ansible_connection: local` it inherits **`make`'s** PATH, where `uv run`
+puts the project's `.venv/bin` first, and the discovery list (`python3.14`, `python3.13`, `python3.12`, …) finds the
+control-side Python (Ansible and the linter, no `requests`). The base role had passed because the `apt` module
+switches to the system Python by itself. **Fixed:** `ansible_python_interpreter: /usr/bin/python3` in `99-local.yml`
+(measured: `requests` 2.25.1 there); `lan` goes over SSH and needs nothing.
+
+**Failure 3 — ghcr.io "denied" (01:30).** Pulling `ghcr.io/ggml-org/llama.cpp:server-cuda-b11096`: `403 Forbidden`,
+"denied: denied". The tag exists — an anonymous request for its manifest returned `200` — so the registry refused the
+credentials sent with the pull: the playbook pulls as root, and **root's Docker config held a ghcr.io login** (the
+owner checked it with sudo, registry names only: "Yes, it was that."), which GitHub rejected rather than fall back to
+an anonymous pull. Offered: (a) `sudo docker logout ghcr.io`, or (b) the image pre-pulled as the owner's user (no
+logins; the role's `pull: missing` then skips the pull). The owner: "ghcr.io error fixed with: (a) the logout."
+
+**The deploy (01:33 to 01:41, about 8½ minutes).** The owner: "It seems it worked. `changed=16`". Checked by the agent
+on the 3090, read-only:
+
+| | Measured |
+|---|---|
+| The services | llama `Up (healthy)`, Whisper `Up`, the voice unit `active`; health `200` on 8080, 8001, 8002 |
+| Bound to | `127.0.0.1` only (8080, 8001, 8002) |
+| The context | `n_ctx 32768`, one slot |
+| At boot (D4) | both containers `restart=no`; the voice unit `disabled`; Docker `enabled` |
+| The GPU | llama-server 6,966 MiB · the voice 4,736 MiB · Whisper 896 MiB = **12,598 MiB**; the card 12,958 of 24,576 MiB with the desktop. (The A6000's 14,477 MiB had a voice after a day of shows, 6,530 MiB: the voice grows as it caches the clips it clones from.) |
+| `~/zombie-radio-data` | `faster_qwen3tts` 7.6 GB · `models` 6.1 GB · `voice-cache` 4.3 GB (`Qwen3-TTS-12Hz-1.7B-Base`: **`HF_HOME` worked**, §10.5) · `whisper-cache` 464 MB (`faster-whisper-small`) |
+| Outside it | the images: llama.cpp 4.35 GB, Whisper 5.08 GB (Docker's store) |
+| The owner's own HF cache | untouched: mode `drwxrwxr-x`, last modified 2026-06-21, the same 20 entries; no `~/models`, no `~/faster_qwen3tts` |
+
+**The converge invariant (01:44, 18 seconds).** The owner: "second run done, changed=0."
+
+**The reboot test, postponed.** The owner (verbatim): "I won't reboot now, let's postpone this check, but I don't
+expect it to fail." Still to prove: after a reboot nothing of ours runs, and `make ans-start ENV=local ANS_ARGS=-K`
+brings the three back (its first real run).
+
+### §10.11 Next
+
+1. **`lan` from the laptop** (the Mac session): `make ans-set ENV=lan IP=zr-3090`, `make ans-deploy ENV=lan
+   ANS_ARGS=-K` (expected `changed=0`, the same box and settings), the tunnel, **a show against the 3090** — the
+   evidence for the talk; the slide "The 3090 at home" updated.
+2. **The reboot test** and `ans-start`'s first real run, when the owner reboots.
+3. **Task 11.2, the client on Linux**, on its own branch; Portainer already holds the client's port 8000 (§10.1).
+4. **D2 and D5** to rule.
