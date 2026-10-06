@@ -20,7 +20,9 @@ every download in `~/zombie-radio-data`, the Makefile's macOS-only `sed`
 fixed. **§10.10 (the same night): deployed** with `ENV=local` — three
 failures on the way (a stale apt key, Ansible picking the project's
 Python, a stale ghcr.io login), then `changed=16` and a second run at
-`changed=0`; the reboot test postponed.
+`changed=0`; the reboot test postponed. **§10.12: D2 (the tunnel) and D5
+(proven at home) ruled** — goal 4 is met when a show runs from the laptop
+against the 3090 and is recorded.
 **Trigger to revisit:** `lan` from the laptop, or the reboot test (§10.11).
 
 ## §1. Why this document
@@ -683,3 +685,22 @@ brings the three back (its first real run).
 2. **The reboot test** and `ans-start`'s first real run, when the owner reboots.
 3. **Task 11.2, the client on Linux**, on its own branch; Portainer already holds the client's port 8000 (§10.1).
 4. **D2 and D5** to rule.
+
+### §10.12 D2 and D5 ruled (2026-10-06)
+
+Put to the owner again, each with the agent's lean (§4): **D2**, how the laptop's client reaches the 3090's services —
+the SSH tunnel, as with the cloud (built: `make ssh-tunnel ENV=lan`; the client's settings unchanged; nothing listens
+on the home network), or the services opened on the home network (`zr_bind_host` overridden: the client's settings
+would carry the 3090's address, and every device on the network could reach services that have no login). **D5**, what
+"goal 4 met" means — (i) proven at home: a deploy from zero, a second run at `changed=0`, a show from the laptop
+against the 3090, recorded as evidence for the talk; or (ii) used live at the venue, reaching home over the internet
+(port forwarding or a VPN; two networks on demo day).
+
+**The owner (verbatim):** "tunnel and (i), record it in the plan"
+
+**Decided:**
+- **D2 — the tunnel.** No change to the deployment or the client. A client on the 3090 itself (Task 11.2) needs no
+  tunnel: its `localhost` ports are the services' own.
+- **D5 — (i), proven at home.** Done so far: the deploy from zero (`changed=16`) and the second run (`changed=0`),
+  §10.10. **Left for goal 4:** `lan` from the laptop, the tunnel, a show against the 3090, and its recording — then the
+  slide "The 3090 at home" says so. The demo itself runs on the cloud box.

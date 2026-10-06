@@ -495,7 +495,9 @@ the agent keeps this current. These carry across arcs.*
      ([discussion 2026-10-02] local-gpu-deployment-plan §10.10).
      **Next:** `lan` from the laptop and a show against the 3090 (the
      talk's evidence); the reboot test and `ans-start`'s first real run
-     (postponed by the owner); D2 and D5 to rule (§10.11).
+     (postponed by the owner). D2 and D5 ruled: the tunnel; goal 4
+     met when a show from the laptop against the 3090 is recorded
+     (§10.12).
   2. [ ] **The client on Linux** — **first, a manual client install on
      the 3090, every step written down; then decide whether a `make
      client-linux` (an Ansible playbook that installs the app and then
