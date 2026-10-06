@@ -301,7 +301,7 @@ memory floor). A stopped VM keeps billing; only hibernation stops the meter, wit
 ## The 3090 at home {.home-slide}
 
 ```bash
-make ans-deploy ENV=local
+make ans-deploy ENV=lan
 ```
 
 The same playbook, the same three services — on a home PC instead of a rented VM.
@@ -314,11 +314,16 @@ The same playbook, the same three services — on a home PC instead of a rented 
 [checked]{.n}<br>Ubuntu 22.04, driver R580, Docker with the NVIDIA runtime
 :::
 ::: {.stat}
-[deploy]{.n}<br>[status as of 2026-10-03: pending]{.d}
+[deployed]{.n}<br>from zero in about 8½ minutes; a show from the laptop
 :::
 :::
 
 ::: {.notes}
-Update this slide on the day, wherever goal 4 stands. As of 2026-10-03: the checks passed, the deploy paused while the
-owner was away from home.
+Goal 4, met on 2026-10-06. From zero with ENV=local, Ansible running on the PC itself: about 8½ minutes; a second run
+changed=0. Then from the laptop with ENV=lan, the same playbook reaching the PC over SSH: changed=0, the SSH tunnel, and
+a full show against the 3090. The stack held 12.6 GB of the GPU right after the deploy (it grows during shows as the
+voice caches its clips). It is a desktop used for other work, so nothing starts at its boot: make ans-start and
+make ans-stop. Every model and the voice's environment sit in one folder. The first try broke three times, each a
+one-line or one-command fix: a stale apt key on the PC, Ansible picking the project's own Python when running
+locally, and a stale GitHub registry login.
 :::

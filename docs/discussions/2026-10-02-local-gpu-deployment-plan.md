@@ -6,7 +6,7 @@
 deployment to a local GPU, the owner's 3090): what is already built, what the
 playbook requires and does to a machine, the decisions to make, the facts to
 gather, and an executable plan; meant to guide the task when it opens.
-**Status:** IN PROGRESS (since 2026-10-06; paused 2026-10-03 to 10-05) — scouting done (2026-10-02, evening).
+**Status:** DONE — **goal 4 met (2026-10-06, §10.13)**; paused 2026-10-03 to 10-05. Scouting done (2026-10-02, evening).
 **§8 (the same night):** an SSH key
 login from the Mac to the 3090 (`ssh zr-3090`, done), the repo cloned there,
 a Claude session there with the Mac's memory copied and a ready prompt
@@ -22,8 +22,10 @@ failures on the way (a stale apt key, Ansible picking the project's
 Python, a stale ghcr.io login), then `changed=16` and a second run at
 `changed=0`; the reboot test postponed. **§10.12: D2 (the tunnel) and D5
 (proven at home) ruled** — goal 4 is met when a show runs from the laptop
-against the 3090 and is recorded.
-**Trigger to revisit:** `lan` from the laptop, or the reboot test (§10.11).
+against the 3090 and is recorded. **§10.13: goal 4 met** — `lan` from the
+laptop at `changed=0`, the tunnel, a show against the 3090; the recording
+moved into Task 7.
+**Trigger to revisit:** the reboot test, or a `lan` deploy from zero.
 
 ## §1. Why this document
 
@@ -704,3 +706,21 @@ against the 3090, recorded as evidence for the talk; or (ii) used live at the ve
 - **D5 — (i), proven at home.** Done so far: the deploy from zero (`changed=16`) and the second run (`changed=0`),
   §10.10. **Left for goal 4:** `lan` from the laptop, the tunnel, a show against the 3090, and its recording — then the
   slide "The 3090 at home" says so. The demo itself runs on the cloud box.
+
+### §10.13 Goal 4 met (2026-10-06)
+
+#29 merged (`e659aac`). The owner then ran the laptop's side, from the Mac: "merged. Tested from the laptop, all
+success. Good job." Asked what the test covered, the owner (verbatim):
+
+- **`lan` from the laptop:** "I did now, changed=0... Still, for me that does not confirm that the lan env is correct,
+  but is close enough. I am not going to uninstall everything just to test the lan install from zero." — `make
+  ans-deploy ENV=lan ANS_ARGS=-K` against the box `local` had deployed: the same box and settings, so `changed=0` was
+  the expected answer; a `lan` deploy from zero stays unproven.
+- **The tunnel:** `make ssh-tunnel ENV=lan`, and `make check`'s three `ok` lines: "Yes and yes".
+- **A show from the laptop against the 3090:** "Yes, very good show actually."
+- **The recording:** "No, no recording yet. That is completely different task."
+
+**Ruled (the owner, verbatim):** "goal 4 met, recording into Task 7, small PR now" — D5's evidence (§10.12) is met by
+the deploy from zero, the converge, and a show from the laptop against the 3090; the recording for the talk joins
+Task 7 (the canned episode's video). **Still open, not part of goal 4:** the reboot test and the first real run of
+`make ans-start` / `ans-stop` (§10.10); a `lan` deploy from zero.
