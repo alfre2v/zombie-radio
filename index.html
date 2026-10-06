@@ -1016,7 +1016,7 @@ Alfredo Valles
 </section>
 <section id="the-director-in-plain-python" class="slide level2 smaller director">
 <h2>The director, in plain Python</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" data-code-line-numbers="|4"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-label="1"></a><span class="kw">def</span> plan_round(run: Run, story: Story, show: ShowConfig, played_s: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span>,</span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode numberSource python number-lines code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a aria-label="1"></a><span class="kw">def</span> plan_round(run: Run, story: Story, show: ShowConfig, played_s: <span class="bu">float</span> <span class="op">=</span> <span class="fl">0.0</span>,</span>
 <span id="cb2-2"><a aria-label="2"></a>               transcript: Optional[<span class="bu">str</span>] <span class="op">=</span> <span class="va">None</span>) <span class="op">-&gt;</span> RoundPlan:</span>
 <span id="cb2-3"><a aria-label="3"></a>    n <span class="op">=</span> <span class="bu">len</span>(run.rounds) <span class="op">+</span> <span class="dv">1</span></span>
 <span id="cb2-4"><a aria-label="4"></a>    rng <span class="op">=</span> random.Random(<span class="ss">f"</span><span class="sc">{</span>run<span class="sc">.</span>seed<span class="sc">}</span><span class="ss">:</span><span class="sc">{</span>n<span class="sc">}</span><span class="ss">"</span>)</span>
