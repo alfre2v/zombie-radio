@@ -10,6 +10,9 @@ WorkingDirectory={{ tts_engine_serve_dir }}
 {% for key, value in tts_engine_launch_env.items() %}
 Environment={{ key }}={{ value }}
 {% endfor %}
+{% if tts_engine_hf_home %}
+Environment=HF_HOME={{ tts_engine_hf_home }}
+{% endif %}
 ExecStart={{ tts_engine_launch_cmd }}
 Restart=always
 RestartSec=5

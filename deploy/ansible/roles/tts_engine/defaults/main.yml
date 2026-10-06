@@ -14,10 +14,11 @@ tts_engine_serve_version: "{{ zr_tts_serve_version }}"
 tts_engine_cuda_variant: "{{ zr_cuda_variant }}"
 tts_engine_torch_version: "{{ zr_torch_version }}"
 tts_engine_start_at_boot: "{{ zr_start_at_boot }}"
+tts_engine_hf_home: "{{ zr_tts_hf_home }}"
 
 # On-box layout: per-engine root (the recipe's ~/faster-Qwen3TTS shape) holding
 # the venv and the tts-serve clone side by side.
-tts_engine_root: "/home/{{ tts_engine_service_user }}/{{ tts_engine_name }}"
+tts_engine_root: "{{ zr_tts_root }}"
 tts_engine_venv: "{{ tts_engine_root }}/.venv"
 tts_engine_serve_dir: "{{ tts_engine_root }}/tts-serve"
 tts_engine_python: python3
