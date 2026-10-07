@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Sound-effect takes</title>
+<style>
+  :root { --bg: #fafaf7; --fg: #1d1d1b; --muted: #6b6b66; --line: #ddd9cf; --card: #ffffff; --accent: #b4441c; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #161614; --fg: #ecebe6; --muted: #9a9890; --line: #33322e; --card: #1f1f1c; --accent: #ef8a5a; }
+  }
+  body { background: var(--bg); color: var(--fg); font: 15px/1.45 system-ui, sans-serif; margin: 0 auto; padding: 20px 16px 60px; max-width: 1200px; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  p.lead { color: var(--muted); margin: 0 0 20px; }
+  section { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 14px 16px; margin-bottom: 14px; }
+  h2 { font-size: 17px; margin: 0; }
+  h2 small { color: var(--muted); font-weight: normal; }
+  .event { color: var(--muted); font-style: italic; margin: 4px 0 2px; }
+  .prompt { color: var(--muted); font-size: 13px; margin: 0 0 10px; }
+  .models { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+  .model h3 { font-size: 14px; margin: 0 0 6px; color: var(--accent); }
+  .take { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-bottom: 6px; }
+  .take audio { width: 100%; max-width: 300px; height: 32px; }
+  .take .missing { color: var(--muted); font-size: 13px; }
+  .take label { font-size: 13px; margin-right: 6px; white-space: nowrap; }
+  textarea { width: 100%; box-sizing: border-box; height: 160px; background: var(--card); color: var(--fg); border: 1px solid var(--line); border-radius: 6px; font: 13px ui-monospace, monospace; padding: 8px; }
+  button { font: inherit; padding: 6px 12px; margin: 8px 8px 0 0; }
+</style>
+</head>
+<body>
+<h1>Sound-effect takes</h1>
+<p class="lead">The ten sounds, three takes per model (seeds 1-3). Rate each take by ear — <b>good</b>, <b>usable</b> or <b>unusable</b>. Ratings stay in this browser; the summary at the bottom is for pasting back.</p>
+<div id="sounds"></div>
+<section>
+  <h2>Summary</h2>
+  <textarea id="summary" readonly></textarea>
+  <button id="copy">Copy</button><button id="clear">Clear all ratings</button>
+</section>
+<script>
+// The takes live outside git, in the datasets clone beside this repository.
+const ROOT = "../../../../zombie-radio-datasets/sfx-test/takes/";
+const MODELS = [["woosh", "Woosh-DFlow (Part 1)"], ["sa3", "Stable Audio 3 Small-SFX (Part 1)"], ["moss", "MOSS-SoundEffect v2.0 (Part 2)"]];
+const RATINGS = ["good", "usable", "unusable"];
+const SOUNDS = [
+  ["glass-rain", 4, "A fluorescent tube in the main corridor pops, and glass rains onto the floor.", "A fluorescent light tube pops overhead and broken glass rains onto a hard corridor floor, indoors, close"],
+  ["sirens-far", 10, "Far away a siren wails, then another joins it, then another.", "Distant emergency sirens wailing across a city at night, one joining after another, heard from far away"],
+  ["helicopter", 8, "A helicopter drops a crate marked with a red cross onto the lawn.", "A helicopter passes low overhead, the rotor thumping, then fades into the distance"],
+  ["fans-howl", 6, "The server room fans spin up to full speed with a rising howl.", "Server room cooling fans spin up from silence to full speed, a rising mechanical howl"],
+  ["thunder-alarms", 8, "Thunder rolls over the lab, and every alarm in the building answers it.", "A deep roll of thunder, then several building alarms ringing at once"],
+  ["tapping-glass", 6, "A shambler at the front doors is tapping on the glass in a slow rhythm, like Morse code.", "Slow tapping of a fingernail on a glass door, a rhythmic pattern, a quiet night"],
+  ["moaning-crowd", 8, "The moaning outside stops all at once, and the silence is worse.", "A crowd of zombies moaning outside a building at night, low and continuous, then sudden silence"],
+  ["radio-static", 10, "The static on the air: the dead air between rounds.", "Shortwave radio static, crackle and hiss from an old analogue receiver, steady"],
+  ["receiver-on", 4, "The Repair: the receiver comes back.", "An old valve radio switched on: a mechanical click, a rising hum, then tuning static"],
+  ["receiver-dies", 3, "The Breakdown: the receiver burns out.", "An old radio receiver failing: a loud electrical crackle, a fizz, then dead silence"],
+];
+const KEY = "sfx-ratings-2026-10-07";
+let ratings = {};
+try { ratings = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { ratings = {}; }
+function save() { try { localStorage.setItem(KEY, JSON.stringify(ratings)); } catch (e) {} summarize(); }
+function summarize() {
+  const lines = [];
+  for (const [model, name] of MODELS) {
+    const counts = { good: 0, usable: 0, unusable: 0 };
+    const rows = [];
+    for (const [tag] of SOUNDS) {
+      const r = [1, 2, 3].map(seed => ratings[`${model}/${tag}/${seed}`] || "-");
+      if (r.some(x => x !== "-")) rows.push(`  ${tag.padEnd(15)} ${r.join(" / ")}`);
+      r.forEach(x => { if (counts[x] !== undefined) counts[x]++; });
+    }
+    if (rows.length) {
+      const usableSounds = SOUNDS.filter(([tag]) => [1, 2, 3].some(s => ["good", "usable"].includes(ratings[`${model}/${tag}/${s}`]))).length;
+      lines.push(`${name}: ${counts.good} good, ${counts.usable} usable, ${counts.unusable} unusable; sounds with a usable take: ${usableSounds}/10`, ...rows, "");
+    }
+  }
+  document.getElementById("summary").value = lines.join("\n") || "No ratings yet.";
+}
+const root = document.getElementById("sounds");
+for (const [tag, secs, event, prompt] of SOUNDS) {
+  const sec = document.createElement("section");
+  sec.innerHTML = `<h2>${tag} <small>· ${secs} s</small></h2><p class="event">${event}</p><p class="prompt">Prompt: ${prompt}</p><div class="models"></div>`;
+  const grid = sec.querySelector(".models");
+  for (const [model, name] of MODELS) {
+    const col = document.createElement("div");
+    col.className = "model";
+    col.innerHTML = `<h3>${name}</h3>`;
+    for (const seed of [1, 2, 3]) {
+      const id = `${model}/${tag}/${seed}`;
+      const row = document.createElement("div");
+      row.className = "take";
+      const audio = document.createElement("audio");
+      audio.controls = true; audio.preload = "metadata";
+      audio.src = `${ROOT}${tag}/${model}-${seed}.wav`;
+      audio.onerror = () => { row.innerHTML = `<span class="missing">seed ${seed}: not generated yet</span>`; };
+      row.append(`seed ${seed} `, audio);
+      for (const r of RATINGS) {
+        const label = document.createElement("label");
+        const input = document.createElement("input");
+        input.type = "radio"; input.name = id; input.value = r; input.checked = ratings[id] === r;
+        input.onchange = () => { ratings[id] = r; save(); };
+        label.append(input, " " + r);
+        row.append(label);
+      }
+      col.append(row);
+    }
+    grid.append(col);
+  }
+  root.append(sec);
+}
+document.getElementById("copy").onclick = () => { const t = document.getElementById("summary"); t.select(); try { navigator.clipboard.writeText(t.value); } catch (e) { document.execCommand("copy"); } };
+document.getElementById("clear").onclick = () => { if (confirm("Clear every rating?")) { ratings = {}; save(); location.reload(); } };
+summarize();
+</script>
+</body>
+</html>

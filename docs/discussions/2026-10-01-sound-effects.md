@@ -3017,6 +3017,31 @@ Task 7's video, which the owner wants last ("Features first, video last").
 
 **Pending discussion** — nothing ruled beyond the owner's plan. The compressed reference clips (Task 12) come first.
 
+### §9.5 The dead outside — a background of zombies (the owner's idea, 2026-10-07)
+
+During the sound-effect experiment ([experiment 2026-10-07] sfx-models, Entry 9), after hearing Stable Audio 3
+Small-SFX's moaning crowd — three good takes of three — the owner (verbatim): "The zombie moan was very good. We need
+more of this on the show. It's a show about a zombie appocalipse and we do not hear any zombies in the background...
+Now we can fix that!"
+
+**The gap:** the show's only background sound is the radio static (the static bed, §8). The dead exist only in the
+dialogue — the cast speak of the moaning outside; the audience never hears it.
+
+**The shape, as the agent sees it (not discussed yet):**
+
+- **An ambience, not an event:** a few clips of distant moaning, shuffling and groaning, played quietly under the show,
+  rising and falling, silent while the listener holds to talk — the dead outside the lab, always there.
+- **The static bed's machinery already does most of it** (the fork's `static/show/`, §8.8): shuffled clips, a level
+  for a round and one between rounds, silences on a timer, the M key's mute. A second bed — "the dead outside" — may
+  reuse it rather than need a new system.
+- **Generated offline** (the experiment's Part 2 path): clips made once, judged by the owner's ear, shipped with the
+  client like the bed's — no live model for an ambience.
+- **A prompt detail:** the experiment's prompt ends "then sudden silence" (it serves an event); an ambience clip needs
+  to loop without a hard stop.
+
+**Status:** an idea, kept as a follow-up of its own (the owner: "it's not technically the same task") —
+`docs/follow-ups.md`, "The dead outside — a second background channel of zombie ambience beside the static bed".
+
 ## §7. Sources
 
 - [Stable Audio 3 — the paper (arXiv 2605.17991)](https://arxiv.org/html/2605.17991)
