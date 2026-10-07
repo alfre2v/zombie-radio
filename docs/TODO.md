@@ -611,17 +611,29 @@ the agent keeps this current. These carry across arcs.*
   - **Prompts written for the ambience:** textures steady, nothing that starts or stops abruptly, 20-30 s
     long (Small-SFX goes to 120 s at the same cost); spots short.
   **The steps:**
-  1. [ ] **The prompts** — about 30-40, textures and spots across the owner's list; the agent drafts, the
-     owner edits.
-  2. [ ] **The generation tool** in this repository (prompts in a YAML file, takes out, on the box's
+  1. [x] **The prompts** — 36 drafted (`tools/sounds/ambience.yaml`), trusted by the owner unedited ("I will
+     trust your prompts, I want to see results soon"); three added after round 1 (a thunderstorm; explosions and
+     a gunfight without "in the distance", which made them too quiet — the owner's diagnosis, confirmed: the new
+     explosions 4-11 dB louder on average).
+  2. [x] **The generation tool** in this repository (`tools/sounds/gen_ambience.py`; 0.52-0.57 s a take) (prompts in a YAML file, takes out, on the box's
      `sfx-lab/` with Stable Audio 3 Small-SFX — [experiment 2026-10-07] sfx-models, Entry 7).
-  3. [ ] **The audition, in two rounds** — round 1, **screening**: one take a prompt, the owner keeps the
+  3. [x] **The audition** — round 1, one take a prompt: 22 kept of 36, used as they were ("Everything I picked we
+     can use as it is"), so no round 2; the three added prompts, 13 takes: 9 kept. **31 clips: 16 textures, 15
+     spots** (`ambience_page.py` builds the page; the picks are the `keep:` lists of `ambience.yaml`). Was: **the
+     audition, in two rounds** — round 1, **screening**: one take a prompt, the owner keeps the
      promising prompts (about 20 minutes); round 2, **picking**: five takes for each kept prompt, the
      owner chooses. A page like the experiment's `listen.html`.
-  4. [ ] **The picks prepared** — levels evened out and a manifest (`tools/sounds/prepare_bed.py`, likely
+  4. [x] **The picks prepared** (`tools/sounds/prepare_ambience.py`: MP3 mono 96 kbps, 5.3 MB; levels to -20
+     dBFS, capped at a -1 dBFS peak; `ambience.json`, `CREDITS.md`) — was: **the picks prepared** — levels evened out and a manifest (`tools/sounds/prepare_bed.py`, likely
      extended), credits: released by the project as CC0 (Stability's Community License gives the user the
      outputs — the experiment's Entry 11), the model and the prompts named in a `CREDITS.md`.
-  5. [ ] **The fork** — an ambience channel reusing the bed's machinery (`static/show/bed.js`): textures
+  5. [x] **The fork** — built on its branch `alfre2v/ambience` (`static/show/ambience.js`, the bed's functions
+     reused for the ambience's manifest and the story's `ambience.yaml`, 15 `ambience_*` settings, the start
+     reply, `/api/show/ambience/<file>`; tests 1,312 pytest, 15 Node; the runbooks). Heard on the A6000: at the
+     static's levels the ambience was barely audible — the clips are at the static's average level, but a low moan
+     sounds far quieter than a hiss of the same energy, and the hiss masks it; **the defaults raised to 0.3 between
+     rounds and 0.12 under a line**. The owner: "much better now, make those the defaults", then "it sounds
+     amazing! Very spooky 😃". Was: **the fork** — an ambience channel reusing the bed's machinery (`static/show/bed.js`): textures
      and spots, its settings under `show:`, the `A` key, the story file, the AM filter, the ducking; tests
      (pytest and Node); a runbook recipe.
   6. [ ] **Release** — the fork's tag, the installer pinned, the owner's re-proof — before Task 7's video.

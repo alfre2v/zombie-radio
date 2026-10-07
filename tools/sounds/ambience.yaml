@@ -1,0 +1,56 @@
+# The world outside the lab, heard through the broadcast (Task 13): prompts for Stable Audio 3 Small-SFX.
+# texture: long, continuous, looping, played one after another; spot: short, single, at random moments.
+# keep: the seeds the owner kept by ear (round 1: seed 1 of each; the three added after it: more seeds); [] dropped.
+# Written from the sound-effect experiment: one sound per prompt (no "then"), textures steady, spots placed far off.
+
+prompts:
+  # The dead — textures
+  - {tag: dead-crowd-far, kind: texture, seconds: 25, keep: [1], prompt: "A large crowd of zombies moaning far away at night, low and continuous"}
+  - {tag: dead-horde-murmur, kind: texture, seconds: 25, keep: [1], prompt: "A huge horde of the undead murmuring and groaning in the distance, a steady low drone"}
+  - {tag: dead-few-close, kind: texture, seconds: 25, keep: [1], prompt: "A few zombies slowly moaning just outside a concrete wall, muffled, continuous"}
+  - {tag: dead-shuffling, kind: texture, seconds: 25, keep: [], prompt: "Many dragging footsteps shuffling on gravel outside at night, slow and continuous, no voices"}
+  - {tag: dead-restless, kind: texture, seconds: 25, keep: [1], prompt: "A restless crowd of zombies outside, groans rising and falling, agitated, steady"}
+  - {tag: dead-banging-door, kind: texture, seconds: 25, keep: [1], prompt: "Slow heavy fists banging on a metal door, muffled moans behind it, continuous"}
+  - {tag: dead-scratching, kind: texture, seconds: 25, keep: [], prompt: "Fingernails scratching slowly on a window pane from outside, quiet and continuous"}
+  - {tag: dead-swelling, kind: texture, seconds: 25, keep: [1], prompt: "A crowd of zombies moaning, slowly getting louder as they come closer"}  # a test: a change over time
+
+  # The dead — spots
+  - {tag: dead-moan-long, kind: spot, seconds: 5, keep: [1], prompt: "A single long low zombie moan outside, close"}
+  - {tag: dead-shriek, kind: spot, seconds: 3, keep: [1], prompt: "A frantic zombie shriek in the distance"}
+  - {tag: dead-screams-group, kind: spot, seconds: 4, keep: [1], prompt: "A group of zombies screaming frantically far away"}
+  - {tag: dead-growl, kind: spot, seconds: 3, keep: [1], prompt: "A guttural zombie growl right outside a window"}
+  - {tag: dead-gurgle, kind: spot, seconds: 3, keep: [1], prompt: "A wet gurgling groan of a zombie, close"}
+  - {tag: dead-howl-far, kind: spot, seconds: 4, keep: [1], prompt: "A single inhuman howl far away in the night"}
+  - {tag: dead-snarling, kind: spot, seconds: 3, keep: [1], prompt: "Zombies snarling and snapping their teeth outside a door"}
+
+  # Fighting — spots
+  - {tag: gun-burst-far, kind: spot, seconds: 3, keep: [1], prompt: "A burst of machine gun fire in the distance"}
+  - {tag: gun-shots-far, kind: spot, seconds: 4, keep: [1], prompt: "A few single gunshots far away, echoing between buildings"}
+  - {tag: gun-sniper, kind: spot, seconds: 3, keep: [], prompt: "One rifle shot echoing across an empty city"}
+  - {tag: gun-shotgun, kind: spot, seconds: 2, keep: [], prompt: "A shotgun blast outside, a few streets away"}
+  - {tag: gunfight-far, kind: spot, seconds: 6, keep: [], prompt: "A distant gunfight, several guns firing far away"}
+  - {tag: explosion-far, kind: spot, seconds: 5, keep: [], prompt: "A large explosion far away, a deep rumbling boom echoing"}
+  - {tag: explosion-muffled, kind: spot, seconds: 4, keep: [], prompt: "A muffled explosion in the distance, heard through walls"}
+  - {tag: grenade-far, kind: spot, seconds: 3, keep: [], prompt: "A grenade blast a few blocks away"}
+
+  # People — spots
+  - {tag: scream-woman-far, kind: spot, seconds: 3, keep: [1], prompt: "A woman screaming in terror in the distance"}
+  - {tag: scream-man-far, kind: spot, seconds: 3, keep: [1], prompt: "A man screaming in pain far away"}
+  - {tag: help-far, kind: spot, seconds: 4, keep: [], prompt: "A man shouting for help far away down the street"}
+  - {tag: laughter-far, kind: spot, seconds: 5, keep: [1], prompt: "Hysterical laughter echoing in the distance at night"}
+  - {tag: laughter-close, kind: spot, seconds: 4, keep: [1], prompt: "A person laughing hysterically just outside a window, muffled"}
+  - {tag: running-shouting, kind: spot, seconds: 5, keep: [], prompt: "People running and shouting in a street far away"}
+
+  # The city — textures
+  - {tag: city-burning, kind: texture, seconds: 25, keep: [], prompt: "A city burning at night in the distance, fire crackling, faint sirens, continuous"}
+  - {tag: city-chaos-far, kind: texture, seconds: 25, keep: [], prompt: "Distant chaos in a city at night, sirens, alarms and faint shouting, muffled and continuous"}
+  - {tag: wind-empty-street, kind: texture, seconds: 25, keep: [], prompt: "Wind howling through an empty street at night, loose debris rattling, continuous"}
+  - {tag: rain-window, kind: texture, seconds: 25, keep: [], prompt: "Heavy rain on a laboratory window with distant rolling thunder, continuous"}
+  - {tag: car-alarm-far, kind: texture, seconds: 25, keep: [1], prompt: "A car alarm wailing far away in an empty city, continuous"}
+  - {tag: dogs-far, kind: texture, seconds: 25, keep: [1], prompt: "Dogs barking far away in a deserted city at night, continuous"}
+  - {tag: crowd-panic-far, kind: texture, seconds: 25, keep: [1], prompt: "A distant crowd of people panicking and screaming, muffled by distance, continuous"}
+
+  # Added after round 1 (the owner: no "in the distance", it makes them too quiet; repeated gunshots, warfare)
+  - {tag: thunderstorm, kind: texture, seconds: 25, keep: [1, 2, 3], prompt: "A heavy thunderstorm, loud thunder claps and pouring rain, continuous"}
+  - {tag: explosion, kind: spot, seconds: 5, keep: [4, 5], prompt: "A loud explosion outside, a powerful boom and rumbling debris"}
+  - {tag: warfare, kind: texture, seconds: 20, keep: [1, 3, 4, 5], prompt: "A continuous gunfight outside, repeated machine gun bursts and many gunshots, warfare"}
