@@ -112,6 +112,8 @@ untracked). Repos:
   `takes/`, `ambience/`, the scripts.
 - **The owner's Hugging Face token stays active** (the owner: "No, I want to keep the HF token active"). It was used
   only at hidden prompts on the box (`read -rsp`), never written anywhere.
+- **Task 12 is done end to end:** `tz-0.7` re-proven by the owner (`changed=1`, then `changed=0`; `git describe`
+  `tz-0.7`) and switched on in the client — recorded in the TODO's Task 12 in the last commit before the compaction.
 - **The installed client's `settings.yaml`** (the owner's; gitignored; the installer never overwrites it):
   `show: # seed: 33767163 / seed: 651594682  # good show 3090 / voice_seed: true / reference_format: ogg`.
 - **GitHub Pages:** the talk is live at `https://alfre2v.github.io/zombie-radio/` (a Quarto **website** project since
@@ -189,8 +191,10 @@ untracked). Repos:
 3. **Task 14, sound cues:** open — **the name** ("sound cues", proposed); **the release order** (the agent's lean:
    `tz-0.8` first, cues as `tz-0.9`). Ruled: event rounds only, keywords in `ambience.yaml`, the clip's kind decides,
    a texture for its clip's length.
-4. **Task 9, the talk:** recount the numbers (slides 5 and 27), the A6000's price, republish, rehearse; consider the
-   new features (the ambience, the compressed clips, the experiment) for the slides — not discussed yet.
+4. **Task 9, the talk:** recount the numbers (slides 5 and 27), the A6000's price, republish, rehearse. **The "What's
+   next" slide is now stale** (it lists event sounds, comic relief, a scientist turns, new voice engines…; the ambience
+   and the compressed clips are built, the sound-effect experiment ran) — and the new features may deserve slides (the
+   world outside, the experiment's results). Not discussed yet. Republish after any slide change (runbook §10).
 5. **Task 10.1:** the narrower-filter test (the owner's ear, ~20 min).
 6. **Task 7, the fallback video:** **last**, once the features are released (the owner: "Features first, video last");
    plus a show against the 3090.
@@ -215,6 +219,17 @@ untracked). Repos:
 - **Event keyword data (Task 14):** 31 of 289 events (11 %) match a sound group; a real show's lines 11 of 179 (6 %);
   misfires seen ("fire alarm", "feedback shrieks", "rain fills the tanks", "the radio's screaming").
 - **Test counts:** the fork 1,312 pytest at `2197c1c` (1,295 at `tz-0.7`).
+- **`prepare_ambience.py` (like `prepare_bed.py`) needs macOS** (`afconvert`, for measuring) **and Homebrew's
+  `ffmpeg`** (for MP3); it imports `measure` from `prepare_bed.py`, so it runs from `tools/sounds/`.
+- **The audition pages keep the ratings in the owner's browser** (localStorage) — the agent cannot read them; the
+  owner copies the page's summary and pastes it. The experiment's page is
+  `docs/experiments/2026-10-07-sfx-models/listen.html` (four columns; relative paths to the datasets folder).
+- **The 3090 has its own Claude Code session** (the owner's "Linux agent"), which built #29; it found the Makefile's
+  macOS-only `sed`.
+- **Task 14's build notes** (verified in the code): the event is the round's first, fixed line; the reply streams
+  per-line `start`/`done` events — **no single "round start message"** (an earlier claim of the agent, corrected); the
+  round's `random.Random(f"{run.seed}:{n}")` can pick among matches so a seed replays the cues — the-world-outside
+  §9.8, with the keyword data per clip family.
 
 ## §8. Nuances
 

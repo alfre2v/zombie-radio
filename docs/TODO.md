@@ -578,9 +578,11 @@ the agent keeps this current. These carry across arcs.*
   fork's **`tz-0.7`**, an annotated tag on `f2c0edb` (alfre2v/TalkWithZombies#11
   and this repository's #31 merged; the merge identical to the tested
   branch head `f838ef6`; the fork's tests green on it: 1295 passed); the
-  installer pinned to it (`alfre2v/installer-tz-0.7`). **Left:** the
-  owner's re-proof (`make client-mac` twice), then `reference_format:
-  ogg` under `show:` in the client's `settings.yaml`.
+  installer pinned to it (#32). **Re-proven by the owner (2026-10-07):**
+  "`make client-mac` : good, changed=1." then "second run or the client
+  install `changed=0`."; `git describe` in the client `tz-0.7`; and
+  switched on — "I added `reference_format: ogg` under show". **Task 12
+  done.**
 - [ ] **Task 13 — The world outside: an ambience channel inside the broadcast** (decided by the owner,
   2026-10-07, after the sound-effect experiment — [experiment 2026-10-07] sfx-models: Stable Audio 3
   Small-SFX passed by ear, its moaning crowd three good takes of three). It grew from the follow-up "the

@@ -389,6 +389,37 @@ against a line's audio, a cooldown. The owner's event-only version removes nearl
 - **The release order:** this in the same release as the ambience (holding #12), or **#12 merged and released now as
   `tz-0.8`, the cues after as `tz-0.9`** — the agent's lean: a working release in hand while this is built.
 
+### §9.8 Notes for the build (verified in the code, 2026-10-07)
+
+- **The event is the round's first line.** With `fixed_lines` on (the default), the director makes the event a
+  **fixed line read by the round's first speaker**, and the model "carries on from there" (the fork's
+  `app/show/director.py`, `_free`: `before=(_fixed(reader, moods, event, rng),)`; the round's plan carries `event`).
+- **A correction to §9.5:** there is **no single "round start message"** — the round's reply streams **one `start`
+  and one `done` event per line** (`app/routers/show.py`, `feed`), fixed lines marked `"fixed": true`. Since the event
+  is the first line, a cue still acts as the round starts — either **a new SSE event, `{"type": "cue", "file", "kind"}`,
+  sent just before the first fixed line**, or **a field on that line's `start` event**. Both small; to choose at build.
+- **Pick with the round's randomness:** the director draws from `random.Random(f"{run.seed}:{n}")`; if it also picks
+  among several matching clips, **a seed replays the cues** too (the ambience's own random choices are not seeded).
+- **A cued texture should end a silence in progress** (the agent's proposal, not yet discussed): a storm cued during a
+  lull must be heard.
+- **The A mute and `ambience: false` still rule:** a cue never unmutes or switches the ambience on.
+- **Event groups with no clip in the library:** sirens, a helicopter, breaking glass, a fire alarm (the experiment's
+  Small-SFX takes of a helicopter and of glass were good — `sfx-test/takes/`, Entry 9). Cheap to add a few clips;
+  the event data says which would pay off.
+- **The keyword candidates and the data behind them** (the scripts were not saved; the patterns, case-insensitive):
+
+| Group | Pattern used | Events (of 289) | A clip for it |
+|---|---|---|---|
+| explosion | `explo\|blast\|boom\|detonat` | 1 | `explosion` (2 takes) |
+| gunfire | `\bgun\|shot\|shoot\|rifle\|bullet` (and a loose "fire" — wrong, it caught "fire alarm") | 5, some false | `gun-burst-far`, `gun-shots-far`, `warfare` (4) |
+| scream | `scream\|shriek` | 2 ("feedback shrieks" a misfire) | `scream-woman-far`, `scream-man-far`, `dead-shriek`, `dead-screams-group` |
+| laughter | `laugh` | 1 | `laughter-far`, `laughter-close` |
+| storm | `thunder\|storm\|lightning\|\brain\b` ("rain fills the tanks" a misfire — drop `rain`) | 8 | `thunderstorm` (3) |
+| dogs | `\bdog\|bark` (a dog that whines matched) | 2 | `dogs-far` |
+| alarm / siren | `alarm\|siren` | 8 | `car-alarm-far` only (no siren, no fire alarm) |
+| the dead's moans | `moan\|groan\|growl\|snarl` | 2 | 6 textures and most spots of the dead |
+| banging / scratching | `bang\|pound\|scratch\|knock` | 5 | `dead-banging-door` |
+
 ## §10. Where things are
 
 - **This repository:** `tools/sounds/ambience.yaml` (the prompts, the picks), `gen_ambience.py`, `ambience_page.py`,
