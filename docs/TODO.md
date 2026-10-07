@@ -139,7 +139,11 @@ it is detail.*
   ([experiment 2026-10-07] sfx-models — Stable Audio 3 Small-SFX the
   model to use); from it, **Task 13, the world outside** — an ambience
   channel inside the broadcast (the dead, gunfire, explosions, distant
-  screams). The event sounds set aside (the follow-up).
+  screams). The event sounds set aside (the follow-up). **Task 13 built,
+  heard ("it sounds amazing! Very spooky 😃") and released as the fork's
+  `tz-0.8`** (the installer pinned in #34; the owner's re-proof left).
+  **Task 14, sound cues, planned** — the name and its release as
+  `tz-0.9` ruled by the owner; not built.
 - **Deferred past the demo (the owner, 2026-10-01):** Task 5, the
   in-prototype experiments, and the character bibles — moved to the
   follow-up "In-prototype experiments and the character bibles —
@@ -549,7 +553,7 @@ the agent keeps this current. These carry across arcs.*
      3090 the client and the GPU stack share one machine: no tunnel, the
      client's `localhost` ports are the services' own
      ([discussion 2026-10-03] client-os-support §4).
-- [ ] **Task 12 — The compressed reference clips** (decided by the
+- [x] **Task 12 — The compressed reference clips** — **done 2026-10-07** (`tz-0.7`, #32) (decided by the
   owner, 2026-10-07: "We are going to execute on the compressed
   audios."; the format: **Opus 48 kbps**). The follow-up "Compressed
   reference clips, switchable on and off" holds the measurements. **The
@@ -578,9 +582,11 @@ the agent keeps this current. These carry across arcs.*
   fork's **`tz-0.7`**, an annotated tag on `f2c0edb` (alfre2v/TalkWithZombies#11
   and this repository's #31 merged; the merge identical to the tested
   branch head `f838ef6`; the fork's tests green on it: 1295 passed); the
-  installer pinned to it (`alfre2v/installer-tz-0.7`). **Left:** the
-  owner's re-proof (`make client-mac` twice), then `reference_format:
-  ogg` under `show:` in the client's `settings.yaml`.
+  installer pinned to it (#32). **Re-proven by the owner (2026-10-07):**
+  "`make client-mac` : good, changed=1." then "second run or the client
+  install `changed=0`."; `git describe` in the client `tz-0.7`; and
+  switched on — "I added `reference_format: ogg` under show". **Task 12
+  done.**
 - [ ] **Task 13 — The world outside: an ambience channel inside the broadcast** (decided by the owner,
   2026-10-07, after the sound-effect experiment — [experiment 2026-10-07] sfx-models: Stable Audio 3
   Small-SFX passed by ear, its moaning crowd three good takes of three). It grew from the follow-up "the
@@ -611,22 +617,53 @@ the agent keeps this current. These carry across arcs.*
   - **Prompts written for the ambience:** textures steady, nothing that starts or stops abruptly, 20-30 s
     long (Small-SFX goes to 120 s at the same cost); spots short.
   **The steps:**
-  1. [ ] **The prompts** — about 30-40, textures and spots across the owner's list; the agent drafts, the
-     owner edits.
-  2. [ ] **The generation tool** in this repository (prompts in a YAML file, takes out, on the box's
+  1. [x] **The prompts** — 36 drafted (`tools/sounds/ambience.yaml`), trusted by the owner unedited ("I will
+     trust your prompts, I want to see results soon"); three added after round 1 (a thunderstorm; explosions and
+     a gunfight without "in the distance", which made them too quiet — the owner's diagnosis, confirmed: the new
+     explosions 4-11 dB louder on average).
+  2. [x] **The generation tool** in this repository (`tools/sounds/gen_ambience.py`; 0.52-0.57 s a take) (prompts in a YAML file, takes out, on the box's
      `sfx-lab/` with Stable Audio 3 Small-SFX — [experiment 2026-10-07] sfx-models, Entry 7).
-  3. [ ] **The audition, in two rounds** — round 1, **screening**: one take a prompt, the owner keeps the
+  3. [x] **The audition** — round 1, one take a prompt: 22 kept of 36, used as they were ("Everything I picked we
+     can use as it is"), so no round 2; the three added prompts, 13 takes: 9 kept. **31 clips: 16 textures, 15
+     spots** (`ambience_page.py` builds the page; the picks are the `keep:` lists of `ambience.yaml`). Was: **the
+     audition, in two rounds** — round 1, **screening**: one take a prompt, the owner keeps the
      promising prompts (about 20 minutes); round 2, **picking**: five takes for each kept prompt, the
      owner chooses. A page like the experiment's `listen.html`.
-  4. [ ] **The picks prepared** — levels evened out and a manifest (`tools/sounds/prepare_bed.py`, likely
+  4. [x] **The picks prepared** (`tools/sounds/prepare_ambience.py`: MP3 mono 96 kbps, 5.3 MB; levels to -20
+     dBFS, capped at a -1 dBFS peak; `ambience.json`, `CREDITS.md`) — was: **the picks prepared** — levels evened out and a manifest (`tools/sounds/prepare_bed.py`, likely
      extended), credits: released by the project as CC0 (Stability's Community License gives the user the
      outputs — the experiment's Entry 11), the model and the prompts named in a `CREDITS.md`.
-  5. [ ] **The fork** — an ambience channel reusing the bed's machinery (`static/show/bed.js`): textures
+  5. [x] **The fork** — built on its branch `alfre2v/ambience` (`static/show/ambience.js`, the bed's functions
+     reused for the ambience's manifest and the story's `ambience.yaml`, 15 `ambience_*` settings, the start
+     reply, `/api/show/ambience/<file>`; tests 1,312 pytest, 15 Node; the runbooks). Heard on the A6000: at the
+     static's levels the ambience was barely audible — the clips are at the static's average level, but a low moan
+     sounds far quieter than a hiss of the same energy, and the hiss masks it; **the defaults raised to 0.3 between
+     rounds and 0.12 under a line**. The owner: "much better now, make those the defaults", then "it sounds
+     amazing! Very spooky 😃". Was: **the fork** — an ambience channel reusing the bed's machinery (`static/show/bed.js`): textures
      and spots, its settings under `show:`, the `A` key, the story file, the AM filter, the ducking; tests
      (pytest and Node); a runbook recipe.
   6. [ ] **Release** — the fork's tag, the installer pinned, the owner's re-proof — before Task 7's video.
+     **Released 2026-10-07** as the fork's **`tz-0.8`**, an annotated tag on `66e35d5` (alfre2v/TalkWithZombies#12
+     merged; the merge identical to the tested branch head `2197c1c`; the fork's tests green on it: 1312 passed,
+     Node 15 / 29 / 42 / 8 / 17 / 91); the installer pinned to it (this repository's #34, which also carries the
+     prompts, the picks and the tools). **Left: the owner's re-proof** (`make client-mac` twice: `changed=1`, then
+     `changed=0`; `git describe` in the client `tz-0.8`).
+  **The whole story, every decision and why:** [discussion 2026-10-07] the-world-outside, Part 1.
   **Estimate (the agent's):** about a day of the agent's work, about 2 hours of the owner's (the audition
   rounds, the reviews).
+- [ ] **Task 14 — Sound cues: an event round that names a sound plays it** (planned 2026-10-07, not built; the
+  name proposed by the agent and **accepted by the owner, 2026-10-07** — the owner's working name had been "Ambience
+  to event coupling?"). The owner's
+  idea (verbatim): "we would add a keywords list under each clip, and if the event text contains any of the keywords
+  then we immediately insert that audio to be played as ambience". **The shape agreed point by point**
+  ([discussion 2026-10-07] the-world-outside §9): **event rounds only** — the server knows the event before the round
+  runs, matches its text once against the clips' `keywords:` (in the story's `ambience.yaml`; whole words,
+  case-insensitive, short careful lists), and puts a cue (`{file, kind}`) in the round's start message; **a matched
+  spot plays once at the round's start** (the random spot timer reset); **a matched texture replaces the current one
+  and plays to its end**, covering the cast's responses, then the shuffle resumes; several matches — one at random;
+  misfires accepted ("also now at random, so it's not worse"); **a cued texture plays for the clip's length** (ruled:
+  "let's keep things simple"). **Estimate (the agent's): about 2½-3 hours.** **Ruled (the owner, 2026-10-07):** the
+  name "sound cues", and the release order — the ambience released first as `tz-0.8` (done), **this as `tz-0.9`**.
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes
