@@ -1,7 +1,7 @@
 # Zombie-Radio — Product specification
 
 **Status:** living. This document describes the product as it is
-built — the fork TalkWithZombies at tag `tz-0.6` (`5347ead`)
+built — the fork TalkWithZombies at tag `tz-0.7` (`f2c0edb`)
 and this repository's deployment — in the order someone
 would build it again. It is rewritten in place when the product
 changes; it carries no history. Why each choice was made, and when,
@@ -405,6 +405,15 @@ each line's mood with every chunk of the line, and the app's voice
 route clones from that clip if the persona has it, else from
 `ref.wav` (only `ref.wav` or `ref-<word>.wav`, inside the persona's
 folder), and says which clip it used. Off, every line uses `ref.wav`.
+
+**The compressed copies** (`show.reference_format`, `wav`). Every
+chunk is sent with its clip, base64-encoded. This repository's
+`tools/voices/compress_voices.py` writes an Opus copy (48 kbps, mono,
+about 8 times smaller) beside every `ref.wav` and `ref-<word>.wav` —
+`ref-fear.ogg` beside `ref-fear.wav`, sharing `ref-fear.txt` — and
+never touches the WAVs; a recast removes the copies. With `ogg`, the
+voice route sends a clip's copy when it exists, else its WAV; the clip
+keeps its name everywhere, and `wav` sends the originals again.
 
 **The seed of the voice** (`show.voice_seed`, off). Off, the page
 sends no seed and tts-serve draws one per chunk. On, every chunk is

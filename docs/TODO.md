@@ -569,7 +569,13 @@ the agent keeps this current. These carry across arcs.*
   smaller, the switch proven both ways, no difference to the owner's ear
   in a 23-round show ("I cannot notice any difference"), no speed gain
   on a fast connection ([discussion 2026-09-29]
-  voice-datasets-with-emotion §11.15). **Left:** the release.
+  voice-datasets-with-emotion §11.15). **Released 2026-10-07** as the
+  fork's **`tz-0.7`**, an annotated tag on `f2c0edb` (alfre2v/TalkWithZombies#11
+  and this repository's #31 merged; the merge identical to the tested
+  branch head `f838ef6`; the fork's tests green on it: 1295 passed); the
+  installer pinned to it (`alfre2v/installer-tz-0.7`). **Left:** the
+  owner's re-proof (`make client-mac` twice), then `reference_format:
+  ogg` under `show:` in the client's `settings.yaml`.
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes
