@@ -6,7 +6,8 @@
 the project's earlier notes on sound effects; the agent's research into the
 open text-to-audio models of 2026, checked at their sources; how a library of
 sounds would fit the show; a recommendation.
-**Status:** OPEN — **narrowed on 2026-10-01 evening (§8): first the static bed**
+**Status:** OPEN — **back on the table on 2026-10-07 (§9): the owner's two-part plan, an experiment with
+sound-effect models, then sounds per event; pending discussion.** Earlier: **narrowed on 2026-10-01 evening (§8): first the static bed**
 (5-15 clips of radio static at low volume, shuffled, the level moving with the
 show, random silences, all in settings — the owner's design, §8.8), **from
 Freesound**; the folder tree agreed; the
@@ -2946,6 +2947,75 @@ grammar, which pins Samantha to the first line and lets only the others speak
 after it — the model wrote her intended words under Daniel's name. Recorded in
 `docs/follow-ups.md`, "A cast member says another's line — Daniel introduces
 himself as Samantha", with the evidence and three options (none chosen).
+
+## §9. Addendum, 2026-10-07 — the sound effects back on the table: the owner's two-part plan
+
+### §9.1 Why it came back
+
+With more days before the talk, the owner asked what to add to the project; the agent's first lists left the sound
+effects out, filtering by "seen on stage" and taking the follow-up's label ("very low priority; undecided") at face
+value. The owner (verbatim):
+
+> The SFX effects: This is truly something technically interesting, we have some time to explore some of this. Not
+> sure we have enough time, last time we discussed this you said it is a huge endeavor, that we need to create the web
+> server to talk to the services, etc. We said that maybe we could generate some of the audio sounds offline and save
+> them in the same way we do for the bed audio. Where are these features stored, why are you not proposing these
+> features?
+
+The agent's answer: the "huge endeavour" was a **live** sound service (§3, the pushbacks of 2026-09-30); the
+**offline library** of §6.1 avoids it — sounds generated once, stored and played like the static bed — and §6.1's
+estimate stands: the listening test half a day, the generation tool and the library one day, the show's side one to
+two days.
+
+### §9.2 The owner's plan (verbatim)
+
+> Ok, that leaves the sound effects... I think the best way to approach this is to open an experiment, for us to
+> tinker without altering the app. I brought the VM up, we can try deploying several sfx engines and testing what we
+> get as effects... As I see it this task would have two parts:
+> (1) The experiment: where we try running the sfx models and evaluate their effectiveness for our project.
+> (2) Identifying the "events" in our event list that would benefit from SFX effects. And modifying our way to store
+> the events so that we can store per event one or more SFX audio files to play just before that particular event.
+> What do you think? Did I forget anything important?
+>
+> The only feature I have decided to execute for sure now is the voice compress... The other SFX is still pending
+> discussion.
+
+### §9.3 The agent's additions
+
+**Part 1, the experiment** — much of it is already designed in §6.2 (never run):
+
+- **The question, and the criteria written before listening** (§6.2: ten sounds, several sources, a page of players,
+  the owner judging by ear).
+- **A baseline:** the same sounds from Freesound (§4.4) — if recorded sounds beat the generated ones, the models are
+  not worth their trouble.
+- **Licences** — of the weights and of what they generate (§4.1, §4.3): MOSS-SoundEffect v2.0 is Apache 2.0; Stable
+  Audio 3 is gated behind Stability AI's Community License, which the owner must accept on Hugging Face (never the
+  agent). The credits matter for the talk.
+- **The box:** every candidate fits the A6000 beside the stack (about 14.5 GB of 48), and the stack can be stopped
+  while generating; Stable Audio 3 Small-SFX also runs on a laptop's CPU (§4.1) — a second, fair test.
+- **A timebox**, so the tinkering does not eat the days before the talk.
+
+**Part 2, the events** — beyond one or more sounds stored per event:
+
+- **Where they play:** in the page, from the laptop — unlike the voices, the sounds never cross the network, so the
+  venue's Wi-Fi does not matter.
+- **When:** each event is read aloud on air, word for word, by a cast member (the fixed lines, 2026-09-27), so the
+  sound comes just before that line, capped in length.
+- **The mix:** the sound joins the bed's "sounds" gain, so the M key mutes it with the static; it stays quiet under
+  the voices and silent while the listener holds to talk (the follow-up "Event sounds as a layer of their own…" holds
+  the shape of §8.11).
+- **Levels:** the clips evened out to one level, as the bed's are (`bed.json`).
+- **Credits:** a `CREDITS.md` for the sounds, as for the bed.
+
+**Part 3 (missing from the plan): the release** — a fork tag, the installer pinned to it, the owner's re-proof — before
+Task 7's video, which the owner wants last ("Features first, video last").
+
+**The box:** up since the owner woke it (2026-10-07), billing while up; hibernating it again risks the wake lottery
+(2026-09-24, no A6000 in stock — `docs/runbooks/service-restart-sequence.md`). The owner's call.
+
+### §9.4 Status
+
+**Pending discussion** — nothing ruled beyond the owner's plan. The compressed reference clips (Task 12) come first.
 
 ## §7. Sources
 

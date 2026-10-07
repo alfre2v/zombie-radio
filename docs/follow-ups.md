@@ -1555,7 +1555,39 @@ reader's memory):
 - **Estimate:** 2-3 hours for the four pieces with tests (the agent's,
   not measured).
 
-## Compressed reference clips, switchable on and off — MP3 or Ogg/Opus instead of WAV (owner, 2026-09-30) — re-examine before demo day
+## The audience writes the news — a project site on zombieradio.net, with a gated form that sends live news into the show (owner, 2026-10-07) — not executed before the talk
+
+- **The idea (the owner, verbatim, 2026-10-07):** "I am thinking to execute on "The audience writes the news", I could
+  purchase the domain "zombieradio.net" and we could make a small website that talk about this project and has a
+  section to submit live feed news into the show. We can gate it with a code that I only show during the presentation
+  to not get random people sending noise." It grew from the talk's "What's next" slide ("The audience writes the
+  news, from their phones").
+- **The ruling (verbatim, the same day):** "We are not going to execute on "The audience writes the news", but make
+  sure that it is documented well as a follow up with my idea of a domain for the project... I do not want to expend
+  the days before the project worrying about hosting and filtering adversarial prompts."
+- **Where flagged:** the owner, 2026-10-07, choosing what to build with more days before the talk. **Its history:** idea
+  8 of the agent's pool of creative goals ([discussion 2026-09-30] demo-goals §5-§7), deferred on 2026-09-30 with a
+  ruling that still binds — **no inbound connection to the laptop, ever**; public interaction only through a
+  third-party gateway that the laptop reads with outbound connections (§7). The owner's own site on `zombieradio.net`
+  is such a gateway.
+- **Trigger:** the owner's call, after the talk.
+- **The shape, as discussed (the agent's, not decided):**
+  - **the laptop fetches the news from the site** — the site never connects into the laptop, so the venue's network
+    needs only ordinary outbound internet (which the tunnel to the GPU box needs anyway);
+  - **the site:** about the project, plus the form; GitHub Pages is static and cannot receive a form, so the form
+    needs a small server (one of the owner's, e.g. a FastAPI app) or a hosted form-and-database service;
+  - **the code** shown only during the presentation, a length limit per headline, and the owner's veto on stage;
+  - **hostile text:** what the model does with "ignore your instructions" typed by the audience — the open problem
+    the owner named ("filtering adversarial prompts");
+  - **in the show:** a headline enters like an event — the director picks it, a cast member reads it on air.
+
+## Compressed reference clips, switchable on and off — MP3 or Ogg/Opus instead of WAV (owner, 2026-09-30) — DECIDED 2026-10-07: built before the talk (Task 12)
+
+- **Status 2026-10-07 — DECIDED; Task 12 in the TODO.** The owner, given more days before the talk (verbatim): "We
+  are going to execute on the compressed audios." The format: **Opus 48 kbps** (the owner's pick of the measured
+  options below). **The shape changed** — the originals kept, a switch in the client's settings chooses the format —
+  see Task 12 in the TODO; the fix shape below is superseded. Its bigger sibling — sending each clip only once — is
+  the next entry, undecided.
 
 - **The ask (the owner, verbatim, 2026-09-30):** "what I do want out of
   this is a clear follow up task to remind me to execute on the option (can
@@ -1608,6 +1640,35 @@ reader's memory):
   inside the app, where the casting script already has one.
 - **Estimate:** about 1-2 hours in the fork plus 30 minutes in the casting
   script, with tests (the agent's, not measured).
+
+## Send each reference clip only once — tts-serve names a voice by its hash (owner, 2026-10-07) — undecided
+
+- **The ask (the owner, verbatim, 2026-10-07):** "Explore modifying tts-serve so we do not have to send again and
+  again the same audios. (even better)" — and, ruling: "We might execute on "Not resending the same clips", I am not
+  making this call yet, make sure that it is properly documented as a follow up, or in the roadmap, so it's not
+  forgotten anymore. If we do execute it will be later."
+- **The gap:** every synthesis request carries its character's reference clip, base64-encoded — 590-750 KB per
+  request with the EARS WAVs, and a line can take two or three requests (the entry above). tts-serve already **caches
+  each clip by its content** — the engine computes a clip's voice once and reuses it for every request with the same
+  bytes ([discussion 2026-09-21] task6-recon-tts-serve, finding F3) — but **the bytes still travel with every
+  request**. The reconnaissance's seam question **S1** ([discussion 2026-09-21] task6-reconnaissance-brief) asked
+  whether tts-serve could cache references or name a voice by an identifier; it was settled on 2026-09-22 as
+  "bandwidth only, a few tens of milliseconds per line on our tunnel … Accepted as is" — true on the owner's
+  connection, not on a slow venue uplink (the entry above).
+- **Why it is "even better" than compression:** a clip would cross the network once per voice and server instead of
+  once per request; compression (the entry above) shrinks every request 6-12 times, this would remove the clip from
+  almost all of them. On a slow venue uplink, the difference is the whole reference.
+- **Where flagged:** the owner, 2026-10-07, choosing what to build with more days before the talk.
+- **Trigger:** the owner's call; if executed, after Task 12 (the compressed clips).
+- **Fix shape (the agent's, not discussed; the size unknown until tts-serve's code is read):** a hash-first exchange
+  — the client sends the clip's hash (SHA-256) instead of its bytes; the server answers from its cache, or replies
+  that it does not know the hash, and the client resends with the bytes (which also covers a restarted server with an
+  empty cache). Or an explicit registration: upload a voice once, get an id, then name it. Both change **tts-serve
+  itself**, which is Steve Corbett's (scorbo2) — the deploy installs it from upstream, pinned to the tag `1.2`
+  (`zr_tts_serve_repo`, `zr_tts_serve_version` in `deploy/ansible/inventories/common_vars.yml`) — so it would mean
+  our own fork of tts-serve, the deploy pointed at it, and the change offered upstream afterwards (the follow-up
+  "Upstream contributions to scorbo2"); and in TalkWithZombies, the TTS client sending the hash first
+  (`app/services/tts_client.py`).
 
 ## A cloned line came out badly degraded, once — Samantha, in the first show with mood voices (owner, 2026-09-30) — postponed
 
@@ -1876,6 +1937,11 @@ reader's memory):
   reply carries them; `bed.js` switches the list when a round of that kind starts (the round's summary names its kind).
 
 ## Event sounds as a layer of their own beside the static bed (owner, 2026-10-01) — very low priority; undecided whether worth executing; kept as a ledger of ideas
+
+- **Status 2026-10-07 — back under discussion.** With more days before the talk, the owner raised the sound effects
+  again, with a two-part plan: an experiment with sound-effect models on the box, then sounds stored per event and
+  played just before it — [discussion 2026-10-01] sound-effects §9. Not decided: "The other SFX is still pending
+  discussion."
 
 - **The statement:** sounds for the events (an alarm, glass breaking, a rotor), heard through the transmitter and
   lasting their own length across rounds, as **a second layer** beside the bed — the bed is the radio, an event's sound

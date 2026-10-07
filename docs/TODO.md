@@ -29,7 +29,7 @@ this arc".
 
 ## Now — where the arc stands
 
-*Updated 2026-10-06. Read this section first; everything below
+*Updated 2026-10-07. Read this section first; everything below
 it is detail.*
 
 - **The demo's four goals** (the owner, 2026-09-30; the README's "What
@@ -43,8 +43,12 @@ it is detail.*
   `ENV=local`, a second run at `changed=0`, then from the laptop: `lan`
   at `changed=0`, the tunnel, and a show against the 3090 — the owner:
   "Yes, very good show actually." (#29; [discussion 2026-10-02]
-  local-gpu-deployment-plan §10.13). Its recording joins Task 7; the
-  client on Linux stays Task 11.2.
+  local-gpu-deployment-plan §10.13). Its recording joins Task 7.
+  **The reboot proven, and the 3090 closed (2026-10-07)** — the owner
+  (verbatim): "I also exercised restarting the 3090 computer and
+  bringing the AI components up, and everything worked well. So we can
+  100% put to rest all the 3090 exercise. It's done." The client on
+  Linux (Task 11.2) deferred past the demo.
 - **The engine and the looks** — Task 6 done 2026-09-28 (the fork's
   `tz-0.2`, "Done in this arc"); the looks the same night — a chooser at
   `/show`, `old-radio` and `amateur-radio-transmitter` with a live gauge
@@ -114,6 +118,23 @@ it is detail.*
   compressed reference clips, if the venue's uplink is slow → Task 8,
   the close ritual. Hard deadline 2026-10-08; the talk at the Austin
   Python Meetup in October 2026.
+- **More days before the talk (the owner, 2026-10-07):** "now we have a
+  few more days to help me decide what other features we can add to the
+  project." Ruled the same day: **Task 12, the compressed reference
+  clips — executed** (Opus 48 kbps), the only feature decided; **the
+  sound effects** — the owner's two-part plan (an experiment with
+  sound-effect models on the box, then sounds stored per event) **still
+  under discussion** ([discussion 2026-10-01] sound-effects §9);
+  **sending each reference clip once** — undecided, a follow-up of its
+  own; **the audience writes the news** (a project site on
+  `zombieradio.net`) — not executed, a follow-up. Not picked: talk
+  anytime, resume after a reload, prefetching the next round; comic
+  relief ("I only like the "Comic relief", but I am not sure I want to
+  execute on that... It's more of the same from the technical point of
+  view."); a scientist turning into a zombie by voice, speaker
+  identification, a judge in the loop ("I do not want to execute on
+  anything else you proposed there."). **Task 7's video comes last**,
+  once the features are released.
 - **Deferred past the demo (the owner, 2026-10-01):** Task 5, the
   in-prototype experiments, and the character bibles — moved to the
   follow-up "In-prototype experiments and the character bibles —
@@ -128,7 +149,9 @@ it is detail.*
 - **The box** (the A6000 on Hyperstack): kept hibernated until demo
   day, woken about 4 hours before the talk, a new VM deployed from zero
   if the wake fails or by the owner's choice that day (owner action
-  queue, item 5, decided 2026-10-02).
+  queue, item 5, decided 2026-10-02). **Woken by the owner on
+  2026-10-07** for the sound-effects experiment ("I brought the VM up");
+  whether to hibernate it again is the owner's call.
 - **The board before the demo** — every item left, who does it, and
   what was deferred: [discussion 2026-10-02] board-before-demo.
 - **At a session's end:** a fresh-session handoff replaces any
@@ -421,9 +444,11 @@ the agent keeps this current. These carry across arcs.*
   **Also the recording of a show against the home 3090**, the talk's
   evidence for goal 4 (the owner, 2026-10-06: "recording into Task 7";
   [discussion 2026-10-02] local-gpu-deployment-plan §10.13).
-  **Before demo day, re-examine** the follow-up "Compressed
-  reference clips, switchable on and off" (the owner, 2026-09-30): if
-  the venue's uplink is slow, build the switch and turn it on.
+  **The compressed reference clips** (the follow-up "Compressed
+  reference clips, switchable on and off", the owner, 2026-09-30:
+  re-examine before demo day) — **decided 2026-10-07: built before the
+  talk** (Task 12). **The video is recorded last**, once the features
+  are released (the owner, 2026-10-07: "Features first, video last").
 - [ ] **Task 9 — Prepare the talk** (the owner, 2026-10-01: "Yes, add
   this: Add a task for preparing the talk itself"). The slides and the
   talk's script for the Austin Python Meetup (October 2026) — the
@@ -474,7 +499,7 @@ the agent keeps this current. These carry across arcs.*
   3. [~] **Credits for the talk** — moved into Task 9 (one line on the
      last slide, a link to the fork's `Sounds/bed/CREDITS.md`). The owner:
      "yes, close 10.3 into Task 9".
-- [ ] **Task 11 — Goal 4, the 3090** (the demo's goal 4: automated
+- [x] **Task 11 — Goal 4, the 3090** — **closed 2026-10-07** (11.1 done; 11.2 deferred past the demo) (the demo's goal 4: automated
   deployment to a local GPU; a task group of its own, the owner,
   2026-10-03). Two parts, both on the owner's Linux desktop with the
   RTX 3090:
@@ -498,9 +523,15 @@ the agent keeps this current. These carry across arcs.*
      owner: "close enough" — not a `lan` deploy from zero), the tunnel
      and `make check`, a show against the 3090 ("very good show
      actually"). The owner: "goal 4 met, recording into Task 7, small PR
-     now" (§10.13). **Left, outside goal 4:** the reboot test and
-     `ans-start`'s first real run (postponed by the owner).
-  2. [ ] **The client on Linux** — **first, a manual client install on
+     now" (§10.13). **The reboot test, done 2026-10-07** — the owner
+     (verbatim): "I also exercised restarting the 3090 computer and
+     bringing the AI components up, and everything worked well. So we
+     can 100% put to rest all the 3090 exercise. It's done." (How the
+     services were brought up was not recorded.)
+  2. [~] **The client on Linux** — **deferred past the demo
+     (2026-10-07**, the owner's choice when the 3090 was put to rest);
+     the follow-up "The client on Linux and Windows" holds the idea.
+     **First, a manual client install on
      the 3090, every step written down; then decide whether a `make
      client-linux` (an Ansible playbook that installs the app and then
      prints the manual steps left, ready to copy and paste) is wise.**
@@ -513,6 +544,24 @@ the agent keeps this current. These carry across arcs.*
      3090 the client and the GPU stack share one machine: no tunnel, the
      client's `localhost` ports are the services' own
      ([discussion 2026-10-03] client-os-support §4).
+- [ ] **Task 12 — The compressed reference clips** (decided by the
+  owner, 2026-10-07: "We are going to execute on the compressed
+  audios."; the format: **Opus 48 kbps**). The follow-up "Compressed
+  reference clips, switchable on and off" holds the measurements. **The
+  shape, agreed 2026-10-07** (it replaces the follow-up's): the original
+  WAVs are never touched — the owner (verbatim): "let's take care on not
+  overwriting the original files … that way if I encounter unexpected
+  problems during a live show I can easily revert to using the old
+  wavs"; the casting script (`tools/voices/cast_voices.py`, `ffmpeg`)
+  writes each clip's compressed copy beside it with its real extension
+  (`ref-fear.ogg` beside `ref-fear.wav`, one `ref-fear.txt` for both);
+  a clip keeps its name everywhere (the stories still say
+  `ref-fear.wav`); **a switch in the client's `settings.yaml`,
+  `show.reference_format: ogg` (or `wav`)**, chooses what the app sends —
+  reverting during a show is that line and a restart; the fork tries
+  the chosen format first and falls back to the `.wav`, so a missing
+  `.ogg` never breaks a line. Then a fork release and the installer
+  pinned to it, before Task 7's video.
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes
