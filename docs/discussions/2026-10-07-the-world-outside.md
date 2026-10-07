@@ -5,9 +5,9 @@ repository's #34, the fork's alfre2v/TalkWithZombies#12)
 **Type:** discussion — Task 13 in `docs/TODO.md`: how a background of the world outside the lab (the dead, the
 fighting, the people, the weather) came to be, every decision taken and why, what was built and heard; then Task 14,
 "sound cues": an event round that names a sound plays it, planned and not built.
-**Status:** **Part 1 built and heard** (the owner: "it sounds amazing! Very spooky 😃"); both PRs open, the fork's
-release (`tz-0.8`) and the installer's pin left. **Part 2 planned** — the shape agreed point by point (§9); the name,
-"sound cues", proposed by the agent, not yet ruled; its release order open.
+**Status:** **Part 1 built, heard** (the owner: "it sounds amazing! Very spooky 😃") **and released** as the fork's
+`tz-0.8` (the installer pinned in this repository's #34; the owner's re-proof left). **Part 2 planned** — the shape
+agreed point by point (§9); the name, "sound cues", and its release as `tz-0.9` ruled by the owner; not built.
 **Trigger to revisit:** the PRs' review; Task 14's build; the proper loudness fix (§6.4).
 
 # Part 1 — The world outside: the ambience channel
@@ -278,8 +278,10 @@ After a reload (§8.1): "I have to say, it sounds amazing! Very spooky 😃"
 
 ## §7. What is left of Part 1
 
-- **The release:** merge the fork's #12 (first) and this repository's #34; tag `tz-0.8`; pin the installer; the
-  owner's re-proof (`make client-mac` twice).
+- ~~**The release:** merge the fork's #12 (first) and this repository's #34; tag `tz-0.8`; pin the installer~~ —
+  **done 2026-10-07:** #12 merged as `66e35d5` (its files identical to the tested `2197c1c`; the fork's tests green
+  on it: 1312 pytest, Node 15 / 29 / 42 / 8 / 17 / 91), tagged `tz-0.8`, the installer pinned in #34. **Left: the
+  owner's re-proof** (`make client-mac` twice).
 - **The proper loudness fix** (§6.4), if ever wanted.
 
 ## §8. Lessons and mistakes of Part 1
@@ -309,7 +311,8 @@ After a reload (§8.1): "I have to say, it sounds amazing! Very spooky 😃"
 ### §9.2 The name
 
 The agent proposes **"sound cues"** — the theatre and radio-drama word: when the script reaches a moment, the stage
-manager calls the cue and the sound plays. (The owner's working name: "Ambience to event coupling?") Not yet ruled.
+manager calls the cue and the sound plays. (The owner's working name: "Ambience to event coupling?") **Ruled: the
+owner accepted it** (2026-10-07, after the compaction: "Yes to both" — the name and the release order, §9.7).
 
 ### §9.3 The data the agent gathered first
 
@@ -379,15 +382,17 @@ against a line's audio, a cooldown. The owner's event-only version removes nearl
 
 ### §9.7 Open
 
-- **The name** (§9.2).
+- ~~**The name** (§9.2)~~ — **ruled: "sound cues"** (the owner: "Yes to both").
 - ~~"As long as the audio is": the clip's length or the round's length~~ — **ruled: the clip's length.** The owner
   (verbatim): "I lean the the clip's length, let's keep things simple... But I am open to pushbacks." The agent had
   none: a round is about three lines, 15-25 s with the gaps, and the textures 20-25 s, so a cued texture covers the
   event and the responses by itself; outlasting the round is a feature (the storm carries into the next one, as weather
   would); looping to the round's end would need the page to know when the round's audio ends and make a 20 s clip's
   seam audible. When the cued texture ends, the shuffle resumes with a random texture (the usual 0.6 s fade-in).
-- **The release order:** this in the same release as the ambience (holding #12), or **#12 merged and released now as
-  `tz-0.8`, the cues after as `tz-0.9`** — the agent's lean: a working release in hand while this is built.
+- ~~**The release order:** this in the same release as the ambience (holding #12), or **#12 merged and released now as
+  `tz-0.8`, the cues after as `tz-0.9`** — the agent's lean: a working release in hand while this is built.~~ —
+  **ruled: the agent's lean** (the owner: "Yes to both"). The ambience was released as `tz-0.8` the same day (§7);
+  the cues will be `tz-0.9`.
 
 ### §9.8 Notes for the build (verified in the code, 2026-10-07)
 

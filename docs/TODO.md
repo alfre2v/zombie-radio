@@ -139,7 +139,11 @@ it is detail.*
   ([experiment 2026-10-07] sfx-models — Stable Audio 3 Small-SFX the
   model to use); from it, **Task 13, the world outside** — an ambience
   channel inside the broadcast (the dead, gunfire, explosions, distant
-  screams). The event sounds set aside (the follow-up).
+  screams). The event sounds set aside (the follow-up). **Task 13 built,
+  heard ("it sounds amazing! Very spooky 😃") and released as the fork's
+  `tz-0.8`** (the installer pinned in #34; the owner's re-proof left).
+  **Task 14, sound cues, planned** — the name and its release as
+  `tz-0.9` ruled by the owner; not built.
 - **Deferred past the demo (the owner, 2026-10-01):** Task 5, the
   in-prototype experiments, and the character bibles — moved to the
   follow-up "In-prototype experiments and the character bibles —
@@ -549,7 +553,7 @@ the agent keeps this current. These carry across arcs.*
      3090 the client and the GPU stack share one machine: no tunnel, the
      client's `localhost` ports are the services' own
      ([discussion 2026-10-03] client-os-support §4).
-- [ ] **Task 12 — The compressed reference clips** (decided by the
+- [x] **Task 12 — The compressed reference clips** — **done 2026-10-07** (`tz-0.7`, #32) (decided by the
   owner, 2026-10-07: "We are going to execute on the compressed
   audios."; the format: **Opus 48 kbps**). The follow-up "Compressed
   reference clips, switchable on and off" holds the measurements. **The
@@ -639,11 +643,17 @@ the agent keeps this current. These carry across arcs.*
      and spots, its settings under `show:`, the `A` key, the story file, the AM filter, the ducking; tests
      (pytest and Node); a runbook recipe.
   6. [ ] **Release** — the fork's tag, the installer pinned, the owner's re-proof — before Task 7's video.
+     **Released 2026-10-07** as the fork's **`tz-0.8`**, an annotated tag on `66e35d5` (alfre2v/TalkWithZombies#12
+     merged; the merge identical to the tested branch head `2197c1c`; the fork's tests green on it: 1312 passed,
+     Node 15 / 29 / 42 / 8 / 17 / 91); the installer pinned to it (this repository's #34, which also carries the
+     prompts, the picks and the tools). **Left: the owner's re-proof** (`make client-mac` twice: `changed=1`, then
+     `changed=0`; `git describe` in the client `tz-0.8`).
   **The whole story, every decision and why:** [discussion 2026-10-07] the-world-outside, Part 1.
   **Estimate (the agent's):** about a day of the agent's work, about 2 hours of the owner's (the audition
   rounds, the reviews).
 - [ ] **Task 14 — Sound cues: an event round that names a sound plays it** (planned 2026-10-07, not built; the
-  name proposed by the agent, not yet ruled — the owner's working name: "Ambience to event coupling?"). The owner's
+  name proposed by the agent and **accepted by the owner, 2026-10-07** — the owner's working name had been "Ambience
+  to event coupling?"). The owner's
   idea (verbatim): "we would add a keywords list under each clip, and if the event text contains any of the keywords
   then we immediately insert that audio to be played as ambience". **The shape agreed point by point**
   ([discussion 2026-10-07] the-world-outside §9): **event rounds only** — the server knows the event before the round
@@ -652,8 +662,8 @@ the agent keeps this current. These carry across arcs.*
   spot plays once at the round's start** (the random spot timer reset); **a matched texture replaces the current one
   and plays to its end**, covering the cast's responses, then the shuffle resumes; several matches — one at random;
   misfires accepted ("also now at random, so it's not worse"); **a cued texture plays for the clip's length** (ruled:
-  "let's keep things simple"). **Estimate (the agent's): about 2½-3 hours.** **Open:** the name; the release order (the agent's lean: the ambience released first as
-  `tz-0.8`, this as `tz-0.9`).
+  "let's keep things simple"). **Estimate (the agent's): about 2½-3 hours.** **Ruled (the owner, 2026-10-07):** the
+  name "sound cues", and the release order — the ambience released first as `tz-0.8` (done), **this as `tz-0.9`**.
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes

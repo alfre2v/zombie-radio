@@ -1,7 +1,7 @@
 # Zombie-Radio — Product specification
 
 **Status:** living. This document describes the product as it is
-built — the fork TalkWithZombies at tag `tz-0.7` (`f2c0edb`)
+built — the fork TalkWithZombies at tag `tz-0.8` (`66e35d5`)
 and this repository's deployment — in the order someone
 would build it again. It is rewritten in place when the product
 changes; it carries no history. Why each choice was made, and when,
@@ -486,6 +486,28 @@ the cards, a link to upstream's chat UI at `/talkwithme`. The root
   ear rest; a slow fading (QSB) and an optional AM filter (a radio
   speaker's band) make it a receiver's. Keys: M mutes it, F flips the
   filter. The gauge never hears it.
+- **The ambience** — `static/show/ambience.js`, loaded after `bed.js`
+  wherever the bed is: the world outside the lab heard through the
+  scientists' microphone — the dead, the fighting, the people, the
+  weather — from 31 clips that ship with the app in `Sounds/ambience/`,
+  generated with Stable Audio 3 Small-SFX from this repository's prompts
+  (`tools/sounds/ambience.yaml`, the takes kept by ear), released by the
+  project as CC0 and credited in `Sounds/ambience/CREDITS.md` (the
+  model, every clip's prompt and seed); each with the gain that brings
+  it to the bed's average level, capped so its peak stays under full
+  scale (`ambience.json`, written by `tools/sounds/prepare_ambience.py`);
+  the story's `ambience.yaml` switches each clip on or off and changes
+  its level by ear. Two kinds: **textures**, long and continuous,
+  shuffled one after another, and **spots**, short single sounds (a
+  scream, a burst of gunfire, an explosion) every 20-60 seconds, never
+  the same twice in a row. Mixed to mono, it follows the page's state
+  like the bed — higher between rounds, lower under a line, silent
+  while the listener holds to talk, paused on Stop — but goes on while
+  the receiver is on, and its own silences (on the textures only; a
+  spot may come out of one) and fading run on their own timers, never
+  in step with the bed's. It goes through the bed's AM filter, so the F
+  key flips both; never through the bed's mute. Keys: A mutes it. The
+  gauge never hears it.
 - **The two looks:** `old-radio`, a photograph of a 1950 Philips
   Sirius BD 400 A (Wikimedia Commons, CC BY-SA 3.0, credited on the
   page) with the transcript on the speaker cloth, the magic eye as
@@ -506,8 +528,9 @@ Every number is a setting, under `show:` in the fork's
 model prefix, the token budgets (the reply, the context budget, the
 instruction room), the trim's trigger, target and kept rounds, the seed,
 the emotion tags, debug,
-the mood voices, the voice's seed, the static bed (on or off, its two volumes, the dip and the rise, the
-silences, the AM filter's band, the fading), the event and tone pacing, the free rounds' line budgets and weights,
+the mood voices, the reference clips' format, the voice's seed, the static bed (on or off, its two volumes, the dip and the rise, the
+silences, the AM filter's band, the fading), the ambience (on or off, its two volumes, the dip and the rise, the
+silences, the fading, the spots: on or off, their interval and volume), the event and tone pacing, the free rounds' line budgets and weights,
 the overtone's hold, the contact's length and line budgets, the
 silences before a Switch-off, the beats' lines, the orientation and
 recollection cadences, the restatement's reach, fixed lines, the
@@ -722,13 +745,15 @@ What the first release still needs, or has not settled:
   [discussion 2026-10-01] the-app-from-the-outside (how the app counts
   the script's tokens and trims; every endpoint, for testing);
   [discussion 2026-10-01] sound-effects (the research, then the static
-  bed: its design, its build, the clips chosen by ear).
+  bed: its design, its build, the clips chosen by ear); [discussion
+  2026-10-07] the-world-outside (the ambience: every decision and why).
 - **Deployment:** [discussion 2026-09-17] ansible-deployment-shape;
   [discussion 2026-09-13] cloud-gpu-provider-survey; [discussion
   2026-10-02] local-gpu-deployment-plan (the home box);
   `deploy/ansible/README.md`.
 - **Measurements:** `docs/experiments/` — the remote-split test
   (2026-09-14), the ADR-0003 gate and the emotion-field cost
-  (2026-09-22), the listener memory and the radio beats (2026-09-26).
+  (2026-09-22), the listener memory and the radio beats (2026-09-26),
+  the sound-effect models (2026-10-07: Stable Audio 3 Small-SFX chosen).
 - **Where the work stands:** `docs/TODO.md`, `docs/roadmap.md`,
   `docs/follow-ups.md`.
