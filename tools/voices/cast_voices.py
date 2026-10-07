@@ -152,7 +152,7 @@ def main():
         print(f"{name} <- {speaker}")
         keep_placeholder(folder, args.dry_run)
         if not args.dry_run:
-            for old in folder.glob("ref-*.*"):
+            for old in [*folder.glob("ref-*.*"), *folder.glob("ref.ogg")]:
                 old.unlink()
         written = [cast_clip(source / speaker, speaker, cfg["voice"], folder, "ref", cfg, args.dry_run)]
         if args.all_emotions:
