@@ -135,6 +135,11 @@ it is detail.*
   identification, a judge in the loop ("I do not want to execute on
   anything else you proposed there."). **Task 7's video comes last**,
   once the features are released.
+  **Later the same day:** the sound-effect experiment ran and closed
+  ([experiment 2026-10-07] sfx-models — Stable Audio 3 Small-SFX the
+  model to use); from it, **Task 13, the world outside** — an ambience
+  channel inside the broadcast (the dead, gunfire, explosions, distant
+  screams). The event sounds set aside (the follow-up).
 - **Deferred past the demo (the owner, 2026-10-01):** Task 5, the
   in-prototype experiments, and the character bibles — moved to the
   follow-up "In-prototype experiments and the character bibles —
@@ -576,6 +581,52 @@ the agent keeps this current. These carry across arcs.*
   installer pinned to it (`alfre2v/installer-tz-0.7`). **Left:** the
   owner's re-proof (`make client-mac` twice), then `reference_format:
   ogg` under `show:` in the client's `settings.yaml`.
+- [ ] **Task 13 — The world outside: an ambience channel inside the broadcast** (decided by the owner,
+  2026-10-07, after the sound-effect experiment — [experiment 2026-10-07] sfx-models: Stable Audio 3
+  Small-SFX passed by ear, its moaning crowd three good takes of three). It grew from the follow-up "the
+  dead outside" (the owner: "We need more of this on the show. It's a show about a zombie appocalipse and
+  we do not hear any zombies in the background... Now we can fix that!"), then widened (verbatim):
+  "Actually as ambiance I do not just want zombies sounds, but also: different types of zombie sounds,
+  like getting louder, slow moaning, frantic screams. We need to experiment with different prompts to see
+  what we get, I suppose we will need to throw away many of the prompts for lack of a good sound
+  generated. Also: distant sounds of machine gun, and shots fired, explosions in the distance. screams in
+  the distance, hysterical laughter in the distance, etc."
+  **Ruled (2026-10-07):**
+  - **Inside the broadcast** — the owner: "Inside, obviously." — heard through the scientists'
+    microphone, so filtered by the AM filter (the F key) like the static.
+  - **Its own levels and silences, as settings** — the owner: "separate from the bed's, as settings. And
+    care should be put so that they do not raise and fall at the same time as the bed. They are different
+    sources of audio." Its own timers, never in step with the bed's.
+  - **Its own mute key, `A`** — the owner: "the ambience is part of the story... But it my we wise to add
+    a separate button to silence the ambience, for example the letter `A`." The M key keeps muting the
+    static only.
+  - **A story file choosing the clips**, like `bed.yaml`.
+  - **Two kinds of sound** (the agent's proposal, accepted): **textures** — long, continuous, looping
+    (the dead moaning, a distant stir), played one after another like the bed's clips; and **spots** —
+    short single events at random moments with silence between them (a machine-gun burst, an explosion, a
+    scream, hysterical laughter, a frantic shriek), sparse on top of the textures. Each with its own
+    settings.
+  - **It ducks a little under the voices** (the agent's lean, accepted: "you got it all right"), so the
+    cast stays easy to understand.
+  - **Prompts written for the ambience:** textures steady, nothing that starts or stops abruptly, 20-30 s
+    long (Small-SFX goes to 120 s at the same cost); spots short.
+  **The steps:**
+  1. [ ] **The prompts** — about 30-40, textures and spots across the owner's list; the agent drafts, the
+     owner edits.
+  2. [ ] **The generation tool** in this repository (prompts in a YAML file, takes out, on the box's
+     `sfx-lab/` with Stable Audio 3 Small-SFX — [experiment 2026-10-07] sfx-models, Entry 7).
+  3. [ ] **The audition, in two rounds** — round 1, **screening**: one take a prompt, the owner keeps the
+     promising prompts (about 20 minutes); round 2, **picking**: five takes for each kept prompt, the
+     owner chooses. A page like the experiment's `listen.html`.
+  4. [ ] **The picks prepared** — levels evened out and a manifest (`tools/sounds/prepare_bed.py`, likely
+     extended), credits: released by the project as CC0 (Stability's Community License gives the user the
+     outputs — the experiment's Entry 11), the model and the prompts named in a `CREDITS.md`.
+  5. [ ] **The fork** — an ambience channel reusing the bed's machinery (`static/show/bed.js`): textures
+     and spots, its settings under `show:`, the `A` key, the story file, the AM filter, the ducking; tests
+     (pytest and Node); a runbook recipe.
+  6. [ ] **Release** — the fork's tag, the installer pinned, the owner's re-proof — before Task 7's video.
+  **Estimate (the agent's):** about a day of the agent's work, about 2 hours of the owner's (the audition
+  rounds, the reviews).
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes

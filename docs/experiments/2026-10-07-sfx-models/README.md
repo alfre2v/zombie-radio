@@ -1,11 +1,35 @@
 # Sound-effect models — live beside the stack, and the best offline — runlog
 
-**Run:** not yet — **planned 2026-10-07**, written for the owner's review before anything is installed.
-**Timebox:** to be set by the owner before the first install (the agent's proposal: half a day, the box's time
-included).
+**Run:** 2026-10-07, about 13:25-15:37 CDT, on the A6000 cloud box — **closed**.
+**Timebox:** half a day, the agent's proposal, accepted with the rest of the plan; kept.
 **Provenance:** [discussion 2026-10-01] sound-effects — the research (§4.1, the candidates and their licences), the
 first design of a listening test (§6.2, never run), the owner's two-part plan of 2026-10-07 (§9);
 `docs/follow-ups.md`, "Event sounds as a layer of their own beside the static bed".
+
+## Results
+
+| | Woosh-DFlow | **Stable Audio 3 Small-SFX** | MOSS-SoundEffect v2.0 | Stable Audio 3 Medium |
+|---|---|---|---|---|
+| Part | 1 (live) | 1 (live) | 2 (offline) | 2 (offline), added |
+| Time per take, warm (A6000) | 0.09-0.16 s | **0.42-0.44 s** | 19.5-20.0 s | 0.76-0.84 s |
+| GPU memory, the process | 4.0 GB, beside the stack | **2.9 GB, beside the stack** | 18.3 GB, alone | 9.7 GB, beside the stack |
+| On a 3090 (24 GB) | fits beside the stack | **fits beside the stack, ~8 GB to spare** | fits alone, ~6 GB to spare | beside the stack ~1.7 GB to spare |
+| The voice under constant load | no effect | **no effect** | — (the stack stopped) | 4-5 % slower |
+| The owner's ear: good / usable / unusable | 3 / 10 / 17 | **21 / 5 / 4** | 11 / 10 / 9 | 14 / 7 / 9 |
+| Sounds with a good take | 1 of 10 | **8 of 10** | 9 of 10 | 8 of 10 |
+| Verdict | disqualified (43 % of takes usable) | **passes every live criterion; the model to use** | complements Small on two sequences | set aside (same misses as Small, worse elsewhere) |
+
+- **Live sound generation is feasible** with Stable Audio 3 Small-SFX: 0.44 s a take, 2.9 GB beside the stack, no
+  effect on the voice, 87 % of takes usable or good (Entries 8-9).
+- **For an offline library**, Small-SFX's good takes cover eight of the ten sounds; MOSS's add the two sequences
+  (`thunder-alarms`, `fans-howl`) — together, all ten (Entries 11, 13).
+- **The weak prompts are sequences** ("thunder, then alarms"; a rise from silence) — a hypothesis from three prompts.
+- **What is generated can ship:** Stability's Community License gives the user the outputs and keeps them outside its
+  "Derivative Works"; MOSS's weights are Apache 2.0 (Entry 11).
+- **The live criterion was corrected** mid-run: live, nobody picks the take — what counts is the share of takes
+  usable, not the best of three (Entry 6).
+- **Side lessons:** `uv` does not mix package indexes the way `pip` does (Entry 10); PyTorch 2.9's `torchaudio.save`
+  needs FFmpeg on the system (Entry 10); three CUDA builds (12.6, 12.8) ran on the box's 12.4 driver.
 
 ## The question
 
@@ -51,7 +75,9 @@ for us? Is the quality difference so big?" — the difference is unknown (no pub
 MOSS's Apache licence leaves its sounds free to ship in the MIT fork, which Stability's terms may not. MOSS it is.
 
 **Licences of what is generated:** Part 1 ships nothing — a live sound is played at a non-commercial talk, which
-both licences cover. Part 2's sounds would ship in the fork, under Apache-licensed weights.
+both licences cover. Part 2's sounds would ship in the fork, under Apache-licensed weights. **Read on 2026-10-07
+(Entry 11):** Stability's Community License gives the user ownership of the outputs and keeps them outside its
+"Derivative Works" — Stable Audio's sounds can ship too.
 
 **Left out** ([discussion 2026-10-01] sound-effects §4.1): TangoFlux (research-only licence), MMAudio (mainly
 video-to-audio), Stable Audio Open 1.0 (superseded), AudioGen and AudioLDM 2 (16 kHz mono, low fidelity); Stable
@@ -457,4 +483,251 @@ the talk (still a big build: a server like tts-serve, a role, the page's mixing 
 measured numbers. For Part 2 the question shifts: Small-SFX already has a good take for eight sounds of ten, so MOSS
 must show it is **noticeably better**, and whether its Apache licence matters for shipping the sounds (Stability's
 terms on generated audio not yet read).
+
+### Entry 10: MOSS-SoundEffect v2.0 — the install, one take, the 30 takes (the stack stopped)
+
+The owner stopped the stack before the install (`make ans-stop ENV=cloud`; "I can see with nvtop the GPU memory
+released"); the GPU read 2 MiB, no process.
+
+```bash
+cd ~/sfx-lab && git clone https://github.com/OpenMOSS/MOSS-TTS.git moss-tts   # commit 934d682 (2026-09-06), 12 MB
+export UV_CACHE_DIR=~/sfx-lab/uv-cache UV_PYTHON_INSTALL_DIR=~/sfx-lab/python
+cd moss-tts/moss_soundeffect_v2 && ~/sfx-lab/bin/uv venv --python 3.12 .venv   # the 3.12 fetched for Woosh, reused
+```
+
+**The README's install failed in 0.4 s** — `uv pip install --extra-index-url https://download.pytorch.org/whl/cu128
+-e ".[torch-cu128]"`: "there is no version of tqdm==4.67.3". The README is written for `pip`, which merges every index
+and takes the best version anywhere; **`uv` uses, for each package, only the first index that has it at all** — a
+defence against "dependency confusion" (a fake package under a trusted name on a second index). PyTorch's index also
+hosts `tqdm`, not at MOSS's pinned 4.67.3, so `uv` stopped there. Two fixes: `--index-strategy unsafe-best-match`
+(behave like `pip`, the protection off for every package), or **split the install** — the agent's choice, the
+protection kept:
+
+```bash
+# (a) the PyTorch builds alone, from PyTorch's index only (the versions of the torch-cu128 extra in pyproject.toml)
+~/sfx-lab/bin/uv pip install --python .venv --index-url https://download.pytorch.org/whl/cu128 \
+  torch==2.9.0+cu128 torchaudio==2.9.0+cu128 torchvision==0.24.0+cu128          # 30 packages in 17 s
+# (b) MOSS and the rest, from PyPI only; the installed PyTorch satisfies the extra's pins
+~/sfx-lab/bin/uv pip install --python .venv -e ".[torch-cu128]"                  # 121 packages
+```
+
+(b) replaced numpy 2.5.2 and pillow 12.3.0 (pulled in by PyTorch) with MOSS's pins, numpy 1.26.4 and pillow 12.2.0.
+The GPU check: **torch 2.9.0+cu128 on the A6000** — the third CUDA build to run on the 12.4 driver; transformers 4.57.1;
+the pipeline imports. **The environment: 7 GB** (`uv`'s cache from 13 to 20 GB).
+
+**A correction to Entry 7:** `uv` hard-links packages from its cache into each environment, so a file exists once on
+disk and `du` counts it at the first place it meets it — the environments show as 57 MB and 92 MB, the cache as 13 GB.
+The cache does not "keep its own copy"; the 9 GB of Entry 7 were Stable Audio's packages landing in it. And the
+Hugging Face `xet/` folder held 772 KB — no second copy of the weights.
+
+```bash
+HF_HOME=~/sfx-lab/hf .venv/bin/hf download OpenMOSS-Team/MOSS-SoundEffect-v2.0   # 17 files, 11 GB in 23 s
+```
+
+Snapshot `e35df4d`; 17 GB of disk left. **The pipeline's call** (`pipeline_moss_soundeffect.py`): its defaults are the
+card's — 100 steps, `cfg_scale=4.0`, `sigma_shift=5.0` — with a `seed` (0 by default), mono by default (`num_channels=1`),
+48 kHz; it always denoises a fixed-size latent and crops it to the length asked; it appends `" duration: <X>s"` to every
+prompt (its training convention). Guidance 4.0 runs the model twice a step — 200 passes a take, against Small-SFX's 8.
+
+**One take** (`try_moss.py`, the helicopter, seed 1; compiling off, `TORCHDYNAMO_DISABLE=1`, as MOSS's own scripts
+do — speed does not matter in Part 2, and the compile takes minutes and may fail):
+
+```bash
+TORCHDYNAMO_DISABLE=1 HF_HOME=~/sfx-lab/hf HF_HUB_OFFLINE=1 .venv/bin/python ../../try_moss.py
+```
+
+Loaded in 18.1 s, every weight matched (`missing=0, unexpected=0`), **9.88 GiB on the GPU**; **22.4 s cold, 19.4 s
+warm** for 8 s of sound (2.4 times slower than real time; about 45 times slower than Small-SFX); 14.51 GiB at peak by
+PyTorch's count.
+
+**The 30 takes** (`gen_moss.py`, the card's defaults, in the background):
+
+- **The first run crashed on its first save.** In PyTorch 2.9, `torchaudio.save` writes through a new library,
+  TorchCodec, which needs FFmpeg on the system — the box has none (PyTorch 2.8 and 2.7, Woosh's and Stable Audio's,
+  still wrote WAVs themselves). The one-take test had not saved a file, so it did not catch it. **Fixed without touching
+  the system:** `soundfile`, already among MOSS's dependencies, writes the WAV (`sf.write(…, subtype="FLOAT")`); a
+  silent file saved and deleted first, to prove the fix. The owner offered to install FFmpeg ("I can install ffmpeg in
+  a second if you need it") — not needed; the agent should have offered the choice instead of deciding alone.
+- **The rerun:** loaded in 16.6 s; **19.5-19.96 s per take, flat** — 3 s and 10 s of sound alike — about 10 minutes
+  for the 30.
+- **Memory: MOSS's process peaked at 18,274 MiB** (`nvidia-smi`; more than PyTorch's 14.5 GiB, because PyTorch keeps a
+  reserve it has asked CUDA for and `nvidia-smi` counts it). **Under the 3090's 24 GB, about 6 GB to spare — Part 2's
+  fit criterion met.** Beside the stack it would not fit (12.6 + 18.3 > 24) — never Part 2's question.
+- **The takes:** 30 WAVs, mono, 48 kHz, 32-bit float, copied beside the others (143 MB in all).
+
+The owner restarted the stack afterwards (`make ans-start ENV=cloud`).
+
+### Entry 11: MOSS by ear; the three compared; the licences of what is generated
+
+The owner rated the 30 takes (verbatim): "MOSS-SoundEffect is a hit-or-miss kind of model."
+
+```
+MOSS-SoundEffect v2.0 (Part 2): 11 good, 10 usable, 9 unusable; sounds with a usable take: 10/10
+  glass-rain      good / good / good
+  sirens-far      unusable / unusable / good
+  helicopter      usable / usable / good
+  fans-howl       usable / usable / good
+  thunder-alarms  good / unusable / usable
+  tapping-glass   usable / unusable / unusable
+  moaning-crowd   usable / usable / good
+  radio-static    unusable / unusable / good
+  receiver-on     good / unusable / unusable
+  receiver-dies   usable / usable / good
+```
+
+| | Woosh-DFlow | Small-SFX | MOSS |
+|---|---|---|---|
+| good | 3 (10 %) | 21 (70 %) | 11 (37 %) |
+| usable | 10 | 5 | 10 |
+| unusable | 17 (57 %) | 4 (13 %) | 9 (30 %) |
+| usable or good | 13 / 30 | 26 / 30 | 21 / 30 |
+| sounds with a good take | 1 | 8 | **9** |
+| time per take (A6000) | 0.09-0.16 s | 0.44 s | 19.9 s |
+| GPU memory, the process | 4.0 GB | 2.9 GB | 18.3 GB |
+
+**Take by take, Small-SFX is the reliable one** (seven in ten good; MOSS fewer than four). **For Part 2, where the
+owner picks, MOSS reaches a good take for nine sounds, Small-SFX for eight — and they miss differently:**
+
+- **MOSS got the two sequences Small-SFX could not:** `thunder-alarms` (a good take, seed 1 — on the prompt the owner
+  called bad) and `fans-howl` (the rise from silence). It fits Entry 9's hypothesis that a bigger model handles a sound
+  that changes over time better — two sounds, a hint.
+- **Small-SFX got the simple sounds MOSS fumbled:** `tapping-glass` (three good against none) and `radio-static`.
+- **Together, every one of the ten sounds has a good take.**
+
+**Part 2's verdict: MOSS meets the criteria** (fits a 3090 alone; good takes for nine sounds) — **and Small-SFX nearly
+matches it offline too**, 45 times faster. Not yet tested: asking Small-SFX for 10-20 takes a sound and keeping the
+best, which might close its gap on sequences.
+
+**The licences of what is generated** — read 2026-10-07:
+
+- **Stable Audio 3** (the weights: the Stability AI Community License; read at `stability.ai/community-license-agreement`,
+  "Last Updated: July 5, 2024" — the Hugging Face copy is gated; the GitHub repository's `LICENSE` is the code's, MIT):
+  "**Ownership of Outputs.** As between You and Stability AI, You own any outputs generated from the Models or
+  Derivative Works to the extent permitted by applicable law." Its "Derivative Works" end "but do not include the output
+  of any Model" — so the licence's limits on the model do not follow the sounds. Two strings do: outputs may not be
+  used "to create or improve any foundational generative AI model", and their use must follow the law and Stability's
+  acceptable-use policy.
+- **MOSS:** Apache 2.0 weights; its training data not stated (Open risks).
+- **For the fork** (shipped clips must be CC0 or CC BY): picks from either model can be released by us, as CC0 for
+  instance. "To the extent permitted by applicable law" is a real caveat — purely machine-made audio may not be
+  copyrightable in the US at all. A reading, not legal advice; the copy the owner accepted on Hugging Face may be newer
+  than the July 2024 page — its "Ownership of Outputs" clause is worth confirming there.
+
+### Entry 12: Stable Audio 3 Medium — added to Part 2; MOSS's weights deleted; Flash Attention; the 30 takes
+
+**Medium added** — the owner (verbatim): "I feel that if we are doing all this effort, we may as well also do for the
+Part 2 the Medium version that you were pushing for before and measure how it compares to Moss." The agent agreed,
+and added a reason: Stability's table (5.07-6.49 GB, 0.60 s for 5 s on an H200) made Medium a possible live candidate
+too. **Kept:** the owner's Hugging Face token stays active, and everything stays in `sfx-lab/` ("in case we want to
+generate more audios later").
+
+**MOSS's weights deleted** — the owner (verbatim): "My lean right now is to delete the Moss model weight, I was
+underwhelmed with it." The agent agreed: public, re-downloaded in 23 s if ever needed; its code and environment kept.
+
+```bash
+rm -rf ~/sfx-lab/hf/hub/models--OpenMOSS-Team--MOSS-SoundEffect-v2.0   # 27 GB free after
+```
+
+**Flash Attention 2, required by Medium** (not by Small). Stability's README points to a pre-built wheel from a
+community repository, `mjun0812/flash-attention-prebuild-wheels` (1,760 stars, since 2024-10) — a third-party binary,
+approved by the owner ("yes, approved, check the wheel first"). Its file for our environment (CUDA 12.6, PyTorch 2.7,
+Python 3.10) — the README's own example — exists in release v0.7.16 (2026-01-28): 185 MB, 2,749 downloads, its SHA-256
+published by GitHub. Kept at 2.6.3, the version the README names, over the newer 2.7.4 and 2.8.3.
+
+```bash
+W=flash_attn-2.6.3+cu126torch2.7-cp310-cp310-linux_x86_64.whl
+cd ~/sfx-lab && curl -sSfL -o "$W" https://github.com/mjun0812/flash-attention-prebuild-wheels/releases/download/v0.7.16/$W
+echo "85909aa24df69b530111cde4c878bb866538211911af46c21676ef48437c0307  $W" | sha256sum -c   # OK
+cd stable-audio-3 && ~/sfx-lab/bin/uv pip install --python .venv "../$W"                     # 1 package, no others
+```
+
+One call on the GPU (`flash_attn_func` on half-precision tensors): the right shape, every value finite, on GPU
+capability (8, 6) — Ampere, the 3090's generation too. (A plain `uv sync` would remove it — it is not in the lock file;
+`--inexact` keeps it.)
+
+**The weights, downloaded by the owner** (the same hidden-prompt line, `stabilityai/stable-audio-3-medium`): 9.8 GB on
+disk (10.45 GB in decimal units); 17 GB free after. **Medium's settings are Small's:** the CLI defaults to 8 steps and
+`cfg_scale` 1.0 ("try 7.0 for base models"); the model overview: `small-sfx` and `medium` are the post-trained
+checkpoints — an adversarial post-training taught them to work in a few steps without guidance. Small-SFX is a
+sound-effect specialist; Medium is general (music and sound effects).
+
+**One take** (`try_sa3.py medium`, beside the running stack — llama.cpp 6,970 MiB, the voice 4,756, Whisper 804; the
+voice about 2 GB less than in the morning, freshly restarted): no "flash_attn not installed" line — Flash Attention in
+use; loaded in 22.7 s, **4.34 GiB on the GPU**; **0.83 s warm, 2.02 s cold** for 8 s of sound (about 11 steps a
+second, Small 20); 8.70 GiB at peak by PyTorch's count — above Stability's 5.07-6.49 GB (H200, long sounds; the
+difference not explained).
+
+**The 30 takes** (`gen_sa3.py`, now taking the model's name; Medium's takes saved as `<tag>/sa3m-<seed>.wav`):
+
+```bash
+cd ~/sfx-lab/stable-audio-3
+(nohup ../sample_gpu.sh ../gpu-sa3m.csv > /dev/null 2>&1 < /dev/null &)
+HF_HOME=~/sfx-lab/hf HF_HUB_OFFLINE=1 .venv/bin/python ../gen_sa3.py ../sounds.json ~/sfx-lab/takes medium
+pkill -x nvidia-smi
+```
+
+- **Speed: 0.76-0.84 s per take, warm** (0.77 s for 3-4 s of sound, 0.82 s for 6-10 s); the first 1.70 s, cold.
+- **Memory: the process peaked at 9,716 MiB** beside the stack. On a 3090 (the stack 12,598 MiB): **about 22.3 GB of
+  24 — 1.7 GB to spare** (Small left about 8 GB). Against Part 1's proposed criterion (8 GB or less beside the
+  stack): **a fail, by 1.7 GB**; Part 2's (under 24 GB alone): a pass.
+- **The voice** (`busy_sa3.py … medium`, 96 takes in 80 s; 12 requests each way):
+
+| | Median | Range |
+|---|---|---|
+| Alone | 1.76 s | 1.68-2.40 |
+| Medium generating | 1.84 s | 1.74-2.00 |
+
+  **The experiment's first measurable effect on the voice — about 4-5 %**, inside the 20 % criterion; most requests a
+  little higher under Medium (the 2.40 s alone was the first request, a familiar outlier). Medium is the heaviest of
+  the four on the GPU's compute, the first that does not fit wholly into the voice model's idle gaps — under a load
+  far beyond a show's.
+
+**The ear: next** — the fourth column of `listen.html`.
+
+### Entry 13: Medium by ear — set aside; the experiment closed
+
+The owner rated Medium's 30 takes (verbatim, the page's summary) — "Darn, I know what you are going to say: It does
+not replaces Moss, they complement each other... Ok on that observation... My question is: Is it even worth it to use
+the medium, or Stable Audio 3 Small is as good as this one?"
+
+```
+Stable Audio 3 Medium (Part 2): 14 good, 7 usable, 9 unusable; sounds with a usable take: 9/10
+  glass-rain      good / good / usable
+  sirens-far      good / unusable / good
+  helicopter      good / good / good
+  fans-howl       usable / unusable / unusable
+  thunder-alarms  unusable / unusable / unusable
+  tapping-glass   good / unusable / usable
+  moaning-crowd   good / good / unusable
+  radio-static    good / usable / good
+  receiver-on     good / usable / usable
+  receiver-dies   usable / unusable / good
+```
+
+**It does not complement Small-SFX — it misses the same two sounds** (`fans-howl`, one usable take; `thunder-alarms`,
+none) **and does worse elsewhere:**
+
+| | Small-SFX | Medium |
+|---|---|---|
+| good | 21 (70 %) | 14 (47 %) |
+| unusable | 4 (13 %) | 9 (30 %) |
+| sounds with a good take | 8 of 10 | 8 of 10 (the same two missing) |
+| time per take | 0.44 s | 0.84 s |
+| GPU memory beside the stack | 2.9 GB | 9.7 GB |
+| Flash Attention | not needed | needed |
+
+Sound by sound, Medium beats Small only on `sirens-far` (two good takes against one); Small is equal or better on the
+other nine (`tapping-glass` three good against one, `moaning-crowd` three against two, `receiver-on` three against
+one). The agent's reading: **Small-SFX is a sound-effect specialist, Medium a generalist** (music and sound effects) —
+Stability's test scored Medium higher on its own mix, not on ten radio-play effects. **MOSS stays the one model that
+complements Small** — on the two sequences only. Three takes a sound, one listener, ten prompts: a clear pattern, not
+proof — but it supports the cheap decision. **Medium: set aside.**
+
+**The box, as left** (the owner's ruling: everything kept in `sfx-lab/` "in case we want to generate more audios
+later"; the Hugging Face token kept active): `sfx-lab/` holds 39 GB — the three environments (Woosh, Stable Audio,
+MOSS), the weights of Woosh, Small-SFX and Medium (MOSS's deleted, Entry 12), the takes; 17 GB of the disk free. The
+owner: "We cannot leave the disk so tight" — to be decided.
+
+**The experiment is closed.** The owner's next step, chosen from three: the zombie ambience, the event sounds, or more
+Small-SFX takes a sound.
 

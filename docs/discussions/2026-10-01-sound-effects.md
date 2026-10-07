@@ -3039,8 +3039,10 @@ dialogue — the cast speak of the moaning outside; the audience never hears it.
 - **A prompt detail:** the experiment's prompt ends "then sudden silence" (it serves an event); an ambience clip needs
   to loop without a hard stop.
 
-**Status:** an idea, kept as a follow-up of its own (the owner: "it's not technically the same task") —
-`docs/follow-ups.md`, "The dead outside — a second background channel of zombie ambience beside the static bed".
+**Status:** decided the same day, widened to the world outside (gunfire, explosions, distant screams) — Task 13 in
+`docs/TODO.md`, with the owner's rulings (inside the broadcast; its own levels, timers and `A` key; textures and spots).
+The event sounds were set aside: if ever, a live Stable Audio 3 Small-SFX server in the stack (the follow-up "Event
+sounds as a layer of their own beside the static bed").
 
 ## §7. Sources
 

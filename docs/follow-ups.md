@@ -1936,40 +1936,21 @@ reader's memory):
 - **The fix shape:** named lists in `stories/<story>/bed.yaml` (a `default` and one per kind of round); the start
   reply carries them; `bed.js` switches the list when a round of that kind starts (the round's summary names its kind).
 
-## The dead outside — a second background channel of zombie ambience beside the static bed (owner, 2026-10-07) — not decided
-
-- **The idea (the owner, verbatim, 2026-10-07):** "The zombie moan was very good. We need more of this on the show.
-  It's a show about a zombie appocalipse and we do not hear any zombies in the background... Now we can fix that!" —
-  and, on where to keep it: "It is distinct to the SFX task, although it requires some sound SFX generation, it's not
-  technically the same task, and your observation that is another channel, almost the same logic as the bed, but for
-  ambience sounds that go up and down, it's genuinely a good idea to record as a task, even if we don't execute it
-  now."
-- **The gap:** the show's only background sound is the radio static (the static bed). The dead exist only in the
-  dialogue — the cast speak of the moaning outside; the audience never hears it.
-- **Where flagged:** [experiment 2026-10-07] sfx-models, Entry 9 — Stable Audio 3 Small-SFX's moaning crowd, three
-  good takes of three; [discussion 2026-10-01] sound-effects §9.5.
-- **How it differs from the event sounds** (the entry below): an event sound plays once, before an event's line; this
-  is an **ambience** — always there, quiet, rising and falling — a second background channel, not a reaction to the
-  story.
-- **Trigger:** the owner's call; the clips can come from the experiment's Part 2 path (generated offline, judged,
-  shipped like the bed's).
-- **The fix shape (the agent's, not discussed):**
-  - **the clips:** a few of distant moaning, shuffling, groaning, generated offline (Stable Audio 3 Small-SFX already
-    passes by ear; Part 2's model if it does better), picked by the owner, shipped with the client like the bed's
-    clips (with their licences checked — the fork's tests allow only CC0 or CC BY for the bed's);
-  - **the prompts:** ambience, not events — the experiment's prompt ends "then sudden silence", which suits an event;
-    an ambience clip must loop without a hard stop;
-  - **the page:** the static bed's machinery (the fork's `static/show/`) already shuffles clips, keeps a level during
-    a round and another between rounds, schedules silences, goes silent while the listener holds to talk, and mutes
-    with M — a second bed, "the dead outside", may reuse it with its own levels rather than need a new system;
-  - **the story:** which clips play, like the bed's `bed.yaml`.
-
 ## Event sounds as a layer of their own beside the static bed (owner, 2026-10-01) — very low priority; undecided whether worth executing; kept as a ledger of ideas
 
 - **Status 2026-10-07 — back under discussion.** With more days before the talk, the owner raised the sound effects
   again, with a two-part plan: an experiment with sound-effect models on the box, then sounds stored per event and
   played just before it — [discussion 2026-10-01] sound-effects §9. Not decided: "The other SFX is still pending
   discussion."
+- **Status 2026-10-07, after the experiment — set aside; if ever, live.** The experiment ([experiment 2026-10-07]
+  sfx-models) found Stable Audio 3 Small-SFX fast and light enough to run live beside the stack (0.44 s a take, 2.9 GB,
+  no effect on the voice). The agent sized the event sounds as a library — 289 events, so sound tags shared by events
+  rather than a prompt each, and new page logic to play a sound just before its event's line: about two days. The
+  owner (verbatim): "As for the "The event sounds" feature, yeah, this one is too much for now. If I ever tackle this
+  one, would be by adding stable audio 3 small server to the AI stack, not creating a huge library of sounds to
+  download, that is technically boring... We can save this decision with the task." **The ruling:** if ever built,
+  **as a Stable Audio 3 Small-SFX server in the AI stack, generating live** — never a downloaded library. The ambience
+  went ahead instead (Task 13).
 
 - **The statement:** sounds for the events (an alarm, glass breaking, a rotor), heard through the transmitter and
   lasting their own length across rounds, as **a second layer** beside the bed — the bed is the radio, an event's sound
