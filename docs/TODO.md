@@ -637,8 +637,21 @@ the agent keeps this current. These carry across arcs.*
      and spots, its settings under `show:`, the `A` key, the story file, the AM filter, the ducking; tests
      (pytest and Node); a runbook recipe.
   6. [ ] **Release** — the fork's tag, the installer pinned, the owner's re-proof — before Task 7's video.
+  **The whole story, every decision and why:** [discussion 2026-10-07] the-world-outside, Part 1.
   **Estimate (the agent's):** about a day of the agent's work, about 2 hours of the owner's (the audition
   rounds, the reviews).
+- [ ] **Task 14 — Sound cues: an event round that names a sound plays it** (planned 2026-10-07, not built; the
+  name proposed by the agent, not yet ruled — the owner's working name: "Ambience to event coupling?"). The owner's
+  idea (verbatim): "we would add a keywords list under each clip, and if the event text contains any of the keywords
+  then we immediately insert that audio to be played as ambience". **The shape agreed point by point**
+  ([discussion 2026-10-07] the-world-outside §9): **event rounds only** — the server knows the event before the round
+  runs, matches its text once against the clips' `keywords:` (in the story's `ambience.yaml`; whole words,
+  case-insensitive, short careful lists), and puts a cue (`{file, kind}`) in the round's start message; **a matched
+  spot plays once at the round's start** (the random spot timer reset); **a matched texture replaces the current one
+  and plays to its end**, covering the cast's responses, then the shuffle resumes; several matches — one at random;
+  misfires accepted ("also now at random, so it's not worse"); **a cued texture plays for the clip's length** (ruled:
+  "let's keep things simple"). **Estimate (the agent's): about 2½-3 hours.** **Open:** the name; the release order (the agent's lean: the ambience released first as
+  `tz-0.8`, this as `tz-0.9`).
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes
