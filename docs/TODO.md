@@ -552,16 +552,24 @@ the agent keeps this current. These carry across arcs.*
   WAVs are never touched — the owner (verbatim): "let's take care on not
   overwriting the original files … that way if I encounter unexpected
   problems during a live show I can easily revert to using the old
-  wavs"; the casting script (`tools/voices/cast_voices.py`, `ffmpeg`)
-  writes each clip's compressed copy beside it with its real extension
-  (`ref-fear.ogg` beside `ref-fear.wav`, one `ref-fear.txt` for both);
+  wavs"; a tool of its own, `tools/voices/compress_voices.py`
+  (`ffmpeg`; chosen over the casting script, which can only recast every
+  WAV from the dataset), writes each clip's compressed copy beside it
+  with its real extension (`ref-fear.ogg` beside `ref-fear.wav`, one
+  `ref-fear.txt` for both) and never writes or deletes a WAV; a recast
+  removes the copies (`cast_voices.py`), the tool is run again after it;
   a clip keeps its name everywhere (the stories still say
   `ref-fear.wav`); **a switch in the client's `settings.yaml`,
   `show.reference_format: ogg` (or `wav`)**, chooses what the app sends —
   reverting during a show is that line and a restart; the fork tries
   the chosen format first and falls back to the `.wav`, so a missing
   `.ogg` never breaks a line. Then a fork release and the installer
-  pinned to it, before Task 7's video.
+  pinned to it, before Task 7's video. **Built and heard 2026-10-07**
+  (the tool, the fork's setting, 11 tests): the copies 8.4 times
+  smaller, the switch proven both ways, no difference to the owner's ear
+  in a 23-round show ("I cannot notice any difference"), no speed gain
+  on a fast connection ([discussion 2026-09-29]
+  voice-datasets-with-emotion §11.15). **Left:** the release.
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes

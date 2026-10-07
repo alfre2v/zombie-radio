@@ -1679,3 +1679,44 @@ them, with their fix. Daniel's two known bad clips (§11.13) are accepted
 for now. The demo's goal 2, "emotional voices in support of the
 narration", is met by the owner's verdict. The cast for the demo: Daniel
 p007, Moira p026, Ralph p017, Samantha p063.
+
+### §11.15 2026-10-07 — the compressed clips built and heard (Task 12): no difference to the ear
+
+With more days before the talk, the owner (verbatim): "We are going to execute on the compressed audios." — §11.7's
+option, built as the TODO's Task 12 with the owner's change: the original WAVs are never touched ("that way if I
+encounter unexpected problems during a live show I can easily revert to using the old wavs").
+
+**What was built:**
+
+- **zombie-radio, `tools/voices/compress_voices.py`:** an Opus copy (48 kbps, mono, in an Ogg file) beside every
+  `ref.wav` and `ref-<word>.wav` of the cast — `ref-fear.ogg` beside `ref-fear.wav`, sharing `ref-fear.txt`; never
+  writes or deletes a WAV; `--remove` deletes only the copies. `cast_voices.py` removes the copies on a recast (a
+  stale `ref.ogg` would otherwise speak with the old voice).
+- **The fork:** a setting, `show.reference_format` (`wav`, the default, or `ogg`); the voice route sends a clip's
+  copy when the setting asks for it and the copy exists, else the WAV — a missing copy never breaks a line; the clip
+  keeps its name everywhere (the stories still say `ref-fear.wav`). 11 new tests; the suite 1295 passed.
+
+**Measured (2026-10-07, the A6000 through the tunnel, from the fork's branch on port 8010):**
+
+- **The copies:** the cast's 96 clips, 50,335 KB of WAVs → 5,978 KB of Opus, **8.4 times smaller**; the 100 WAVs of
+  the four persona folders (the placeholders too) unchanged, checked by checksum.
+- **The switch works both ways:** each voice chunk's debug record names the file sent — `.ogg` with `ogg`, `.wav`
+  with `wav`.
+- **No speed gain on the owner's connection**, as §11.7 predicted for a fast uplink: the same line, ten requests per
+  format — the whole request 1.84-2.16 s with Opus, 1.75-2.15 s with WAV; the engine's own time a little higher with
+  Opus (medians: Moira 1.45 s against 1.31 s, Ralph 1.58 s against 1.47 s; on 2026-09-30 no change was seen). The
+  gain is for a slow uplink, which was not simulated.
+- **The same clip and seed give byte-identical audio** — the five repeats per format matched exactly; so one seed is
+  one take, and a different clip (the Opus copy) gives a different take, as a different seed would.
+- **Takes vary more by seed than by format:** the same line at seeds 1-6 in each format — Moira's afraid voice
+  (`ref-fear`) from -34.2 to -24.6 dB with Opus and -33.6 to -27.2 dB with WAV, 3.5 to 6.2 s long in both; Ralph's
+  (`ref`) -23.7 to -20.4 dB and -24.7 to -21.5 dB. The Opus takes averaged a little louder (Moira -27.8 against
+  -30.7 dB, Ralph -22.0 against -22.9 dB) — a hint with six seeds, not a finding. A first comparison at seed 7 alone
+  had made Opus look 7 dB louder for Moira: one take each, misleading.
+- **The owner's show with Opus** (run `2026-10-07T12-12-21` in the fork's clone, 23 rounds, seed 42, debug on): all
+  51 voice chunks sent from the copies (35 different clips). **The owner (verbatim):** "I was listening to the show on
+  port 8010. It sounds good I think. I cannot notice any difference."
+
+**Next:** the release — the fork's tag, the installer pinned to it, the owner's re-proof — then `reference_format:
+ogg` in the client's `settings.yaml`.
+
