@@ -1942,6 +1942,15 @@ reader's memory):
   again, with a two-part plan: an experiment with sound-effect models on the box, then sounds stored per event and
   played just before it — [discussion 2026-10-01] sound-effects §9. Not decided: "The other SFX is still pending
   discussion."
+- **Status 2026-10-07, after the experiment — set aside; if ever, live.** The experiment ([experiment 2026-10-07]
+  sfx-models) found Stable Audio 3 Small-SFX fast and light enough to run live beside the stack (0.44 s a take, 2.9 GB,
+  no effect on the voice). The agent sized the event sounds as a library — 289 events, so sound tags shared by events
+  rather than a prompt each, and new page logic to play a sound just before its event's line: about two days. The
+  owner (verbatim): "As for the "The event sounds" feature, yeah, this one is too much for now. If I ever tackle this
+  one, would be by adding stable audio 3 small server to the AI stack, not creating a huge library of sounds to
+  download, that is technically boring... We can save this decision with the task." **The ruling:** if ever built,
+  **as a Stable Audio 3 Small-SFX server in the AI stack, generating live** — never a downloaded library. The ambience
+  went ahead instead (Task 13).
 
 - **The statement:** sounds for the events (an alarm, glass breaking, a rotor), heard through the transmitter and
   lasting their own length across rounds, as **a second layer** beside the bed — the bed is the radio, an event's sound

@@ -1,0 +1,12 @@
+[
+ {"tag": "glass-rain", "seconds": 4, "prompt": "A fluorescent light tube pops overhead and broken glass rains onto a hard corridor floor, indoors, close"},
+ {"tag": "sirens-far", "seconds": 10, "prompt": "Distant emergency sirens wailing across a city at night, one joining after another, heard from far away"},
+ {"tag": "helicopter", "seconds": 8, "prompt": "A helicopter passes low overhead, the rotor thumping, then fades into the distance"},
+ {"tag": "fans-howl", "seconds": 6, "prompt": "Server room cooling fans spin up from silence to full speed, a rising mechanical howl"},
+ {"tag": "thunder-alarms", "seconds": 8, "prompt": "A deep roll of thunder, then several building alarms ringing at once"},
+ {"tag": "tapping-glass", "seconds": 6, "prompt": "Slow tapping of a fingernail on a glass door, a rhythmic pattern, a quiet night"},
+ {"tag": "moaning-crowd", "seconds": 8, "prompt": "A crowd of zombies moaning outside a building at night, low and continuous, then sudden silence"},
+ {"tag": "radio-static", "seconds": 10, "prompt": "Shortwave radio static, crackle and hiss from an old analogue receiver, steady"},
+ {"tag": "receiver-on", "seconds": 4, "prompt": "An old valve radio switched on: a mechanical click, a rising hum, then tuning static"},
+ {"tag": "receiver-dies", "seconds": 3, "prompt": "An old radio receiver failing: a loud electrical crackle, a fizz, then dead silence"}
+]
