@@ -145,7 +145,8 @@ it is detail.*
   **Task 14, sound cues, built and heard** — the sparse association found
   (only 8 of 289 events named a sound the library had), then fixed by two
   refinements: `cue_only` clips, and 29 event sounds chosen by ear, so 43
-  events now cue one; R3 (new events) open; `tz-0.9` held.
+  events now cue one; R3 (new events) postponed past the demo, a
+  follow-up; next: the `tz-0.9` release.
 - **Deferred past the demo (the owner, 2026-10-01):** Task 5, the
   in-prototype experiments, and the character bibles — moved to the
   follow-up "In-prototype experiments and the character bibles —
@@ -722,11 +723,12 @@ the agent keeps this current. These carry across arcs.*
      in `stories/lab-outbreak/ambience.yaml`", "cue_only is fine"): in the library and sent to the page, marked, but
      left out of the random spots and the texture shuffle — heard only when an event cues it. Tests in both
      languages; the runbook.
-  9. [ ] **R3 — new events that name the library's sounds** (open after R1: still worth it at 15 %? the owner's
-     call; new events would be written with their sounds, by the runbook) — about 15-20 (explosions, warfare, guns, screams,
+  9. [~] **R3 — new events that name the library's sounds** — **postponed past the demo (the owner, 2026-10-08):**
+     "Let's postpone R3, it does not add anything new technically. So, it does not interest me before the demo."
+     Moved to the follow-up "New events that name the library's sounds — sound cues' R3" (`docs/follow-ups.md`). — about 15-20 (explosions, warfare, guns, screams,
      laughter, the horde pounding), drafted by the agent under their overtones and themes, skimmed and edited by the
      owner; into `stories/lab-outbreak/events.yaml`. About 1 event in 9 would cue.
-  10. [ ] **The release** — **`tz-0.9` held until the refinements are done** (the owner: "Agreed to hold the tz-0.9
+  10. [ ] **The release** — next (R1 and R2 done, R3 postponed) — **`tz-0.9` held until the refinements are done** (the owner: "Agreed to hold the tz-0.9
      tag."): the merges, the tag, the installer pinned, the spec (the cues), the owner's re-proof.
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·

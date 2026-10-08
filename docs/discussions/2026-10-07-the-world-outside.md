@@ -8,8 +8,9 @@ fighting, the people, the weather) came to be, every decision taken and why, wha
 **Status:** **Part 1 built, heard** (the owner: "it sounds amazing! Very spooky 😃") **and released** as the fork's
 `tz-0.8`, re-proven by the owner. **Part 2 built** (§9.9; the shape agreed point by point, §9.1-§9.8) and heard
 live; **the sparse association** found (§9.10: only 8 of the 289 events cued a sound); two refinements done (§9.11:
-cue-only clips; 29 event sounds, so 43 events cue one); R3 (new events) open; the `tz-0.9` tag held.
-**Trigger to revisit:** R3; the release; the proper loudness fix (§6.4).
+cue-only clips; 29 event sounds, so 43 events cue one); R3 (new events) postponed past the demo, a follow-up; next,
+the `tz-0.9` release.
+**Trigger to revisit:** the release; R3's follow-up after the demo; the proper loudness fix (§6.4).
 
 # Part 1 — The world outside: the ambience channel
 
@@ -656,8 +657,10 @@ byte-identical; the credits' opening line now names the event sounds; quiet take
 that cue a sound: 43 of 289 (15 %)**, from 8 — about **4 cues in a 27-event show**, from 0.7. The procedure, with
 every lesson about prompts: `docs/runbooks/event-sounds.md`.
 
-**Left:** R3 (new events naming the library's sounds) — whether it is still worth it at 15 %, the owner's call; the
-release, `tz-0.9`.
+**R3 (new events naming the library's sounds) — postponed past the demo.** The owner (verbatim, 2026-10-08): "Let's
+postpone R3, it does not add anything new technically. So, it does not interest me before the demo." Its shape and
+expected effect (about 60 of 305 events, about 5 cues a show) are kept in the follow-up "New events that name the
+library's sounds — sound cues' R3" (`docs/follow-ups.md`). **Next: the release, `tz-0.9`.**
 
 ## §10. Where things are
 

@@ -1860,6 +1860,41 @@ reader's memory):
   tools/voices/cast_voices.py --all-emotions --only <Name>`; the runbook
   `docs/runbooks/cast-voices.md`.
 
+## New events that name the library's sounds — sound cues' R3 (owner, 2026-10-08) — postponed past the demo
+
+**The gap.** A sound cue plays a clip when a free round's event says one of its keywords (Task 14, the fork's
+`app/show/cues.py`; the keywords and `cue_only` in the story's `stories/lab-outbreak/ambience.yaml`). After the
+refinements R1 and R2, **43 of the story's 289 events cue a sound (15 %) — about 4 cues in a 27-event show.** But
+several sounds of the library have almost no event that calls them: of the ambience's clips with keywords, the
+explosions have 1 event, the warfare and the two gun spots 1 between them, the screams 1, and the laughter, the horde,
+the banging on the door, the snarling and the panicking crowd none; most of the 29 event sounds have one event each
+(the drone, the train horn, the Morse code…). The events were written long before the sounds, never for them.
+
+**Where it was flagged.** [discussion 2026-10-07] the-world-outside §9.10 (the sparse association: at first only 8
+of 289 events cued a sound) and §9.11; `docs/TODO.md` Task 14, step 9 (R3).
+
+**The ruling** (the owner, verbatim, 2026-10-08): "Let's postpone R3, it does not add anything new technically. So,
+it does not interest me before the demo."
+
+**The trigger.** After the demo, when the story is worked on again (new events, the show arc), or when cues feel too
+rare in real shows.
+
+**The fix shape** (story writing only — no new audio, no box, no code):
+
+1. Draft about 15-20 new events for `stories/lab-outbreak/events.yaml`, each filed under an overtone (positive,
+   neutral, negative) and a theme like the existing ones, each saying a keyword of the clip it should cue — e.g. "A
+   machine gun opens up near the bridge: three long bursts, then nothing." for the gun burst.
+2. Check each with the fork's own matching (`docs/runbooks/event-sounds.md` §5): it cues exactly the intended clip.
+3. The owner skims and edits — the events are the story's content and their tone is the owner's.
+4. Into the story; the tests; the match count. Expected: about 60 of 305 events (20 %), about 5 cues a show.
+
+**Mind:** new events change which events a seed reads — seed 42 would take another path after the first new event
+in its pool, so the runbook's rig (§10: round 2 is always "Footsteps cross the floor above…") must be checked again,
+and earlier seed-42 runs no longer replay event for event. A new event that names a sound the library lacks gets its
+sound by the same runbook (`docs/runbooks/event-sounds.md`).
+
+---
+
 ## Even out each voice chunk to a common speech level (owner, 2026-10-02) — very low priority; undecided whether worth executing; kept as a ledger of ideas
 
 - **The statement:** the voices' level swings widely from line to line,
