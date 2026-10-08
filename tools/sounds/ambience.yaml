@@ -54,3 +54,88 @@ prompts:
   - {tag: thunderstorm, kind: texture, seconds: 25, keep: [1, 2, 3], prompt: "A heavy thunderstorm, loud thunder claps and pouring rain, continuous"}
   - {tag: explosion, kind: spot, seconds: 5, keep: [4, 5], prompt: "A loud explosion outside, a powerful boom and rumbling debris"}
   - {tag: warfare, kind: texture, seconds: 20, keep: [1, 3, 4, 5], prompt: "A continuous gunfight outside, repeated machine gun bursts and many gunshots, warfare"}
+
+  # Event sounds (Task 14, R1, 2026-10-08): one sound per sound an event names, for sound cues — each cue_only in
+  # the story, heard only when its event is read. The owner's test: "distinct" and "recognizable". Three takes
+  # each (seeds 1-3); keep: the owner's picks. The events each one cues are quoted above it; the keywords are the
+  # story's (the fork's stories/lab-outbreak/ambience.yaml). helicopter, sirens and tapping-glass keep the
+  # sound-effect experiment's prompts, so seeds 1-3 give the takes the owner rated there (Entry 9).
+  #   "A helicopter drops a crate marked with a red cross onto the lawn."
+  #   "A helicopter passes low overhead without slowing down."
+  #   "A helicopter circles the lab twice with its searchlight on, then flies away."
+  - {tag: helicopter, kind: spot, seconds: 8, keep: [1, 2], prompt: "A helicopter passes low overhead, the rotor thumping, then fades into the distance"}  # the experiment's prompt
+  #   "A jet passes very high overhead, blinking, as if nothing were wrong."
+  #   "A plane drops leaflets that flutter down and cover the lawn."
+  - {tag: jet, kind: spot, seconds: 10, keep: [1, 2], prompt: "A jet airliner flying overhead, a loud deep rumbling roar of its engines"}
+  #   "A drone hovers outside a third-floor window, its red light blinking, and then climbs away."
+  # was: "A small quadcopter drone hovering close by, the high-pitched buzzing whine of its propellers" (seeds 1-3, dropped by the owner); retried with seeds 4-6, the owner kept
+  - {tag: drone, kind: spot, seconds: 6, keep: [6], prompt: "The sound of a quadcopter drone hovering nearby, the loud high-pitched buzz of its four spinning propellers"}
+  #   "Far away a siren wails, then another joins it, then another."
+  #   "A tornado siren in town starts wailing, then winds down."
+  - {tag: sirens, kind: spot, seconds: 10, keep: [1], prompt: "Distant emergency sirens wailing across a city at night, one joining after another, heard from far away"}  # the experiment's prompt
+  #   "A train horn blows from the rail line, long and mournful, though the trains stopped days ago."
+  - {tag: train-horn, kind: spot, seconds: 6, keep: [1, 2], prompt: "A freight train horn blowing, long and mournful, echoing"}
+  #   "A fire alarm in the east wing rings once, loud as a church bell, and stops."
+  - {tag: fire-alarm, kind: spot, seconds: 4, keep: [1], prompt: "A loud electric fire alarm bell ringing in a corridor"}
+  #   "A smoke detector chirps for a low battery somewhere no one can find it."
+  - {tag: smoke-detector, kind: spot, seconds: 6, keep: [2], prompt: "A smoke detector chirping, a single short high-pitched beep, repeated slowly"}
+  #   "The freezer in the cold room starts beeping a temperature alarm that nobody set."
+  - {tag: freezer-alarm, kind: spot, seconds: 6, keep: [1, 3], prompt: "An electronic alarm beeping steadily, a laboratory freezer temperature alarm"}
+  #   "A phone in the lobby rings exactly thirteen times, then stops."
+  #   "A desk phone in the director's office rings, and the caller ID shows an extension in the basement."
+  - {tag: phone-ring, kind: spot, seconds: 6, keep: [1], prompt: "An old desk telephone ringing, a loud mechanical ring repeated"}
+  #   "A church bell rings over the frequency, far away, and keeps ringing."
+  # was: "A single church bell ringing slowly, deep and resonant" (seeds 1-3, dropped by the owner); retried with seeds 4-6
+  # and: "A church bell ringing slowly and repeatedly, the deep resonant tolling of a large bell" (seeds 4-6, dropped);
+  # retried with seeds 7-9 on the owner's idea: name an occasion where bells ring out at length
+  - {tag: church-bell, kind: spot, seconds: 8, keep: [9], prompt: "Church bells ringing out in celebration at the Vatican, many large bells pealing continuously"}
+  #   "A clock somewhere in the building chimes, though no one knows of a clock that chimes."
+  - {tag: clock-chime, kind: spot, seconds: 6, keep: [1], prompt: "A grandfather clock chiming, deep slow bell tones"}
+  #   "The public address system plays the first three notes of the shift-change chime."
+  - {tag: pa-chime, kind: spot, seconds: 4, keep: [2], prompt: "A public address system chime, three ascending electronic notes"}
+  #   "A music box starts playing in the east wing, slow and out of tune."
+  - {tag: music-box, kind: spot, seconds: 8, keep: [3], prompt: "A music box playing a slow tinkling melody, out of tune"}
+  #   "A typewriter in the archive room clacks out a single line and stops."
+  - {tag: typewriter, kind: spot, seconds: 5, keep: [1, 3], prompt: "An old mechanical typewriter typing quickly, keys clacking, then the carriage bell"}
+  #   "The Geiger counter in the isotope lab starts clicking, slowly, then faster."
+  # was: "A Geiger counter clicking, irregular crackling clicks" (seeds 1-3, dropped by the owner); retried with seeds 4-6, the owner kept
+  - {tag: geiger, kind: spot, seconds: 6, keep: [4, 6], prompt: "The very loud sound of a Geiger counter, rapid crackling clicks of radiation, close"}
+  #   "An old truck in the garage starts on the first try."
+  - {tag: truck-start, kind: spot, seconds: 5, keep: [1, 3], prompt: "An old truck engine cranking and starting, then idling roughly"}
+  #   "Fireworks go off over the town, a full celebration, for no reason anyone can guess."
+  - {tag: fireworks, kind: spot, seconds: 8, keep: [2], prompt: "Fireworks exploding in the sky, loud bangs and crackling"}
+  #   "A ship at sea asks for the lab's position in perfect Morse code."
+  - {tag: morse, kind: spot, seconds: 6, keep: [2], prompt: "Morse code beeps on a radio, a steady pattern of short and long tones"}
+  #   "The emergency broadcast tone sounds on every channel, and no message follows."
+  - {tag: eas-tone, kind: spot, seconds: 5, keep: [2], prompt: "An emergency broadcast alert tone, a harsh two-tone electronic signal"}
+  #   "Feedback shrieks through the headphones, and then a child whispers hello."
+  - {tag: feedback, kind: spot, seconds: 3, keep: [], prompt: "A sharp electronic feedback squeal through headphones"}  # dropped by the owner: not recognizable
+  #   "Something is knocking inside the walls of the west corridor, following along."
+  - {tag: knocking, kind: spot, seconds: 5, keep: [1, 3], prompt: "Slow knocking on a wall from the inside, muffled, three knocks"}
+  #   "The rain stops, and in the quiet there are footsteps on the roof."
+  #   "Footsteps cross the floor above, where the roof access was welded shut."
+  - {tag: footsteps, kind: spot, seconds: 6, keep: [], prompt: "Heavy footsteps walking across a wooden floor above, creaking"}  # dropped by the owner: not recognizable
+  #   "A rooster crows somewhere in the dark, hours too early."
+  - {tag: rooster, kind: spot, seconds: 4, keep: [2, 3], prompt: "A rooster crowing loudly"}
+  #   "A flock of crows lands on the roof and falls silent together."
+  - {tag: crows, kind: spot, seconds: 5, keep: [3], prompt: "A flock of crows cawing and flapping their wings"}
+  #   "A saddled horse gallops down the access road without a rider."
+  # was: "A horse galloping on a paved road, hooves clattering" (seeds 1-3, dropped by the owner); retried with seeds 4-6, the owner kept
+  - {tag: horse, kind: spot, seconds: 6, keep: [4, 6], prompt: "The sound of a horse galloping fast and close, loud rhythmic clip-clop of hooves on asphalt"}
+  #   "An armored vehicle rolls to a stop outside the gate, and nobody gets out."
+  - {tag: armored-vehicle, kind: spot, seconds: 8, keep: [1], prompt: "A heavy armored military vehicle rolling slowly, a deep diesel engine rumble and creaking tracks"}
+  #   "The frequency fills with the sound of wind, though the night outside is still."
+  #   "Wind starts howling through a broken window on the top floor."
+  - {tag: wind-howl, kind: texture, seconds: 25, keep: [3], prompt: "Strong wind howling through a broken window, continuous"}
+  #   "Hail hammers the roof so loudly it drowns out the moaning."
+  - {tag: hail, kind: texture, seconds: 20, keep: [1], prompt: "Heavy hail hammering on a metal roof, continuous"}
+  #   "A shambler at the front doors is tapping on the glass in a slow rhythm, like Morse code."
+  - {tag: tapping-glass, kind: spot, seconds: 6, keep: [1, 2, 3], prompt: "Slow tapping of a fingernail on a glass door, a rhythmic pattern, a quiet night"}  # the experiment's prompt
+  #   "An infected dog sits outside the main door and whines to be let in."
+  - {tag: dog-whine, kind: spot, seconds: 5, keep: [1], prompt: "A dog whining loudly and repeatedly"}
+  #   "An owl sits on the radio mast, watching the dead below."
+  - {tag: owl, kind: spot, seconds: 5, keep: [1, 3], prompt: "An owl hooting at night, a slow deep hoot, repeated"}
+  #   "Rats stream out of the basement and up the stairs, all at once."
+  - {tag: rats, kind: spot, seconds: 5, keep: [], prompt: "Many rats squeaking and scurrying, small claws scratching on a hard floor"}  # dropped by the owner: not recognizable
+  #   "The generator coughed twice and the lights flickered across the east wing."
+  - {tag: generator-cough, kind: spot, seconds: 5, keep: [], prompt: "A large diesel generator engine sputtering and coughing, misfiring"}  # dropped by the owner: not recognizable

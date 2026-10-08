@@ -142,10 +142,10 @@ it is detail.*
   screams). The event sounds set aside (the follow-up). **Task 13 built,
   heard ("it sounds amazing! Very spooky 😃") and released as the fork's
   `tz-0.8`** (the installer pinned in #34), re-proven by the owner.
-  **Task 14, sound cues, built** (not yet heard live) — and the sparse
-  association found: only 8 of 289 events name a sound the library has;
-  three refinements queued (clips for the sounds events name, `cue_only`
-  clips, new events), `tz-0.9` held until they are done.
+  **Task 14, sound cues, built and heard** — the sparse association found
+  (only 8 of 289 events named a sound the library had), then fixed by two
+  refinements: `cue_only` clips, and 29 event sounds chosen by ear, so 43
+  events now cue one; R3 (new events) open; `tz-0.9` held.
 - **Deferred past the demo (the owner, 2026-10-01):** Task 5, the
   in-prototype experiments, and the character bibles — moved to the
   follow-up "In-prototype experiments and the character bibles —
@@ -699,7 +699,9 @@ the agent keeps this current. These carry across arcs.*
   **The refinements — the sparse association** (found 2026-10-07 while writing the keywords: only 8 of 289 events
   name a sound the library has — about 0.7 cues in a 27-event show, perhaps none; the owner's proposal, at the end of
   the queue: "let's finish the build plan we had first, we can add this as refinements later"):
-  7. [ ] **R1 — sounds for the events** (reshaped by the owner, 2026-10-07: "Maybe what we have to do is just to go
+  7. [x] **R1 — sounds for the events** — **done 2026-10-08: 29 sounds, 42 takes, all cue-only; 43 of the 289
+     events now cue a sound (15 %, from 8) — about 4 cues in a 27-event show** (three audition rounds; the runbook
+     `docs/runbooks/event-sounds.md`; [discussion 2026-10-07] the-world-outside §9.11) (reshaped by the owner, 2026-10-07: "Maybe what we have to do is just to go
      event by event, select the ones that can have good audio prompt, and generate 3 audios per each, and let me
      decide... ideally we leave the machinery in place to get more audios if we add more events" — the experiment
      alone could give only three sounds: the helicopter, the sirens, the tapping on glass). **The test for an event
@@ -720,7 +722,8 @@ the agent keeps this current. These carry across arcs.*
      in `stories/lab-outbreak/ambience.yaml`", "cue_only is fine"): in the library and sent to the page, marked, but
      left out of the random spots and the texture shuffle — heard only when an event cues it. Tests in both
      languages; the runbook.
-  9. [ ] **R3 — new events that name the library's sounds** — about 15-20 (explosions, warfare, guns, screams,
+  9. [ ] **R3 — new events that name the library's sounds** (open after R1: still worth it at 15 %? the owner's
+     call; new events would be written with their sounds, by the runbook) — about 15-20 (explosions, warfare, guns, screams,
      laughter, the horde pounding), drafted by the agent under their overtones and themes, skimmed and edited by the
      owner; into `stories/lab-outbreak/events.yaml`. About 1 event in 9 would cue.
   10. [ ] **The release** — **`tz-0.9` held until the refinements are done** (the owner: "Agreed to hold the tz-0.9
