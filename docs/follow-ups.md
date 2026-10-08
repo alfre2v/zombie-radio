@@ -1370,8 +1370,12 @@ reader's memory):
   llama.cpp's own `prompt_ms` and `predicted_ms` (the server returns
   them; the fork keeps only the token counts) — the owner's call.
 
-## MassedCompute 50% code verification — parked
+## MassedCompute 50% code verification — closed 2026-10-08: not needed (committed to Hyperstack)
 
+- **Closed 2026-10-08 — not needed.** The owner (verbatim): "Let's mark the "MassedCompute 50% code" as not needed
+  anymore. We are committed now to hyperstack, it has worked well." The A6000 on Hyperstack carried every box session
+  of the arc (the deploys, the experiments, the ambience and the event sounds). The reminder after each experiment PR
+  stops. Kept as a ledger of the survey's wildcard.
 - **The gap:** MassedCompute sits on the provider shortlist only
   as a *conditional wildcard* ([discussion 2026-09-13] provider
   survey S4): with the owner's 50% affiliate code verified, its
@@ -1485,8 +1489,12 @@ reader's memory):
   verify the VRAM claim first (it's the cheapest check and the
   biggest prize).
 
-## Mood clips — several reference clips per character, one per mood (owner, 2026-09-28)
+## Mood clips — several reference clips per character, one per mood (owner, 2026-09-28) — built (the fork's `tz-0.4`)
 
+- **Status 2026-10-08 — built, kept for its receipts.** Mood voices shipped in the fork's `tz-0.4` (2026-09-30): the
+  EARS cast, every one of a speaker's recordings cast, the story choosing a clip per mood (`docs/TODO.md`, "Now", the
+  voices; [discussion 2026-09-29] voice-datasets-with-emotion §11). Still open from it: the recasts of Daniel and
+  Moira (the follow-up "Recast Daniel and Moira…").
 - **Status 2026-09-30 — the shape is agreed, and it supersedes the one
   below:** the clips are named after what was recorded (`ref-fear.wav`,
   not `ref-afraid.wav`), the story declares the complete mood → clip map
@@ -1581,8 +1589,12 @@ reader's memory):
     the owner named ("filtering adversarial prompts");
   - **in the show:** a headline enters like an event — the director picks it, a cast member reads it on air.
 
-## Compressed reference clips, switchable on and off — MP3 or Ogg/Opus instead of WAV (owner, 2026-09-30) — DECIDED 2026-10-07: built before the talk (Task 12)
+## Compressed reference clips, switchable on and off — MP3 or Ogg/Opus instead of WAV (owner, 2026-09-30) — built 2026-10-07 (the fork's `tz-0.7`, Task 12)
 
+- **Status 2026-10-08 — built, released and switched on; kept for its receipts.** Opus 48 kbps copies beside the
+  WAVs (`tools/voices/compress_voices.py`), `show.reference_format: ogg` in the client; released as `tz-0.7`,
+  re-proven by the owner, and switched on in the installed client (`docs/TODO.md`, Task 12, done). Still open from
+  it: "Send each reference clip only once" (undecided).
 - **Status 2026-10-07 — DECIDED; Task 12 in the TODO.** The owner, given more days before the talk (verbatim): "We
   are going to execute on the compressed audios." The format: **Opus 48 kbps** (the owner's pick of the measured
   options below). **The shape changed** — the originals kept, a switch in the client's settings chooses the format —
@@ -2227,6 +2239,9 @@ sound by the same runbook (`docs/runbooks/event-sounds.md`).
 
 ## Find the voice-isolation tool from scorbo2's podcast
 
+- **Status 2026-10-08 — its trigger passed without need.** The voices were cast from EARS (2026-09-29), a studio
+  dataset of clean speech with no music or effects to remove, so no separation tool was needed. Kept for when a
+  voice comes from a noisy source (a movie clip, a recording).
 - **The gap:** extracting a clean voice from noisy movie audio
   (music, effects) needs a voice-isolation/separation tool. The
   author of TalkWithMe/tts-serve (scorbo2) mentioned on his
