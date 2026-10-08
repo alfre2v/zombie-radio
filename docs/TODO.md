@@ -728,8 +728,21 @@ the agent keeps this current. These carry across arcs.*
      Moved to the follow-up "New events that name the library's sounds — sound cues' R3" (`docs/follow-ups.md`). — about 15-20 (explosions, warfare, guns, screams,
      laughter, the horde pounding), drafted by the agent under their overtones and themes, skimmed and edited by the
      owner; into `stories/lab-outbreak/events.yaml`. About 1 event in 9 would cue.
+  **The owner's hearing test — passed (2026-10-08, 01:22-01:39 CDT).** The owner (verbatim): "we are not merging yet,
+     and we are not creating the new tag until we have tested that this works. We have to conduct an actual hearing test
+     of the show running with debug and all settings for maximum visibility." A seed-42 show at the default levels, with
+     `event_every: 1`, `event_jitter: 0` and debug on (run `2026-10-08T01-22-30`): **67 rounds, 37 events, 5 cued** —
+     the drone (r6), the smoke detector (r8), the barking dogs (r41), the owl (r45), a woman's scream (r62); each cue
+     followed in the log by the page fetching its clip; the record against the keywords, 37 of 37 events consistent
+     (none missed, none wrong); no error. 5 of 37 (14 %) — as the keywords predict (15 %). The owner: "From what I
+     heard things are working as expected."
   10. [ ] **The release** — next (R1 and R2 done, R3 postponed) — **`tz-0.9` held until the refinements are done** (the owner: "Agreed to hold the tz-0.9
-     tag."): the merges, the tag, the installer pinned, the spec (the cues), the owner's re-proof.
+     tag."): the merges, the tag, the installer pinned, the spec (the cues), the owner's re-proof. **Released
+     2026-10-08** as the fork's **`tz-0.9`**, an annotated tag on `b1d039c` (alfre2v/TalkWithZombies#13 merged after
+     the owner's hearing test; the merge identical to the tested branch head `09a089b`; the fork's tests green on it:
+     1337 passed, Node 21 / 29 / 44 / 8 / 17 / 91); the installer pinned to it, the spec's sound cues (this
+     repository's #35). **Left: the owner's re-proof** (`make client-mac` twice: `changed=1`, then `changed=0`; `git
+     describe` in the client `tz-0.9`).
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes

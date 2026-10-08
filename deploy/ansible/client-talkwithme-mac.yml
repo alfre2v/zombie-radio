@@ -16,7 +16,7 @@
   gather_facts: true
   vars:
     client_repo: "https://github.com/alfre2v/TalkWithZombies"
-    client_version: "tz-0.8"  # pinned fork tag (tz- prefix, never upstream's bare numbers); bump deliberately
+    client_version: "tz-0.9"  # pinned fork tag (tz- prefix, never upstream's bare numbers); bump deliberately
     client_dir: "{{ ansible_facts['user_dir'] }}/TalkWithZombies-client"
     client_python: python3
     client_venv: "{{ client_dir }}/.venv"
