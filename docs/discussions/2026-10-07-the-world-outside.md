@@ -1,14 +1,16 @@
-# The world outside — the ambience channel (built), and its sound cues (planned)
+# The world outside — the ambience channel (released), and its sound cues (built; refinements planned)
 
 **Date:** 2026-10-07 · **Arc:** MVP prototype · **Branches:** `alfre2v/ambience` in both repositories (this
-repository's #34, the fork's alfre2v/TalkWithZombies#12)
+repository's #34, the fork's alfre2v/TalkWithZombies#12, both merged); `alfre2v/sound-cues` in both (Part 2)
 **Type:** discussion — Task 13 in `docs/TODO.md`: how a background of the world outside the lab (the dead, the
 fighting, the people, the weather) came to be, every decision taken and why, what was built and heard; then Task 14,
-"sound cues": an event round that names a sound plays it, planned and not built.
+"sound cues": an event round that names a sound plays it — planned, built, and the sparse association found.
 **Status:** **Part 1 built, heard** (the owner: "it sounds amazing! Very spooky 😃") **and released** as the fork's
-`tz-0.8` (the installer pinned in this repository's #34; the owner's re-proof left). **Part 2 planned** — the shape
-agreed point by point (§9); the name, "sound cues", and its release as `tz-0.9` ruled by the owner; not built.
-**Trigger to revisit:** the PRs' review; Task 14's build; the proper loudness fix (§6.4).
+`tz-0.8`, re-proven by the owner. **Part 2 built** (§9.9; the shape agreed point by point, §9.1-§9.8) and heard
+live; **the sparse association** found (§9.10: only 8 of the 289 events cued a sound); two refinements done (§9.11:
+cue-only clips; 29 event sounds, so 43 events cue one); R3 (new events) postponed past the demo, a follow-up; next,
+the `tz-0.9` release.
+**Trigger to revisit:** the release; R3's follow-up after the demo; the proper loudness fix (§6.4).
 
 # Part 1 — The world outside: the ambience channel
 
@@ -63,8 +65,10 @@ new page logic to play a sound just before its event's line — about two days. 
 > adding stable audio 3 small server to the AI stack, not creating a huge library of sounds to download, that is
 > technically boring... We can save this decision with the task.
 
-(Recorded in `docs/follow-ups.md`, "Event sounds as a layer of their own beside the static bed". Part 2 below is a
-cheaper cousin of it: no new sounds, the ambience's own clips cued by the event's words.)
+(Recorded in `docs/follow-ups.md`, "Event sounds as a layer of their own beside the static bed" — since 2026-10-08
+"Event sounds generated live by a Small-SFX server in the stack", reshaped once sound cues had delivered most of it.
+Part 2 below is a cheaper cousin of it: at first no new sounds, the ambience's own clips cued by the event's words;
+then 29 event sounds of their own, §9.11.)
 
 ### §2.4 The agent's corrections, accepted
 
@@ -280,8 +284,9 @@ After a reload (§8.1): "I have to say, it sounds amazing! Very spooky 😃"
 
 - ~~**The release:** merge the fork's #12 (first) and this repository's #34; tag `tz-0.8`; pin the installer~~ —
   **done 2026-10-07:** #12 merged as `66e35d5` (its files identical to the tested `2197c1c`; the fork's tests green
-  on it: 1312 pytest, Node 15 / 29 / 42 / 8 / 17 / 91), tagged `tz-0.8`, the installer pinned in #34. **Left: the
-  owner's re-proof** (`make client-mac` twice).
+  on it: 1312 pytest, Node 15 / 29 / 42 / 8 / 17 / 91), tagged `tz-0.8`, the installer pinned in #34. **Re-proven
+  by the owner** (verbatim): "I ran `make client-mac`, changed=1. Idempotency run: changed=0."; `git describe --tags`
+  in the client: `tz-0.8`.
 - **The proper loudness fix** (§6.4), if ever wanted.
 
 ## §8. Lessons and mistakes of Part 1
@@ -425,13 +430,251 @@ against a line's audio, a cooldown. The owner's event-only version removes nearl
 | the dead's moans | `moan\|groan\|growl\|snarl` | 2 | 6 textures and most spots of the dead |
 | banging / scratching | `bang\|pound\|scratch\|knock` | 5 | `dead-banging-door` |
 
+### §9.9 The build (2026-10-07, evening, the fork's branch `alfre2v/sound-cues`)
+
+**Three build choices, the agent's leans, accepted** (the owner: "Yes to all three leans, go ahead and build"):
+
+1. **The cue travels as its own event, sent before the round's first line** — `{"type": "cue", "file", "kind"}` —
+   rather than as a field on the fixed line's `start` event. Why: it works with `fixed_lines` off too (then the model
+   writes the event itself, and there is no fixed line to carry it), and it leaves `show.js` almost untouched (one
+   line keeps the cue on the round).
+2. **The cue's dice are its own:** `random.Random(f"{run.seed}:{n}:cue")`, apart from the director's
+   `random.Random(f"{run.seed}:{n}")`. Why: the same seed replays the same cues, and every existing seed still replays
+   exactly the same words — the director's draws are never touched. The cue is also kept in the round's record and its
+   summary, so a run's file says which cues fired.
+3. **Interruptions:** a cued texture ends a silence under way (a storm cued during a lull must be heard); a cued spot
+   cuts a random spot still playing.
+
+**Why the cue plays when the first line is heard, not when the stream arrives** (found reading the page before
+building): the page sets "thinking" and asks for the round; each line's `done` goes to the voice as it arrives; the
+page goes "on air" when the **first line's voice starts** — with fixed lines on, that line is the event, read aloud.
+The round's summary comes only when the model has written its last line, long after the event is heard, so a cue in
+the summary would come too late. `ambience.js` already follows the page's states (it wraps `setState`), so it plays
+the cue on the change from "thinking" to "on air", and only once a round.
+
+**The string seed, questioned by the owner** ("Why make the seed a string? Why not an int?"). A seed made of three
+values (the run's seed, the round, the purpose) needs a way to combine them without collisions. `seed + n` collides
+(seed 42 round 8 and seed 43 round 7 both give 50); `seed * 1000 + n` breaks past round 999 and needs another slot
+for "cue"; bit packing works but reads poorly; `hash((seed, n, "cue"))` is the one truly wrong choice — `hash()` of a
+string changes with each process (`PYTHONHASHSEED`), so the replay would be lost (and Python 3.11 refuses tuples as
+seeds for that reason). A string is combined without ambiguity (`"42:8:cue"` and `"43:7:cue"` differ; the `:` keeps
+`"1:23"` from `"12:3"`), and Python turns it into a number the same way in every process and version since 3.2:
+its UTF-8 bytes with their SHA-512 digest appended (`random.Random.seed`, "version 2"). Checked: the same first draw
+on Python 3.9.6, 3.10.5, 3.12.13 and 3.12.14, and under different `PYTHONHASHSEED` values. The one caveat, true of
+every seed: Python guarantees only `random()`'s sequence across versions, not helpers like `choice()` — and our
+promise is already narrower (a seed replays a show on the same box, with the same installed app). The owner: "ok,
+keep the string."
+
+**What was built:**
+
+- **The server:** the story's loader accepts `keywords:` in `ambience.yaml` only (a typo in `bed.yaml` still fails
+  loudly), each a word or phrase of letters, kept in lowercase; `app/show/cues.py` matches the event against the
+  keywords of the clips that play (enabled by the story and on disk — with the ambience off, never a cue): whole
+  words or phrases, any case, a phrase's spaces any whitespace, a typographic apostrophe as a plain one; the router
+  sends the `cue` event first and keeps the cue in the summary and the record (`Round.cue`, the clip's file); the
+  app's log says "the event cues …".
+- **The page:** `ambience.js` plays the cue — a spot at once, cutting one under way, the random spot's timer set again
+  from its end; a texture in place of the current one, to its end, ending a silence under way and setting the next
+  silence from now (45 s or more: longer than any texture, so no silence cuts a cued one), taken out of the shuffle's
+  pass, then the shuffle goes on. A cue switches nothing on: no spot with `ambience_spots: false`, nothing heard with
+  the A key's mute.
+- **The keywords:** 24 of the 31 clips, written from the data of §9.10 (the dead's own sounds have none).
+- **The tests:** pytest 1,333 passed (21 new: the matching and the dice, the story's keywords, the stream — the cue
+  before the first line, no cue without an event or a keyword, with the ambience off or the clip disabled, the same
+  seed the same clip, the director's plan unchanged); Node: ambience 18 (3 new), page 43 (1 new: a whole round through
+  `show.js`, its `cue` kept on the round).
+- **The docs:** the fork's `AGENTS.md` (the `cue` event, `cues.py`, the tests), the runbooks (`show-settings.md`, a
+  recipe for the keywords and for testing with an event every free round, `event_every: 1`, `event_jitter: 0`;
+  `show-page.md`).
+
+### §9.10 The sparse association between events and clips — found while writing the keywords
+
+**What was observed.** The keywords were drafted by clip family, then tested against all 289 of the story's events
+with the fork's own loader and matching (a scratch script). The first draft matched 19 events — and many were
+misfires, some the exact opposite of the event:
+
+- "The moaning outside **stops** all at once, and the silence is worse." — a moaning cue would ruin the moment; the
+  other moaning event says the hail *drowns the moaning out*. The moan words were dropped.
+- "Heat lightning flickers **silently**", "a **dust** storm rolls across the parking lot" — not thunderstorms: only
+  "thunder", "thunderstorm", "thunderclap" and "lightning strikes" stayed.
+- "**Feedback** shrieks through the headphones", "the floor **drains** start to gurgle", "the server room **fans** spin
+  up … with a rising howl", "**wind** starts howling", "snapping **branches**" — machines, pipes and weather, not the
+  dead: those words were dropped.
+- "Someone on the frequency is laughing softly" — a voice on the radio, not hysterics outside: only "hysterical",
+  "laughter", "cackle" stayed.
+- "Something is **knocking** inside the walls" — eerie and quiet, not fists on a door: "knocking" was dropped.
+- And, while writing them into the story, words that would misfire on events written later: "blast" (a blast door, a
+  blast of static), "shot"/"shots" (a shot of whiskey, a long shot), "shooting" (a shooting star), "approaching" (a
+  convoy approaching), "screech" (tyres, brakes).
+
+**The clean set cues 8 of the 289 events (2.8 %), with no misfire:** the explosion near the chemical plant, the
+gunfire from the highway, the scream up the elevator shaft, two car alarms, the dogs barking, the thunder over the
+lab, the lightning that strikes the mast.
+
+**What a real show would hear.** The owner's 73-round show on the 3090
+(`~/TalkWithZombies-client/runs/2026-10-06T02-20-12`) read **27 events**; **3** would have cued (the car alarm, the scream, the explosion). Others
+in it named sounds the library has no clip for: sirens, a jet, a train horn, a smoke detector, the roof hatch alarm,
+and a water heater that "bangs three times, loud as a fist on a door" (the banging clip is the dead's fists and moans,
+outside — this is a boiler, inside). On average, with 8 of 289 events cueing, a 27-event show would hear **about 0.7
+cues** — possibly none.
+
+**The mechanism.** A cue can only play a clip that is **already in the ambience library**: the keywords are written
+on the library's clips, and an event that names a sound no clip has cues nothing (not an error: the random ambience
+goes on). The library and the event list were made separately and never for each other: the 289 events were written
+long before the ambience; the 36 ambience prompts were written for a background — the dead, the fighting, the people,
+the weather. Sirens appeared only inside two city textures, both dropped in round 1; **no helicopter, jet, fire alarm
+or breaking glass prompt was ever in the ambience list.**
+
+**The owner's helicopters.** The owner, on being told there is no helicopter in the library (verbatim): "I know very
+well I selected several helicopter sounds". Checked — the fork's library (31 MP3s, none a helicopter), the picks
+(`tools/sounds/ambience.yaml`), the ambience's audition folders (`round1/`, `extra/`), and the experiment's takes:
+the helicopters the owner chose were **in the morning's sound-effect experiment** (`listen.html`: ten test sounds
+written from the story's events, three takes per model — Small-SFX's helicopter rated good, good, good), a page for
+judging the models whose ratings fed no library. The ambience was built from a new list, and the agent did not carry
+the experiment's good takes over (the helicopter, the sirens, the glass) — at the time the ambience was a background
+and those were one-off event sounds. With sound cues they are exactly what is needed. The takes are on the laptop
+(`zombie-radio-datasets/sfx-test/takes/<sound>/sa3-<seed>.wav`), already rated: **helicopter good / good / good;
+sirens usable / unusable / good** (seed 3); **glass rain good / good / good** (Entry 9) — no box needed.
+
+**The three refinements — the owner's proposal** (verbatim):
+
+> * clips for the sounds the events name (name a sound we have no clip for). (Your option A)
+> * New events that would exercise with clips we do have. (your option B).
+> * We may need to have another key for clips, a field `event_only`: <true|false>, that would mean a clip that is in
+>   our ambience library but that is not included in the rotating ambiance, but reserved only for an event.
+
+And the order: "these steps go at the end of the queue, let's finish the build plan we had first, we can add this as
+refinements later." Ruled in the same exchange:
+
+- **The field is `cue_only`, per clip in the story's `ambience.yaml`** (the agent's pushback: it is a story's choice,
+  like `enabled` and `gain_db` — the same helicopter could be cue-only in one story and in the rotation in another;
+  the owner: "That's exactly what I meant, I want that in `stories/lab-outbreak/ambience.yaml`" and "cue_only is
+  fine"). It makes sense for textures too: a thunderstorm marked `cue_only` comes only when an event says a storm
+  rolls in. A `cue_only` clip is still sent to the page in the start reply, marked, or the page could not play it.
+- **The `tz-0.9` tag waits for the refinements** (the agent's pushback: released right after the build, the feature
+  would be real but almost inaudible — about 0.7 cues a show, perhaps none in the one the owner listens to; the
+  owner: "Agreed to hold the tz-0.9 tag.").
+- **The name of the problem:** "sparse association" (the owner).
+
+**The refinements, as planned:**
+
+1. **R1 — clips for the sounds the events name** (option A): the experiment's rated Small-SFX takes, already on the
+   laptop — the helicopter (3 events), the sirens (2: "Far away a siren wails…", "A tornado siren in town starts
+   wailing…"), the glass rain (the fluorescent tube that pops) — prepared like the ambience (MP3, level, manifest, CC0
+   credits with prompt and seed) and added to the story as spots with keywords: 8 → about 13 of 289 events. The jet,
+   the train horn, the smoke detector and the building alarms have no take anywhere: they would need the box (and
+   Small-SFX struggled with "building alarms ringing", Entry 9) — deferred.
+2. **R2 — `cue_only` clips:** the story's field (default false), the start reply's mark, `ambience.js` leaving such a
+   clip out of the random spots and the texture shuffle; tests in both languages; the runbook. So a helicopter is
+   heard when an event brings it, never passing out of nowhere every minute.
+3. **R3 — new events that name the library's sounds** (option B): the explosions, the warfare, the guns, the screams,
+   the laughter, the horde pounding have almost no events. The agent drafts about 15-20, each filed under its overtone
+   (positive, neutral, negative — the show's mood) and theme; the owner skims and edits (the events are the story's
+   content, and their tone is the owner's); into `stories/lab-outbreak/events.yaml`. About 1 event in 9 would cue.
+
+**The expected effect, by proportion** (not measured):
+
+| | Events that cue | Cues in a 27-event show |
+|---|---|---|
+| The build alone | 8 of 289 | about 0.7 |
+| + R1 (helicopter, sirens) | about 13 of 289 | about 1.2 |
+| + R3 (about 20 new events) | about 28 of 309 | about 2.4 |
+| R1 + R3 | about 33 of 309 | about 2.9 |
+
+
+### §9.11 The refinements, R2 and R1: cue-only clips, and sounds for the events (2026-10-07 to 10-08)
+
+**The live check first** (Task 14, step 6). The rigged seed-42 run (§9.10's idea: a test keyword unique to a known
+event) was played twice. The app's log, in order: round 2 "cues explosion-4.mp3 (spot)", then the page fetching
+`explosion-4.mp3`; round 4 "cues warfare-1.mp3 (texture)", then the page fetching `warfare-1.mp3` — the server sent
+each cue and the page acted on it at once. By ear it was hard to tell (the owner: "Honestly I don't know what I heard
+or what not, it's too much"): the shuffle had picked `warfare-1.mp3` as the run's first texture, so the same gunfire
+came from the shuffle and from the cue — one more reason for cue-only clips.
+
+**Textures and spots, asked again by the owner** ("I could swear I hear both at the same time"): yes, by design.
+`ambience.js` has two players: one plays the textures one after another (never two at once), the other the spots
+(never two at once), both into the ambience's level — so a texture and a spot together is the normal case (an
+explosion over the moaning), plus the static bed and the voices. The silences mute the textures only.
+
+**Where a clip's kind lives** (the owner: "there is no clear mark in ambience.yaml to differentiate them, right?").
+In the library's manifest, `Sounds/ambience/ambience.json`, written by `prepare_ambience.py` from the prompts file
+(where the kind is decided, because textures and spots are prompted differently). The story's file showed it only
+as its two section headers. Now every clip's comment in the story gives its kind, its length and its prompt as the
+manifest has them (`# spot · 10 s · A jet airliner flying overhead…`).
+
+**Why two files, the manifest and the story's choice** (the owner: "why do we need the yaml files for bed and
+ambience? All could be in the json files. Why the duplication then?"). Checked in the code: the app reads three
+fields of the manifest — `file` (which clips exist: a clip plays only if the manifest lists it and the disk holds
+it; the route serves nothing else), `gain` (the measured level; the story's `gain_db` is added on top) and `kind` —
+and nothing else (the length, prompt, seed, licence are provenance; two tests read the licence and the credits). The
+split: the manifest is **written by a tool and rewritten from scratch on every run** — choices kept there would be
+wiped (and R1 rewrote it); the story's file is **edited by hand, with comments**; one library serves every story (a
+reason that is theoretical while there is one story). The owner: "Ok, thanks for the clarification. I am ok then
+with the split", and the rule in the owner's words — "any extra fields that change how the story is told (like keywords) go
+to the yaml, nothing touches the json expect the tool that copy the files."
+
+**R2 — `cue_only`, built first** (the owner: "(cue_only) should come first... That's why I was asking you for it...
+I felt we needed it"). A per-clip field in the story's `ambience.yaml` (false by default): the clip is sent to the
+page, marked, and left out of the textures' shuffle and the random spots — heard only when an event cues it. The
+story's loader refuses a cue-only clip without keywords (no event could ever play it). Checked before any cue-only
+clip existed: the shipped story's start reply had all 31 clips `cue_only: false` and the rotation unchanged.
+
+**R1 — sounds for the events, reshaped by the owner.** The first plan (the sound-effect experiment's takes) could
+give only three sounds (the helicopter, the sirens, the tapping on glass); the owner: "Maybe what we have to do is
+just to go event by event, select the ones that can have good audio prompt, and generate 3 audios per each, and let
+me decide... ideally we leave the machinery in place to get more audios if we add more events". Ruled with it:
+
+- **The test** — "each sound must be "distinct" and "recognizable", I could not say what the glass rain audio was if
+  I did not know the prompt" — not inside or outside the lab ("why would a radio mic only pick sounds from outside
+  and not others happening inside the lab?"); the glass rain out ("too confusing").
+- **Every event sound is cue-only** ("The event sounds are too specific to be general ambience"); the 31 ambience
+  clips stay in the rotation.
+
+**The scan.** The agent read all 289 events and drafted 29 sounds, each with a prompt, a kind and keywords checked
+against every event with the fork's own matching (each keyword hit exactly the events intended, none an event
+already cued); the owner, of the 11 doubtful ones, added four "for fun" or out of curiosity — a dog whining (the owner's
+prompt: "a dog whines loudly and repeatedly"), an owl ("even if the event does not say it hoots"), rats, the
+generator coughing: **33 sounds, written into `tools/sounds/ambience.yaml`** ("Event sounds", each with the events it
+cues quoted above it).
+
+**Three takes each on the A6000** (`gen_ambience.py`, 99 takes in 1 min 12 s, 0.51 s a take). The experiment's three
+prompts with their seeds gave **the same takes to the ear but not to the byte**: almost every sample differs, at most
+1-11 % of the peak at the worst sample — the GPU's rounding (half precision, the order of parallel sums) differs
+between runs, as with the shows' seeds.
+
+**Three audition rounds:**
+
+1. **33 sounds, 99 takes: 36 kept, of 25 sounds.** Dropped for good: feedback ("not unique enough"), footsteps, rats,
+   the generator ("It was a good try, but let's drop them"). Retried with new prompts: the church bell, the drone,
+   the Geiger counter, the horse. (The sirens: seed 1 kept this time; seed 3 had been the experiment's good one.)
+2. **The four retries, seeds 4-6: drone (6), Geiger (4, 6), horse (4, 6) kept.** The owner's prompt ideas worked:
+   "the sound of a quadcopter" for the drone, "very loud" for the Geiger counter. The church bell failed again.
+3. **The church bell, seeds 7-9: seed 9 kept** — on the owner's idea: name an occasion where bells ring out at
+   length ("Church bell celebrations in The Vatican"). Its first prompt had failed for the word "single" (the owner:
+   "It produces a single bell bang... Please do not use the word single in the prompt, it confuses the model").
+
+**The result: 29 sounds, 42 takes**, prepared into the fork's library (73 clips, 8.8 MB; the 31 old ones
+byte-identical; the credits' opening line now names the event sounds; quiet takes got large gains — the freezer alarm
++18.6 dB — to be trimmed by ear if their hiss shows) and added to the story as cue-only clips with keywords. **Events
+that cue a sound: 43 of 289 (15 %)**, from 8 — about **4 cues in a 27-event show**, from 0.7. The procedure, with
+every lesson about prompts: `docs/runbooks/event-sounds.md`.
+
+**R3 (new events naming the library's sounds) — postponed past the demo.** The owner (verbatim, 2026-10-08): "Let's
+postpone R3, it does not add anything new technically. So, it does not interest me before the demo." Its shape and
+expected effect (about 60 of 305 events, about 5 cues a show) are kept in the follow-up "New events that name the
+library's sounds — sound cues' R3" (`docs/follow-ups.md`). **Next: the release, `tz-0.9`.**
+
 ## §10. Where things are
 
 - **This repository:** `tools/sounds/ambience.yaml` (the prompts, the picks), `gen_ambience.py`, `ambience_page.py`,
   `prepare_ambience.py`; `docs/TODO.md` Task 13 (and Task 14, the cues); this document; the experiment
   `docs/experiments/2026-10-07-sfx-models/`.
 - **The fork:** `static/show/ambience.js`, `app/show/bed.py`, `Sounds/ambience/`, `stories/lab-outbreak/ambience.yaml`,
-  the tests, the runbooks (§5.3).
+  the tests, the runbooks (§5.3). The sound cues (branch `alfre2v/sound-cues`): `app/show/cues.py`, the keywords in
+  `stories/lab-outbreak/ambience.yaml`, `app/show/story.py` (the loader), `app/routers/show.py` (the `cue` event),
+  `static/show/ambience.js`, `static/show/show.js`; `tests/test_show_cues.py` and additions to the ambience, router and
+  page tests (§9.9).
 - **Outside git:** the takes in `/Users/alfredo/workspace/hackTNT_2026/zombie-radio-datasets/ambience/` (`round1/`,
   `extra/`, each with its audition page `index.html`); on the box, `~/sfx-lab/` (the environments, the weights, the
-  takes — kept by the owner's ruling, 39 GB; the disk 17 GB free).
+  takes — kept by the owner's ruling, 39 GB; the disk 17 GB free). The experiment's rated takes for R1 (§9.10):
+  `zombie-radio-datasets/sfx-test/takes/helicopter/`, `sirens-far/`, `glass-rain/` (`sa3-<seed>.wav`).

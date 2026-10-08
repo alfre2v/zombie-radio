@@ -47,7 +47,7 @@ Austin Python Meetup in October 2026.
   serving the dialogue LLM and Whisper for speech recognition.
 - **The app:** [TalkWithZombies](https://github.com/alfre2v/TalkWithZombies),
   our fork of TalkWithMe, where the show engine is built (tag
-  `tz-0.8`): one shared script, a director in code, a screenplay
+  `tz-0.9`): one shared script, a director in code, a screenplay
   grammar, and the browser as the show's clock.
 - **The deployment:** Ansible + Docker stand up the model services
   on a rented cloud GPU box (or a local GPU machine) in about seven

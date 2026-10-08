@@ -7,7 +7,8 @@ the project's earlier notes on sound effects; the agent's research into the
 open text-to-audio models of 2026, checked at their sources; how a library of
 sounds would fit the show; a recommendation.
 **Status:** OPEN — **back on the table on 2026-10-07 (§9): the owner's two-part plan, an experiment with
-sound-effect models, then sounds per event; pending discussion.** Earlier: **narrowed on 2026-10-01 evening (§8): first the static bed**
+sound-effect models, then sounds per event — both done by 2026-10-08 (§9.4's addendum: the experiment; sound cues,
+`tz-0.9`).** Earlier: **narrowed on 2026-10-01 evening (§8): first the static bed**
 (5-15 clips of radio static at low volume, shuffled, the level moving with the
 show, random silences, all in settings — the owner's design, §8.8), **from
 Freesound**; the folder tree agreed; the
@@ -3016,6 +3017,16 @@ Task 7's video, which the owner wants last ("Features first, video last").
 ### §9.4 Status
 
 **Pending discussion** — nothing ruled beyond the owner's plan. The compressed reference clips (Task 12) come first.
+
+**Addendum 2026-10-08 — both parts done, Part 2 by another route.** Part 1 ran the same day: [experiment 2026-10-07]
+sfx-models (Stable Audio 3 Small-SFX chosen). Part 2 — "store per event one or more SFX audio files to play just
+before that particular event" — was delivered as **sound cues** (Task 14, the fork's `tz-0.9`): not stored per event
+but inverted, **the owner's idea** — each clip declares the words that call it (`keywords:` in the story's
+`ambience.yaml`), and an event that says one plays it as the event is read; 29 event sounds, cue-only, chosen by ear;
+43 of the 289 events cue one, the events themselves untouched. Through the ambience's channel (Task 13), not the bed's
+"sounds" gain: the A key mutes it, not the M key. The story: [discussion 2026-10-07] the-world-outside §9-§9.11; the
+follow-up, reshaped to what is left (live generation in the stack): "Event sounds generated live by a Small-SFX server
+in the stack".
 
 ### §9.5 The dead outside — a background of zombies (the owner's idea, 2026-10-07)
 

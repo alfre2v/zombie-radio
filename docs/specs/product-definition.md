@@ -1,7 +1,7 @@
 # Zombie-Radio — Product specification
 
 **Status:** living. This document describes the product as it is
-built — the fork TalkWithZombies at tag `tz-0.8` (`66e35d5`)
+built — the fork TalkWithZombies at tag `tz-0.9` (`b1d039c`)
 and this repository's deployment — in the order someone
 would build it again. It is rewritten in place when the product
 changes; it carries no history. Why each choice was made, and when,
@@ -489,15 +489,16 @@ the cards, a link to upstream's chat UI at `/talkwithme`. The root
 - **The ambience** — `static/show/ambience.js`, loaded after `bed.js`
   wherever the bed is: the world outside the lab heard through the
   scientists' microphone — the dead, the fighting, the people, the
-  weather — from 31 clips that ship with the app in `Sounds/ambience/`,
+  weather — from the clips that ship with the app in `Sounds/ambience/`
+  (31 for the ambience, and 42 event sounds: the next item),
   generated with Stable Audio 3 Small-SFX from this repository's prompts
   (`tools/sounds/ambience.yaml`, the takes kept by ear), released by the
   project as CC0 and credited in `Sounds/ambience/CREDITS.md` (the
   model, every clip's prompt and seed); each with the gain that brings
   it to the bed's average level, capped so its peak stays under full
   scale (`ambience.json`, written by `tools/sounds/prepare_ambience.py`);
-  the story's `ambience.yaml` switches each clip on or off and changes
-  its level by ear. Two kinds: **textures**, long and continuous,
+  the story's `ambience.yaml` switches each clip on or off, changes
+  its level by ear, and may make it cue-only (the next item). Two kinds: **textures**, long and continuous,
   shuffled one after another, and **spots**, short single sounds (a
   scream, a burst of gunfire, an explosion) every 20-60 seconds, never
   the same twice in a row. Mixed to mono, it follows the page's state
@@ -508,6 +509,27 @@ the cards, a link to upstream's chat UI at `/talkwithme`. The root
   in step with the bed's. It goes through the bed's AM filter, so the F
   key flips both; never through the bed's mute. Keys: A mutes it. The
   gauge never hears it.
+- **Sound cues** — an event that names a sound plays it. A clip in the
+  story's `ambience.yaml` may have `keywords:` (words or phrases, kept
+  in lowercase): when a free round's event says one — a whole word or
+  phrase, any case — the server (`app/show/cues.py`) picks that clip,
+  among the clips that play, before the round's first line; several
+  match: one, with dice of the round's own (`"<seed>:<n>:cue"`, apart
+  from the director's), so a seed replays its cues and never changes
+  the director's draws. The round's stream opens with a `cue` event
+  (the file and its kind); the summary and the record keep it, the
+  debug line names it. The page plays it when the round's first line is
+  heard — the event, read aloud: a spot at once, cutting a spot under
+  way; a texture in place of the current one, to its end, ending a
+  silence under way, then the shuffle goes on. A clip marked
+  `cue_only: true` (it needs keywords) is sent to the page but never
+  played at random: the **event sounds** — 42 takes of 29 sounds the
+  events name (a helicopter, a jet, sirens, a train horn, a telephone,
+  a typewriter, Morse code, a rooster, a church bell…), chosen by ear
+  by the test "distinct and recognizable". A cue switches nothing on:
+  the ambience off, a clip off, spots off or the A key's mute hold.
+  With the shipped story, 43 of its 289 events cue a sound. How an
+  event gets one: this repository's `docs/runbooks/event-sounds.md`.
 - **The two looks:** `old-radio`, a photograph of a 1950 Philips
   Sirius BD 400 A (Wikimedia Commons, CC BY-SA 3.0, credited on the
   page) with the transcript on the speaker cloth, the magic eye as
@@ -746,7 +768,9 @@ What the first release still needs, or has not settled:
   the script's tokens and trims; every endpoint, for testing);
   [discussion 2026-10-01] sound-effects (the research, then the static
   bed: its design, its build, the clips chosen by ear); [discussion
-  2026-10-07] the-world-outside (the ambience: every decision and why).
+  2026-10-07] the-world-outside (the ambience and the sound cues: every
+  decision and why); `docs/runbooks/event-sounds.md` (give an event a
+  sound).
 - **Deployment:** [discussion 2026-09-17] ansible-deployment-shape;
   [discussion 2026-09-13] cloud-gpu-provider-survey; [discussion
   2026-10-02] local-gpu-deployment-plan (the home box);

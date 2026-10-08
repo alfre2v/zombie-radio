@@ -94,6 +94,12 @@ product changes.
    protocol skeleton; prompt work stays disposable until the
    audition; the spec was kept as a ledger during the build and
    rewritten as a linear description at its end (2026-09-28).
+   **Since (2026-10-08):** the in-prototype experiments were deferred
+   past the demo (2026-10-01); the days went to the demo's four goals
+   and its features instead — the fork's releases `tz-0.4` (voices with
+   emotion) to `tz-0.9` (the 32k context, the static bed, the compressed
+   reference clips, the ambience, sound cues), the local GPU (goal 4),
+   the talk. Execution state: `docs/TODO.md`, "Now".
 3. *(further arcs emerge as the prototype teaches us)* — the
    **show arc** was named at this one's opening: story and episode
    authoring (the trajectory scaffolds, [spec §2.2]) and the full

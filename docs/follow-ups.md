@@ -1370,8 +1370,12 @@ reader's memory):
   llama.cpp's own `prompt_ms` and `predicted_ms` (the server returns
   them; the fork keeps only the token counts) — the owner's call.
 
-## MassedCompute 50% code verification — parked
+## MassedCompute 50% code verification — closed 2026-10-08: not needed (committed to Hyperstack)
 
+- **Closed 2026-10-08 — not needed.** The owner (verbatim): "Let's mark the "MassedCompute 50% code" as not needed
+  anymore. We are committed now to hyperstack, it has worked well." The A6000 on Hyperstack carried every box session
+  of the arc (the deploys, the experiments, the ambience and the event sounds). The reminder after each experiment PR
+  stops. Kept as a ledger of the survey's wildcard.
 - **The gap:** MassedCompute sits on the provider shortlist only
   as a *conditional wildcard* ([discussion 2026-09-13] provider
   survey S4): with the owner's 50% affiliate code verified, its
@@ -1485,8 +1489,12 @@ reader's memory):
   verify the VRAM claim first (it's the cheapest check and the
   biggest prize).
 
-## Mood clips — several reference clips per character, one per mood (owner, 2026-09-28)
+## Mood clips — several reference clips per character, one per mood (owner, 2026-09-28) — built (the fork's `tz-0.4`)
 
+- **Status 2026-10-08 — built, kept for its receipts.** Mood voices shipped in the fork's `tz-0.4` (2026-09-30): the
+  EARS cast, every one of a speaker's recordings cast, the story choosing a clip per mood (`docs/TODO.md`, "Now", the
+  voices; [discussion 2026-09-29] voice-datasets-with-emotion §11). Still open from it: the recasts of Daniel and
+  Moira (the follow-up "Recast Daniel and Moira…").
 - **Status 2026-09-30 — the shape is agreed, and it supersedes the one
   below:** the clips are named after what was recorded (`ref-fear.wav`,
   not `ref-afraid.wav`), the story declares the complete mood → clip map
@@ -1581,8 +1589,12 @@ reader's memory):
     the owner named ("filtering adversarial prompts");
   - **in the show:** a headline enters like an event — the director picks it, a cast member reads it on air.
 
-## Compressed reference clips, switchable on and off — MP3 or Ogg/Opus instead of WAV (owner, 2026-09-30) — DECIDED 2026-10-07: built before the talk (Task 12)
+## Compressed reference clips, switchable on and off — MP3 or Ogg/Opus instead of WAV (owner, 2026-09-30) — built 2026-10-07 (the fork's `tz-0.7`, Task 12)
 
+- **Status 2026-10-08 — built, released and switched on; kept for its receipts.** Opus 48 kbps copies beside the
+  WAVs (`tools/voices/compress_voices.py`), `show.reference_format: ogg` in the client; released as `tz-0.7`,
+  re-proven by the owner, and switched on in the installed client (`docs/TODO.md`, Task 12, done). Still open from
+  it: "Send each reference clip only once" (undecided).
 - **Status 2026-10-07 — DECIDED; Task 12 in the TODO.** The owner, given more days before the talk (verbatim): "We
   are going to execute on the compressed audios." The format: **Opus 48 kbps** (the owner's pick of the measured
   options below). **The shape changed** — the originals kept, a switch in the client's settings chooses the format —
@@ -1860,6 +1872,41 @@ reader's memory):
   tools/voices/cast_voices.py --all-emotions --only <Name>`; the runbook
   `docs/runbooks/cast-voices.md`.
 
+## New events that name the library's sounds — sound cues' R3 (owner, 2026-10-08) — postponed past the demo
+
+**The gap.** A sound cue plays a clip when a free round's event says one of its keywords (Task 14, the fork's
+`app/show/cues.py`; the keywords and `cue_only` in the story's `stories/lab-outbreak/ambience.yaml`). After the
+refinements R1 and R2, **43 of the story's 289 events cue a sound (15 %) — about 4 cues in a 27-event show.** But
+several sounds of the library have almost no event that calls them: of the ambience's clips with keywords, the
+explosions have 1 event, the warfare and the two gun spots 1 between them, the screams 1, and the laughter, the horde,
+the banging on the door, the snarling and the panicking crowd none; most of the 29 event sounds have one event each
+(the drone, the train horn, the Morse code…). The events were written long before the sounds, never for them.
+
+**Where it was flagged.** [discussion 2026-10-07] the-world-outside §9.10 (the sparse association: at first only 8
+of 289 events cued a sound) and §9.11; `docs/TODO.md` Task 14, step 9 (R3).
+
+**The ruling** (the owner, verbatim, 2026-10-08): "Let's postpone R3, it does not add anything new technically. So,
+it does not interest me before the demo."
+
+**The trigger.** After the demo, when the story is worked on again (new events, the show arc), or when cues feel too
+rare in real shows.
+
+**The fix shape** (story writing only — no new audio, no box, no code):
+
+1. Draft about 15-20 new events for `stories/lab-outbreak/events.yaml`, each filed under an overtone (positive,
+   neutral, negative) and a theme like the existing ones, each saying a keyword of the clip it should cue — e.g. "A
+   machine gun opens up near the bridge: three long bursts, then nothing." for the gun burst.
+2. Check each with the fork's own matching (`docs/runbooks/event-sounds.md` §5): it cues exactly the intended clip.
+3. The owner skims and edits — the events are the story's content and their tone is the owner's.
+4. Into the story; the tests; the match count. Expected: about 60 of 305 events (20 %), about 5 cues a show.
+
+**Mind:** new events change which events a seed reads — seed 42 would take another path after the first new event
+in its pool, so the runbook's rig (§10: round 2 is always "Footsteps cross the floor above…") must be checked again,
+and earlier seed-42 runs no longer replay event for event. A new event that names a sound the library lacks gets its
+sound by the same runbook (`docs/runbooks/event-sounds.md`).
+
+---
+
 ## Even out each voice chunk to a common speech level (owner, 2026-10-02) — very low priority; undecided whether worth executing; kept as a ledger of ideas
 
 - **The statement:** the voices' level swings widely from line to line,
@@ -1936,7 +1983,33 @@ reader's memory):
 - **The fix shape:** named lists in `stories/<story>/bed.yaml` (a `default` and one per kind of round); the start
   reply carries them; `bed.js` switches the list when a round of that kind starts (the round's summary names its kind).
 
-## Event sounds as a layer of their own beside the static bed (owner, 2026-10-01) — very low priority; undecided whether worth executing; kept as a ledger of ideas
+## Event sounds generated live by a Small-SFX server in the stack (owner, 2026-10-01; reshaped 2026-10-08) — what is left of "Event sounds as a layer of their own beside the static bed", largely delivered by sound cues; very low priority, kept as a ledger of ideas
+
+*Was titled "Event sounds as a layer of their own beside the static bed" until 2026-10-08.*
+
+- **Status 2026-10-08 — largely delivered, by another route: sound cues (Task 14, the fork's `tz-0.9`).** The owner
+  noticed it (verbatim): "I believe with the ambience sound + cue sounds we shipped actually a feature that we had in
+  our follow up but we postponed it because it was too complex." What this entry planned, against what shipped:
+  - **delivered:** sounds for the events (29 sounds, 42 takes, cue-only — the helicopter's rotor, the fire alarm, sirens…;
+    the glass dropped by ear); the server picks the clip before the round's first line and sends it first (a `cue`
+    event); the page plays it as the event is read, to the clip's own length;
+  - **inverted:** not "each event names its kind of sound" but **each clip declares the words that call it**
+    (`keywords:` in the story's `ambience.yaml`, matched against an event's text) — so the 289 events stayed untouched.
+    **The inversion was the owner's idea** (verbatim, 2026-10-07: "we would add a keywords list under each clip, and
+    if the event text contains any of the keywords then we immediately insert that audio to be played as ambience";
+    [discussion 2026-10-07] the-world-outside §9.1), and, in the owner's words on 2026-10-08, "Much more flexible": the
+    keywords can match any line of text, not only an event;
+  - **changed:** not a layer beside the bed but the ambience's own channel (its two players, the radio's filter, the A
+    key); a cued spot cuts the one playing, a cued texture replaces the current one (no crossfade);
+  - **not delivered:** every event with a sound (43 of 289 cue one — the sparse association; more events are the
+    follow-up "New events that name the library's sounds — sound cues' R3"); and **the owner's method of 2026-10-07
+    below — generated live by a Stable Audio 3 Small-SFX server in the stack, never a downloaded library.** What
+    shipped is a small library (3.5 MB of event sounds), chosen by ear.
+  - **Why it shrank from "about two days, too much" to about a day:** the keywords on the clips (no events edited), the
+    ambience's channel already built (Task 13), few event sounds, cue-only, chosen by ear.
+  **What this entry keeps:** live generation — a Small-SFX server in the AI stack, a sound made for the event as it
+  comes (feasible: 0.44 s a take, 2.9 GB beside the stack, no effect on the voice — [experiment 2026-10-07]
+  sfx-models). The technically new part, unbuilt. Trigger: none set; the owner's decision, after the demo.
 
 - **Status 2026-10-07 — back under discussion.** With more days before the talk, the owner raised the sound effects
   again, with a two-part plan: an experiment with sound-effect models on the box, then sounds stored per event and
@@ -2166,6 +2239,9 @@ reader's memory):
 
 ## Find the voice-isolation tool from scorbo2's podcast
 
+- **Status 2026-10-08 — its trigger passed without need.** The voices were cast from EARS (2026-09-29), a studio
+  dataset of clean speech with no music or effects to remove, so no separation tool was needed. Kept for when a
+  voice comes from a noisy source (a movie clip, a recording).
 - **The gap:** extracting a clean voice from noisy movie audio
   (music, effects) needs a voice-isolation/separation tool. The
   author of TalkWithMe/tts-serve (scorbo2) mentioned on his

@@ -108,23 +108,26 @@ it is detail.*
   before the demo (Task 10):** only the narrower-filter test — the clips'
   picks done (the one-by-one review), the credits moved into the talk
   (Task 9) ([discussion 2026-10-01] sound-effects §8.20-§8.23).
-- **Next** — the agent's recommended order (2026-09-30), not yet ruled
-  by the owner beyond its first pick (the 32k work, done): ~~goal 4, the
-  3090~~ (met 2026-10-06, the plan's §10.13) → ~~names-only A~~ (deferred past
-  the demo, 2026-10-02) → ~~sound effects~~ (done: the static bed,
-  `tz-0.6`) → **Task 10.1, the narrower-filter test** → **Task 7, the
-  canned episode** (a MUST: a video of the app working, the owner
-  explaining it) → **Task 9, the talk** → the
-  compressed reference clips, if the venue's uplink is slow → Task 8,
-  the close ritual. Hard deadline 2026-10-08; the talk at the Austin
-  Python Meetup in October 2026.
+- **Next (2026-10-08):** the owner's re-proof of `tz-0.9` (Task 14's
+  release) → **Task 9, the talk** (its leftovers, listed there: the
+  numbers, the A6000's price, the stale "What's next" slide, slides for
+  the new features, republish, rehearse) → **Task 10.1, the
+  narrower-filter test** → **Task 7, the canned episode, last** (the
+  owner: "Features first, video last") → Task 8, the close ritual,
+  after the demo. Was (the agent's order of 2026-09-30): ~~goal 4, the
+  3090~~ (met 2026-10-06) → ~~names-only A~~ (deferred past the demo) →
+  ~~sound effects~~ (the static bed `tz-0.6`, then the ambience `tz-0.8`
+  and sound cues `tz-0.9`) → Task 10.1 → Task 7 → Task 9 → ~~the
+  compressed reference clips~~ (`tz-0.7`) → Task 8. Hard deadline
+  2026-10-08; the talk at the Austin Python Meetup in October 2026.
 - **More days before the talk (the owner, 2026-10-07):** "now we have a
   few more days to help me decide what other features we can add to the
   project." Ruled the same day: **Task 12, the compressed reference
   clips — executed** (Opus 48 kbps), the only feature decided; **the
   sound effects** — the owner's two-part plan (an experiment with
-  sound-effect models on the box, then sounds stored per event) **still
-  under discussion** ([discussion 2026-10-01] sound-effects §9);
+  sound-effect models on the box, then sounds stored per event) **then
+  still under discussion** ([discussion 2026-10-01] sound-effects §9;
+  since done: the experiment, and sounds per event as sound cues, Task 14);
   **sending each reference clip once** — undecided, a follow-up of its
   own; **the audience writes the news** (a project site on
   `zombieradio.net`) — not executed, a follow-up. Not picked: talk
@@ -141,9 +144,12 @@ it is detail.*
   channel inside the broadcast (the dead, gunfire, explosions, distant
   screams). The event sounds set aside (the follow-up). **Task 13 built,
   heard ("it sounds amazing! Very spooky 😃") and released as the fork's
-  `tz-0.8`** (the installer pinned in #34; the owner's re-proof left).
-  **Task 14, sound cues, planned** — the name and its release as
-  `tz-0.9` ruled by the owner; not built.
+  `tz-0.8`** (the installer pinned in #34), re-proven by the owner.
+  **Task 14, sound cues, built and heard** — the sparse association found
+  (only 8 of 289 events named a sound the library had), then fixed by two
+  refinements: `cue_only` clips, and 29 event sounds chosen by ear, so 43
+  events now cue one; R3 (new events) postponed past the demo, a
+  follow-up; next: the `tz-0.9` release.
 - **Deferred past the demo (the owner, 2026-10-01):** Task 5, the
   in-prototype experiments, and the character bibles — moved to the
   follow-up "In-prototype experiments and the character bibles —
@@ -160,9 +166,15 @@ it is detail.*
   if the wake fails or by the owner's choice that day (owner action
   queue, item 5, decided 2026-10-02). **Woken by the owner on
   2026-10-07** for the sound-effects experiment ("I brought the VM up");
-  whether to hibernate it again is the owner's call.
+  whether to hibernate it again is the owner's call. **Up since, and
+  billing (2026-10-08):** it also generated the ambience (Task 13) and
+  the event sounds (Task 14); `~/sfx-lab/` kept by the owner's ruling (39
+  GB; the disk 17 GB free — the owner: "We cannot leave the disk so
+  tight", undecided). Hibernate or not: the owner's call — a wake can
+  fail (no A6000 in stock, 2026-09-24).
 - **The board before the demo** — every item left, who does it, and
-  what was deferred: [discussion 2026-10-02] board-before-demo.
+  what was deferred, as of 2026-10-02: [discussion 2026-10-02]
+  board-before-demo (the current order: "Next" above).
 - **At a session's end:** a fresh-session handoff replaces any
   mid-session one, and a handoff is deleted only with the owner's
   permission. The latest handoff stays until the next compaction, as
@@ -236,7 +248,9 @@ the agent keeps this current. These carry across arcs.*
    Pre-decided: the **"canned episode" emergency mode is a
    MUST** (Task 7). Candidate on the radar: a tunnel that reconnects by
    itself (follow-ups, SSH keepalives — low priority).
-5. **The Hyperstack VM — hibernated, woken per box session.**
+5. **The Hyperstack VM — hibernated, woken per box session.** **Status
+   2026-10-08: up since the owner woke it on 2026-10-07, billing** (the
+   "Now" section's "The box").
    **Decided 2026-10-02 (the owner, verbatim):** "I will keep the machine
    hibernated until the day of the presentation... That day, say 4 hours
    before, I'll start trying to awake the VM... I might create a new VM
@@ -281,60 +295,6 @@ the agent keeps this current. These carry across arcs.*
 
 ## Open tasks
 
-- [ ] **Task 4 — Real cast replaces placeholders.** **Split in two
-  (the owner, 2026-09-28):** (1) **the character bibles** — not now:
-  "today has been all about improving the prompt, and right now the
-  narration holds together more or less, ok. I want to pivot to audio,
-  which is the weak spot now."; (2) **the reference voices** — one clip
-  per character, the owner's, next: each character's clip as
-  `Personas/<Name>/ref.wav` with its exact transcript in `ref.txt`, in
-  `~/TalkWithZombies-client/Personas/` (the dev clone reads the same
-  folder through its `personas_directory`); `Personas/` is gitignored in
-  the fork and the installer skips an existing persona folder. Several
-  clips per character by mood: the follow-up "Mood clips". **Where the
-  clips may come from (2026-09-29):** datasets of real voices recorded
-  in several emotions, instead of clips hunted one by one and cleaned of
-  background noise — four finalists, EARS, CREMA-D, JL-Corpus and
-  Expresso, and a listening test proposed ([discussion 2026-09-29]
-  voice-datasets-with-emotion, OPEN). **A first cast is in the app
-  (2026-09-29, 14:32 CDT):** EARS voices chosen from the owner's shortlist
-  of 20 — Daniel p007, Moira p026, Ralph p017, Samantha p033 — written by
-  the casting script `tools/voices/cast_voices.py` from
-  `tools/voices/cast.yaml`; one edited line and one command recast a
-  character, heard from the next spoken line (the discussion's §11.5). The
-  placeholder voices are kept as `ref.placeholder.wav`. **Since
-  2026-09-30 the voices follow the mood** (every one of a speaker's 23
-  recordings cast, the story's `voices` choosing one per mood; the fork's
-  alfre2v/TalkWithZombies#8 and this repository's #18, both merged on
-  2026-09-30; released as the fork's `tz-0.4`, an annotated tag on
-  `1b7e70e`, pushed — the merge identical to the tested branch head, the
-  fork's tests green on it: 1186 passed, Node 42 / 17 / 91 / 8; the
-  installer pinned to `tz-0.4` (#19) and re-proven by the owner on
-  2026-09-30: the client moved to `tz-0.4` — the only change, "Clone
-  TalkWithZombies at the pinned version" — a second run `changed=0`,
-  `git describe` `tz-0.4`) — the
-  owner: "Wow, the show is very good now." The cast: Daniel p007, Moira
-  p026, Ralph p017, Samantha p063 (recast 2026-09-30). **Still open:**
-  Daniel and Moira to be recast — Moira sounds too like the new Samantha,
-  and two of Daniel's clips spoil his lines (fear pitched in a woman's
-  range, pride with stray words at its start) — screening the candidates
-  first (`tools/voices/screen_voices.py`) and then by ear; the transcripts
-  of Ralph's confusion and Samantha's pride clips to correct after the
-  owner's ear check ([discussion 2026-09-29] voice-datasets-with-emotion
-  §11.11-§11.13). **Postponed past the demo (2026-09-30, evening)** — the
-  owner: "I can live with the audio instabilities for the moment. I wan to make progress in other areas. We postpone recasting more voices, as far as I am concerned we have achieved TTS of voices with emotions with great success. The remaining boring "find and clear the audio samples" do not interest me for the demo." The reference voices are done for the demo; the
-  chores wait in the follow-up "Recast Daniel and Moira, and correct two
-  stray-speech transcripts" (§11.14). The detail
-  as first written: character
-  bibles → the sections of TalkWithZombies' cast sheet ([spec
-  §5]; where they live in the fork — decided 2026-09-23: the
-  cast entries of `stories/<story>/cast_sheet.md`, not the persona
-  files — [discussion 2026-09-23] show-engine-design §4), keeping `/no_think`
-  while on Nemotron (the chat template needs it even under the
-  grammar — [spec §4]); no heavy prompt tuning yet — guardrail 2 ·
-  voice samples → isolation tool first (follow-ups) → gitignore →
-  replace the `say`-generated ref.wavs in the persona
-  directories.
 - [ ] **Polish — two items, right after Task 4's reference voices**
   (the owner, once Task 4 was split: "After the reference voices"; ruled
   2026-09-28, at the timebox's close; the owner: "I want to pull forward items: "1. Dead-air static while a round is generated" and "2. The 1930s radio look, with your gauge" , right after Task 4, and leave the rest as post-timebox follow-ups behind Task 4 and Task 7."):
@@ -456,8 +416,12 @@ the agent keeps this current. These carry across arcs.*
   **The compressed reference clips** (the follow-up "Compressed
   reference clips, switchable on and off", the owner, 2026-09-30:
   re-examine before demo day) — **decided 2026-10-07: built before the
-  talk** (Task 12). **The video is recorded last**, once the features
+  talk** (Task 12; released as `tz-0.7`). **The video is recorded last**, once the features
   are released (the owner, 2026-10-07: "Features first, video last").
+  **The features are released** (2026-10-08: `tz-0.9`, once re-proven).
+  For the takes: the ambience is not seeded — a retake replays the words
+  (with `show.seed`) but not which textures and spots play; the sound
+  cues are seeded, so a retake replays them.
 - [ ] **Task 9 — Prepare the talk** (the owner, 2026-10-01: "Yes, add
   this: Add a task for preparing the talk itself"). The slides and the
   talk's script for the Austin Python Meetup (October 2026) — the
@@ -485,6 +449,15 @@ the agent keeps this current. These carry across arcs.*
   performance, so the three CC BY clips (719588, 730109, 255775) must be
   credited there, and CC BY allows doing it by a link to a page that
   holds the credits.
+  **Left (2026-10-08, carried here from the session handoffs, which are
+  deleted at a session's end):** recount the numbers on slides 5 and 27;
+  check the A6000's price; **the "What's next" slide is stale** — it lists
+  event sounds, comic relief, a scientist turning, new voice engines…,
+  while the compressed clips (`tz-0.7`), the ambience (`tz-0.8`) and sound
+  cues (`tz-0.9`) are built and the sound-effect experiment ran; the new
+  features may deserve slides of their own (the world outside, sound
+  cues, the experiment) — not discussed yet; then republish (the runbook
+  `docs/runbooks/talk-slides-quarto.md` §10) and rehearse.
 - [ ] **Task 10 — The static bed before the demo** (the owner,
   2026-10-02: "we will execute before the demo (so, they are priority,
   but not to execute today"). Three items left of the bed's plan
@@ -508,149 +481,6 @@ the agent keeps this current. These carry across arcs.*
   3. [~] **Credits for the talk** — moved into Task 9 (one line on the
      last slide, a link to the fork's `Sounds/bed/CREDITS.md`). The owner:
      "yes, close 10.3 into Task 9".
-- [x] **Task 11 — Goal 4, the 3090** — **closed 2026-10-07** (11.1 done; 11.2 deferred past the demo) (the demo's goal 4: automated
-  deployment to a local GPU; a task group of its own, the owner,
-  2026-10-03). Two parts, both on the owner's Linux desktop with the
-  RTX 3090:
-  1. [x] **The deploy** — **DONE 2026-10-06: goal 4 met** (paused
-     2026-10-03 to 10-05); the 3090's checks all passed, sudo by
-     keyboard (`-K`). Built on `alfre2v/linux-3090` (#29): D1 — two
-     environments, `local` (Ansible on the 3090) and `lan` (from the
-     laptop, a copy of `cloud`); D3 — user `alfredo`, the key
-     `~/.ssh/zombie_radio_3090`, `make ssh-tunnel` reading the env's
-     overrides; D4 — nothing starts at boot (`zr_start_at_boot`), `make
-     ans-start` / `ans-stop` for every environment; every download in
-     `~/zombie-radio-data`; the Makefile's macOS-only `sed` fixed; the
-     runbook `docs/runbooks/home-gpu-3090.md`. **Deployed 2026-10-06**
-     by the owner with `ENV=local` (about 8½ minutes; three failures on
-     the way, each fixed: a stale apt key, the project's Python picked
-     for the modules, a stale ghcr.io login); a second run at
-     `changed=0`; the stack 12,598 MiB on the 3090
-     ([discussion 2026-10-02] local-gpu-deployment-plan §10.10).
-     D2 and D5 ruled: the tunnel; proven at home (§10.12). **From the
-     laptop** (the owner, after #29 merged): `lan` at `changed=0` (the
-     owner: "close enough" — not a `lan` deploy from zero), the tunnel
-     and `make check`, a show against the 3090 ("very good show
-     actually"). The owner: "goal 4 met, recording into Task 7, small PR
-     now" (§10.13). **The reboot test, done 2026-10-07** — the owner
-     (verbatim): "I also exercised restarting the 3090 computer and
-     bringing the AI components up, and everything worked well. So we
-     can 100% put to rest all the 3090 exercise. It's done." (How the
-     services were brought up was not recorded.)
-  2. [~] **The client on Linux** — **deferred past the demo
-     (2026-10-07**, the owner's choice when the 3090 was put to rest);
-     the follow-up "The client on Linux and Windows" holds the idea.
-     **First, a manual client install on
-     the 3090, every step written down; then decide whether a `make
-     client-linux` (an Ansible playbook that installs the app and then
-     prints the manual steps left, ready to copy and paste) is wise.**
-     The owner (verbatim, 2026-10-03): "Add a Task featured prominently
-     in the TODO near (or inside the Task group for the 3090) to
-     evaluate if the `client-linux` route is wise, or in any case, to
-     exercise a manual client install in the 3090 and see how it all
-     works together." What differs from the Mac: the starter voices
-     (`say`) and the voice tools (`afconvert`) are macOS only. On the
-     3090 the client and the GPU stack share one machine: no tunnel, the
-     client's `localhost` ports are the services' own
-     ([discussion 2026-10-03] client-os-support §4).
-- [x] **Task 12 — The compressed reference clips** — **done 2026-10-07** (`tz-0.7`, #32) (decided by the
-  owner, 2026-10-07: "We are going to execute on the compressed
-  audios."; the format: **Opus 48 kbps**). The follow-up "Compressed
-  reference clips, switchable on and off" holds the measurements. **The
-  shape, agreed 2026-10-07** (it replaces the follow-up's): the original
-  WAVs are never touched — the owner (verbatim): "let's take care on not
-  overwriting the original files … that way if I encounter unexpected
-  problems during a live show I can easily revert to using the old
-  wavs"; a tool of its own, `tools/voices/compress_voices.py`
-  (`ffmpeg`; chosen over the casting script, which can only recast every
-  WAV from the dataset), writes each clip's compressed copy beside it
-  with its real extension (`ref-fear.ogg` beside `ref-fear.wav`, one
-  `ref-fear.txt` for both) and never writes or deletes a WAV; a recast
-  removes the copies (`cast_voices.py`), the tool is run again after it;
-  a clip keeps its name everywhere (the stories still say
-  `ref-fear.wav`); **a switch in the client's `settings.yaml`,
-  `show.reference_format: ogg` (or `wav`)**, chooses what the app sends —
-  reverting during a show is that line and a restart; the fork tries
-  the chosen format first and falls back to the `.wav`, so a missing
-  `.ogg` never breaks a line. Then a fork release and the installer
-  pinned to it, before Task 7's video. **Built and heard 2026-10-07**
-  (the tool, the fork's setting, 11 tests): the copies 8.4 times
-  smaller, the switch proven both ways, no difference to the owner's ear
-  in a 23-round show ("I cannot notice any difference"), no speed gain
-  on a fast connection ([discussion 2026-09-29]
-  voice-datasets-with-emotion §11.15). **Released 2026-10-07** as the
-  fork's **`tz-0.7`**, an annotated tag on `f2c0edb` (alfre2v/TalkWithZombies#11
-  and this repository's #31 merged; the merge identical to the tested
-  branch head `f838ef6`; the fork's tests green on it: 1295 passed); the
-  installer pinned to it (#32). **Re-proven by the owner (2026-10-07):**
-  "`make client-mac` : good, changed=1." then "second run or the client
-  install `changed=0`."; `git describe` in the client `tz-0.7`; and
-  switched on — "I added `reference_format: ogg` under show". **Task 12
-  done.**
-- [ ] **Task 13 — The world outside: an ambience channel inside the broadcast** (decided by the owner,
-  2026-10-07, after the sound-effect experiment — [experiment 2026-10-07] sfx-models: Stable Audio 3
-  Small-SFX passed by ear, its moaning crowd three good takes of three). It grew from the follow-up "the
-  dead outside" (the owner: "We need more of this on the show. It's a show about a zombie appocalipse and
-  we do not hear any zombies in the background... Now we can fix that!"), then widened (verbatim):
-  "Actually as ambiance I do not just want zombies sounds, but also: different types of zombie sounds,
-  like getting louder, slow moaning, frantic screams. We need to experiment with different prompts to see
-  what we get, I suppose we will need to throw away many of the prompts for lack of a good sound
-  generated. Also: distant sounds of machine gun, and shots fired, explosions in the distance. screams in
-  the distance, hysterical laughter in the distance, etc."
-  **Ruled (2026-10-07):**
-  - **Inside the broadcast** — the owner: "Inside, obviously." — heard through the scientists'
-    microphone, so filtered by the AM filter (the F key) like the static.
-  - **Its own levels and silences, as settings** — the owner: "separate from the bed's, as settings. And
-    care should be put so that they do not raise and fall at the same time as the bed. They are different
-    sources of audio." Its own timers, never in step with the bed's.
-  - **Its own mute key, `A`** — the owner: "the ambience is part of the story... But it my we wise to add
-    a separate button to silence the ambience, for example the letter `A`." The M key keeps muting the
-    static only.
-  - **A story file choosing the clips**, like `bed.yaml`.
-  - **Two kinds of sound** (the agent's proposal, accepted): **textures** — long, continuous, looping
-    (the dead moaning, a distant stir), played one after another like the bed's clips; and **spots** —
-    short single events at random moments with silence between them (a machine-gun burst, an explosion, a
-    scream, hysterical laughter, a frantic shriek), sparse on top of the textures. Each with its own
-    settings.
-  - **It ducks a little under the voices** (the agent's lean, accepted: "you got it all right"), so the
-    cast stays easy to understand.
-  - **Prompts written for the ambience:** textures steady, nothing that starts or stops abruptly, 20-30 s
-    long (Small-SFX goes to 120 s at the same cost); spots short.
-  **The steps:**
-  1. [x] **The prompts** — 36 drafted (`tools/sounds/ambience.yaml`), trusted by the owner unedited ("I will
-     trust your prompts, I want to see results soon"); three added after round 1 (a thunderstorm; explosions and
-     a gunfight without "in the distance", which made them too quiet — the owner's diagnosis, confirmed: the new
-     explosions 4-11 dB louder on average).
-  2. [x] **The generation tool** in this repository (`tools/sounds/gen_ambience.py`; 0.52-0.57 s a take) (prompts in a YAML file, takes out, on the box's
-     `sfx-lab/` with Stable Audio 3 Small-SFX — [experiment 2026-10-07] sfx-models, Entry 7).
-  3. [x] **The audition** — round 1, one take a prompt: 22 kept of 36, used as they were ("Everything I picked we
-     can use as it is"), so no round 2; the three added prompts, 13 takes: 9 kept. **31 clips: 16 textures, 15
-     spots** (`ambience_page.py` builds the page; the picks are the `keep:` lists of `ambience.yaml`). Was: **the
-     audition, in two rounds** — round 1, **screening**: one take a prompt, the owner keeps the
-     promising prompts (about 20 minutes); round 2, **picking**: five takes for each kept prompt, the
-     owner chooses. A page like the experiment's `listen.html`.
-  4. [x] **The picks prepared** (`tools/sounds/prepare_ambience.py`: MP3 mono 96 kbps, 5.3 MB; levels to -20
-     dBFS, capped at a -1 dBFS peak; `ambience.json`, `CREDITS.md`) — was: **the picks prepared** — levels evened out and a manifest (`tools/sounds/prepare_bed.py`, likely
-     extended), credits: released by the project as CC0 (Stability's Community License gives the user the
-     outputs — the experiment's Entry 11), the model and the prompts named in a `CREDITS.md`.
-  5. [x] **The fork** — built on its branch `alfre2v/ambience` (`static/show/ambience.js`, the bed's functions
-     reused for the ambience's manifest and the story's `ambience.yaml`, 15 `ambience_*` settings, the start
-     reply, `/api/show/ambience/<file>`; tests 1,312 pytest, 15 Node; the runbooks). Heard on the A6000: at the
-     static's levels the ambience was barely audible — the clips are at the static's average level, but a low moan
-     sounds far quieter than a hiss of the same energy, and the hiss masks it; **the defaults raised to 0.3 between
-     rounds and 0.12 under a line**. The owner: "much better now, make those the defaults", then "it sounds
-     amazing! Very spooky 😃". Was: **the fork** — an ambience channel reusing the bed's machinery (`static/show/bed.js`): textures
-     and spots, its settings under `show:`, the `A` key, the story file, the AM filter, the ducking; tests
-     (pytest and Node); a runbook recipe.
-  6. [ ] **Release** — the fork's tag, the installer pinned, the owner's re-proof — before Task 7's video.
-     **Released 2026-10-07** as the fork's **`tz-0.8`**, an annotated tag on `66e35d5` (alfre2v/TalkWithZombies#12
-     merged; the merge identical to the tested branch head `2197c1c`; the fork's tests green on it: 1312 passed,
-     Node 15 / 29 / 42 / 8 / 17 / 91); the installer pinned to it (this repository's #34, which also carries the
-     prompts, the picks and the tools). **Left: the owner's re-proof** (`make client-mac` twice: `changed=1`, then
-     `changed=0`; `git describe` in the client `tz-0.8`).
-  **The whole story, every decision and why:** [discussion 2026-10-07] the-world-outside, Part 1.
-  **Estimate (the agent's):** about a day of the agent's work, about 2 hours of the owner's (the audition
-  rounds, the reviews).
 - [ ] **Task 14 — Sound cues: an event round that names a sound plays it** (planned 2026-10-07, not built; the
   name proposed by the agent and **accepted by the owner, 2026-10-07** — the owner's working name had been "Ambience
   to event coupling?"). The owner's
@@ -664,6 +494,81 @@ the agent keeps this current. These carry across arcs.*
   misfires accepted ("also now at random, so it's not worse"); **a cued texture plays for the clip's length** (ruled:
   "let's keep things simple"). **Estimate (the agent's): about 2½-3 hours.** **Ruled (the owner, 2026-10-07):** the
   name "sound cues", and the release order — the ambience released first as `tz-0.8` (done), **this as `tz-0.9`**.
+  **The steps** (branch `alfre2v/sound-cues` in both repositories; the build's choices and the sparse association:
+  [discussion 2026-10-07] the-world-outside §9.9, §9.10):
+  1. [x] **The server** — `keywords:` in the story's `ambience.yaml` only; `app/show/cues.py` (whole words or
+     phrases, any case; one matching clip picked with the round's own dice, `random.Random(f"{seed}:{n}:cue")`, apart
+     from the director's); the round's stream opens with `{"type": "cue", "file", "kind"}` before its first line; the
+     summary and the record keep the cue.
+  2. [x] **The page** — `ambience.js` plays the cue when the round's first line is heard (the page goes "on air"): a
+     spot at once, cutting one under way; a texture in place of the current one, to its end, ending a silence under
+     way; a cue switches nothing on. `show.js` keeps the cue (one line).
+  3. [x] **The keywords** — 24 of the 31 clips; the dead's own sounds none. **8 of the 289 events cue**, no misfire.
+  4. [x] **The tests** — pytest 1,333 passed (21 new); Node ambience 18 (3 new), page 43 (1 new).
+  5. [x] **The docs** — the fork's `AGENTS.md` and runbooks; the-world-outside §9.9, §9.10.
+  6. [x] **The live check** — the app on port 8010 from the branch, with `event_every: 1`, `event_jitter: 0` and
+     debug on in the clone's `settings.yaml`; the owner listens, the agent reads the app's log ("the event cues …").
+     **First (2026-10-07, 18:39-18:50):** a first seed-42 run with the real keywords read 10 events and cued none
+     — the sparse association, live. Then **a rigged cue** (the owner's idea: "We have seed, so we know what the lines
+     will be"): every seed-42 run since 2026-10-02 reads the same round-2 event ("Footsteps cross the floor above,
+     where the roof access was welded shut."), so a test keyword unique to it (`footsteps`) was put on
+     `explosion-4.mp3`, and `humming` (round 4: "…the dead are humming…") on `warfare-1.mp3`. **The spot cue worked**
+     — the owner: "Perfect it worked for "Footsteps cross the floor above…""; the log: "round 2: the event cues
+     explosion-4.mp3 (spot)". The run stopped before round 4. **Done (22:45-22:46):** the same rig again — the log
+     in order: round 2 "cues explosion-4.mp3 (spot)", then the page fetching `explosion-4.mp3`; round 4 "cues
+     warfare-1.mp3 (texture)", then the page fetching `warfare-1.mp3` — the server sent each cue and the page acted
+     on it at once; the run's record has `cue` on rounds 2 and 4 only. By ear it was hard to tell (the owner: "I
+     don't know what I heard or what not, it's too much"): the shuffle had picked `warfare-1.mp3` as the run's first
+     texture (the log fetched it before any cue), so the same gunfire came from the shuffle and from the cue — one
+     more reason for R2's `cue_only`. Unrigged both times (the story file restored, the clone's settings back to
+     `seed: 42`). To repeat: the same two test keywords (`footsteps` on `explosion-4.mp3`, `humming` on
+     `warfare-1.mp3`), `event_every: 1`, `event_jitter: 0`, `debug: true`, reload and Start.
+  **The refinements — the sparse association** (found 2026-10-07 while writing the keywords: only 8 of 289 events
+  name a sound the library has — about 0.7 cues in a 27-event show, perhaps none; the owner's proposal, at the end of
+  the queue: "let's finish the build plan we had first, we can add this as refinements later"):
+  7. [x] **R1 — sounds for the events** — **done 2026-10-08: 29 sounds, 42 takes, all cue-only; 43 of the 289
+     events now cue a sound (15 %, from 8) — about 4 cues in a 27-event show** (three audition rounds; the runbook
+     `docs/runbooks/event-sounds.md`; [discussion 2026-10-07] the-world-outside §9.11) (reshaped by the owner, 2026-10-07: "Maybe what we have to do is just to go
+     event by event, select the ones that can have good audio prompt, and generate 3 audios per each, and let me
+     decide... ideally we leave the machinery in place to get more audios if we add more events" — the experiment
+     alone could give only three sounds: the helicopter, the sirens, the tapping on glass). **The test for an event
+     sound** (the owner, verbatim): "each sound must be "distinct" and "recognizable", I could not say what the glass
+     rain audio was if I did not know the prompt. So, a smoke detector, a fire alarm and a freezer beeping can be good
+     cues if the sound has those properties" — not inside or outside the lab ("why would a radio mic only pick sounds
+     from outside and not others happening inside the lab?"). **Every event sound is `cue_only`** ("The event sounds
+     are too specific to be general ambience"); the 31 ambience clips stay in the rotation. **The steps:** the agent
+     reads the 289 events and lists those naming a distinct, recognizable sound — one prompt per sound (several
+     events may share one), its kind, its keywords and the events they cue; the owner skims; three takes each on the
+     box (`gen_ambience.py`; the experiment's helicopter — all three takes, the owner: "That way I don't have to
+     decide" — and the sirens' good take (seed 3) regenerated from their prompts and seeds, expected identical on the
+     same A6000; the glass rain out: "too confusing"); the owner's audition (`ambience_page.py`); prepared
+     (`prepare_ambience.py`); keywords and `cue_only: true` in the story. And a runbook, "Give an event a sound", so
+     a new event can get its sound the same way.
+  8. [x] **R2 — `cue_only` clips** (built 2026-10-07, first of the refinements — the owner: "(cue_only) should come
+     first... That's why I was asking you for it"; a cue-only clip without keywords is refused by the story's loader) — per clip in the story's `ambience.yaml` (default false; the owner: "I want that
+     in `stories/lab-outbreak/ambience.yaml`", "cue_only is fine"): in the library and sent to the page, marked, but
+     left out of the random spots and the texture shuffle — heard only when an event cues it. Tests in both
+     languages; the runbook.
+  9. [~] **R3 — new events that name the library's sounds** — **postponed past the demo (the owner, 2026-10-08):**
+     "Let's postpone R3, it does not add anything new technically. So, it does not interest me before the demo."
+     Moved to the follow-up "New events that name the library's sounds — sound cues' R3" (`docs/follow-ups.md`). — about 15-20 (explosions, warfare, guns, screams,
+     laughter, the horde pounding), drafted by the agent under their overtones and themes, skimmed and edited by the
+     owner; into `stories/lab-outbreak/events.yaml`. About 1 event in 9 would cue.
+  **The owner's hearing test — passed (2026-10-08, 01:22-01:39 CDT).** The owner (verbatim): "we are not merging yet,
+     and we are not creating the new tag until we have tested that this works. We have to conduct an actual hearing test
+     of the show running with debug and all settings for maximum visibility." A seed-42 show at the default levels, with
+     `event_every: 1`, `event_jitter: 0` and debug on (run `2026-10-08T01-22-30`): **67 rounds, 37 events, 5 cued** —
+     the drone (r6), the smoke detector (r8), the barking dogs (r41), the owl (r45), a woman's scream (r62); each cue
+     followed in the log by the page fetching its clip; the record against the keywords, 37 of 37 events consistent
+     (none missed, none wrong); no error. 5 of 37 (14 %) — as the keywords predict (15 %). The owner: "From what I
+     heard things are working as expected."
+  10. [ ] **The release** — next (R1 and R2 done, R3 postponed) — **`tz-0.9` held until the refinements are done** (the owner: "Agreed to hold the tz-0.9
+     tag."): the merges, the tag, the installer pinned, the spec (the cues), the owner's re-proof. **Released
+     2026-10-08** as the fork's **`tz-0.9`**, an annotated tag on `b1d039c` (alfre2v/TalkWithZombies#13 merged after
+     the owner's hearing test; the merge identical to the tested branch head `09a089b`; the fork's tests green on it:
+     1337 passed, Node 21 / 29 / 44 / 8 / 17 / 91); the installer pinned to it, the spec's sound cues (this
+     repository's #35). **Left: the owner's re-proof** (`make client-mac` twice: `changed=1`, then `changed=0`; `git
+     describe` in the client `tz-0.9`).
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes
@@ -2006,6 +1911,209 @@ tuned.
 Both gating decisions are taken and the gate passed
 (2026-09-22); the fork exists (Task 6a, done 2026-09-23); the show
 engine is next (Task 6b).
+- [x] **Task 11 — Goal 4, the 3090** — **closed 2026-10-07** (11.1 done; 11.2 deferred past the demo) (the demo's goal 4: automated
+  deployment to a local GPU; a task group of its own, the owner,
+  2026-10-03). Two parts, both on the owner's Linux desktop with the
+  RTX 3090:
+  1. [x] **The deploy** — **DONE 2026-10-06: goal 4 met** (paused
+     2026-10-03 to 10-05); the 3090's checks all passed, sudo by
+     keyboard (`-K`). Built on `alfre2v/linux-3090` (#29): D1 — two
+     environments, `local` (Ansible on the 3090) and `lan` (from the
+     laptop, a copy of `cloud`); D3 — user `alfredo`, the key
+     `~/.ssh/zombie_radio_3090`, `make ssh-tunnel` reading the env's
+     overrides; D4 — nothing starts at boot (`zr_start_at_boot`), `make
+     ans-start` / `ans-stop` for every environment; every download in
+     `~/zombie-radio-data`; the Makefile's macOS-only `sed` fixed; the
+     runbook `docs/runbooks/home-gpu-3090.md`. **Deployed 2026-10-06**
+     by the owner with `ENV=local` (about 8½ minutes; three failures on
+     the way, each fixed: a stale apt key, the project's Python picked
+     for the modules, a stale ghcr.io login); a second run at
+     `changed=0`; the stack 12,598 MiB on the 3090
+     ([discussion 2026-10-02] local-gpu-deployment-plan §10.10).
+     D2 and D5 ruled: the tunnel; proven at home (§10.12). **From the
+     laptop** (the owner, after #29 merged): `lan` at `changed=0` (the
+     owner: "close enough" — not a `lan` deploy from zero), the tunnel
+     and `make check`, a show against the 3090 ("very good show
+     actually"). The owner: "goal 4 met, recording into Task 7, small PR
+     now" (§10.13). **The reboot test, done 2026-10-07** — the owner
+     (verbatim): "I also exercised restarting the 3090 computer and
+     bringing the AI components up, and everything worked well. So we
+     can 100% put to rest all the 3090 exercise. It's done." (How the
+     services were brought up was not recorded.)
+  2. [~] **The client on Linux** — **deferred past the demo
+     (2026-10-07**, the owner's choice when the 3090 was put to rest);
+     the follow-up "The client on Linux and Windows" holds the idea.
+     **First, a manual client install on
+     the 3090, every step written down; then decide whether a `make
+     client-linux` (an Ansible playbook that installs the app and then
+     prints the manual steps left, ready to copy and paste) is wise.**
+     The owner (verbatim, 2026-10-03): "Add a Task featured prominently
+     in the TODO near (or inside the Task group for the 3090) to
+     evaluate if the `client-linux` route is wise, or in any case, to
+     exercise a manual client install in the 3090 and see how it all
+     works together." What differs from the Mac: the starter voices
+     (`say`) and the voice tools (`afconvert`) are macOS only. On the
+     3090 the client and the GPU stack share one machine: no tunnel, the
+     client's `localhost` ports are the services' own
+     ([discussion 2026-10-03] client-os-support §4).
+- [x] **Task 12 — The compressed reference clips** — **done 2026-10-07** (`tz-0.7`, #32) (decided by the
+  owner, 2026-10-07: "We are going to execute on the compressed
+  audios."; the format: **Opus 48 kbps**). The follow-up "Compressed
+  reference clips, switchable on and off" holds the measurements. **The
+  shape, agreed 2026-10-07** (it replaces the follow-up's): the original
+  WAVs are never touched — the owner (verbatim): "let's take care on not
+  overwriting the original files … that way if I encounter unexpected
+  problems during a live show I can easily revert to using the old
+  wavs"; a tool of its own, `tools/voices/compress_voices.py`
+  (`ffmpeg`; chosen over the casting script, which can only recast every
+  WAV from the dataset), writes each clip's compressed copy beside it
+  with its real extension (`ref-fear.ogg` beside `ref-fear.wav`, one
+  `ref-fear.txt` for both) and never writes or deletes a WAV; a recast
+  removes the copies (`cast_voices.py`), the tool is run again after it;
+  a clip keeps its name everywhere (the stories still say
+  `ref-fear.wav`); **a switch in the client's `settings.yaml`,
+  `show.reference_format: ogg` (or `wav`)**, chooses what the app sends —
+  reverting during a show is that line and a restart; the fork tries
+  the chosen format first and falls back to the `.wav`, so a missing
+  `.ogg` never breaks a line. Then a fork release and the installer
+  pinned to it, before Task 7's video. **Built and heard 2026-10-07**
+  (the tool, the fork's setting, 11 tests): the copies 8.4 times
+  smaller, the switch proven both ways, no difference to the owner's ear
+  in a 23-round show ("I cannot notice any difference"), no speed gain
+  on a fast connection ([discussion 2026-09-29]
+  voice-datasets-with-emotion §11.15). **Released 2026-10-07** as the
+  fork's **`tz-0.7`**, an annotated tag on `f2c0edb` (alfre2v/TalkWithZombies#11
+  and this repository's #31 merged; the merge identical to the tested
+  branch head `f838ef6`; the fork's tests green on it: 1295 passed); the
+  installer pinned to it (#32). **Re-proven by the owner (2026-10-07):**
+  "`make client-mac` : good, changed=1." then "second run or the client
+  install `changed=0`."; `git describe` in the client `tz-0.7`; and
+  switched on — "I added `reference_format: ogg` under show". **Task 12
+  done.**
+- [x] **Task 13 — The world outside: an ambience channel inside the broadcast** — **done 2026-10-07** (`tz-0.8`,
+  re-proven) (decided by the owner,
+  2026-10-07, after the sound-effect experiment — [experiment 2026-10-07] sfx-models: Stable Audio 3
+  Small-SFX passed by ear, its moaning crowd three good takes of three). It grew from the follow-up "the
+  dead outside" (the owner: "We need more of this on the show. It's a show about a zombie appocalipse and
+  we do not hear any zombies in the background... Now we can fix that!"), then widened (verbatim):
+  "Actually as ambiance I do not just want zombies sounds, but also: different types of zombie sounds,
+  like getting louder, slow moaning, frantic screams. We need to experiment with different prompts to see
+  what we get, I suppose we will need to throw away many of the prompts for lack of a good sound
+  generated. Also: distant sounds of machine gun, and shots fired, explosions in the distance. screams in
+  the distance, hysterical laughter in the distance, etc."
+  **Ruled (2026-10-07):**
+  - **Inside the broadcast** — the owner: "Inside, obviously." — heard through the scientists'
+    microphone, so filtered by the AM filter (the F key) like the static.
+  - **Its own levels and silences, as settings** — the owner: "separate from the bed's, as settings. And
+    care should be put so that they do not raise and fall at the same time as the bed. They are different
+    sources of audio." Its own timers, never in step with the bed's.
+  - **Its own mute key, `A`** — the owner: "the ambience is part of the story... But it my we wise to add
+    a separate button to silence the ambience, for example the letter `A`." The M key keeps muting the
+    static only.
+  - **A story file choosing the clips**, like `bed.yaml`.
+  - **Two kinds of sound** (the agent's proposal, accepted): **textures** — long, continuous, looping
+    (the dead moaning, a distant stir), played one after another like the bed's clips; and **spots** —
+    short single events at random moments with silence between them (a machine-gun burst, an explosion, a
+    scream, hysterical laughter, a frantic shriek), sparse on top of the textures. Each with its own
+    settings.
+  - **It ducks a little under the voices** (the agent's lean, accepted: "you got it all right"), so the
+    cast stays easy to understand.
+  - **Prompts written for the ambience:** textures steady, nothing that starts or stops abruptly, 20-30 s
+    long (Small-SFX goes to 120 s at the same cost); spots short.
+  **The steps:**
+  1. [x] **The prompts** — 36 drafted (`tools/sounds/ambience.yaml`), trusted by the owner unedited ("I will
+     trust your prompts, I want to see results soon"); three added after round 1 (a thunderstorm; explosions and
+     a gunfight without "in the distance", which made them too quiet — the owner's diagnosis, confirmed: the new
+     explosions 4-11 dB louder on average).
+  2. [x] **The generation tool** in this repository (`tools/sounds/gen_ambience.py`; 0.52-0.57 s a take) (prompts in a YAML file, takes out, on the box's
+     `sfx-lab/` with Stable Audio 3 Small-SFX — [experiment 2026-10-07] sfx-models, Entry 7).
+  3. [x] **The audition** — round 1, one take a prompt: 22 kept of 36, used as they were ("Everything I picked we
+     can use as it is"), so no round 2; the three added prompts, 13 takes: 9 kept. **31 clips: 16 textures, 15
+     spots** (`ambience_page.py` builds the page; the picks are the `keep:` lists of `ambience.yaml`). Was: **the
+     audition, in two rounds** — round 1, **screening**: one take a prompt, the owner keeps the
+     promising prompts (about 20 minutes); round 2, **picking**: five takes for each kept prompt, the
+     owner chooses. A page like the experiment's `listen.html`.
+  4. [x] **The picks prepared** (`tools/sounds/prepare_ambience.py`: MP3 mono 96 kbps, 5.3 MB; levels to -20
+     dBFS, capped at a -1 dBFS peak; `ambience.json`, `CREDITS.md`) — was: **the picks prepared** — levels evened out and a manifest (`tools/sounds/prepare_bed.py`, likely
+     extended), credits: released by the project as CC0 (Stability's Community License gives the user the
+     outputs — the experiment's Entry 11), the model and the prompts named in a `CREDITS.md`.
+  5. [x] **The fork** — built on its branch `alfre2v/ambience` (`static/show/ambience.js`, the bed's functions
+     reused for the ambience's manifest and the story's `ambience.yaml`, 15 `ambience_*` settings, the start
+     reply, `/api/show/ambience/<file>`; tests 1,312 pytest, 15 Node; the runbooks). Heard on the A6000: at the
+     static's levels the ambience was barely audible — the clips are at the static's average level, but a low moan
+     sounds far quieter than a hiss of the same energy, and the hiss masks it; **the defaults raised to 0.3 between
+     rounds and 0.12 under a line**. The owner: "much better now, make those the defaults", then "it sounds
+     amazing! Very spooky 😃". Was: **the fork** — an ambience channel reusing the bed's machinery (`static/show/bed.js`): textures
+     and spots, its settings under `show:`, the `A` key, the story file, the AM filter, the ducking; tests
+     (pytest and Node); a runbook recipe.
+  6. [x] **Release** — the fork's tag, the installer pinned, the owner's re-proof — before Task 7's video.
+     **Released 2026-10-07** as the fork's **`tz-0.8`**, an annotated tag on `66e35d5` (alfre2v/TalkWithZombies#12
+     merged; the merge identical to the tested branch head `2197c1c`; the fork's tests green on it: 1312 passed,
+     Node 15 / 29 / 42 / 8 / 17 / 91); the installer pinned to it (this repository's #34, which also carries the
+     prompts, the picks and the tools). **Re-proven by the owner (2026-10-07)** (verbatim): "I ran `make
+     client-mac`, changed=1. Idempotency run: changed=0."; `git describe --tags` in the client: `tz-0.8`.
+  **The whole story, every decision and why:** [discussion 2026-10-07] the-world-outside, Part 1.
+  **Estimate (the agent's):** about a day of the agent's work, about 2 hours of the owner's (the audition
+  rounds, the reviews).
+- [~] **Task 4 — Real cast replaces placeholders.** — **done for the demo (the owner, 2026-10-08):** "Task 4, "Real
+  cast replaces placeholders," is done. We have the real cast now, we separated the bibles to a different task, no?"
+  The voices are real, with a clip per mood (the fork's `tz-0.4`); **moved:** the character bibles — deferred past the
+  demo (the follow-up "In-prototype experiments and the character bibles — deferred past the demo"; the owner action
+  queue, item 2); the recasts of Daniel and Moira — postponed past the demo (the follow-up "Recast Daniel and
+  Moira…"). **Split in two
+  (the owner, 2026-09-28):** (1) **the character bibles** — not now:
+  "today has been all about improving the prompt, and right now the
+  narration holds together more or less, ok. I want to pivot to audio,
+  which is the weak spot now."; (2) **the reference voices** — one clip
+  per character, the owner's, next: each character's clip as
+  `Personas/<Name>/ref.wav` with its exact transcript in `ref.txt`, in
+  `~/TalkWithZombies-client/Personas/` (the dev clone reads the same
+  folder through its `personas_directory`); `Personas/` is gitignored in
+  the fork and the installer skips an existing persona folder. Several
+  clips per character by mood: the follow-up "Mood clips". **Where the
+  clips may come from (2026-09-29):** datasets of real voices recorded
+  in several emotions, instead of clips hunted one by one and cleaned of
+  background noise — four finalists, EARS, CREMA-D, JL-Corpus and
+  Expresso, and a listening test proposed ([discussion 2026-09-29]
+  voice-datasets-with-emotion, OPEN). **A first cast is in the app
+  (2026-09-29, 14:32 CDT):** EARS voices chosen from the owner's shortlist
+  of 20 — Daniel p007, Moira p026, Ralph p017, Samantha p033 — written by
+  the casting script `tools/voices/cast_voices.py` from
+  `tools/voices/cast.yaml`; one edited line and one command recast a
+  character, heard from the next spoken line (the discussion's §11.5). The
+  placeholder voices are kept as `ref.placeholder.wav`. **Since
+  2026-09-30 the voices follow the mood** (every one of a speaker's 23
+  recordings cast, the story's `voices` choosing one per mood; the fork's
+  alfre2v/TalkWithZombies#8 and this repository's #18, both merged on
+  2026-09-30; released as the fork's `tz-0.4`, an annotated tag on
+  `1b7e70e`, pushed — the merge identical to the tested branch head, the
+  fork's tests green on it: 1186 passed, Node 42 / 17 / 91 / 8; the
+  installer pinned to `tz-0.4` (#19) and re-proven by the owner on
+  2026-09-30: the client moved to `tz-0.4` — the only change, "Clone
+  TalkWithZombies at the pinned version" — a second run `changed=0`,
+  `git describe` `tz-0.4`) — the
+  owner: "Wow, the show is very good now." The cast: Daniel p007, Moira
+  p026, Ralph p017, Samantha p063 (recast 2026-09-30). **Still open:**
+  Daniel and Moira to be recast — Moira sounds too like the new Samantha,
+  and two of Daniel's clips spoil his lines (fear pitched in a woman's
+  range, pride with stray words at its start) — screening the candidates
+  first (`tools/voices/screen_voices.py`) and then by ear; the transcripts
+  of Ralph's confusion and Samantha's pride clips to correct after the
+  owner's ear check ([discussion 2026-09-29] voice-datasets-with-emotion
+  §11.11-§11.13). **Postponed past the demo (2026-09-30, evening)** — the
+  owner: "I can live with the audio instabilities for the moment. I wan to make progress in other areas. We postpone recasting more voices, as far as I am concerned we have achieved TTS of voices with emotions with great success. The remaining boring "find and clear the audio samples" do not interest me for the demo." The reference voices are done for the demo; the
+  chores wait in the follow-up "Recast Daniel and Moira, and correct two
+  stray-speech transcripts" (§11.14). The detail
+  as first written: character
+  bibles → the sections of TalkWithZombies' cast sheet ([spec
+  §5]; where they live in the fork — decided 2026-09-23: the
+  cast entries of `stories/<story>/cast_sheet.md`, not the persona
+  files — [discussion 2026-09-23] show-engine-design §4), keeping `/no_think`
+  while on Nemotron (the chat template needs it even under the
+  grammar — [spec §4]); no heavy prompt tuning yet — guardrail 2 ·
+  voice samples → isolation tool first (follow-ups) → gitignore →
+  replace the `say`-generated ref.wavs in the persona
+  directories.
 
 
 ## Standing cross-arc notes
