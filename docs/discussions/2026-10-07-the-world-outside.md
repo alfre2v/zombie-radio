@@ -65,8 +65,10 @@ new page logic to play a sound just before its event's line — about two days. 
 > adding stable audio 3 small server to the AI stack, not creating a huge library of sounds to download, that is
 > technically boring... We can save this decision with the task.
 
-(Recorded in `docs/follow-ups.md`, "Event sounds as a layer of their own beside the static bed". Part 2 below is a
-cheaper cousin of it: no new sounds, the ambience's own clips cued by the event's words.)
+(Recorded in `docs/follow-ups.md`, "Event sounds as a layer of their own beside the static bed" — since 2026-10-08
+"Event sounds generated live by a Small-SFX server in the stack", reshaped once sound cues had delivered most of it.
+Part 2 below is a cheaper cousin of it: at first no new sounds, the ambience's own clips cued by the event's words;
+then 29 event sounds of their own, §9.11.)
 
 ### §2.4 The agent's corrections, accepted
 

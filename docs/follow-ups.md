@@ -1971,7 +1971,33 @@ sound by the same runbook (`docs/runbooks/event-sounds.md`).
 - **The fix shape:** named lists in `stories/<story>/bed.yaml` (a `default` and one per kind of round); the start
   reply carries them; `bed.js` switches the list when a round of that kind starts (the round's summary names its kind).
 
-## Event sounds as a layer of their own beside the static bed (owner, 2026-10-01) — very low priority; undecided whether worth executing; kept as a ledger of ideas
+## Event sounds generated live by a Small-SFX server in the stack (owner, 2026-10-01; reshaped 2026-10-08) — what is left of "Event sounds as a layer of their own beside the static bed", largely delivered by sound cues; very low priority, kept as a ledger of ideas
+
+*Was titled "Event sounds as a layer of their own beside the static bed" until 2026-10-08.*
+
+- **Status 2026-10-08 — largely delivered, by another route: sound cues (Task 14, the fork's `tz-0.9`).** The owner
+  noticed it (verbatim): "I believe with the ambience sound + cue sounds we shipped actually a feature that we had in
+  our follow up but we postponed it because it was too complex." What this entry planned, against what shipped:
+  - **delivered:** sounds for the events (29 sounds, 42 takes, cue-only — the helicopter's rotor, the fire alarm, sirens…;
+    the glass dropped by ear); the server picks the clip before the round's first line and sends it first (a `cue`
+    event); the page plays it as the event is read, to the clip's own length;
+  - **inverted:** not "each event names its kind of sound" but **each clip declares the words that call it**
+    (`keywords:` in the story's `ambience.yaml`, matched against an event's text) — so the 289 events stayed untouched.
+    **The inversion was the owner's idea** (verbatim, 2026-10-07: "we would add a keywords list under each clip, and
+    if the event text contains any of the keywords then we immediately insert that audio to be played as ambience";
+    [discussion 2026-10-07] the-world-outside §9.1), and, in the owner's words on 2026-10-08, "Much more flexible": the
+    keywords can match any line of text, not only an event;
+  - **changed:** not a layer beside the bed but the ambience's own channel (its two players, the radio's filter, the A
+    key); a cued spot cuts the one playing, a cued texture replaces the current one (no crossfade);
+  - **not delivered:** every event with a sound (43 of 289 cue one — the sparse association; more events are the
+    follow-up "New events that name the library's sounds — sound cues' R3"); and **the owner's method of 2026-10-07
+    below — generated live by a Stable Audio 3 Small-SFX server in the stack, never a downloaded library.** What
+    shipped is a small library (3.5 MB of event sounds), chosen by ear.
+  - **Why it shrank from "about two days, too much" to about a day:** the keywords on the clips (no events edited), the
+    ambience's channel already built (Task 13), few event sounds, cue-only, chosen by ear.
+  **What this entry keeps:** live generation — a Small-SFX server in the AI stack, a sound made for the event as it
+  comes (feasible: 0.44 s a take, 2.9 GB beside the stack, no effect on the voice — [experiment 2026-10-07]
+  sfx-models). The technically new part, unbuilt. Trigger: none set; the owner's decision, after the demo.
 
 - **Status 2026-10-07 — back under discussion.** With more days before the talk, the owner raised the sound effects
   again, with a two-part plan: an experiment with sound-effect models on the box, then sounds stored per event and
