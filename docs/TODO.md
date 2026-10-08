@@ -141,9 +141,11 @@ it is detail.*
   channel inside the broadcast (the dead, gunfire, explosions, distant
   screams). The event sounds set aside (the follow-up). **Task 13 built,
   heard ("it sounds amazing! Very spooky 😃") and released as the fork's
-  `tz-0.8`** (the installer pinned in #34; the owner's re-proof left).
-  **Task 14, sound cues, planned** — the name and its release as
-  `tz-0.9` ruled by the owner; not built.
+  `tz-0.8`** (the installer pinned in #34), re-proven by the owner.
+  **Task 14, sound cues, built** (not yet heard live) — and the sparse
+  association found: only 8 of 289 events name a sound the library has;
+  three refinements queued (clips for the sounds events name, `cue_only`
+  clips, new events), `tz-0.9` held until they are done.
 - **Deferred past the demo (the owner, 2026-10-01):** Task 5, the
   in-prototype experiments, and the character bibles — moved to the
   follow-up "In-prototype experiments and the character bibles —
@@ -587,7 +589,8 @@ the agent keeps this current. These carry across arcs.*
   install `changed=0`."; `git describe` in the client `tz-0.7`; and
   switched on — "I added `reference_format: ogg` under show". **Task 12
   done.**
-- [ ] **Task 13 — The world outside: an ambience channel inside the broadcast** (decided by the owner,
+- [x] **Task 13 — The world outside: an ambience channel inside the broadcast** — **done 2026-10-07** (`tz-0.8`,
+  re-proven) (decided by the owner,
   2026-10-07, after the sound-effect experiment — [experiment 2026-10-07] sfx-models: Stable Audio 3
   Small-SFX passed by ear, its moaning crowd three good takes of three). It grew from the follow-up "the
   dead outside" (the owner: "We need more of this on the show. It's a show about a zombie appocalipse and
@@ -642,12 +645,12 @@ the agent keeps this current. These carry across arcs.*
      amazing! Very spooky 😃". Was: **the fork** — an ambience channel reusing the bed's machinery (`static/show/bed.js`): textures
      and spots, its settings under `show:`, the `A` key, the story file, the AM filter, the ducking; tests
      (pytest and Node); a runbook recipe.
-  6. [ ] **Release** — the fork's tag, the installer pinned, the owner's re-proof — before Task 7's video.
+  6. [x] **Release** — the fork's tag, the installer pinned, the owner's re-proof — before Task 7's video.
      **Released 2026-10-07** as the fork's **`tz-0.8`**, an annotated tag on `66e35d5` (alfre2v/TalkWithZombies#12
      merged; the merge identical to the tested branch head `2197c1c`; the fork's tests green on it: 1312 passed,
      Node 15 / 29 / 42 / 8 / 17 / 91); the installer pinned to it (this repository's #34, which also carries the
-     prompts, the picks and the tools). **Left: the owner's re-proof** (`make client-mac` twice: `changed=1`, then
-     `changed=0`; `git describe` in the client `tz-0.8`).
+     prompts, the picks and the tools). **Re-proven by the owner (2026-10-07)** (verbatim): "I ran `make
+     client-mac`, changed=1. Idempotency run: changed=0."; `git describe --tags` in the client: `tz-0.8`.
   **The whole story, every decision and why:** [discussion 2026-10-07] the-world-outside, Part 1.
   **Estimate (the agent's):** about a day of the agent's work, about 2 hours of the owner's (the audition
   rounds, the reviews).
@@ -664,6 +667,45 @@ the agent keeps this current. These carry across arcs.*
   misfires accepted ("also now at random, so it's not worse"); **a cued texture plays for the clip's length** (ruled:
   "let's keep things simple"). **Estimate (the agent's): about 2½-3 hours.** **Ruled (the owner, 2026-10-07):** the
   name "sound cues", and the release order — the ambience released first as `tz-0.8` (done), **this as `tz-0.9`**.
+  **The steps** (branch `alfre2v/sound-cues` in both repositories; the build's choices and the sparse association:
+  [discussion 2026-10-07] the-world-outside §9.9, §9.10):
+  1. [x] **The server** — `keywords:` in the story's `ambience.yaml` only; `app/show/cues.py` (whole words or
+     phrases, any case; one matching clip picked with the round's own dice, `random.Random(f"{seed}:{n}:cue")`, apart
+     from the director's); the round's stream opens with `{"type": "cue", "file", "kind"}` before its first line; the
+     summary and the record keep the cue.
+  2. [x] **The page** — `ambience.js` plays the cue when the round's first line is heard (the page goes "on air"): a
+     spot at once, cutting one under way; a texture in place of the current one, to its end, ending a silence under
+     way; a cue switches nothing on. `show.js` keeps the cue (one line).
+  3. [x] **The keywords** — 24 of the 31 clips; the dead's own sounds none. **8 of the 289 events cue**, no misfire.
+  4. [x] **The tests** — pytest 1,333 passed (21 new); Node ambience 18 (3 new), page 43 (1 new).
+  5. [x] **The docs** — the fork's `AGENTS.md` and runbooks; the-world-outside §9.9, §9.10.
+  6. [ ] **The live check** — the app on port 8010 from the branch, with `event_every: 1`, `event_jitter: 0` and
+     debug on in the clone's `settings.yaml`; the owner listens, the agent reads the app's log ("the event cues …").
+     **Half done (2026-10-07, 18:39-18:50):** a first seed-42 run with the real keywords read 10 events and cued none
+     — the sparse association, live. Then **a rigged cue** (the owner's idea: "We have seed, so we know what the lines
+     will be"): every seed-42 run since 2026-10-02 reads the same round-2 event ("Footsteps cross the floor above,
+     where the roof access was welded shut."), so a test keyword unique to it (`footsteps`) was put on
+     `explosion-4.mp3`, and `humming` (round 4: "…the dead are humming…") on `warfare-1.mp3`. **The spot cue worked**
+     — the owner: "Perfect it worked for "Footsteps cross the floor above…""; the log: "round 2: the event cues
+     explosion-4.mp3 (spot)". The run stopped before round 4: **the texture cue is still to be heard.** Unrigged the
+     same evening (the story file restored byte for byte, the clone's settings back to `seed: 42`). To repeat: the
+     same two test keywords, the same settings, reload and Start.
+  **The refinements — the sparse association** (found 2026-10-07 while writing the keywords: only 8 of 289 events
+  name a sound the library has — about 0.7 cues in a 27-event show, perhaps none; the owner's proposal, at the end of
+  the queue: "let's finish the build plan we had first, we can add this as refinements later"):
+  7. [ ] **R1 — clips for the sounds the events name** — the morning experiment's rated Small-SFX takes, on the
+     laptop, no box: the helicopter (good / good / good; 3 events), the sirens (seed 3, good; 2 events), the glass
+     rain (good / good / good); prepared like the ambience (MP3, level, manifest, CC0 credits), added as spots with
+     keywords. The jet, the train horn, the smoke detector, the building alarms: no take anywhere — the box, deferred.
+  8. [ ] **R2 — `cue_only` clips** — per clip in the story's `ambience.yaml` (default false; the owner: "I want that
+     in `stories/lab-outbreak/ambience.yaml`", "cue_only is fine"): in the library and sent to the page, marked, but
+     left out of the random spots and the texture shuffle — heard only when an event cues it. Tests in both
+     languages; the runbook.
+  9. [ ] **R3 — new events that name the library's sounds** — about 15-20 (explosions, warfare, guns, screams,
+     laughter, the horde pounding), drafted by the agent under their overtones and themes, skimmed and edited by the
+     owner; into `stories/lab-outbreak/events.yaml`. About 1 event in 9 would cue.
+  10. [ ] **The release** — **`tz-0.9` held until the refinements are done** (the owner: "Agreed to hold the tz-0.9
+     tag."): the merges, the tag, the installer pinned, the spec (the cues), the owner's re-proof.
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes
