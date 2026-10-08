@@ -679,25 +679,44 @@ the agent keeps this current. These carry across arcs.*
   3. [x] **The keywords** — 24 of the 31 clips; the dead's own sounds none. **8 of the 289 events cue**, no misfire.
   4. [x] **The tests** — pytest 1,333 passed (21 new); Node ambience 18 (3 new), page 43 (1 new).
   5. [x] **The docs** — the fork's `AGENTS.md` and runbooks; the-world-outside §9.9, §9.10.
-  6. [ ] **The live check** — the app on port 8010 from the branch, with `event_every: 1`, `event_jitter: 0` and
+  6. [x] **The live check** — the app on port 8010 from the branch, with `event_every: 1`, `event_jitter: 0` and
      debug on in the clone's `settings.yaml`; the owner listens, the agent reads the app's log ("the event cues …").
-     **Half done (2026-10-07, 18:39-18:50):** a first seed-42 run with the real keywords read 10 events and cued none
+     **First (2026-10-07, 18:39-18:50):** a first seed-42 run with the real keywords read 10 events and cued none
      — the sparse association, live. Then **a rigged cue** (the owner's idea: "We have seed, so we know what the lines
      will be"): every seed-42 run since 2026-10-02 reads the same round-2 event ("Footsteps cross the floor above,
      where the roof access was welded shut."), so a test keyword unique to it (`footsteps`) was put on
      `explosion-4.mp3`, and `humming` (round 4: "…the dead are humming…") on `warfare-1.mp3`. **The spot cue worked**
      — the owner: "Perfect it worked for "Footsteps cross the floor above…""; the log: "round 2: the event cues
-     explosion-4.mp3 (spot)". The run stopped before round 4: **the texture cue is still to be heard.** Unrigged the
-     same evening (the story file restored byte for byte, the clone's settings back to `seed: 42`). To repeat: the
-     same two test keywords, the same settings, reload and Start.
+     explosion-4.mp3 (spot)". The run stopped before round 4. **Done (22:45-22:46):** the same rig again — the log
+     in order: round 2 "cues explosion-4.mp3 (spot)", then the page fetching `explosion-4.mp3`; round 4 "cues
+     warfare-1.mp3 (texture)", then the page fetching `warfare-1.mp3` — the server sent each cue and the page acted
+     on it at once; the run's record has `cue` on rounds 2 and 4 only. By ear it was hard to tell (the owner: "I
+     don't know what I heard or what not, it's too much"): the shuffle had picked `warfare-1.mp3` as the run's first
+     texture (the log fetched it before any cue), so the same gunfire came from the shuffle and from the cue — one
+     more reason for R2's `cue_only`. Unrigged both times (the story file restored, the clone's settings back to
+     `seed: 42`). To repeat: the same two test keywords (`footsteps` on `explosion-4.mp3`, `humming` on
+     `warfare-1.mp3`), `event_every: 1`, `event_jitter: 0`, `debug: true`, reload and Start.
   **The refinements — the sparse association** (found 2026-10-07 while writing the keywords: only 8 of 289 events
   name a sound the library has — about 0.7 cues in a 27-event show, perhaps none; the owner's proposal, at the end of
   the queue: "let's finish the build plan we had first, we can add this as refinements later"):
-  7. [ ] **R1 — clips for the sounds the events name** — the morning experiment's rated Small-SFX takes, on the
-     laptop, no box: the helicopter (good / good / good; 3 events), the sirens (seed 3, good; 2 events), the glass
-     rain (good / good / good); prepared like the ambience (MP3, level, manifest, CC0 credits), added as spots with
-     keywords. The jet, the train horn, the smoke detector, the building alarms: no take anywhere — the box, deferred.
-  8. [ ] **R2 — `cue_only` clips** — per clip in the story's `ambience.yaml` (default false; the owner: "I want that
+  7. [ ] **R1 — sounds for the events** (reshaped by the owner, 2026-10-07: "Maybe what we have to do is just to go
+     event by event, select the ones that can have good audio prompt, and generate 3 audios per each, and let me
+     decide... ideally we leave the machinery in place to get more audios if we add more events" — the experiment
+     alone could give only three sounds: the helicopter, the sirens, the tapping on glass). **The test for an event
+     sound** (the owner, verbatim): "each sound must be "distinct" and "recognizable", I could not say what the glass
+     rain audio was if I did not know the prompt. So, a smoke detector, a fire alarm and a freezer beeping can be good
+     cues if the sound has those properties" — not inside or outside the lab ("why would a radio mic only pick sounds
+     from outside and not others happening inside the lab?"). **Every event sound is `cue_only`** ("The event sounds
+     are too specific to be general ambience"); the 31 ambience clips stay in the rotation. **The steps:** the agent
+     reads the 289 events and lists those naming a distinct, recognizable sound — one prompt per sound (several
+     events may share one), its kind, its keywords and the events they cue; the owner skims; three takes each on the
+     box (`gen_ambience.py`; the experiment's helicopter — all three takes, the owner: "That way I don't have to
+     decide" — and the sirens' good take (seed 3) regenerated from their prompts and seeds, expected identical on the
+     same A6000; the glass rain out: "too confusing"); the owner's audition (`ambience_page.py`); prepared
+     (`prepare_ambience.py`); keywords and `cue_only: true` in the story. And a runbook, "Give an event a sound", so
+     a new event can get its sound the same way.
+  8. [x] **R2 — `cue_only` clips** (built 2026-10-07, first of the refinements — the owner: "(cue_only) should come
+     first... That's why I was asking you for it"; a cue-only clip without keywords is refused by the story's loader) — per clip in the story's `ambience.yaml` (default false; the owner: "I want that
      in `stories/lab-outbreak/ambience.yaml`", "cue_only is fine"): in the library and sent to the page, marked, but
      left out of the random spots and the texture shuffle — heard only when an event cues it. Tests in both
      languages; the runbook.
