@@ -1872,6 +1872,60 @@ reader's memory):
   tools/voices/cast_voices.py --all-emotions --only <Name>`; the runbook
   `docs/runbooks/cast-voices.md`.
 
+## The narrower AM filter test (owner, 2026-10-02; pushed past the talk 2026-10-10) — minor priority
+
+- **The statement:** the owner's ear on bands narrower than the AM filter's 300-3,000 Hz, to learn whether the static
+  bed tires less and sounds more like an old radio with poor reception. The bands, B first: A 300-2,700 Hz (a ham's
+  SSB voice filter), **B 400-2,000 Hz** (a narrow receiver), C 500-1,500 Hz (poor reception), D 600-1,000 Hz (the
+  extreme). Each under `show:` with `bed_filter: true`, `bed_filter_low_hz`, `bed_filter_high_hz`, a restart of the
+  app, the F key to compare; a narrower band sounds quieter (raise `bed_volume_*` a little for a fair test). May
+  change `bed_filter`'s default or its band. The F key flips the ambience's filter too, at the bed's band, since
+  `tz-0.8`.
+- **Where flagged:** `docs/TODO.md`, Task 10.1 ([discussion 2026-10-01] sound-effects §8.20, §8.21).
+- **The ruling** (the owner, verbatim, 2026-10-10): "Let's mark this as pushed beyond the day of the talk, so it is now
+  a follow up, a minor priority one."
+- **Trigger:** after the talk; about 20 minutes of the owner's listening.
+
+## Events that could cue a sound the library already has — keywords to add (owner, 2026-10-08) — after the talk
+
+- **The statement:** listening to a long debug show on the 3090 (2026-10-08), the owner (verbatim): "There are still
+  a few events which could easily been assigned on of the cue sounds we have... but now we are not going to act in this
+  direction... But it is a low hanging fruit." Not new events (that is R3, the follow-up below) and not new sounds:
+  **keywords** added to clips the story already has, so more of the existing 289 events cue a sound.
+- **Where flagged:** the owner's listen, 2026-10-08 (the run is in the installed client's `runs/`).
+- **Trigger:** after the talk, or whenever cues feel too rare.
+- **The fix shape:** read the run's events (or all 289) against the library's sounds; for each event that names one in
+  other words, a keyword on that clip in the story's `stories/lab-outbreak/ambience.yaml`, checked against every event
+  (`docs/runbooks/event-sounds.md` §5) so it cues nothing else. No box, no code.
+
+## Pauses of about 300 ms that grow as the show goes on, mostly when the mic opens or closes (owner, 2026-10-08) — to investigate
+
+- **What was heard:** on the 3090, a long debug show (2026-10-08), the owner (verbatim): "The more the show advances,
+  the more I hear brief pauses, I would say around 300ms, specially at the moments that the mic is turned on or off
+  (contact)." The owner's suspicion, after recording with OBS: "I think the 300ms delay I observe in the show could be,
+  maybe, the darn OBS taking too much resources, and making the app transitions to open and close the mic slow." Not
+  shown either way.
+- **Where flagged:** the owner's listen and recording, 2026-10-08; [discussion 2026-10-10] talk-preparation, D.
+- **Trigger:** the debug study session (talk-preparation, D).
+- **The fix shape:** the run's record (`script.json`, each round's timings) and its debug files show where the gaps
+  are and whether they grow; then a short run with OBS closed and one with it recording, compared. If they grow with
+  the show's length, the context's size and the model's time to the first token are the next suspects (the follow-up
+  "Pauses the model server's timings do not show" holds the earlier notes).
+
+## Some cue sounds barely heard — the story's gain_db (owner, 2026-10-08) — after the talk
+
+- **What was heard:** the owner (verbatim, 2026-10-08): "Some of the cue sounds I can barely hear, like the "jet 2" or
+  the "dead banging at door 1" (I think)... I supose we could put a positive value in the gain_db, but I won't act on
+  this now, just reporting." A cue plays while the reader's voice speaks, so the ambience is at its level under a line
+  (`ambience_volume_voice`, 0.12) — a quiet clip is quieter still there.
+- **Where flagged:** the owner's listen, 2026-10-08.
+- **Trigger:** after the talk, or before it if a rehearsal shows a cue lost.
+- **The fix shape:** a positive `gain_db` on those clips in the story's `ambience.yaml`, by ear (the field's range is
+  ±40 dB); or, if many cues are quiet, a design change: let a cue play above the ducking under the voice, or a cue
+  volume setting.
+
+---
+
 ## New events that name the library's sounds — sound cues' R3 (owner, 2026-10-08) — postponed past the demo
 
 **The gap.** A sound cue plays a clip when a free round's event says one of its keywords (Task 14, the fork's
@@ -2102,7 +2156,9 @@ sound by the same runbook (`docs/runbooks/event-sounds.md`).
   Every line's stream events already carry `message_id =
   "<run-id>-r<NNN>-l<L>"` (the fork's `app/routers/show.py:227`), so the page
   knows the round and line when it requests the voice. The build spec:
-  `docs/discussions/2026-09-30-show-engine-session-handoff-8.md` §13.3.
+  `docs/discussions/2026-09-30-show-engine-session-handoff-8.md` §13.3 — a session handoff, deleted on
+  2026-10-10 at the owner's word; it is in `main`'s history: `git show
+  0bfd476:docs/discussions/2026-09-30-show-engine-session-handoff-8.md`.
 - **Trigger:** the owner's go — "do not execute yet" (2026-09-30, before a
   context compaction). Related: the replay test proposed for "Candles!" (the
   line sent 4 times with Daniel's clip and once with Samantha's) — not run;

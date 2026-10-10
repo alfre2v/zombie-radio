@@ -108,13 +108,13 @@ it is detail.*
   before the demo (Task 10):** only the narrower-filter test — the clips'
   picks done (the one-by-one review), the credits moved into the talk
   (Task 9) ([discussion 2026-10-01] sound-effects §8.20-§8.23).
-- **Next (2026-10-08):** the owner's re-proof of `tz-0.9` (Task 14's
-  release) → **Task 9, the talk** (its leftovers, listed there: the
-  numbers, the A6000's price, the stale "What's next" slide, slides for
-  the new features, republish, rehearse) → **Task 10.1, the
-  narrower-filter test** → **Task 7, the canned episode, last** (the
-  owner: "Features first, video last") → Task 8, the close ritual,
-  after the demo. Was (the agent's order of 2026-09-30): ~~goal 4, the
+- **Next (2026-10-10):** **the plan for the days before the talk** —
+  [discussion 2026-10-10] talk-preparation: the slides (Task 9), study
+  sessions of the backend, the client and the debug data, the rehearsals
+  (Task 7's video cut from one), the demo day's readiness. Task 8, the
+  close ritual, after the demo. (`tz-0.9` re-proven 2026-10-08; Task
+  10.1 pushed past the talk, a follow-up.) Was (2026-10-08): the
+  owner's re-proof of `tz-0.9` → Task 9 → Task 10.1 → Task 7 → Task 8. Was (the agent's order of 2026-09-30): ~~goal 4, the
   3090~~ (met 2026-10-06) → ~~names-only A~~ (deferred past the demo) →
   ~~sound effects~~ (the static bed `tz-0.6`, then the ambience `tz-0.8`
   and sound cues `tz-0.9`) → Task 10.1 → Task 7 → Task 9 → ~~the
@@ -170,8 +170,10 @@ it is detail.*
   billing (2026-10-08):** it also generated the ambience (Task 13) and
   the event sounds (Task 14); `~/sfx-lab/` kept by the owner's ruling (39
   GB; the disk 17 GB free — the owner: "We cannot leave the disk so
-  tight", undecided). Hibernate or not: the owner's call — a wake can
-  fail (no A6000 in stock, 2026-09-24).
+  tight", undecided). **Hibernated since the night of 2026-10-08** (the
+  owner). The next wake: the day before the talk, as a check, then about
+  4 hours before it ([discussion 2026-10-10] talk-preparation, F) — a
+  wake can fail (no A6000 in stock, 2026-09-24).
 - **The board before the demo** — every item left, who does it, and
   what was deferred, as of 2026-10-02: [discussion 2026-10-02]
   board-before-demo (the current order: "Next" above).
@@ -249,8 +251,8 @@ the agent keeps this current. These carry across arcs.*
    MUST** (Task 7). Candidate on the radar: a tunnel that reconnects by
    itself (follow-ups, SSH keepalives — low priority).
 5. **The Hyperstack VM — hibernated, woken per box session.** **Status
-   2026-10-08: up since the owner woke it on 2026-10-07, billing** (the
-   "Now" section's "The box").
+   2026-10-10: hibernated since the night of 2026-10-08** (up from
+   2026-10-07 for the sound effects; the "Now" section's "The box").
    **Decided 2026-10-02 (the owner, verbatim):** "I will keep the machine
    hibernated until the day of the presentation... That day, say 4 hours
    before, I'll start trying to awake the VM... I might create a new VM
@@ -451,124 +453,17 @@ the agent keeps this current. These carry across arcs.*
   holds the credits.
   **Left (2026-10-08, carried here from the session handoffs, which are
   deleted at a session's end):** recount the numbers on slides 5 and 27;
-  check the A6000's price; **the "What's next" slide is stale** — it lists
+  ~~check the A6000's price~~ — **checked, right as it is in the slides**
+  (the owner, 2026-10-08); **the "What's next" slide is stale** — it lists
   event sounds, comic relief, a scientist turning, new voice engines…,
   while the compressed clips (`tz-0.7`), the ambience (`tz-0.8`) and sound
   cues (`tz-0.9`) are built and the sound-effect experiment ran; the new
   features may deserve slides of their own (the world outside, sound
   cues, the experiment) — not discussed yet; then republish (the runbook
-  `docs/runbooks/talk-slides-quarto.md` §10) and rehearse.
-- [ ] **Task 10 — The static bed before the demo** (the owner,
-  2026-10-02: "we will execute before the demo (so, they are priority,
-  but not to execute today"). Three items left of the bed's plan
-  ([discussion 2026-10-01] sound-effects §8.20, §8.21); two closed the
-  same day:
-  1. [ ] **The narrower-filter test** — the owner's ear on bands
-     narrower than today's 300-3,000 Hz, to learn whether the bed tires
-     less and sounds more like an old radio with poor reception. The
-     bands, B first: A 300-2,700 Hz (a ham's SSB voice filter), **B
-     400-2,000 Hz** (a narrow receiver), C 500-1,500 Hz (poor
-     reception), D 600-1,000 Hz (the extreme). Each under `show:` with
-     `bed_filter: true`, `bed_filter_low_hz`, `bed_filter_high_hz`, a
-     restart of the app, the F key to compare; a narrower band sounds
-     quieter (raise `bed_volume_*` a little for a fair test). May change
-     `bed_filter`'s default or its band.
-  2. [x] **The owner's picks of the clips** — done 2026-10-02 by the
-     one-by-one review (sound-effects §8.22: 8 kept, 9 out; shipped in
-     `tz-0.6`). The owner (verbatim): "We can already mark "10.2, your
-     picks of the clips" as done, since I significantly removed audio
-     clips and I like the ones we left. No need to execute this task."
-  3. [~] **Credits for the talk** — moved into Task 9 (one line on the
-     last slide, a link to the fork's `Sounds/bed/CREDITS.md`). The owner:
-     "yes, close 10.3 into Task 9".
-- [ ] **Task 14 — Sound cues: an event round that names a sound plays it** (planned 2026-10-07, not built; the
-  name proposed by the agent and **accepted by the owner, 2026-10-07** — the owner's working name had been "Ambience
-  to event coupling?"). The owner's
-  idea (verbatim): "we would add a keywords list under each clip, and if the event text contains any of the keywords
-  then we immediately insert that audio to be played as ambience". **The shape agreed point by point**
-  ([discussion 2026-10-07] the-world-outside §9): **event rounds only** — the server knows the event before the round
-  runs, matches its text once against the clips' `keywords:` (in the story's `ambience.yaml`; whole words,
-  case-insensitive, short careful lists), and puts a cue (`{file, kind}`) in the round's start message; **a matched
-  spot plays once at the round's start** (the random spot timer reset); **a matched texture replaces the current one
-  and plays to its end**, covering the cast's responses, then the shuffle resumes; several matches — one at random;
-  misfires accepted ("also now at random, so it's not worse"); **a cued texture plays for the clip's length** (ruled:
-  "let's keep things simple"). **Estimate (the agent's): about 2½-3 hours.** **Ruled (the owner, 2026-10-07):** the
-  name "sound cues", and the release order — the ambience released first as `tz-0.8` (done), **this as `tz-0.9`**.
-  **The steps** (branch `alfre2v/sound-cues` in both repositories; the build's choices and the sparse association:
-  [discussion 2026-10-07] the-world-outside §9.9, §9.10):
-  1. [x] **The server** — `keywords:` in the story's `ambience.yaml` only; `app/show/cues.py` (whole words or
-     phrases, any case; one matching clip picked with the round's own dice, `random.Random(f"{seed}:{n}:cue")`, apart
-     from the director's); the round's stream opens with `{"type": "cue", "file", "kind"}` before its first line; the
-     summary and the record keep the cue.
-  2. [x] **The page** — `ambience.js` plays the cue when the round's first line is heard (the page goes "on air"): a
-     spot at once, cutting one under way; a texture in place of the current one, to its end, ending a silence under
-     way; a cue switches nothing on. `show.js` keeps the cue (one line).
-  3. [x] **The keywords** — 24 of the 31 clips; the dead's own sounds none. **8 of the 289 events cue**, no misfire.
-  4. [x] **The tests** — pytest 1,333 passed (21 new); Node ambience 18 (3 new), page 43 (1 new).
-  5. [x] **The docs** — the fork's `AGENTS.md` and runbooks; the-world-outside §9.9, §9.10.
-  6. [x] **The live check** — the app on port 8010 from the branch, with `event_every: 1`, `event_jitter: 0` and
-     debug on in the clone's `settings.yaml`; the owner listens, the agent reads the app's log ("the event cues …").
-     **First (2026-10-07, 18:39-18:50):** a first seed-42 run with the real keywords read 10 events and cued none
-     — the sparse association, live. Then **a rigged cue** (the owner's idea: "We have seed, so we know what the lines
-     will be"): every seed-42 run since 2026-10-02 reads the same round-2 event ("Footsteps cross the floor above,
-     where the roof access was welded shut."), so a test keyword unique to it (`footsteps`) was put on
-     `explosion-4.mp3`, and `humming` (round 4: "…the dead are humming…") on `warfare-1.mp3`. **The spot cue worked**
-     — the owner: "Perfect it worked for "Footsteps cross the floor above…""; the log: "round 2: the event cues
-     explosion-4.mp3 (spot)". The run stopped before round 4. **Done (22:45-22:46):** the same rig again — the log
-     in order: round 2 "cues explosion-4.mp3 (spot)", then the page fetching `explosion-4.mp3`; round 4 "cues
-     warfare-1.mp3 (texture)", then the page fetching `warfare-1.mp3` — the server sent each cue and the page acted
-     on it at once; the run's record has `cue` on rounds 2 and 4 only. By ear it was hard to tell (the owner: "I
-     don't know what I heard or what not, it's too much"): the shuffle had picked `warfare-1.mp3` as the run's first
-     texture (the log fetched it before any cue), so the same gunfire came from the shuffle and from the cue — one
-     more reason for R2's `cue_only`. Unrigged both times (the story file restored, the clone's settings back to
-     `seed: 42`). To repeat: the same two test keywords (`footsteps` on `explosion-4.mp3`, `humming` on
-     `warfare-1.mp3`), `event_every: 1`, `event_jitter: 0`, `debug: true`, reload and Start.
-  **The refinements — the sparse association** (found 2026-10-07 while writing the keywords: only 8 of 289 events
-  name a sound the library has — about 0.7 cues in a 27-event show, perhaps none; the owner's proposal, at the end of
-  the queue: "let's finish the build plan we had first, we can add this as refinements later"):
-  7. [x] **R1 — sounds for the events** — **done 2026-10-08: 29 sounds, 42 takes, all cue-only; 43 of the 289
-     events now cue a sound (15 %, from 8) — about 4 cues in a 27-event show** (three audition rounds; the runbook
-     `docs/runbooks/event-sounds.md`; [discussion 2026-10-07] the-world-outside §9.11) (reshaped by the owner, 2026-10-07: "Maybe what we have to do is just to go
-     event by event, select the ones that can have good audio prompt, and generate 3 audios per each, and let me
-     decide... ideally we leave the machinery in place to get more audios if we add more events" — the experiment
-     alone could give only three sounds: the helicopter, the sirens, the tapping on glass). **The test for an event
-     sound** (the owner, verbatim): "each sound must be "distinct" and "recognizable", I could not say what the glass
-     rain audio was if I did not know the prompt. So, a smoke detector, a fire alarm and a freezer beeping can be good
-     cues if the sound has those properties" — not inside or outside the lab ("why would a radio mic only pick sounds
-     from outside and not others happening inside the lab?"). **Every event sound is `cue_only`** ("The event sounds
-     are too specific to be general ambience"); the 31 ambience clips stay in the rotation. **The steps:** the agent
-     reads the 289 events and lists those naming a distinct, recognizable sound — one prompt per sound (several
-     events may share one), its kind, its keywords and the events they cue; the owner skims; three takes each on the
-     box (`gen_ambience.py`; the experiment's helicopter — all three takes, the owner: "That way I don't have to
-     decide" — and the sirens' good take (seed 3) regenerated from their prompts and seeds, expected identical on the
-     same A6000; the glass rain out: "too confusing"); the owner's audition (`ambience_page.py`); prepared
-     (`prepare_ambience.py`); keywords and `cue_only: true` in the story. And a runbook, "Give an event a sound", so
-     a new event can get its sound the same way.
-  8. [x] **R2 — `cue_only` clips** (built 2026-10-07, first of the refinements — the owner: "(cue_only) should come
-     first... That's why I was asking you for it"; a cue-only clip without keywords is refused by the story's loader) — per clip in the story's `ambience.yaml` (default false; the owner: "I want that
-     in `stories/lab-outbreak/ambience.yaml`", "cue_only is fine"): in the library and sent to the page, marked, but
-     left out of the random spots and the texture shuffle — heard only when an event cues it. Tests in both
-     languages; the runbook.
-  9. [~] **R3 — new events that name the library's sounds** — **postponed past the demo (the owner, 2026-10-08):**
-     "Let's postpone R3, it does not add anything new technically. So, it does not interest me before the demo."
-     Moved to the follow-up "New events that name the library's sounds — sound cues' R3" (`docs/follow-ups.md`). — about 15-20 (explosions, warfare, guns, screams,
-     laughter, the horde pounding), drafted by the agent under their overtones and themes, skimmed and edited by the
-     owner; into `stories/lab-outbreak/events.yaml`. About 1 event in 9 would cue.
-  **The owner's hearing test — passed (2026-10-08, 01:22-01:39 CDT).** The owner (verbatim): "we are not merging yet,
-     and we are not creating the new tag until we have tested that this works. We have to conduct an actual hearing test
-     of the show running with debug and all settings for maximum visibility." A seed-42 show at the default levels, with
-     `event_every: 1`, `event_jitter: 0` and debug on (run `2026-10-08T01-22-30`): **67 rounds, 37 events, 5 cued** —
-     the drone (r6), the smoke detector (r8), the barking dogs (r41), the owl (r45), a woman's scream (r62); each cue
-     followed in the log by the page fetching its clip; the record against the keywords, 37 of 37 events consistent
-     (none missed, none wrong); no error. 5 of 37 (14 %) — as the keywords predict (15 %). The owner: "From what I
-     heard things are working as expected."
-  10. [ ] **The release** — next (R1 and R2 done, R3 postponed) — **`tz-0.9` held until the refinements are done** (the owner: "Agreed to hold the tz-0.9
-     tag."): the merges, the tag, the installer pinned, the spec (the cues), the owner's re-proof. **Released
-     2026-10-08** as the fork's **`tz-0.9`**, an annotated tag on `b1d039c` (alfre2v/TalkWithZombies#13 merged after
-     the owner's hearing test; the merge identical to the tested branch head `09a089b`; the fork's tests green on it:
-     1337 passed, Node 21 / 29 / 44 / 8 / 17 / 91); the installer pinned to it, the spec's sound cues (this
-     repository's #35). **Left: the owner's re-proof** (`make client-mac` twice: `changed=1`, then `changed=0`; `git
-     describe` in the client `tz-0.9`).
+  `docs/runbooks/talk-slides-quarto.md` §10) and rehearse. **The plan for
+  the days before the talk** (2026-10-10: the slides, three study
+  sessions, the rehearsals, the demo day's readiness): [discussion
+  2026-10-10] talk-preparation.
 - [ ] **Task 8 — Close ritual in the closing PR.** Features
   Shipped entry · task_history migration · TODO reset ·
   staleness sweep (CLAUDE.md included) · spec check (it describes
@@ -2114,6 +2009,120 @@ engine is next (Task 6b).
   voice samples → isolation tool first (follow-ups) → gitignore →
   replace the `say`-generated ref.wavs in the persona
   directories.
+- [~] **Task 10 — The static bed before the demo** — **its last item, the narrower-filter test, pushed past the
+  talk (the owner, 2026-10-10):** "Let's mark this as pushed beyond the day of the talk, so it is now a follow up, a
+  minor priority one." Moved to the follow-up "The narrower AM filter test". (the owner,
+  2026-10-02: "we will execute before the demo (so, they are priority,
+  but not to execute today"). Three items left of the bed's plan
+  ([discussion 2026-10-01] sound-effects §8.20, §8.21); two closed the
+  same day:
+  1. [~] **The narrower-filter test** — the owner's ear on bands
+     narrower than today's 300-3,000 Hz, to learn whether the bed tires
+     less and sounds more like an old radio with poor reception. The
+     bands, B first: A 300-2,700 Hz (a ham's SSB voice filter), **B
+     400-2,000 Hz** (a narrow receiver), C 500-1,500 Hz (poor
+     reception), D 600-1,000 Hz (the extreme). Each under `show:` with
+     `bed_filter: true`, `bed_filter_low_hz`, `bed_filter_high_hz`, a
+     restart of the app, the F key to compare; a narrower band sounds
+     quieter (raise `bed_volume_*` a little for a fair test). May change
+     `bed_filter`'s default or its band.
+  2. [x] **The owner's picks of the clips** — done 2026-10-02 by the
+     one-by-one review (sound-effects §8.22: 8 kept, 9 out; shipped in
+     `tz-0.6`). The owner (verbatim): "We can already mark "10.2, your
+     picks of the clips" as done, since I significantly removed audio
+     clips and I like the ones we left. No need to execute this task."
+  3. [~] **Credits for the talk** — moved into Task 9 (one line on the
+     last slide, a link to the fork's `Sounds/bed/CREDITS.md`). The owner:
+     "yes, close 10.3 into Task 9".
+- [x] **Task 14 — Sound cues: an event round that names a sound plays it** — **done 2026-10-08** (`tz-0.9`,
+  re-proven; R3 postponed past the demo) (planned 2026-10-07, not built; the
+  name proposed by the agent and **accepted by the owner, 2026-10-07** — the owner's working name had been "Ambience
+  to event coupling?"). The owner's
+  idea (verbatim): "we would add a keywords list under each clip, and if the event text contains any of the keywords
+  then we immediately insert that audio to be played as ambience". **The shape agreed point by point**
+  ([discussion 2026-10-07] the-world-outside §9): **event rounds only** — the server knows the event before the round
+  runs, matches its text once against the clips' `keywords:` (in the story's `ambience.yaml`; whole words,
+  case-insensitive, short careful lists), and puts a cue (`{file, kind}`) in the round's start message; **a matched
+  spot plays once at the round's start** (the random spot timer reset); **a matched texture replaces the current one
+  and plays to its end**, covering the cast's responses, then the shuffle resumes; several matches — one at random;
+  misfires accepted ("also now at random, so it's not worse"); **a cued texture plays for the clip's length** (ruled:
+  "let's keep things simple"). **Estimate (the agent's): about 2½-3 hours.** **Ruled (the owner, 2026-10-07):** the
+  name "sound cues", and the release order — the ambience released first as `tz-0.8` (done), **this as `tz-0.9`**.
+  **The steps** (branch `alfre2v/sound-cues` in both repositories; the build's choices and the sparse association:
+  [discussion 2026-10-07] the-world-outside §9.9, §9.10):
+  1. [x] **The server** — `keywords:` in the story's `ambience.yaml` only; `app/show/cues.py` (whole words or
+     phrases, any case; one matching clip picked with the round's own dice, `random.Random(f"{seed}:{n}:cue")`, apart
+     from the director's); the round's stream opens with `{"type": "cue", "file", "kind"}` before its first line; the
+     summary and the record keep the cue.
+  2. [x] **The page** — `ambience.js` plays the cue when the round's first line is heard (the page goes "on air"): a
+     spot at once, cutting one under way; a texture in place of the current one, to its end, ending a silence under
+     way; a cue switches nothing on. `show.js` keeps the cue (one line).
+  3. [x] **The keywords** — 24 of the 31 clips; the dead's own sounds none. **8 of the 289 events cue**, no misfire.
+  4. [x] **The tests** — pytest 1,333 passed (21 new); Node ambience 18 (3 new), page 43 (1 new).
+  5. [x] **The docs** — the fork's `AGENTS.md` and runbooks; the-world-outside §9.9, §9.10.
+  6. [x] **The live check** — the app on port 8010 from the branch, with `event_every: 1`, `event_jitter: 0` and
+     debug on in the clone's `settings.yaml`; the owner listens, the agent reads the app's log ("the event cues …").
+     **First (2026-10-07, 18:39-18:50):** a first seed-42 run with the real keywords read 10 events and cued none
+     — the sparse association, live. Then **a rigged cue** (the owner's idea: "We have seed, so we know what the lines
+     will be"): every seed-42 run since 2026-10-02 reads the same round-2 event ("Footsteps cross the floor above,
+     where the roof access was welded shut."), so a test keyword unique to it (`footsteps`) was put on
+     `explosion-4.mp3`, and `humming` (round 4: "…the dead are humming…") on `warfare-1.mp3`. **The spot cue worked**
+     — the owner: "Perfect it worked for "Footsteps cross the floor above…""; the log: "round 2: the event cues
+     explosion-4.mp3 (spot)". The run stopped before round 4. **Done (22:45-22:46):** the same rig again — the log
+     in order: round 2 "cues explosion-4.mp3 (spot)", then the page fetching `explosion-4.mp3`; round 4 "cues
+     warfare-1.mp3 (texture)", then the page fetching `warfare-1.mp3` — the server sent each cue and the page acted
+     on it at once; the run's record has `cue` on rounds 2 and 4 only. By ear it was hard to tell (the owner: "I
+     don't know what I heard or what not, it's too much"): the shuffle had picked `warfare-1.mp3` as the run's first
+     texture (the log fetched it before any cue), so the same gunfire came from the shuffle and from the cue — one
+     more reason for R2's `cue_only`. Unrigged both times (the story file restored, the clone's settings back to
+     `seed: 42`). To repeat: the same two test keywords (`footsteps` on `explosion-4.mp3`, `humming` on
+     `warfare-1.mp3`), `event_every: 1`, `event_jitter: 0`, `debug: true`, reload and Start.
+  **The refinements — the sparse association** (found 2026-10-07 while writing the keywords: only 8 of 289 events
+  name a sound the library has — about 0.7 cues in a 27-event show, perhaps none; the owner's proposal, at the end of
+  the queue: "let's finish the build plan we had first, we can add this as refinements later"):
+  7. [x] **R1 — sounds for the events** — **done 2026-10-08: 29 sounds, 42 takes, all cue-only; 43 of the 289
+     events now cue a sound (15 %, from 8) — about 4 cues in a 27-event show** (three audition rounds; the runbook
+     `docs/runbooks/event-sounds.md`; [discussion 2026-10-07] the-world-outside §9.11) (reshaped by the owner, 2026-10-07: "Maybe what we have to do is just to go
+     event by event, select the ones that can have good audio prompt, and generate 3 audios per each, and let me
+     decide... ideally we leave the machinery in place to get more audios if we add more events" — the experiment
+     alone could give only three sounds: the helicopter, the sirens, the tapping on glass). **The test for an event
+     sound** (the owner, verbatim): "each sound must be "distinct" and "recognizable", I could not say what the glass
+     rain audio was if I did not know the prompt. So, a smoke detector, a fire alarm and a freezer beeping can be good
+     cues if the sound has those properties" — not inside or outside the lab ("why would a radio mic only pick sounds
+     from outside and not others happening inside the lab?"). **Every event sound is `cue_only`** ("The event sounds
+     are too specific to be general ambience"); the 31 ambience clips stay in the rotation. **The steps:** the agent
+     reads the 289 events and lists those naming a distinct, recognizable sound — one prompt per sound (several
+     events may share one), its kind, its keywords and the events they cue; the owner skims; three takes each on the
+     box (`gen_ambience.py`; the experiment's helicopter — all three takes, the owner: "That way I don't have to
+     decide" — and the sirens' good take (seed 3) regenerated from their prompts and seeds, expected identical on the
+     same A6000; the glass rain out: "too confusing"); the owner's audition (`ambience_page.py`); prepared
+     (`prepare_ambience.py`); keywords and `cue_only: true` in the story. And a runbook, "Give an event a sound", so
+     a new event can get its sound the same way.
+  8. [x] **R2 — `cue_only` clips** (built 2026-10-07, first of the refinements — the owner: "(cue_only) should come
+     first... That's why I was asking you for it"; a cue-only clip without keywords is refused by the story's loader) — per clip in the story's `ambience.yaml` (default false; the owner: "I want that
+     in `stories/lab-outbreak/ambience.yaml`", "cue_only is fine"): in the library and sent to the page, marked, but
+     left out of the random spots and the texture shuffle — heard only when an event cues it. Tests in both
+     languages; the runbook.
+  9. [~] **R3 — new events that name the library's sounds** — **postponed past the demo (the owner, 2026-10-08):**
+     "Let's postpone R3, it does not add anything new technically. So, it does not interest me before the demo."
+     Moved to the follow-up "New events that name the library's sounds — sound cues' R3" (`docs/follow-ups.md`). — about 15-20 (explosions, warfare, guns, screams,
+     laughter, the horde pounding), drafted by the agent under their overtones and themes, skimmed and edited by the
+     owner; into `stories/lab-outbreak/events.yaml`. About 1 event in 9 would cue.
+  **The owner's hearing test — passed (2026-10-08, 01:22-01:39 CDT).** The owner (verbatim): "we are not merging yet,
+     and we are not creating the new tag until we have tested that this works. We have to conduct an actual hearing test
+     of the show running with debug and all settings for maximum visibility." A seed-42 show at the default levels, with
+     `event_every: 1`, `event_jitter: 0` and debug on (run `2026-10-08T01-22-30`): **67 rounds, 37 events, 5 cued** —
+     the drone (r6), the smoke detector (r8), the barking dogs (r41), the owl (r45), a woman's scream (r62); each cue
+     followed in the log by the page fetching its clip; the record against the keywords, 37 of 37 events consistent
+     (none missed, none wrong); no error. 5 of 37 (14 %) — as the keywords predict (15 %). The owner: "From what I
+     heard things are working as expected."
+  10. [x] **The release** — done 2026-10-08 — (R1 and R2 done, R3 postponed) — **`tz-0.9` held until the refinements are done** (the owner: "Agreed to hold the tz-0.9
+     tag."): the merges, the tag, the installer pinned, the spec (the cues), the owner's re-proof. **Released
+     2026-10-08** as the fork's **`tz-0.9`**, an annotated tag on `b1d039c` (alfre2v/TalkWithZombies#13 merged after
+     the owner's hearing test; the merge identical to the tested branch head `09a089b`; the fork's tests green on it:
+     1337 passed, Node 21 / 29 / 44 / 8 / 17 / 91); the installer pinned to it, the spec's sound cues (this
+     repository's #35). **Re-proven by the owner (2026-10-08)** (verbatim): "`make client-mac` ran with changed=1.
+     Idempotency run changed=0."; `git describe --tags` in the client: `tz-0.9`.
 
 
 ## Standing cross-arc notes
