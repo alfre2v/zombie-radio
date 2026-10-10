@@ -170,8 +170,14 @@ how things work, and the owner wants to answer from understanding, not from memo
 
 ## §4. Results (filled in as the work goes)
 
-*Empty until the sessions run: the fundamental abstractions of the backend and the client (B.5, C.5), the debug fields
-worth knowing (D.1), the rehearsals' measurements (E).*
+- **B, the backend — done 2026-10-10** (moved ahead of A, the owner's choice: "I want to do the fastapi study session
+  before reviewing the presentation"). The map the session opened with — the modules and the abstraction each holds,
+  the routes, the path of one round — is kept whole in [discussion 2026-10-10] code-map-backend (a snapshot at
+  `tz-0.9`). The owner walked the code from it: "I went through the code myself based on this map you presented and I
+  feel I got myself the picture together."
+
+*Still to come: the client's functions and data structures (C.5), the debug fields worth knowing (D.1), the
+rehearsals' measurements (E).*
 
 ## §5. What the plan needs from the owner
 

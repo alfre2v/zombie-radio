@@ -1872,6 +1872,37 @@ reader's memory):
   tools/voices/cast_voices.py --all-emotions --only <Name>`; the runbook
   `docs/runbooks/cast-voices.md`.
 
+## No lock on a run's record — two overlapping round requests would race (owner, 2026-10-10) — low priority
+
+- **The question** (the owner's code review, verbatim, 2026-10-10): "Do we have some kind of lock protecting the
+  script.json from two concurrent writes? What if I were to issue one request after another?"
+- **What the code does** (the fork, `app/show/script.py`, `save_run`, L127-131, at `tz-0.9`): the whole run is written
+  to `script.json.tmp`, then moved over `script.json` with `os.replace` — **atomic** (a reader never sees a half-written
+  file, even after a crash), but **no lock**. Requests **one after another** are safe: each `POST /api/show/round`
+  reads the run from disk first. Requests that **overlap** on one run would race: both read the same *n* rounds, plan
+  the same round *n+1* (the same seeded dice), stream it, and save their own copy — the last save wins and the other
+  round is lost from the record; and both use the same temp file's name, so one `os.replace` could fail after its
+  round was streamed.
+- **Why it has not happened:** the page never overlaps rounds (`playRound` waits for a round's stream to end before
+  asking for the next; Stop aborts the one in flight), nor does the scripted driver. It would take a bug, two tabs on
+  one run, or a hand-sent request.
+- **Trigger:** two listeners or two pages on one run, or a lost round in a record.
+- **The fix shape:** an `asyncio.Lock` per run id in the router, held for the whole round (the app is one process,
+  so an in-memory lock is enough) — or a 409 for a round asked while one is in flight; a unique temp file name per
+  write. About 20 lines and a test.
+
+## "blas\xE9" in the story's overtones.yaml — a YAML escape, to write as "blasé" (owner, 2026-10-10) — cosmetic
+
+- **The question** (the owner's code review, verbatim, 2026-10-10): "In overtones.yaml, L279, there is an unicode
+  char there. Is that on purpose? Should we let that char there?"
+- **What it is:** the fork's `stories/lab-outbreak/overtones.yaml` is pure ASCII; its line 279 holds `"blas\xE9"`, a
+  **YAML escape** in a double-quoted string — `\xE9` is é — which loads as `blasé` (checked), one of the tone words
+  given to the model. It came with `ca37199` (slice 3, 2026-09-28), likely written by PyYAML, which escapes non-ASCII
+  by default; not typed by hand.
+- **Trigger:** the fork's next branch.
+- **The fix shape:** write it as `- blasé` (the story's loader reads UTF-8, `app/show/story.py:167`); the loaded
+  string is identical, so nothing changes in the show. One line.
+
 ## The narrower AM filter test (owner, 2026-10-02; pushed past the talk 2026-10-10) — minor priority
 
 - **The statement:** the owner's ear on bands narrower than the AM filter's 300-3,000 Hz, to learn whether the static
