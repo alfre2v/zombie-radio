@@ -1872,6 +1872,33 @@ reader's memory):
   tools/voices/cast_voices.py --all-emotions --only <Name>`; the runbook
   `docs/runbooks/cast-voices.md`.
 
+## Debug and observability improvements — from the debug study session (owner, 2026-10-10) — after the demo
+
+- **Where flagged:** [discussion 2026-10-10] debug-data-study (§4-§8) — the debug study session on the
+  owner's long 3090 run (`2026-10-08T14-57-55`, 206 rounds).
+- **The ruling** (the owner, verbatim, 2026-10-10): "Let's write down all the improvements in a follow up task. I am not
+  going to execute them before the demo day."
+- **Trigger:** after the demo; item 2 sooner if the pauses need settling.
+- **The improvements** (the fork; line numbers at `tz-0.9`):
+  1. **Keep llama.cpp's times.** `app/services/llm.py:166-168` keeps only `prompt_n`, `cache_n`, `predicted_n` from
+     the stream's `timings` and drops `prompt_ms`, `predicted_ms` and the per-second rates — so the record cannot say
+     how long the model took. Keep them too (two keys; `Round.timings` is typed as integers, so the type widens to
+     numbers).
+  2. **Log the mic's open and close in the console,** with how long `getUserMedia` took (`static/show/mic.js:41-65`) —
+     it tests the mic hypothesis of the pauses directly (the follow-up below).
+  3. **One console line per round,** in debug mode: its kind, event and cue, the time to the first line, to the first
+     sound, and the gap before it — the page already computes these for the debug line under the round; today the
+     rounds log nothing to the console.
+  4. **A script that does the session's analysis on any run's folder:** the voice's real-time factor by blocks of
+     rounds, the stalls within rounds (the player replayed on the chunks' `kept` times), the gaps between rounds against
+     the context's size — so the next investigation does not start from scratch.
+  5. **Keep the Whisper request in the debug files,** next to what it heard: the `prompt` (the cast's names), the
+     `language`, `vad_filter`, `response_format` — today only the result is kept (`script.json`'s `heard`, the
+     listener line of `rNNN.txt`), so the hint sent cannot be checked from a run.
+  6. **Confirm `usage` against `timings`** with one `curl` to llama.cpp, with and without `stream_options:
+     {"include_usage": true}` — the agent's understanding (not checked on our server): `usage` would come in addition,
+     and carries less (no split between fresh and cached tokens, no times).
+
 ## No lock on a run's record — two overlapping round requests would race (owner, 2026-10-10) — low priority
 
 - **The question** (the owner's code review, verbatim, 2026-10-10): "Do we have some kind of lock protecting the
@@ -1953,6 +1980,14 @@ reader's memory):
      on, and a chunk that takes longer to make than the previous one takes to play leaves the player waiting (a
      stall). Test: each chunk's `time_used` in the debug files against the previous chunk's length.
   The study notes: [discussion 2026-10-10] code-map-client and client-how-a-show-runs (Part 3, the voice queue).
+- **Measured 2026-10-10 on the long 3090 run** (`2026-10-08T14-57-55`, 206 rounds, in the debug study session):
+  **nothing in the debug data grows as the show goes on** — the voice's real-time factor
+  flat at 0.38-0.41 with no chunk slower than real time (hypothesis 2 not supported); 2 stalls within rounds in 206
+  rounds; the gap between rounds flat at 2.2-2.4 s while the script grew from 1,700 to 29,000 tokens (the model's
+  prompt cache: about 200-240 new tokens read a round). So the pauses are outside what the files record — the mic
+  switching (hypothesis 1) or OBS. The owner: "Yes, I was using a bluetooth headset for recording the talk with OBS."
+  The next test: log the mic's open and close (the follow-up "Debug and observability improvements", item 2), or a show
+  with a wired headset or the Mac's speakers.
 
 ## Some cue sounds barely heard — the story's gain_db (owner, 2026-10-08) — after the talk
 

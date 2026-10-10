@@ -182,7 +182,12 @@ how things work, and the owner wants to answer from understanding, not from memo
   own graph; the loop, `runShow` and `playRound`; the voice queue, how fetching and playing overlap). Two hypotheses
   for the pauses came out of it, added to their follow-up for D.
 
-*Still to come: the debug fields worth knowing (D.1), the rehearsals' measurements (E).*
+- **D, the debug data — done 2026-10-10** ([discussion 2026-10-10] debug-data-study: a run's folder and the fields
+  worth knowing; the console in debug mode; what the app sends to and receives from llama.cpp, Whisper and the voice —
+  every question and answer, verbatim). The improvements, written down for after the demo: the follow-up "Debug and
+  observability improvements". The pauses, measured in the same session: their follow-up, "Pauses of about 300 ms…".
+
+*Still to come: the rehearsals' measurements (E).*
 
 ## §5. What the plan needs from the owner
 
