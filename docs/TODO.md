@@ -452,7 +452,16 @@ the agent keeps this current. These carry across arcs.*
   credited there, and CC BY allows doing it by a link to a page that
   holds the credits.
   **Left (2026-10-08, carried here from the session handoffs, which are
-  deleted at a session's end):** recount the numbers on slides 5 and 27;
+  deleted at a session's end):** recount the numbers printed on two
+  slides, counted on 2026-10-03 and stale since — slide 5, "How this
+  project came to be" (33 discussion docs, 6 experiments, 7 tools), and
+  slide 27, "The documentation system" (discussions 33, experiments 6,
+  follow-ups 50; its notes: the owner's words kept verbatim 443 times).
+  The slide numbers are positions in the deck as shown: 32 slides, the
+  title slide and the six section dividers included (25 slides have a
+  `##` title). The note's origin: session handoff 11 (`f9aeec4`, §6;
+  its §5 numbers the slides), whose numbers in brackets were dropped
+  when the note was carried forward;
   ~~check the A6000's price~~ — **checked, right as it is in the slides**
   (the owner, 2026-10-08); **the "What's next" slide is stale** — it lists
   event sounds, comic relief, a scientist turning, new voice engines…,

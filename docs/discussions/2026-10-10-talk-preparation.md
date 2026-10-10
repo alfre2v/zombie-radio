@@ -30,8 +30,8 @@ how things work, and the owner wants to answer from understanding, not from memo
   ([discussion 2026-10-03] the-talk §4.1): intro 5, overview 5, demo 10, deep dive 6-8, AI pair 4-5, future 1 — **about
   33 minutes, plus questions**.
 - **Known slide work** (`docs/TODO.md`, Task 9): the "What's next" slide is stale (it still lists event sounds as
-  future work); the numbers on slides 5 and 27 to recount; the A6000's price — **checked, right as it is** (the owner,
-  2026-10-08).
+  future work); the numbers printed on slides 5 and 27 to recount (below, A.5); the A6000's price — **checked, right
+  as it is** (the owner, 2026-10-08).
 - **Recording:** OBS Studio set up on 2026-10-08 (the full display; the Mac's sound through Desktop Audio Capture, the
   screen capture's own sound muted; the headset's mic; Chrome ducked under the voice). Thirteen recordings from
   2026-10-08 in `~/Movies/zombie-radio-rehearsals/` (outside git). Lessons: run `caffeinate -d` while recording (a
@@ -59,8 +59,12 @@ how things work, and the owner wants to answer from understanding, not from memo
      owner's call.
   4. **"What's next" rewritten:** what is now built comes off it; what stays future is the follow-ups (live sound
      generation, new events, the judge in the loop, the client on Linux…).
-  5. **The recount** of "slides 5 and 27" — as Task 9 and the handoffs name them; the deck now has 25 titled slides,
-     so which slides those are is checked first (a title slide or a different count may explain it).
+  5. **The recount** of the numbers printed on two slides, counted on 2026-10-03 and stale since: **slide 5**, "How
+     this project came to be" (33 discussion docs, 6 experiments, 7 tools), and **slide 27**, "The documentation
+     system" (discussions 33, experiments 6, follow-ups 50; its notes: the owner's words kept verbatim 443 times). The
+     slide numbers are positions in the deck as shown: 32 slides, the title slide and the six section dividers
+     included (25 slides have a `##` title). The note's origin: session handoff 11 (`f9aeec4`, §6; its §5 numbers the
+     slides), whose numbers in brackets were dropped when the note was carried forward.
   6. **Republish** (`docs/runbooks/talk-slides-quarto.md` §10) and look at it on the published site.
 - **Done when:** the inventory table is ruled on, the slides are changed, the site is republished, and the owner has
   clicked through it once.

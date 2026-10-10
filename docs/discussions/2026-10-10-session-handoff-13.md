@@ -174,7 +174,7 @@ the talk is built and released.** What is left is the talk itself.
 
 | Workstream | Status | What is left |
 |---|---|---|
-| **A, the slides** | not started | the **feature inventory** first (the app's features against the slides — e.g. the eight round kinds are on no slide); the owner decides per feature (slide, aloud, backup, out); the **"four levels of sound immersion"** slide (the static bed, the ambience's textures, its spots and cues, the voices — a diagram of four bands; placement the owner's call); **"What's next" rewritten** (it still lists event sounds as future); **"recount slides 5 and 27"** (the deck has 25 titled slides — check which those are first); republish |
+| **A, the slides** | not started | the **feature inventory** first (the app's features against the slides — e.g. the eight round kinds are on no slide); the owner decides per feature (slide, aloud, backup, out); the **"four levels of sound immersion"** slide (the static bed, the ambience's textures, its spots and cues, the voices — a diagram of four bands; placement the owner's call); **"What's next" rewritten** (it still lists event sounds as future); **the recount of the numbers printed on slides 5 and 27** (counted on 2026-10-03: slide 5, "How this project came to be" — 33 discussion docs, 6 experiments, 7 tools; slide 27, "The documentation system" — discussions 33, experiments 6, follow-ups 50, and in its notes 443 verbatim quotes; positions in the deck as shown, 32 slides with the title and the six section dividers; the origin: handoff 11, `f9aeec4`); republish |
 | **B, the backend** | done | — |
 | **C, the client** | done (the plan's §4 says "under way") | mark it done |
 | **D, the debug data** | done | its improvements are a follow-up for after the demo |
