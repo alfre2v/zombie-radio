@@ -1942,6 +1942,17 @@ reader's memory):
   are and whether they grow; then a short run with OBS closed and one with it recording, compared. If they grow with
   the show's length, the context's size and the model's time to the first token are the next suspects (the follow-up
   "Pauses the model server's timings do not show" holds the earlier notes).
+- **Two more hypotheses, from the client study session (2026-10-10):**
+  1. **The mic, opened at every listening window:** `openMic` calls `getUserMedia` each time and `closeMic` releases
+     the device (the fork's `static/show/mic.js:41-65`, at `tz-0.9`); starting the device takes a moment, and with a
+     **Bluetooth headset** opening the mic switches it into call mode, which briefly interrupts the sound — it fits
+     "at the moments that the mic is turned on or off". Test: the same show with a wired headset or the Mac's
+     speakers; or keep the mic open for the whole show (a change to `mic.js`).
+  2. **The model and the voice on one GPU (the 3090):** the voice's chunks are synthesized while the model still writes
+     the round, and the model's first step reads a longer script each round — so synthesis may slow as the show goes
+     on, and a chunk that takes longer to make than the previous one takes to play leaves the player waiting (a
+     stall). Test: each chunk's `time_used` in the debug files against the previous chunk's length.
+  The study notes: [discussion 2026-10-10] code-map-client and client-how-a-show-runs (Part 3, the voice queue).
 
 ## Some cue sounds barely heard — the story's gain_db (owner, 2026-10-08) — after the talk
 

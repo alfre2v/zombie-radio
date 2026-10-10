@@ -4,7 +4,7 @@
 **Type:** reference — the one-page map the agent drew to open the backend study session ([discussion 2026-10-10]
 talk-preparation, workstream B), kept as the owner saw it.
 **Status:** a **snapshot** of the fork at **`tz-0.9`** (`b1d039c`): the line numbers are true there and drift with
-every change to the code. The client's map is its companion (session C), to come.
+every change to the code. Its companion: [discussion 2026-10-10] code-map-client (session C).
 
 Paths are in the fork, `/Users/alfredo/workspace/hackTNT_2026/TalkWithZombies`.
 

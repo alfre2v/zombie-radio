@@ -176,8 +176,13 @@ how things work, and the owner wants to answer from understanding, not from memo
   `tz-0.9`). The owner walked the code from it: "I went through the code myself based on this map you presented and I
   feel I got myself the picture together."
 
-*Still to come: the client's functions and data structures (C.5), the debug fields worth knowing (D.1), the
-rehearsals' measurements (E).*
+- **C, the client — under way 2026-10-10.** Kept from the session, each a snapshot at `tz-0.9`: the map ([discussion
+  2026-10-10] code-map-client: the scripts, the page's states, one cycle of the loop, the audio graph, the data
+  structures); how a show runs ([discussion 2026-10-10] client-how-a-show-runs: a Web Audio refresher on the app's
+  own graph; the loop, `runShow` and `playRound`; the voice queue, how fetching and playing overlap). Two hypotheses
+  for the pauses came out of it, added to their follow-up for D.
+
+*Still to come: the debug fields worth knowing (D.1), the rehearsals' measurements (E).*
 
 ## §5. What the plan needs from the owner
 
