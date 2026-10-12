@@ -11,24 +11,28 @@
 <rect x="10" y="70" width="430" height="740" rx="18" fill="#ff8c1a" fill-opacity="0.07" stroke="#ff8c1a" stroke-width="3"/>
 <text x="30" y="104" fill="#ff8c1a" font-size="25" font-weight="700">The browser</text>
 <text x="30" y="128" fill="#b8b8b8" font-size="16">the /show page, on the laptop</text>
-<rect x="28" y="150" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
+<rect x="28" y="150" width="394" height="98" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
 <text x="44" y="182" fill="#eeeeee" font-size="23" font-weight="700">The looks</text>
 <text x="44" y="208" fill="#b8b8b8" font-size="17">the 1950 radio, the ham transmitter</text>
-<rect x="28" y="282" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
-<text x="44" y="314" fill="#eeeeee" font-size="23" font-weight="700">The clock</text>
-<text x="44" y="340" fill="#b8b8b8" font-size="17">show.js asks for one round</text>
-<text x="44" y="362" fill="#b8b8b8" font-size="17">after another</text>
-<rect x="28" y="414" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
-<text x="44" y="446" fill="#eeeeee" font-size="23" font-weight="700">The voice player</text>
-<text x="44" y="472" fill="#b8b8b8" font-size="17">each line cut into chunks,</text>
-<text x="44" y="494" fill="#b8b8b8" font-size="17">played in order</text>
-<rect x="28" y="546" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
-<text x="44" y="578" fill="#eeeeee" font-size="23" font-weight="700">The microphone</text>
-<text x="44" y="604" fill="#b8b8b8" font-size="17">hold to talk</text>
-<rect x="28" y="678" width="394" height="118" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
-<text x="44" y="710" fill="#eeeeee" font-size="23" font-weight="700">The static bed</text>
-<text x="44" y="736" fill="#b8b8b8" font-size="17">radio static under the voices</text>
-<text x="44" y="758" fill="#b8b8b8" font-size="17">(Web Audio)</text>
+<rect x="28" y="259" width="394" height="98" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
+<text x="44" y="291" fill="#eeeeee" font-size="23" font-weight="700">The show loop <tspan fill="#b8b8b8" font-size="17" font-weight="400">(the clock)</tspan></text>
+<text x="44" y="317" fill="#b8b8b8" font-size="17">plays a round, then asks for the next</text>
+<text x="44" y="339" fill="#b8b8b8" font-size="17">only it knows when the voice has ended</text>
+<rect x="28" y="368" width="394" height="98" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
+<text x="44" y="400" fill="#eeeeee" font-size="23" font-weight="700">The voice player</text>
+<text x="44" y="426" fill="#b8b8b8" font-size="17">each line cut into chunks,</text>
+<text x="44" y="448" fill="#b8b8b8" font-size="17">played in order</text>
+<rect x="28" y="477" width="394" height="98" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
+<text x="44" y="509" fill="#eeeeee" font-size="23" font-weight="700">The microphone</text>
+<text x="44" y="535" fill="#b8b8b8" font-size="17">hold to talk</text>
+<rect x="28" y="586" width="394" height="98" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
+<text x="44" y="618" fill="#eeeeee" font-size="23" font-weight="700">The static bed</text>
+<text x="44" y="644" fill="#b8b8b8" font-size="17">8 clips of radio static under the voices</text>
+<text x="44" y="666" fill="#b8b8b8" font-size="17">(Web Audio)</text>
+<rect x="28" y="695" width="394" height="98" rx="10" fill="#111111" fill-opacity="0.85" stroke="#ff8c1a" stroke-width="1.5"/>
+<text x="44" y="727" fill="#eeeeee" font-size="23" font-weight="700">The ambience sounds</text>
+<text x="44" y="753" fill="#b8b8b8" font-size="17">the world outside: 16 textures, 15 spots</text>
+<text x="44" y="775" fill="#b8b8b8" font-size="17">cues: 29 event sounds (42 clips)</text>
 </g>
 <g class="fragment" data-fragment-index="2">
 <rect x="540" y="70" width="530" height="740" rx="18" fill="#8fd14f" fill-opacity="0.07" stroke="#8fd14f" stroke-width="3"/>

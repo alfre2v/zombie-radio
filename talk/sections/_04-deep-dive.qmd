@@ -28,7 +28,11 @@ by construction, so the microphone never hears the cast and Whisper gets only th
 ONE ROUND, IN NUMBERS (measured on the A6000)
 - The gap between rounds: 3.7-4.9 s once warm (6.8 s for a run's first round, the voice cold; 8.4 s after a trim):
   the model's first line takes 0.76-0.94 s through the app and the tunnel, then the voice synthesizes the first chunk.
-  The static bed rises in that gap, so it never sounds dead.
+  The static bed and the ambience rise in that gap, so it never sounds dead.
+- The cue: when the round's event names a sound (a keyword under a clip in the story's ambience.yaml), the stream
+  opens with a cue event — the clip's file and kind — before the first line; the page plays it as the event is heard:
+  a spot at once, a texture in place of the current one. The page fetches the clip from the app
+  (/api/show/ambience/<name>); nothing crosses the tunnel for it.
 - The request: one POST to llama.cpp's /v1/chat/completions, streamed, carrying the whole show so far, the GBNF grammar
   in a top-level "grammar" field, max_tokens 512, and a seed (the run's seed plus the round's number).
 - The prompt: the cast sheet as the system message — identical every time, so the server reuses its cache and only
@@ -76,8 +80,15 @@ def plan_round(run: Run, story: Story, show: ShowConfig, played_s: float = 0.0,
 :::
 
 ::: {.notes}
-No agent framework: a ladder of ifs. The highlighted line is why the same seed replays the same show — every round
-draws from a random generator seeded with the run's seed and the round's number.
+No agent framework: a ladder of ifs. The line rng = random.Random(f"{run.seed}:{n}") is why the same seed replays
+the same show — every round draws from a random generator seeded with the run's seed and the round's number.
+
+IN 30 SECONDS, ALOUD — the show has two modes, set by the lab's receiver. Broadcast, the receiver dead: the cast talk
+among themselves, events happen, and after 60-180 s of audio the receiver comes back and Samantha calls out. Contact,
+the receiver on: the radio listens; the listener speaks and the cast answer, a silence gets a re-call, and after 5 ± 1
+answers the receiver breaks down — or, after two silences, they switch it off. Eight kinds of round in all: the
+sign-on and orientation, free, the call, an exchange, a re-call, the last exchange, the breakdown, the switch-off. Each
+rung of this ladder picks one.
 
 WHY A DIRECTOR IN CODE (decision record ADR-0003, 2026-09-21; accepted 2026-09-23 after a gate experiment) —
 TalkWithMe made one LLM request per persona, each with its own system prompt, and rewrote the others' lines as
@@ -112,7 +123,9 @@ then drifts to a neighbour; a tone word holds 3 ± 1 rounds.
 
 THE SEED — random.Random(f"{run.seed}:{n}"): one generator per round, seeded with the run's seed and the round's
 number, so a round's choices do not depend on how many random draws earlier rounds made. With show.seed set, the
-same seed gives the same show, word for word, on the same box and build (proven 2026-09-22).
+same seed gives the same show, word for word, on the same box and build (proven 2026-09-22). The sound cues roll dice
+of their own, random.Random(f"{seed}:{n}:cue"), so a seed replays its cues and never shifts the director's draws.
+(Python's string seeds are hashed with SHA-512 since Python 3.2: the same string, the same sequence, on any machine.)
 :::
 
 ## A grammar keeps the model in format {.grammar-slide}
@@ -234,7 +247,7 @@ target. The owner: "it makes the show forget more lines that we intended" — no
 more.
 :::
 
-## One command to a GPU {.smaller .gpu-slide}
+## Deployment 1 → Cloud:<br>One command to a GPU {#one-command-to-a-gpu .smaller .gpu-slide}
 
 ```bash
 make ans-deploy ENV=cloud
@@ -298,7 +311,7 @@ THE COST — an RTX A6000, 48 GB, at $0.50-0.59 an hour, Hyperstack (the cheapes
 memory floor). A stopped VM keeps billing; only hibernation stops the meter, with a stock lottery on restore.
 :::
 
-## The 3090 at home {.home-slide}
+## Deployment 2 → LAN/local:<br>The 3090 at home {#the-3090-at-home .home-slide}
 
 ```bash
 make ans-deploy ENV=lan

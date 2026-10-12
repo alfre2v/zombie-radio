@@ -86,11 +86,34 @@ the wrong name) explained openly. Fallback: Task 7's video.
 
 BEFORE (backstage) — tunnel open and make check shows three ok; app on 127.0.0.1:8000; open http://localhost:8000/show,
 pick a look; browser full screen, zoom 100 %, sound output on the room's speakers. The installed client runs the demo's
-defaults: debug off, a random seed per run, static bed on, filter off.
+defaults: debug off, a random seed per run, static bed on, the ambience on (its spots and cues too), filter off.
 
 STARTING — press Start: the browser asks for the microphone once, then. The first round is the slowest (about 6.8 s,
-the voice cold); later gaps 3.7-4.9 s, filled by the static. If Start shows an error, read it: a context too small, or
-a persona without a voice.
+the voice cold); later gaps 3.7-4.9 s, filled by the static and the ambience. If Start shows an error, read it: a
+context too small, or a persona without a voice.
+
+POINT IT OUT AS IT HAPPENS — what no slide shows; say it when the room hears it, one sentence each.
+- THE FOUR LEVELS OF SOUND, from the back to the front: (1) the static bed — radio static, louder between rounds,
+  lower under a line, silent while you talk; (2) the ambience's textures — the world outside the lab, heard through the
+  scientists' microphone: the dead far off, a thunderstorm, warfare, dogs; (3) its spots — a scream, a burst of gunfire,
+  an explosion, every 20-60 s — and the CUES: when an event read on air names a sound (a helicopter, sirens, a church
+  bell, a train horn), that sound plays as it is read; (4) the cast's voices, each line in its mood's voice. "Every
+  sound except the static was generated on our own GPU, with Stable Audio 3 Small-SFX, and chosen by ear."
+- A CUE, WHEN ONE COMES (43 of the 289 events have one): "Did you hear that? The event said 'helicopter', and a
+  helicopter flew over. The story's file lists keywords under each clip; when the event says one, the server sends the
+  sound ahead of the line." The owner's idea; the inversion of a sound per event into words per sound.
+- THE TWO MODES, as the show crosses them: BROADCAST first — the receiver is dead, the cast talk among themselves, an
+  event every 2 ± 1 rounds, someone recalling an earlier caller now and then; then THE CALL, 60-180 s of audio in: "the
+  receiver works!" and Samantha calls out — CONTACT: the radio listens; each answer is an exchange (2-3 lines, ending on
+  a question to you); a silence gets a re-call; after 5 ± 1 answers, the last exchange and the BREAKDOWN; two silences
+  in a row, the SWITCH-OFF. Back to Broadcast, and the cast talk about what the caller said (the aftermath). Eight kinds
+  of round in all; the director slide has the ladder.
+- FIXED LINES, when an event is read, at the call, at the breakdown: "That line was not written by the model. It is said
+  word for word from the story's files — the lines you must not miss. The model writes the reaction."
+- THE AGENDA, when the cast ask your name: the first of nine things they want from a caller (who you are, where you
+  are, supplies, a vehicle, help finding the lab…); later in the show they use what you told them.
+- THE SEED, if someone asks whether it is random: the seed drives every choice of the director, the model's sampling
+  and the cues — the same seed replays the same show on the same box. The ambience's textures and spots are not seeded.
 
 WHAT THE AUDIENCE HEARS, IN ORDER — Samantha's sign-on (who they are, where, the receiver is dead), then the cast
 talking among themselves, an event read out every 2 ± 1 rounds. 60-180 s of audio after the start, THE CALL: someone
@@ -102,18 +125,20 @@ answers ("Samantha, can you hear me?"); they ask who you are first, then where y
 a way out, help finding the lab). Your words show as a caption; doubtful words are marked. 5 ± 1 answers, then the
 receiver breaks down. Silence: one re-call; two silences in a row and the receiver is switched off.
 
-KEYS — SPACE hold to talk · M mute the static · F flip its AM filter (the old-radio band). Stop and Resume on the
-bottom bar.
+KEYS — SPACE hold to talk · M mute the static · A mute the ambience (its cues too) · F flip the AM filter (the
+old-radio band), for the static and the ambience together. Stop and Resume on the bottom bar.
 
 PAUSING TO COMMENT — press Stop: it cuts the voice and abandons the round in flight. Resume continues the same run
 (after a listening round, the window opens first). A page reload starts a new run.
 
 IF SOMETHING GOES WRONG — "the round request failed": the tunnel (curl localhost:8080/health), then Resume. Lines but no
-sound: the browser's sound, then the voice (localhost:8001/capabilities). No static: M was pressed. The talk button
+sound: the browser's sound, then the voice (localhost:8001/capabilities). No static: M was pressed. No ambience: A
+was pressed. The talk button
 never lights: the microphone was refused — allow it and reload. If the network or the box is gone: the canned video.
 
 WHAT MAY HAPPEN, SAY IT OPENLY — a voice wobbles or garbles a word now and then (cloned voices, one recording per mood,
 the mood clips set the level: some moods are quieter); a cast member may say another's line (Daniel introducing
-himself as Samantha, seen once); the cast improvise places and details — that's the feature, not a bug.
+himself as Samantha, seen once); a cue may come through quietly under the voice (some event sounds' levels are still
+to be tuned by ear); the cast improvise places and details — that's the feature, not a bug.
 :::
 

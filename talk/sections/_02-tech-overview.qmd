@@ -17,7 +17,7 @@ show, an SSH tunnel brings the box's three services to the laptop's localhost. W
 works (that is the deep dive).
 
 THE LAPTOP — make client-mac (a standalone Ansible playbook that never reads the deployment's inventories): clones
-TalkWithZombies at a pinned tag (today tz-0.6) into ~/TalkWithZombies-client, makes a virtual environment, installs the
+TalkWithZombies at a pinned tag (today tz-0.9) into ~/TalkWithZombies-client, makes a virtual environment, installs the
 requirements with pip, and seeds settings.yaml pointing at the tunnel's ports. The app is FastAPI (Python 3.10+),
 served on 127.0.0.1:8000. A page on http://localhost counts as a secure context, so the microphone works with no
 certificate, domain or TLS. The demo laptop is an M1 with 16 GB: it runs no model. macOS proven; Linux likely, never
@@ -37,9 +37,11 @@ port 22; the deployment offers only its own key, accepts a new box's host key on
 one, in its own known_hosts (~/.config/zombie-radio/). make check asks the three services for their health through
 the tunnel.
 
-THE NETWORK — the laptop sends each line to the voice with the character's reference clip: 590-750 KB per request (WAV,
-base64). On a home connection that is lost in about 0.5 s per request; on a slow venue Wi-Fi it could add a second or
-more (a compressed-clips switch is a follow-up). Round trip from the laptop to Hyperstack's CANADA-1: about 58 ms.
+THE NETWORK — the laptop sends each line to the voice with the character's reference clip: 590-750 KB per request as
+WAV (base64). On a home connection that is lost in about 0.5 s per request; on a slow venue Wi-Fi it could add a second
+or more. Hence the compressed clips (tz-0.7, show.reference_format: ogg — the demo's client uses it): each clip is sent
+as an Opus copy (48 kbps, mono), about 8 times smaller; the originals stay, and wav sends them again. Round trip from
+the laptop to Hyperstack's CANADA-1: about 58 ms.
 
 THE BOX — Hyperstack's RTX A6000, 48 GB, about $0.50-0.59 an hour (provider survey, 2026-09-13); Ubuntu images with
 Docker and the NVIDIA toolkit preinstalled. A new VM needs a public IP attached and SSH enabled in the console. A
@@ -69,12 +71,26 @@ asks for the next round when the voice has drained. Lines arrive as server-sent 
 The voice player cuts each line into chunks of whole sentences (about 100 characters) and plays them in order, each in
 the speaker's voice and the line's mood. The microphone is held only while the radio listens: a 10 s window, a press
 capped at 30 s. The static bed and the gauge (the magic eye, the oscilloscope) tap the page's audio through Web Audio.
-Keys: Space held to talk, M mutes the static, F flips its AM filter. Looks: the 1950 Philips radio and a ham
-transmitter, both restyling the same page; /show opens a chooser with live miniatures.
+Keys: Space held to talk, M mutes the static, A mutes the ambience, F flips the AM filter (the static's and the
+ambience's together). Looks: the 1950 Philips radio and a ham transmitter, both restyling the same page; /show opens a
+chooser with live miniatures.
 
-THE APP — TalkWithZombies, our fork of TalkWithMe; the show engine is about 1,900 lines of Python (app/show/), with
-1,284 Python tests plus five Node test suites for the page. Three endpoints: /api/show/start (opens a run, picks the
-seed), /api/show/round (plans and streams one round), /api/show/listen (transcribes a press).
+THE SOUNDS UNDER THE VOICES (the last two boxes) — three layers, all mixed to mono through Web Audio, all following the
+page's state: louder between rounds, lower under a line, silent while the listener holds to talk.
+- The static bed: 8 clips of radio static from Freesound (CC0 and CC BY, chosen by ear), shuffled, with silences, a
+  slow fading and an AM filter that makes it a receiver's.
+- The ambience, the world outside the lab heard through the scientists' microphone: 16 textures (long, one after
+  another: 11 sounds — the dead far off and close, a thunderstorm, warfare, dogs, a car alarm…) and 15 spots (short,
+  one every 20-60 s: 14 sounds — screams, a growl, gunfire, an explosion, laughter…). Generated with Stable Audio 3
+  Small-SFX on our GPU, kept by ear, CC0.
+- Sound cues: when the round's event names a sound, that sound plays as the event is read. 42 clips are cue-only —
+  never at random — the takes of 29 event sounds (a helicopter, a jet, sirens, a train horn, a church bell, a Geiger
+  counter, Morse code, a typewriter, a rooster…); 24 of the ambience's own clips can be cued too. 43 of the story's 289
+  events cue a sound.
+
+THE APP — TalkWithZombies, our fork of TalkWithMe; the show engine is about 1,950 lines of Python (app/show/), with
+1,337 Python tests plus six Node test suites for the page (measured at tz-0.9). Three endpoints: /api/show/start (opens
+a run, picks the seed), /api/show/round (plans and streams one round), /api/show/listen (transcribes a press).
 - The model has no memory between requests: every request carries the whole show so far — the cast sheet as the
   system message (identical each time, so the server's cache serves it), then each round's instruction and the lines
   the model wrote.
@@ -89,6 +105,10 @@ seed), /api/show/round (plans and streams one round), /api/show/listen (transcri
   the same words, so the model is guided, not fought: a grammar that agrees with its prompt costs 0.3-0.5 % per token.
 - The trim keeps the script inside the 32k context (deep dive). Whisper's likely inventions — empty text, low
   confidence, known hallucinations — count as silence.
+- Sound cues (app/show/cues.py, the owner's idea: a keywords list under each clip): when a free round's event says a
+  clip's keyword (a whole word or phrase, any case), the server picks the clip — several match: one, with dice of the
+  round's own — and the round's stream opens with a cue event (the file and its kind) before the first line. The words
+  live in the story's ambience.yaml, beside each clip's switch and level.
 - Every run is recorded in runs/<id>/script.json; with debug on, every prompt, request, reply and voice chunk is kept.
   The seed drives every choice and every model request: the same seed replays the same show on the same box and build.
 
