@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="416" viewBox="0 0 680 416" role="img" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"><title>The four channels between the FastAPI server and the browser</title><desc>The server reaches the browser through four channels: the start reply once per run, the SSE stream once per round, plain clip downloads when the browser picks a clip, and the voice per chunk.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#73726c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="0" y="0" width="680" height="416" fill="#ffffff"/>
+<rect x="40" y="40" width="120" height="336" rx="8" fill="#EEEDFE" stroke="#534AB7" stroke-width="0.5"/>
+<text x="100" y="190" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#3C3489">FastAPI</text>
+<text x="100" y="208" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#3C3489">server</text>
+<text x="100" y="230" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#534AB7">the director</text>
+<rect x="520" y="40" width="120" height="336" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="580" y="190" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#085041">Browser</text>
+<text x="580" y="212" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0F6E56">the clock</text>
+<text x="580" y="230" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0F6E56">picks clips, timers</text>
+<rect x="190" y="60" width="300" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="340" y="78" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#444441">POST /api/show/start</text>
+<text x="340" y="98" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5F5E5A">JSON, once per run: clip lists</text>
+<rect x="190" y="140" width="300" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="340" y="158" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#712B13">POST /api/show/round</text>
+<text x="340" y="178" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#993C1D">SSE, per round: lines and the cue</text>
+<rect x="190" y="220" width="300" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="340" y="238" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#444441">GET bed or ambience clip</text>
+<text x="340" y="258" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5F5E5A">an mp3, when the browser picks it</text>
+<rect x="190" y="300" width="300" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5"/>
+<text x="340" y="318" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#444441">POST /api/tts</text>
+<text x="340" y="338" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5F5E5A">the voice, one chunk at a time</text>
+<g stroke="#73726c" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+<line x1="162" y1="88" x2="186" y2="88"/>
+<line x1="492" y1="88" x2="516" y2="88"/>
+<line x1="162" y1="168" x2="186" y2="168"/>
+<line x1="492" y1="168" x2="516" y2="168"/>
+<line x1="162" y1="248" x2="186" y2="248"/>
+<line x1="492" y1="248" x2="516" y2="248"/>
+<line x1="162" y1="328" x2="186" y2="328"/>
+<line x1="492" y1="328" x2="516" y2="328"/>
+</g>
+</svg>

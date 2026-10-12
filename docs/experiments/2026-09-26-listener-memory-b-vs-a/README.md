@@ -283,7 +283,10 @@ A simulation described in handoff §7.2. …" But only a pass that do a
 quick evaluation if A is really an interesting option, what it brings
 as observed improvements quickly, otherwise we drop it as a quest."
 The spec: `docs/discussions/2026-09-26-show-engine-session-handoff-5.md`
-§7.2 (an ephemeral handoff; this folder now holds what it specified).
+§7.2 (an ephemeral handoff; this folder now holds what it specified). Deleted on 2026-09-28 before its branch
+was merged, so it was never in `main`'s history: it survives only on the branch `alfre2v/show-slice-3` —
+`git show 57c7fd7:docs/discussions/2026-09-26-show-engine-session-handoff-5.md` — and is lost if that branch is
+deleted.
 
 ### 18:26 CDT — Entry 7: A built in the scratchpad, and checked with no model
 

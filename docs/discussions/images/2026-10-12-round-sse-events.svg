@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="496" viewBox="0 0 680 496" role="img" font-family="-apple-system, 'Segoe UI', Helvetica, Arial, sans-serif"><title>The SSE events of one round and what the page does with each</title><desc>A round's stream sends cue, then start, token and done for each line, then round and complete. The page keeps the cue, remembers the mood on start, ignores tokens, speaks each done line, uses the summary, and moves on at complete.</desc>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#73726c" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect x="0" y="0" width="680" height="496" fill="#ffffff"/>
+<rect x="40" y="40" width="250" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="165" y="58" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#712B13">cue</text>
+<text x="165" y="78" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#993C1D">if the event names a sound</text>
+<rect x="390" y="40" width="250" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="515" y="58" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#085041">kept as round.cue</text>
+<text x="515" y="78" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0F6E56">ambience.js plays it on air</text>
+<rect x="40" y="112" width="250" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="165" y="130" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#712B13">start</text>
+<text x="165" y="150" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#993C1D">a line begins: speaker, mood</text>
+<rect x="390" y="112" width="250" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="515" y="130" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#085041">mood remembered</text>
+<text x="515" y="150" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0F6E56">for the line's voice clip</text>
+<rect x="40" y="184" width="250" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="165" y="202" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#712B13">token, many</text>
+<text x="165" y="222" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#993C1D">each piece the model writes</text>
+<rect x="390" y="184" width="250" height="56" rx="8" fill="#F1EFE8" stroke="#5F5E5A" stroke-width="0.5" stroke-dasharray="4 3"/>
+<text x="515" y="202" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#444441">ignored by the show page</text>
+<text x="515" y="222" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#5F5E5A">no handler in show.js</text>
+<rect x="40" y="256" width="250" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="165" y="274" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#712B13">done</text>
+<text x="165" y="294" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#993C1D">the whole line, spoken text</text>
+<rect x="390" y="256" width="250" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="515" y="274" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#085041">caption and voice</text>
+<text x="515" y="294" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0F6E56">chunks go to POST /api/tts</text>
+<rect x="40" y="328" width="250" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="165" y="346" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#712B13">round</text>
+<text x="165" y="366" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#993C1D">the summary, after recording</text>
+<rect x="390" y="328" width="250" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="515" y="346" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#085041">receiver, listen, debug</text>
+<text x="515" y="366" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0F6E56">what the next step is</text>
+<rect x="40" y="400" width="250" height="56" rx="8" fill="#FAECE7" stroke="#993C1D" stroke-width="0.5"/>
+<text x="165" y="418" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#712B13">complete</text>
+<text x="165" y="438" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#993C1D">the stream ends</text>
+<rect x="390" y="400" width="250" height="56" rx="8" fill="#E1F5EE" stroke="#0F6E56" stroke-width="0.5"/>
+<text x="515" y="418" text-anchor="middle" dominant-baseline="central" font-size="14" font-weight="500" fill="#085041">loop moves on</text>
+<text x="515" y="438" text-anchor="middle" dominant-baseline="central" font-size="12" fill="#0F6E56">next round once voice drains</text>
+<g stroke="#73726c" stroke-width="1.5" fill="none" marker-end="url(#arrow)">
+<line x1="292" y1="68" x2="386" y2="68"/>
+<line x1="292" y1="140" x2="386" y2="140"/>
+<line x1="292" y1="212" x2="386" y2="212" stroke-dasharray="4 3"/>
+<line x1="292" y1="284" x2="386" y2="284"/>
+<line x1="292" y1="356" x2="386" y2="356"/>
+<line x1="292" y1="428" x2="386" y2="428"/>
+</g>
+</svg>

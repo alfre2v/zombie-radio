@@ -1872,6 +1872,137 @@ reader's memory):
   tools/voices/cast_voices.py --all-emotions --only <Name>`; the runbook
   `docs/runbooks/cast-voices.md`.
 
+## Debug and observability improvements — from the debug study session (owner, 2026-10-10) — after the demo
+
+- **Where flagged:** [discussion 2026-10-10] debug-data-study (§4-§8) — the debug study session on the
+  owner's long 3090 run (`2026-10-08T14-57-55`, 206 rounds).
+- **The ruling** (the owner, verbatim, 2026-10-10): "Let's write down all the improvements in a follow up task. I am not
+  going to execute them before the demo day."
+- **Trigger:** after the demo; item 2 sooner if the pauses need settling.
+- **The improvements** (the fork; line numbers at `tz-0.9`):
+  1. **Keep llama.cpp's times.** `app/services/llm.py:166-168` keeps only `prompt_n`, `cache_n`, `predicted_n` from
+     the stream's `timings` and drops `prompt_ms`, `predicted_ms` and the per-second rates — so the record cannot say
+     how long the model took. Keep them too (two keys; `Round.timings` is typed as integers, so the type widens to
+     numbers).
+  2. **Log the mic's open and close in the console,** with how long `getUserMedia` took (`static/show/mic.js:41-65`) —
+     it tests the mic hypothesis of the pauses directly (the follow-up below).
+  3. **One console line per round,** in debug mode: its kind, event and cue, the time to the first line, to the first
+     sound, and the gap before it — the page already computes these for the debug line under the round; today the
+     rounds log nothing to the console.
+  4. **A script that does the session's analysis on any run's folder:** the voice's real-time factor by blocks of
+     rounds, the stalls within rounds (the player replayed on the chunks' `kept` times), the gaps between rounds against
+     the context's size — so the next investigation does not start from scratch.
+  5. **Keep the Whisper request in the debug files,** next to what it heard: the `prompt` (the cast's names), the
+     `language`, `vad_filter`, `response_format` — today only the result is kept (`script.json`'s `heard`, the
+     listener line of `rNNN.txt`), so the hint sent cannot be checked from a run.
+  6. **Confirm `usage` against `timings`** with one `curl` to llama.cpp, with and without `stream_options:
+     {"include_usage": true}` — the agent's understanding (not checked on our server): `usage` would come in addition,
+     and carries less (no split between fresh and cached tokens, no times).
+
+## No lock on a run's record — two overlapping round requests would race (owner, 2026-10-10) — low priority
+
+- **The question** (the owner's code review, verbatim, 2026-10-10): "Do we have some kind of lock protecting the
+  script.json from two concurrent writes? What if I were to issue one request after another?"
+- **What the code does** (the fork, `app/show/script.py`, `save_run`, L127-131, at `tz-0.9`): the whole run is written
+  to `script.json.tmp`, then moved over `script.json` with `os.replace` — **atomic** (a reader never sees a half-written
+  file, even after a crash), but **no lock**. Requests **one after another** are safe: each `POST /api/show/round`
+  reads the run from disk first. Requests that **overlap** on one run would race: both read the same *n* rounds, plan
+  the same round *n+1* (the same seeded dice), stream it, and save their own copy — the last save wins and the other
+  round is lost from the record; and both use the same temp file's name, so one `os.replace` could fail after its
+  round was streamed.
+- **Why it has not happened:** the page never overlaps rounds (`playRound` waits for a round's stream to end before
+  asking for the next; Stop aborts the one in flight), nor does the scripted driver. It would take a bug, two tabs on
+  one run, or a hand-sent request.
+- **Trigger:** two listeners or two pages on one run, or a lost round in a record.
+- **The fix shape:** an `asyncio.Lock` per run id in the router, held for the whole round (the app is one process,
+  so an in-memory lock is enough) — or a 409 for a round asked while one is in flight; a unique temp file name per
+  write. About 20 lines and a test.
+
+## "blas\xE9" in the story's overtones.yaml — a YAML escape, to write as "blasé" (owner, 2026-10-10) — cosmetic
+
+- **The question** (the owner's code review, verbatim, 2026-10-10): "In overtones.yaml, L279, there is an unicode
+  char there. Is that on purpose? Should we let that char there?"
+- **What it is:** the fork's `stories/lab-outbreak/overtones.yaml` is pure ASCII; its line 279 holds `"blas\xE9"`, a
+  **YAML escape** in a double-quoted string — `\xE9` is é — which loads as `blasé` (checked), one of the tone words
+  given to the model. It came with `ca37199` (slice 3, 2026-09-28), likely written by PyYAML, which escapes non-ASCII
+  by default; not typed by hand.
+- **Trigger:** the fork's next branch.
+- **The fix shape:** write it as `- blasé` (the story's loader reads UTF-8, `app/show/story.py:167`); the loaded
+  string is identical, so nothing changes in the show. One line.
+
+## The narrower AM filter test (owner, 2026-10-02; pushed past the talk 2026-10-10) — minor priority
+
+- **The statement:** the owner's ear on bands narrower than the AM filter's 300-3,000 Hz, to learn whether the static
+  bed tires less and sounds more like an old radio with poor reception. The bands, B first: A 300-2,700 Hz (a ham's
+  SSB voice filter), **B 400-2,000 Hz** (a narrow receiver), C 500-1,500 Hz (poor reception), D 600-1,000 Hz (the
+  extreme). Each under `show:` with `bed_filter: true`, `bed_filter_low_hz`, `bed_filter_high_hz`, a restart of the
+  app, the F key to compare; a narrower band sounds quieter (raise `bed_volume_*` a little for a fair test). May
+  change `bed_filter`'s default or its band. The F key flips the ambience's filter too, at the bed's band, since
+  `tz-0.8`.
+- **Where flagged:** `docs/TODO.md`, Task 10.1 ([discussion 2026-10-01] sound-effects §8.20, §8.21).
+- **The ruling** (the owner, verbatim, 2026-10-10): "Let's mark this as pushed beyond the day of the talk, so it is now
+  a follow up, a minor priority one."
+- **Trigger:** after the talk; about 20 minutes of the owner's listening.
+
+## Events that could cue a sound the library already has — keywords to add (owner, 2026-10-08) — after the talk
+
+- **The statement:** listening to a long debug show on the 3090 (2026-10-08), the owner (verbatim): "There are still
+  a few events which could easily been assigned on of the cue sounds we have... but now we are not going to act in this
+  direction... But it is a low hanging fruit." Not new events (that is R3, the follow-up below) and not new sounds:
+  **keywords** added to clips the story already has, so more of the existing 289 events cue a sound.
+- **Where flagged:** the owner's listen, 2026-10-08 (the run is in the installed client's `runs/`).
+- **Trigger:** after the talk, or whenever cues feel too rare.
+- **The fix shape:** read the run's events (or all 289) against the library's sounds; for each event that names one in
+  other words, a keyword on that clip in the story's `stories/lab-outbreak/ambience.yaml`, checked against every event
+  (`docs/runbooks/event-sounds.md` §5) so it cues nothing else. No box, no code.
+
+## Pauses of about 300 ms that grow as the show goes on, mostly when the mic opens or closes (owner, 2026-10-08) — to investigate
+
+- **What was heard:** on the 3090, a long debug show (2026-10-08), the owner (verbatim): "The more the show advances,
+  the more I hear brief pauses, I would say around 300ms, specially at the moments that the mic is turned on or off
+  (contact)." The owner's suspicion, after recording with OBS: "I think the 300ms delay I observe in the show could be,
+  maybe, the darn OBS taking too much resources, and making the app transitions to open and close the mic slow." Not
+  shown either way.
+- **Where flagged:** the owner's listen and recording, 2026-10-08; [discussion 2026-10-10] talk-preparation, D.
+- **Trigger:** the debug study session (talk-preparation, D).
+- **The fix shape:** the run's record (`script.json`, each round's timings) and its debug files show where the gaps
+  are and whether they grow; then a short run with OBS closed and one with it recording, compared. If they grow with
+  the show's length, the context's size and the model's time to the first token are the next suspects (the follow-up
+  "Pauses the model server's timings do not show" holds the earlier notes).
+- **Two more hypotheses, from the client study session (2026-10-10):**
+  1. **The mic, opened at every listening window:** `openMic` calls `getUserMedia` each time and `closeMic` releases
+     the device (the fork's `static/show/mic.js:41-65`, at `tz-0.9`); starting the device takes a moment, and with a
+     **Bluetooth headset** opening the mic switches it into call mode, which briefly interrupts the sound — it fits
+     "at the moments that the mic is turned on or off". Test: the same show with a wired headset or the Mac's
+     speakers; or keep the mic open for the whole show (a change to `mic.js`).
+  2. **The model and the voice on one GPU (the 3090):** the voice's chunks are synthesized while the model still writes
+     the round, and the model's first step reads a longer script each round — so synthesis may slow as the show goes
+     on, and a chunk that takes longer to make than the previous one takes to play leaves the player waiting (a
+     stall). Test: each chunk's `time_used` in the debug files against the previous chunk's length.
+  The study notes: [discussion 2026-10-10] code-map-client and client-how-a-show-runs (Part 3, the voice queue).
+- **Measured 2026-10-10 on the long 3090 run** (`2026-10-08T14-57-55`, 206 rounds, in the debug study session):
+  **nothing in the debug data grows as the show goes on** — the voice's real-time factor
+  flat at 0.38-0.41 with no chunk slower than real time (hypothesis 2 not supported); 2 stalls within rounds in 206
+  rounds; the gap between rounds flat at 2.2-2.4 s while the script grew from 1,700 to 29,000 tokens (the model's
+  prompt cache: about 200-240 new tokens read a round). So the pauses are outside what the files record — the mic
+  switching (hypothesis 1) or OBS. The owner: "Yes, I was using a bluetooth headset for recording the talk with OBS."
+  The next test: log the mic's open and close (the follow-up "Debug and observability improvements", item 2), or a show
+  with a wired headset or the Mac's speakers.
+
+## Some cue sounds barely heard — the story's gain_db (owner, 2026-10-08) — after the talk
+
+- **What was heard:** the owner (verbatim, 2026-10-08): "Some of the cue sounds I can barely hear, like the "jet 2" or
+  the "dead banging at door 1" (I think)... I supose we could put a positive value in the gain_db, but I won't act on
+  this now, just reporting." A cue plays while the reader's voice speaks, so the ambience is at its level under a line
+  (`ambience_volume_voice`, 0.12) — a quiet clip is quieter still there.
+- **Where flagged:** the owner's listen, 2026-10-08.
+- **Trigger:** after the talk, or before it if a rehearsal shows a cue lost.
+- **The fix shape:** a positive `gain_db` on those clips in the story's `ambience.yaml`, by ear (the field's range is
+  ±40 dB); or, if many cues are quiet, a design change: let a cue play above the ducking under the voice, or a cue
+  volume setting.
+
+---
+
 ## New events that name the library's sounds — sound cues' R3 (owner, 2026-10-08) — postponed past the demo
 
 **The gap.** A sound cue plays a clip when a free round's event says one of its keywords (Task 14, the fork's
@@ -2102,7 +2233,9 @@ sound by the same runbook (`docs/runbooks/event-sounds.md`).
   Every line's stream events already carry `message_id =
   "<run-id>-r<NNN>-l<L>"` (the fork's `app/routers/show.py:227`), so the page
   knows the round and line when it requests the voice. The build spec:
-  `docs/discussions/2026-09-30-show-engine-session-handoff-8.md` §13.3.
+  `docs/discussions/2026-09-30-show-engine-session-handoff-8.md` §13.3 — a session handoff, deleted on
+  2026-10-10 at the owner's word; it is in `main`'s history: `git show
+  0bfd476:docs/discussions/2026-09-30-show-engine-session-handoff-8.md`.
 - **Trigger:** the owner's go — "do not execute yet" (2026-09-30, before a
   context compaction). Related: the replay test proposed for "Candles!" (the
   line sent 4 times with Daniel's clip and once with Samantha's) — not run;

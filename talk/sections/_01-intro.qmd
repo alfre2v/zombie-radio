@@ -76,6 +76,11 @@ they were not good enough then. Many of the show's ideas come from it. Then Talk
 version written by an AI, Qwen), and four weeks of zombie-radio: the docs first, then the fork, and a release every
 day or two. The numbers were counted on 2026-10-03 (recount before the talk); the 7 tools: fetch EARS, screen the
 voices, cast the voices, fetch from Freesound, prepare the static bed, drive a show, replay a voice chunk.
+
+AFTER THE TIMELINE'S LAST STOP (it ends at tz-0.6, Oct 2) — three more releases, said aloud: Oct 7, the compressed
+reference clips (tz-0.7: each voice clip sent as an Opus copy, about 8 times smaller) and the world outside (tz-0.8:
+the ambience, sounds generated on our own GPU); Oct 8, sound cues (tz-0.9: an event that names a sound plays it, with
+29 event sounds of their own). Nine releases in about two weeks of the fork.
 :::
 
 ## A Halloween broadcast {.smaller .boxed-columns}
@@ -240,6 +245,12 @@ THE EARS — OpenAI's Whisper, model "small" (about 244 million parameters; open
 container pinned by digest. 888 MiB on the GPU. The app sends the cast's names as Whisper's prompt, so it spells them
 right; a transcript filter decides whether the listener said words or nothing. The only piece from
 OpenAI is the open one.
+
+AND A FOURTH MODEL, OFFLINE — the sounds of the world outside: Stable Audio 3 Small-SFX (Stability AI, May 2026; a
+diffusion model of about 0.6 billion parameters, made for sound effects; Stability AI Community License), chosen in
+our sound-effects experiment of 2026-10-07 and run on the same rented GPU, ahead of time — not at show time: the show
+plays files. From our own prompts (zombie-radio's tools/sounds/ambience.yaml), three takes each, the owner kept by
+ear 73 clips: 31 for the ambience and 42 for 29 event sounds; released by the project as CC0. Local AI here too.
 
 Steve Corbett's projects: TalkWithMe became our fork, TalkWithZombies; tts-serve is the voice server, untouched.
 :::
