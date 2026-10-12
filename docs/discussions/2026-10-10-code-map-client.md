@@ -4,7 +4,8 @@
 **Type:** reference — the one-page map the agent drew to open the client study session ([discussion 2026-10-10]
 talk-preparation, workstream C), kept as the owner saw it. The companion of [discussion 2026-10-10] code-map-backend.
 **Status:** a **snapshot** of the fork at **`tz-0.9`** (`b1d039c`): the line numbers are true there and drift with
-every change to the code.
+every change to the code. The seam between the two maps — the four channels from the server to the browser, and the
+round's SSE events: [discussion 2026-10-12] server-browser-channels.
 
 Paths are in the fork, `/Users/alfredo/workspace/hackTNT_2026/TalkWithZombies/static/show/`.
 
