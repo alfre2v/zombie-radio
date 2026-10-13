@@ -255,7 +255,7 @@ ear 73 clips: 31 for the ambience and 42 for 29 event sounds; released by the pr
 Steve Corbett's projects: TalkWithMe became our fork, TalkWithZombies; tts-serve is the voice server, untouched.
 :::
 
-## Why not AI APIs (1/3)
+## Why not AI APIs (1/2)
 
 ::: {.lead}
 The only zombies not allowed in this apocalypse are…
@@ -271,7 +271,7 @@ They *really* want your brain!
 Local AI only: no OpenAI, no Anthropic, no Meta, no xAI.
 :::
 
-## Why not AI APIs (2/3)
+## Why not AI APIs (2/2)
 
 ::: {.elephant}
 ::: {.elephant-pic}
@@ -298,37 +298,8 @@ Local models aren't there yet for coding. But they're getting close.
 The elephant in the room: a talk about local AI only, built with Claude. The show runs on open models only; the
 building used a hosted coding agent. The hope: an open model of 27B parameters (Qwen3.8 27B) already scores 34 on the
 Artificial Analysis Intelligence Index — small enough to run at home.
-:::
 
-## Why not AI APIs (3/3)
-
-::: {.lead .smaller-lead}
-An AI provider I pay for, refusing to generate the satirical poster of the CEOs as zombies you saw before, and, after
-I reminded it that satiric representation of public figures is protected free speech in USA, decided to serve me this
-image instead
-:::
-
-::: {.provider-shots}
-![](images/provider-lake.jpg){fig-alt="A calm mountain lake with a wooden pier: what the AI provider generated"}
-
-![](images/provider-reply.jpg){fig-alt="The owner complains; the AI provider apologizes for a bizarre lecture about political satire followed by a picture of a mountain lake"}
-:::
-
-::: {.citation}
-> Hustler Magazine, Inc. v. Falwell, 485 U.S. 46 (1988), is a landmark decision by the Supreme Court of the United
-> States in which the Court held that parodies of public figures, even those intending to cause emotional distress,
-> are protected by the First and Fourteenth Amendments to the U.S. Constitution.
-
-[— Wikipedia, "Hustler Magazine v. Falwell", CC BY-SA 4.0]{.credit}
-:::
-
-::: {.provider-caption}
-**Not your weights, not your AI.**
-:::
-
-::: {.notes}
-A hosted model decides what you may make; a local one does not — the case for local AI first. "Not your weights,
-not your AI": even on a rented GPU, the open weights we run are ours; no provider can refuse a request or swap the
-model. Its apology even
-misnames the request.
+NOT YOUR WEIGHTS, NOT YOUR AI. — the closing line of the slide this deck no longer shows (an AI provider refusing a
+satirical poster): a hosted model decides what you may make; a local one does not — the case for local AI first. Even
+on a rented GPU, the open weights we run are ours; no provider can refuse a request or swap the model.
 :::
