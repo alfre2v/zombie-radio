@@ -7,6 +7,26 @@ to Orson Welles' 1938 *War of the Worlds*. The twist: the radio
 occasionally **listens**. Talk to it (push-to-talk), and the
 characters answer back, remember your name, and ask for your help.
 
+## Listen to a show
+
+https://github.com/user-attachments/assets/49c31aac-110b-4013-8813-47dc3235b1d3
+
+About ten minutes of one show, lightly edited. The player starts
+muted: press its speaker icon, and turn the sound up — the radio
+static, the world outside the lab and the sound cues are part of the
+show. **[Watch it in 1080p on YouTube](https://youtu.be/JggBiyWjwdM)**,
+where the description carries the full credits.
+
+Credits: the voices are real human recordings from the
+[EARS dataset](https://github.com/facebookresearch/ears_dataset)
+(Meta and the University of Hamburg, CC BY-NC 4.0); the radio is a
+photo of a Philips Sirius BD 400 A by Bin im Garten
+([Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Deutsches_Rundfunk-Museum_Ausstellung_auf_der_IFA_2012_PD_02_Radioempf%C3%A4nger_Philips_Sirius_BD_400_A,_1950.JPG),
+CC BY-SA 3.0); the radio static is from Freesound
+([its credits](https://github.com/alfre2v/TalkWithZombies/blob/master/Sounds/bed/CREDITS.md));
+the world outside and the event sounds were generated with Stable
+Audio 3 Small-SFX and released as CC0.
+
 Two principles shape everything:
 
 - **Local AI first, cloud-capable** — every show-time model
