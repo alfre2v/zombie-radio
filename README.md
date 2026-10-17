@@ -7,6 +7,18 @@ to Orson Welles' 1938 *War of the Worlds*. The twist: the radio
 occasionally **listens**. Talk to it (push-to-talk), and the
 characters answer back, remember your name, and ask for your help.
 
+## Listen to a show
+
+🔊 **Sound on:** the player starts muted — press its speaker icon,
+and turn the sound up.
+
+https://github.com/user-attachments/assets/49c31aac-110b-4013-8813-47dc3235b1d3
+
+About ten minutes of one show, lightly edited: the radio static, the
+world outside the lab and the sound cues are part of the show.
+**[Watch it in 1080p on YouTube](https://youtu.be/JggBiyWjwdM)**,
+where the description carries the full credits.
+
 Two principles shape everything:
 
 - **Local AI first, cloud-capable** — every show-time model
