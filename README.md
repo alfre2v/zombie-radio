@@ -182,3 +182,5 @@ A 2024 predecessor of this idea lives at
 ## License
 
 [MIT](LICENSE)
+
+The video's radio is a photo by Bin im Garten ([Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Deutsches_Rundfunk-Museum_Ausstellung_auf_der_IFA_2012_PD_02_Radioempf%C3%A4nger_Philips_Sirius_BD_400_A,_1950.JPG), CC BY-SA 3.0).
