@@ -12,11 +12,13 @@ characters answer back, remember your name, and ask for your help.
 🔊 **Sound on:** the player starts muted — press its speaker icon,
 and turn the sound up.
 
-https://github.com/user-attachments/assets/49c31aac-110b-4013-8813-47dc3235b1d3
+https://github.com/user-attachments/assets/cf28a15d-2423-4cd7-8e32-3321259a87e7
 
-About ten minutes of one show, lightly edited: the radio static, the
-world outside the lab and the sound cues are part of the show.
-**[Watch it in 1080p on YouTube](https://youtu.be/JggBiyWjwdM)**,
+About nine minutes of one show, where you hear the 4 AI voices in
+broadcast mode, the radio static, the ambience sounds of the world
+outside the lab and the sound cues; from about 5:00 you hear the
+contact mode, where listeners talk with the cast.
+**[Watch it in 1080p on YouTube](https://youtu.be/4dxbiElata8)**,
 where the description carries the full credits.
 
 Two principles shape everything:
