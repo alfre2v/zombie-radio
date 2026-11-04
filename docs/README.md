@@ -259,6 +259,18 @@ The load-bearing line is "stop and ask; do not redesign": it keeps
 the design with the owner and the lead even when the typing happens
 elsewhere.
 
+## Exporting the method
+
+To bootstrap this way of working in another project — the
+collaboration, the working agreements, this documentation system and
+the lessons paid for — paste the prompt kept in [discussion
+2026-10-20] doc-method-exported
+(`docs/discussions/2026-10-20-doc-method-exported.md`) into that
+project's agent, with the project's brief. It is project-neutral and
+more complete than this file in one respect: it also carries the
+rules learned in practice after this file was last updated. When the
+method changes here, update that prompt too.
+
 ## Cold-start navigation
 
 Picking up cold, read in order:
@@ -289,3 +301,6 @@ get there* → the discussion; *what did we try first* → the experiment.
   session handoff, and the work order's skeleton. Also the same
   day: "Where things live — two sibling repositories", when the
   fork TalkWithZombies was created (Task 6a).
+- **2026-10-20** — "Exporting the method" added: a pointer to
+  [discussion 2026-10-20] doc-method-exported, the paste-ready prompt
+  that bootstraps this way of working in another project.
